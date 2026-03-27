@@ -27,12 +27,12 @@ const currentPath = Astro.url.pathname;
     </nav>
 
     <div class="header-actions">
-      <button class="lang-toggle" aria-label="Toggle language">
+      <button class="lang-toggle" id="lang-toggle" aria-label="Toggle language">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <circle cx="12" cy="12" r="10"/>
           <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
         </svg>
-        <span>EN</span>
+        <span id="lang-label">EN</span>
       </button>
 
       <button class="search-btn" aria-label="Search" id="search-trigger">
@@ -64,6 +64,18 @@ const currentPath = Astro.url.pathname;
   const header = document.getElementById('site-header');
   const mobileNav = document.getElementById('mobile-nav');
   const mobileBtn = document.getElementById('mobile-menu-trigger');
+  const langToggle = document.getElementById('lang-toggle');
+  const langLabel = document.getElementById('lang-label');
+
+  // Detect current language from URL
+  const currentPath = window.location.pathname;
+  const isZh = currentPath.includes('/zh/');
+  const isEn = currentPath.includes('/en/');
+
+  // Update lang label
+  if (langLabel) {
+    langLabel.textContent = isZh ? '中文' : 'EN';
+  }
 
   // Scroll effect
   window.addEventListener('scroll', () => {
@@ -77,6 +89,25 @@ const currentPath = Astro.url.pathname;
   // Mobile menu toggle
   mobileBtn?.addEventListener('click', () => {
     mobileNav?.classList.toggle('open');
+  });
+
+  // Language toggle
+  langToggle?.addEventListener('click', () => {
+    if (isZh) {
+      // Switch /zh/ → /en/
+      const newPath = currentPath.replace('/zh/', '/en/');
+      window.location.href = newPath;
+    } else if (isEn) {
+      // Switch /en/ → /zh/
+      const newPath = currentPath.replace('/en/', '/zh/');
+      window.location.href = newPath;
+    } else {
+      // Not on a localized page — toggle language prefix
+      const storedLang = localStorage.getItem('preferred-lang');
+      const nextLang = storedLang === 'zh' ? 'en' : 'zh';
+      localStorage.setItem('preferred-lang', nextLang);
+      window.location.href = nextLang === 'zh' ? '/blog?lang=zh' : '/blog';
+    }
   });
 </script>
 
