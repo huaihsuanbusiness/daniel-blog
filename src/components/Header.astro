@@ -42,7 +42,7 @@ const currentLang = isZhPage ? 'zh' : isEnPage ? 'en' : 'en';
           <circle cx="12" cy="12" r="10"/>
           <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
         </svg>
-        <span id="lang-label">{currentLang === 'zh' ? 'EN' : '中文'}</span>
+        <span id="lang-label">{currentLang === 'en' ? 'EN' : '中文'}</span>
       </button>
 
       <button class="search-btn" aria-label="Search" id="search-trigger">
@@ -80,23 +80,28 @@ const currentLang = isZhPage ? 'zh' : isEnPage ? 'en' : 'en';
   const langToggle = document.getElementById('lang-toggle');
   const langLabel = document.getElementById('lang-label');
 
-  // Detect language from URL — check last meaningful path segment
-  function getLangFromPath(pathname) {
-    const segments = pathname.split('/').filter(Boolean);
-    const last = segments[segments.length - 1] || '';
-    // Blog index pages
-    if (pathname === '/blog' || pathname === '/blog/') return 'en';
-    // Standalone pages (about, shop, etc.)
-    if (!last.match(/^(en|zh)$/)) return null;
-    return last;
+  // Detect language from URL: check path segment first, then query param
+  function detectLang() {
+    const pathname = window.location.pathname;
+    const searchParams = new URLSearchParams(window.location.search);
+    const queryLang = searchParams.get('lang');
+
+    // Path-based: /en/ or /zh/ in URL
+    if (pathname.includes('/zh/')) return 'zh';
+    if (pathname.includes('/en/')) return 'en';
+
+    // Query-param based: ?lang=zh or ?lang=en
+    if (queryLang === 'zh' || queryLang === 'en') return queryLang;
+
+    // Default
+    return 'en';
   }
 
-  const currentPath = window.location.pathname;
-  const pageLang = getLangFromPath(currentPath);
+  const pageLang = detectLang();
 
-  // Set initial label
-  if (langLabel && pageLang) {
-    langLabel.textContent = pageLang === 'zh' ? 'EN' : '中文';
+  // Set label to show CURRENT language
+  if (langLabel) {
+    langLabel.textContent = pageLang === 'zh' ? '中文' : 'EN';
   }
 
   // Scroll effect
@@ -113,24 +118,27 @@ const currentLang = isZhPage ? 'zh' : isEnPage ? 'en' : 'en';
     mobileNav?.classList.toggle('open');
   });
 
-  // Language toggle — switch between /en/ and /zh/ in URL
+  // Language toggle
   langToggle?.addEventListener('click', () => {
-    if (!pageLang) {
-      // Non-localized page — do nothing or redirect to blog
-      return;
-    }
+    const nextLang = pageLang === 'zh' ? 'en' : 'zh';
+    const pathname = window.location.pathname;
 
-    let newPath;
-    if (currentPath.includes('/zh/')) {
-      newPath = currentPath.replace('/zh/', '/en/');
-    } else if (currentPath.includes('/en/')) {
-      newPath = currentPath.replace('/en/', '/zh/');
+    if (pathname.includes('/zh/')) {
+      // On zh post page → switch to en version
+      window.location.href = pathname.replace('/zh/', '/en/');
+    } else if (pathname.includes('/en/')) {
+      // On en post page → switch to zh version
+      window.location.href = pathname.replace('/en/', '/zh/');
     } else {
-      // Fallback: no language in URL
-      return;
+      // Non-language URL (blog index, about, shop) → toggle query param
+      const url = new URL(window.location.href);
+      if (nextLang === 'en') {
+        url.searchParams.delete('lang');
+      } else {
+        url.searchParams.set('lang', 'zh');
+      }
+      window.location.href = url.toString();
     }
-
-    window.location.href = newPath;
   });
 </script>
 

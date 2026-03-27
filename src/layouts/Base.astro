@@ -8,10 +8,12 @@ export interface Props {
 const { title, description = 'Personal blog by Daniel.', ogImage } = Astro.props;
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
-// Detect language from URL
+// Detect language from URL: path segment first, then query param
 const currentPath = Astro.url.pathname;
-const isZh = currentPath.includes('/zh/');
-const isEn = currentPath.includes('/en/');
+const searchParams = Astro.url.searchParams;
+const queryLang = searchParams.get('lang');
+const isZh = currentPath.includes('/zh/') || queryLang === 'zh';
+const isEn = currentPath.includes('/en/') || queryLang === 'en';
 const pageLang = isZh ? 'zh' : isEn ? 'en' : 'en';
 ---
 
