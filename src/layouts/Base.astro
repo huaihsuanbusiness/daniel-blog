@@ -7,10 +7,16 @@ export interface Props {
 
 const { title, description = 'Personal blog by Daniel.', ogImage } = Astro.props;
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+
+// Detect language from URL
+const currentPath = Astro.url.pathname;
+const isZh = currentPath.includes('/zh/');
+const isEn = currentPath.includes('/en/');
+const pageLang = isZh ? 'zh' : isEn ? 'en' : 'en';
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={pageLang} data-lang={pageLang}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />

@@ -23,14 +23,18 @@ const posts = allPosts
     <section class="hero">
       <div class="container hero-inner">
         <div class="hero-content">
-          <p class="hero-eyebrow animate-in">Welcome</p>
+          <p class="hero-eyebrow animate-in">
+            <span class="lang-en">Welcome</span>
+            <span class="lang-zh">歡迎</span>
+          </p>
           <h1 class="hero-title animate-in animate-delay-1">
             Ideas<br/>
             <span class="accent">Worth</span><br/>
             Spreading.
           </h1>
           <p class="hero-subtitle animate-in animate-delay-2">
-            Web3 · AI · Business · Travel
+            <span class="lang-en">Web3 · AI · Business · Travel</span>
+            <span class="lang-zh">Web3 · AI · 商務 · 旅遊</span>
           </p>
         </div>
 
@@ -45,9 +49,13 @@ const posts = allPosts
     <section class="posts-section">
       <div class="container">
         <div class="section-header animate-in">
-          <h2 class="section-title">Latest</h2>
+          <h2 class="section-title">
+            <span class="lang-en">Latest</span>
+            <span class="lang-zh">最新文章</span>
+          </h2>
           <a href="/blog" class="view-all">
-            View all
+            <span class="lang-en">View all</span>
+            <span class="lang-zh">查看全部</span>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M5 12h14M12 5l7 7-7 7"/>
             </svg>
@@ -63,8 +71,14 @@ const posts = allPosts
                 <path d="M2 12l10 5 10-5"/>
               </svg>
             </div>
-            <h3>Coming Soon</h3>
-            <p class="muted">Content is being prepared. Check back soon.</p>
+            <h3>
+              <span class="lang-en">Coming Soon</span>
+              <span class="lang-zh">即將上線</span>
+            </h3>
+            <p class="muted">
+              <span class="lang-en">Content is being prepared. Check back soon.</span>
+              <span class="lang-zh">內容正在準備中，敬請期待。</span>
+            </p>
           </div>
         ) : (
           <div class="posts-grid">

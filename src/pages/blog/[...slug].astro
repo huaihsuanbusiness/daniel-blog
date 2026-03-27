@@ -54,7 +54,8 @@ const categoryLabels: Record<string, Record<string, string>> = {
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M19 12H5M12 19l-7-7 7-7"/>
           </svg>
-          Back to Blog
+          <span class="lang-en">Back to Blog</span>
+          <span class="lang-zh">返回部落格</span>
         </a>
 
         <div class="post-meta">
@@ -69,9 +70,10 @@ const categoryLabels: Record<string, Record<string, string>> = {
         <p class="post-description">{post.data.description}</p>
 
         <div class="lang-switch">
-          <span class="muted">Read in:</span>
+          <span class="muted lang-en">Read in:</span>
+          <span class="muted lang-zh">閱讀版本：</span>
           <a href={otherVersionSlug} class="lang-btn">
-            {lang === 'zh' ? '中文' : 'English'}
+            {lang === 'zh' ? 'English' : '中文'}
           </a>
         </div>
       </header>
@@ -93,7 +95,8 @@ const categoryLabels: Record<string, Record<string, string>> = {
             rel="noopener noreferrer"
             class="share-btn"
           >
-            Share on X
+            <span class="lang-en">Share on X</span>
+            <span class="lang-zh">分享到 X</span>
           </a>
         </div>
       </footer>

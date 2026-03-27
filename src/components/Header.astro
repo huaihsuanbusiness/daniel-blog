@@ -1,11 +1,18 @@
 ---
 const navLinks = [
-  { href: '/blog', label: 'Blog' },
-  { href: '/about', label: 'About' },
-  { href: '/shop', label: 'Shop' },
+  { href: '/blog', label_en: 'Blog', label_zh: '部落格' },
+  { href: '/about', label_en: 'About', label_zh: '關於' },
+  { href: '/shop', label_en: 'Shop', label_zh: '商店' },
 ];
 
 const currentPath = Astro.url.pathname;
+
+// Detect current language from URL
+const pathSegments = currentPath.split('/').filter(Boolean);
+const lastSegment = pathSegments[pathSegments.length - 1] || '';
+const isZhPage = lastSegment === 'zh' || currentPath.includes('/zh/');
+const isEnPage = lastSegment === 'en' || currentPath.includes('/en/');
+const currentLang = isZhPage ? 'zh' : isEnPage ? 'en' : 'en';
 ---
 
 <header class="site-header" id="site-header">
@@ -20,8 +27,11 @@ const currentPath = Astro.url.pathname;
         <a
           href={link.href}
           class:list={['nav-link', { active: currentPath.startsWith(link.href) }]}
+          data-lang={currentLang}
+          data-label-en={link.label_en}
+          data-label-zh={link.label_zh}
         >
-          {link.label}
+          {currentLang === 'zh' ? link.label_zh : link.label_en}
         </a>
       ))}
     </nav>
@@ -32,7 +42,7 @@ const currentPath = Astro.url.pathname;
           <circle cx="12" cy="12" r="10"/>
           <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
         </svg>
-        <span id="lang-label">EN</span>
+        <span id="lang-label">{currentLang === 'zh' ? 'EN' : '中文'}</span>
       </button>
 
       <button class="search-btn" aria-label="Search" id="search-trigger">
@@ -55,7 +65,10 @@ const currentPath = Astro.url.pathname;
   <!-- Mobile nav -->
   <nav class="nav-mobile" id="mobile-nav">
     {navLinks.map(link => (
-      <a href={link.href} class="nav-link-mobile">{link.label}</a>
+      <a href={link.href} class="nav-link-mobile" data-lang={currentLang}
+        data-label-en={link.label_en} data-label-zh={link.label_zh}>
+        {currentLang === 'zh' ? link.label_zh : link.label_en}
+      </a>
     ))}
   </nav>
 </header>
@@ -67,14 +80,23 @@ const currentPath = Astro.url.pathname;
   const langToggle = document.getElementById('lang-toggle');
   const langLabel = document.getElementById('lang-label');
 
-  // Detect current language from URL
-  const currentPath = window.location.pathname;
-  const isZh = currentPath.includes('/zh/');
-  const isEn = currentPath.includes('/en/');
+  // Detect language from URL — check last meaningful path segment
+  function getLangFromPath(pathname) {
+    const segments = pathname.split('/').filter(Boolean);
+    const last = segments[segments.length - 1] || '';
+    // Blog index pages
+    if (pathname === '/blog' || pathname === '/blog/') return 'en';
+    // Standalone pages (about, shop, etc.)
+    if (!last.match(/^(en|zh)$/)) return null;
+    return last;
+  }
 
-  // Update lang label
-  if (langLabel) {
-    langLabel.textContent = isZh ? '中文' : 'EN';
+  const currentPath = window.location.pathname;
+  const pageLang = getLangFromPath(currentPath);
+
+  // Set initial label
+  if (langLabel && pageLang) {
+    langLabel.textContent = pageLang === 'zh' ? 'EN' : '中文';
   }
 
   // Scroll effect
@@ -91,23 +113,24 @@ const currentPath = Astro.url.pathname;
     mobileNav?.classList.toggle('open');
   });
 
-  // Language toggle
+  // Language toggle — switch between /en/ and /zh/ in URL
   langToggle?.addEventListener('click', () => {
-    if (isZh) {
-      // Switch /zh/ → /en/
-      const newPath = currentPath.replace('/zh/', '/en/');
-      window.location.href = newPath;
-    } else if (isEn) {
-      // Switch /en/ → /zh/
-      const newPath = currentPath.replace('/en/', '/zh/');
-      window.location.href = newPath;
-    } else {
-      // Not on a localized page — toggle language prefix
-      const storedLang = localStorage.getItem('preferred-lang');
-      const nextLang = storedLang === 'zh' ? 'en' : 'zh';
-      localStorage.setItem('preferred-lang', nextLang);
-      window.location.href = nextLang === 'zh' ? '/blog?lang=zh' : '/blog';
+    if (!pageLang) {
+      // Non-localized page — do nothing or redirect to blog
+      return;
     }
+
+    let newPath;
+    if (currentPath.includes('/zh/')) {
+      newPath = currentPath.replace('/zh/', '/en/');
+    } else if (currentPath.includes('/en/')) {
+      newPath = currentPath.replace('/en/', '/zh/');
+    } else {
+      // Fallback: no language in URL
+      return;
+    }
+
+    window.location.href = newPath;
   });
 </script>
 

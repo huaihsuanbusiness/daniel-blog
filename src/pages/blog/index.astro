@@ -30,9 +30,13 @@ const categoryLabels: Record<string, string> = {
   <main class="blog-main">
     <div class="container">
       <header class="blog-header animate-in">
-        <h1 class="blog-title">Blog</h1>
+        <h1 class="blog-title">
+          <span class="lang-en">Blog</span>
+          <span class="lang-zh">部落格</span>
+        </h1>
         <p class="blog-subtitle muted">
-          {posts.length} {posts.length === 1 ? 'article' : 'articles'} on Web3, AI, business, and more.
+          <span class="lang-en">{posts.length} {posts.length === 1 ? 'article' : 'articles'} on Web3, AI, business, and more.</span>
+          <span class="lang-zh">共 {posts.length} 篇關於 Web3、AI、商業等的文章。</span>
         </p>
       </header>
 
