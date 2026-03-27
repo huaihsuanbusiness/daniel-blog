@@ -1,0 +1,78 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Base title="Shop — danielcanfly" description="Small business offerings.">
+  <Header />
+
+  <main class="shop-main">
+    <div class="container">
+      <header class="shop-header animate-in">
+        <h1 class="shop-title">Shop</h1>
+        <p class="shop-subtitle muted">Coming soon.</p>
+      </header>
+
+      <div class="coming-soon animate-in animate-delay-1">
+        <div class="soon-icon">
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <circle cx="9" cy="21" r="1"/>
+            <circle cx="20" cy="21" r="1"/>
+            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+          </svg>
+        </div>
+        <h2>Building...</h2>
+        <p class="muted">
+          This section is under development. Check back soon.
+        </p>
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</Base>
+
+<style>
+  .shop-main {
+    padding: var(--space-10) 0;
+    min-height: 60vh;
+    display: flex;
+    align-items: center;
+  }
+
+  .shop-header {
+    margin-bottom: var(--space-8);
+    padding-bottom: var(--space-4);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .shop-title {
+    font-size: clamp(2rem, 5vw, 3rem);
+    margin-bottom: var(--space-1);
+  }
+
+  .shop-subtitle {
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+  }
+
+  .coming-soon {
+    text-align: center;
+    padding: var(--space-10) 0;
+  }
+
+  .soon-icon {
+    color: var(--color-border);
+    margin-bottom: var(--space-4);
+  }
+
+  .coming-soon h2 {
+    font-size: 1.5rem;
+    margin-bottom: var(--space-2);
+  }
+
+  .coming-soon p {
+    max-width: 100%;
+  }
+</style>

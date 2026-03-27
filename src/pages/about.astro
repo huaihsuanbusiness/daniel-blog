@@ -1,0 +1,162 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Base title="About — danielcanfly" description="About Daniel.">
+  <Header />
+
+  <main class="about-main">
+    <div class="container">
+      <div class="about-grid">
+        <header class="about-header animate-in">
+          <h1 class="about-title">
+            Hello, I'm <span class="accent">Daniel</span>.
+          </h1>
+          <p class="about-tagline">
+            Entrepreneur · Researcher · Builder
+          </p>
+        </header>
+
+        <div class="about-content animate-in animate-delay-1">
+          <section class="about-section">
+            <h2>Background</h2>
+            <p>
+              I explore the intersection of technology, business, and human behavior.
+              My work spans Web3, artificial intelligence, and strategic consulting
+              across multiple industries including travel, finance, and emerging tech.
+            </p>
+          </section>
+
+          <section class="about-section">
+            <h2>Interests</h2>
+            <ul class="interest-list">
+              <li>Distributed systems & decentralized protocols</li>
+              <li>AI/ML applications and implications</li>
+              <li>Business strategy & market dynamics</li>
+              <li>Travel & cultural exchange</li>
+              <li>Open source & developer tools</li>
+            </ul>
+          </section>
+
+          <section class="about-section">
+            <h2>This Blog</h2>
+            <p>
+              A space to share observations, analysis, and ideas. Articles appear
+              in both English and Chinese — a deliberate choice to bridge
+              different audiences and perspectives.
+            </p>
+          </section>
+
+          <section class="about-section">
+            <h2>Connect</h2>
+            <div class="social-links">
+              <a href="https://github.com/huaihsuanbusiness" target="_blank" rel="noopener" class="social-link">
+                GitHub
+              </a>
+              <a href="https://x.com/danielcanfly" target="_blank" rel="noopener" class="social-link">
+                X / Twitter
+              </a>
+              <a href="https://linkedin.com/in/danielcanfly" target="_blank" rel="noopener" class="social-link">
+                LinkedIn
+              </a>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</Base>
+
+<style>
+  .about-main {
+    padding: var(--space-10) 0;
+  }
+
+  .about-grid {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .about-header {
+    margin-bottom: var(--space-8);
+    padding-bottom: var(--space-6);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .about-title {
+    font-size: clamp(2rem, 5vw, 3rem);
+    margin-bottom: var(--space-2);
+  }
+
+  .about-tagline {
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    color: var(--color-muted);
+  }
+
+  .about-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+  }
+
+  .about-section h2 {
+    font-size: 1.25rem;
+    margin-bottom: var(--space-2);
+    color: var(--color-accent);
+  }
+
+  .about-section p {
+    color: var(--color-text);
+    line-height: 1.7;
+    max-width: 100%;
+  }
+
+  .interest-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+
+  .interest-list li {
+    padding-left: var(--space-3);
+    position: relative;
+    color: var(--color-text);
+    line-height: 1.6;
+  }
+
+  .interest-list li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--color-accent);
+    font-family: var(--font-mono);
+  }
+
+  .social-links {
+    display: flex;
+    gap: var(--space-2);
+    flex-wrap: wrap;
+  }
+
+  .social-link {
+    padding: 8px 16px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    font-family: var(--font-display);
+    font-size: 0.875rem;
+    color: var(--color-text);
+    transition: all var(--transition-fast);
+  }
+
+  .social-link:hover {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+  }
+</style>

@@ -1,0 +1,75 @@
+---
+const categories = [
+  { id: 'all', label: 'All' },
+  { id: 'web3', label: 'Web3' },
+  { id: 'ai', label: 'AI' },
+  { id: 'travel', label: 'Travel' },
+  { id: 'openclaw', label: 'OpenClaw' },
+  { id: 'business', label: 'Business' },
+  { id: 'tech', label: 'Tech' },
+];
+---
+
+<div class="category-filter">
+  <div class="filter-scroll">
+    {categories.map(cat => (
+      <button
+        class:list={['tag', `tag-${cat.id}`, { active: cat.id === 'all' }]}
+        data-category={cat.id}
+      >
+        {cat.label}
+      </button>
+    ))}
+  </div>
+</div>
+
+<script>
+  const buttons = document.querySelectorAll('.tag[data-category]');
+  const cards = document.querySelectorAll('.post-card');
+
+  buttons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const category = btn.getAttribute('data-category');
+
+      // Update active button
+      buttons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      // Filter cards
+      cards.forEach(card => {
+        const cardCategory = card.getAttribute('data-category');
+        if (category === 'all' || cardCategory === category) {
+          (card as HTMLElement).style.display = '';
+        } else {
+          (card as HTMLElement).style.display = 'none';
+        }
+      });
+    });
+  });
+</script>
+
+<style>
+  .category-filter {
+    margin-bottom: var(--space-6);
+    overflow: hidden;
+  }
+
+  .filter-scroll {
+    display: flex;
+    gap: var(--space-1);
+    overflow-x: auto;
+    padding-bottom: var(--space-1);
+    scrollbar-width: none;
+  }
+
+  .filter-scroll::-webkit-scrollbar {
+    display: none;
+  }
+
+  .tag {
+    flex-shrink: 0;
+    cursor: pointer;
+    border: none;
+    font-family: var(--font-mono);
+  }
+</style>

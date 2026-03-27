@@ -1,0 +1,100 @@
+---
+import Base from '../../layouts/Base.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import PostCard from '../../components/PostCard.astro';
+import CategoryFilter from '../../components/CategoryFilter.astro';
+import { getCollection } from 'astro:content';
+
+const allPosts = await getCollection('blog');
+const posts = allPosts
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .map(post => {
+    const lang = post.id.startsWith('en/') ? 'en' : 'zh';
+    const baseSlug = post.id.replace(/^(en|zh)\//, '').replace(/\.(md|mdx)$/, '');
+    return { ...post, lang, slug: `${baseSlug}/${lang}` };
+  });
+
+const categoryLabels: Record<string, string> = {
+  web3: 'Web3', ai: 'AI', travel: 'Travel',
+  openclaw: 'OpenClaw', business: 'Business', tech: 'Tech',
+};
+---
+
+<Base
+  title="Blog — danielcanfly"
+  description="Thoughts on Web3, AI, business, and technology."
+>
+  <Header />
+
+  <main class="blog-main">
+    <div class="container">
+      <header class="blog-header animate-in">
+        <h1 class="blog-title">Blog</h1>
+        <p class="blog-subtitle muted">
+          {posts.length} {posts.length === 1 ? 'article' : 'articles'} on Web3, AI, business, and more.
+        </p>
+      </header>
+
+      <CategoryFilter />
+
+      <div class="posts-grid">
+        {posts.map((post, i) => {
+          return (
+            <div
+              class:list={['animate-in', { 'animate-delay-1': i % 3 === 1, 'animate-delay-2': i % 3 === 2 }]}
+              data-category={post.data.category}
+            >
+              <PostCard
+                slug={post.slug}
+                title={post.data.title}
+                description={post.data.description}
+                category={post.data.category}
+                date={post.data.date}
+                lang={post.lang as 'en' | 'zh'}
+                featured={post.data.featured}
+              />
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</Base>
+
+<style>
+  .blog-main {
+    padding: var(--space-10) 0;
+    min-height: 60vh;
+  }
+
+  .blog-header {
+    margin-bottom: var(--space-6);
+    padding-bottom: var(--space-4);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .blog-title {
+    font-size: clamp(2rem, 5vw, 3rem);
+    margin-bottom: var(--space-1);
+  }
+
+  .blog-subtitle {
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+  }
+
+  .posts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: var(--space-4);
+  }
+
+  @media (max-width: 768px) {
+    .posts-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

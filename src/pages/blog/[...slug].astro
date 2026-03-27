@@ -1,0 +1,274 @@
+---
+import Base from '../../layouts/Base.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import { getCollection, render } from 'astro:content';
+import { calculateReadTime } from '../../utils/readTime';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  return posts.map(post => {
+    const id = post.id; // e.g., "en/first-post.md"
+    const lang = id.startsWith('en/') ? 'en' : 'zh';
+    const baseSlug = id.replace(/^(en|zh)\//, '').replace(/\.(md|mdx)$/, '');
+    return {
+      params: { slug: `${baseSlug}/${lang}` },
+      props: { post, lang },
+    };
+  });
+}
+
+const { post, lang } = Astro.props;
+const { Content } = await render(post);
+
+const baseSlug = post.id.replace(/^(en|zh)\//, '').replace(/\.(md|mdx)$/, '');
+const otherLang = lang === 'zh' ? 'en' : 'zh';
+const otherVersionSlug = `${baseSlug}/${otherLang}`;
+
+// Read time
+const readTime = calculateReadTime(post.body);
+
+const formattedDate = new Intl.DateTimeFormat(lang === 'zh' ? 'zh-TW' : 'en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+}).format(post.data.date);
+
+const categoryLabels: Record<string, Record<string, string>> = {
+  web3: { en: 'Web3', zh: 'Web3' },
+  ai: { en: 'AI', zh: '人工智慧' },
+  travel: { en: 'Travel', zh: '旅遊' },
+  openclaw: { en: 'OpenClaw', zh: 'OpenClaw' },
+  business: { en: 'Business', zh: '商業' },
+  tech: { en: 'Tech', zh: '技術' },
+};
+---
+
+<Base title={`${post.data.title} — danielcanfly`} description={post.data.description}>
+  <Header />
+
+  <article class="post-article">
+    <div class="container">
+      <header class="post-header animate-in">
+        <a href="/blog" class="back-link">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M19 12H5M12 19l-7-7 7-7"/>
+          </svg>
+          Back to Blog
+        </a>
+
+        <div class="post-meta">
+          <span class={`tag tag-${post.data.category}`}>
+            {categoryLabels[post.data.category]?.[lang] || post.data.category}
+          </span>
+          <span class="post-date muted">{formattedDate}</span>
+          <span class="post-readtime muted">{readTime} min read</span>
+        </div>
+
+        <h1 class="post-title">{post.data.title}</h1>
+        <p class="post-description">{post.data.description}</p>
+
+        <div class="lang-switch">
+          <span class="muted">Read in:</span>
+          <a href={otherVersionSlug} class="lang-btn">
+            {lang === 'zh' ? '中文' : 'English'}
+          </a>
+        </div>
+      </header>
+
+      <div class="post-content animate-in animate-delay-1">
+        <Content />
+      </div>
+
+      <footer class="post-footer animate-in animate-delay-2">
+        <div class="post-tags">
+          <span class={`tag tag-${post.data.category}`}>
+            {categoryLabels[post.data.category]?.[lang] || post.data.category}
+          </span>
+        </div>
+        <div class="post-share">
+          <a
+            href={`https://x.com/intent/tweet?text=${encodeURIComponent(post.data.title)}&url=${encodeURIComponent(Astro.url.href)}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="share-btn"
+          >
+            Share on X
+          </a>
+        </div>
+      </footer>
+    </div>
+  </article>
+
+  <Footer />
+</Base>
+
+<style>
+  .post-article {
+    padding: var(--space-8) 0 var(--space-10);
+  }
+
+  .post-header {
+    max-width: 800px;
+    margin: 0 auto var(--space-8);
+  }
+
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-display);
+    font-size: 0.875rem;
+    color: var(--color-muted);
+    margin-bottom: var(--space-4);
+    transition: color var(--transition-fast);
+  }
+
+  .back-link:hover {
+    color: var(--color-accent);
+  }
+
+  .post-meta {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-bottom: var(--space-3);
+    flex-wrap: wrap;
+  }
+
+  .post-date,
+  .post-readtime {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+  }
+
+  .post-title {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 700;
+    line-height: 1.1;
+    margin-bottom: var(--space-3);
+    letter-spacing: -0.02em;
+  }
+
+  .post-description {
+    font-size: 1.125rem;
+    color: var(--color-muted);
+    line-height: 1.6;
+    margin-bottom: var(--space-4);
+    max-width: 100%;
+  }
+
+  .lang-switch {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: 0.875rem;
+  }
+
+  .lang-btn {
+    padding: 4px 10px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    color: var(--color-muted);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    transition: all var(--transition-fast);
+  }
+
+  .lang-btn:hover {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+  }
+
+  .post-content {
+    max-width: 680px;
+    margin: 0 auto;
+  }
+
+  .post-content :global(h2) {
+    font-size: 1.75rem;
+    margin: var(--space-6) 0 var(--space-3);
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--color-border);
+  }
+
+  .post-content :global(h3) {
+    font-size: 1.375rem;
+    margin: var(--space-4) 0 var(--space-2);
+  }
+
+  .post-content :global(p) {
+    margin-bottom: var(--space-3);
+    max-width: 100%;
+  }
+
+  .post-content :global(ul),
+  .post-content :global(ol) {
+    margin: var(--space-3) 0;
+    padding-left: var(--space-4);
+  }
+
+  .post-content :global(li) {
+    margin-bottom: var(--space-1);
+  }
+
+  .post-content :global(blockquote) {
+    border-left: 3px solid var(--color-accent);
+    padding-left: var(--space-3);
+    margin: var(--space-4) 0;
+    color: var(--color-muted);
+    font-style: italic;
+  }
+
+  .post-content :global(img) {
+    max-width: 100%;
+    border-radius: 8px;
+    margin: var(--space-4) 0;
+  }
+
+  .post-content :global(a) {
+    color: var(--color-accent);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .post-content :global(a:hover) {
+    color: var(--color-accent-hover);
+  }
+
+  .post-footer {
+    max-width: 680px;
+    margin: var(--space-8) auto 0;
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--color-border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+  }
+
+  .share-btn {
+    padding: 8px 16px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    font-family: var(--font-display);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--color-text);
+    transition: all var(--transition-fast);
+  }
+
+  .share-btn:hover {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+  }
+
+  @media (max-width: 768px) {
+    .post-footer {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+</style>
