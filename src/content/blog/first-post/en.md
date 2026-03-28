@@ -1,7 +1,8 @@
 ---
 title: "Welcome to danielcanfly"
 description: "A brief introduction to this blog and what to expect from the intersection of Web3, AI, business, and travel."
-category: "tech"
+categories: ["tech"]
+tags: ["intro", "web3", "ai", "business", "travel", "openclaw"]
 date: 2026-03-27
 featured: true
 ---

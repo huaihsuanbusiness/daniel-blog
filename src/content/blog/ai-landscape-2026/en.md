@@ -1,7 +1,8 @@
 ---
 title: "The AI Landscape in 2026: Beyond the Hype"
 description: "A clear-eyed look at where AI actually stands today — what's real, what's overblown, and where the genuine opportunities lie."
-category: "ai"
+categories: ["ai"]
+tags: ["ai", "landscape", "2026", "analysis"]
 date: 2026-03-25
 featured: false
 ---

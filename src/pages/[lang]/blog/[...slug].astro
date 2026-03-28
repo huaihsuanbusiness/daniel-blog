@@ -1,29 +1,35 @@
 ---
-import Base from '../../layouts/Base.astro';
-import Header from '../../components/Header.astro';
-import Footer from '../../components/Footer.astro';
+import Base from '../../../layouts/Base.astro';
+import Header from '../../../components/Header.astro';
+import Footer from '../../../components/Footer.astro';
 import { getCollection, render } from 'astro:content';
-import { calculateReadTime } from '../../utils/readTime';
+import { calculateReadTime } from '../../../utils/readTime';
 
 export async function getStaticPaths() {
   const posts = await getCollection('blog');
+
   return posts.map(post => {
-    const id = post.id; // e.g., "en/first-post.md"
-    const lang = id.startsWith('en/') ? 'en' : 'zh';
-    const baseSlug = id.replace(/^(en|zh)\//, '').replace(/\.(md|mdx)$/, '');
+    // post.id is e.g. "first-post/en" or "ai-landscape-2026/zh"
+    const lastSlash = post.id.lastIndexOf('/');
+    const slug = post.id.substring(0, lastSlash); // "first-post"
+    const lang = post.id.substring(lastSlash + 1); // "en"
+
     return {
-      params: { slug: `${baseSlug}/${lang}` },
-      props: { post, lang },
+      params: { lang, slug },
+      props: { post },
     };
   });
 }
 
-const { post, lang } = Astro.props;
+const { lang, slug } = Astro.params;
+const { post } = Astro.props;
 const { Content } = await render(post);
 
-const baseSlug = post.id.replace(/^(en|zh)\//, '').replace(/\.(md|mdx)$/, '');
+// Find the same slug in the other language
+const allPosts = await getCollection('blog');
 const otherLang = lang === 'zh' ? 'en' : 'zh';
-const otherVersionSlug = `${baseSlug}/${otherLang}`;
+const otherPost = allPosts.find(p => p.id === `${slug}/${otherLang}`);
+const otherVersionHref = otherPost ? `/${otherLang}/blog/${otherPost.id.split('/')[0]}` : null;
 
 // Read time
 const readTime = calculateReadTime(post.body);
@@ -42,25 +48,26 @@ const categoryLabels: Record<string, Record<string, string>> = {
   business: { en: 'Business', zh: '商業' },
   tech: { en: 'Tech', zh: '技術' },
 };
+
+const otherLangLabel = lang === 'zh' ? 'English' : '中文';
 ---
 
-<Base title={`${post.data.title} — danielcanfly`} description={post.data.description}>
-  <Header />
+<Base title={`${post.data.title} — danielcanfly`} description={post.data.description} lang={lang!}>
+  <Header currentLang={lang} />
 
   <article class="post-article">
     <div class="container">
       <header class="post-header animate-in">
-        <a href="/blog" class="back-link">
+        <a href={`/${lang}/blog`} class="back-link">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M19 12H5M12 19l-7-7 7-7"/>
           </svg>
-          <span class="lang-en">Back to Blog</span>
-          <span class="lang-zh">返回部落格</span>
+          {lang === 'zh' ? '返回部落格' : 'Back to Blog'}
         </a>
 
         <div class="post-meta">
-          <span class={`tag tag-${post.data.category}`}>
-            {categoryLabels[post.data.category]?.[lang] || post.data.category}
+          <span class={`tag tag-${post.data.categories[0]}`}>
+            {categoryLabels[post.data.categories[0]]?.[lang as 'en' | 'zh'] || post.data.categories[0]}
           </span>
           <span class="post-date muted">{formattedDate}</span>
           <span class="post-readtime muted">{readTime} min read</span>
@@ -69,13 +76,12 @@ const categoryLabels: Record<string, Record<string, string>> = {
         <h1 class="post-title">{post.data.title}</h1>
         <p class="post-description">{post.data.description}</p>
 
-        <div class="lang-switch">
-          <span class="muted lang-en">Read in:</span>
-          <span class="muted lang-zh">閱讀版本：</span>
-          <a href={otherVersionSlug} class="lang-btn">
-            {lang === 'zh' ? 'English' : '中文'}
-          </a>
-        </div>
+        {otherVersionHref && (
+          <div class="lang-switch">
+            <span class="muted">{lang === 'zh' ? '閱讀版本：' : 'Read in:'}</span>
+            <a href={otherVersionHref} class="lang-btn">{otherLangLabel}</a>
+          </div>
+        )}
       </header>
 
       <div class="post-content animate-in animate-delay-1">
@@ -84,9 +90,11 @@ const categoryLabels: Record<string, Record<string, string>> = {
 
       <footer class="post-footer animate-in animate-delay-2">
         <div class="post-tags">
-          <span class={`tag tag-${post.data.category}`}>
-            {categoryLabels[post.data.category]?.[lang] || post.data.category}
-          </span>
+          {post.data.categories.map(cat => (
+            <span class={`tag tag-${cat}`}>
+              {categoryLabels[cat]?.[lang as 'en' | 'zh'] || cat}
+            </span>
+          ))}
         </div>
         <div class="post-share">
           <a
@@ -95,8 +103,7 @@ const categoryLabels: Record<string, Record<string, string>> = {
             rel="noopener noreferrer"
             class="share-btn"
           >
-            <span class="lang-en">Share on X</span>
-            <span class="lang-zh">分享到 X</span>
+            {lang === 'zh' ? '分享到 X' : 'Share on X'}
           </a>
         </div>
       </footer>

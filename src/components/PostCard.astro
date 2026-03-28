@@ -3,13 +3,13 @@ export interface Props {
   slug: string;
   title: string;
   description: string;
-  category: string;
+  categories: string[];
   date: Date;
   lang: 'en' | 'zh';
   featured?: boolean;
 }
 
-const { slug, title, description, category, date, lang, featured = false } = Astro.props;
+const { slug, title, description, categories, date, lang, featured = false } = Astro.props;
 
 const formattedDate = new Intl.DateTimeFormat('en-US', {
   year: 'numeric',
@@ -25,14 +25,16 @@ const categoryLabels: Record<string, string> = {
   business: 'Business',
   tech: 'Tech',
 };
+
+const langLabel = lang === 'zh' ? '中文' : 'EN';
 ---
 
 <article class:list={['post-card', { featured }]}>
   <a href={`/blog/${slug}`} class="card-link">
     <div class="card-inner">
       <div class="card-meta">
-        <span class={`tag tag-${category}`}>
-          {categoryLabels[category] || category}
+        <span class={`tag tag-${categories[0]}`}>
+          {categoryLabels[categories[0]] || categories[0]}
         </span>
         <span class="card-date muted">{formattedDate}</span>
       </div>
@@ -42,13 +44,12 @@ const categoryLabels: Record<string, string> = {
 
       <div class="card-footer">
         <span class="read-more">
-          <span class="lang-en">Read more</span>
-          <span class="lang-zh">閱讀更多</span>
+          {lang === 'zh' ? '閱讀更多' : 'Read more'}
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M5 12h14M12 5l7 7-7 7"/>
           </svg>
         </span>
-        <span class="card-lang muted">{lang === 'zh' ? '中文' : 'EN'}</span>
+        <span class="card-lang muted">{langLabel}</span>
       </div>
     </div>
   </a>

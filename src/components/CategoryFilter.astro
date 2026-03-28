@@ -1,23 +1,22 @@
 ---
-const categories = [
-  { id: 'all', label: 'All' },
-  { id: 'web3', label: 'Web3' },
-  { id: 'ai', label: 'AI' },
-  { id: 'travel', label: 'Travel' },
-  { id: 'openclaw', label: 'OpenClaw' },
-  { id: 'business', label: 'Business' },
-  { id: 'tech', label: 'Tech' },
-];
+export interface Props {
+  categories: string[];
+}
+
+const { categories } = Astro.props;
+const { category } = Astro.url.searchParams;
+
+const allCategories = ['all', ...categories];
 ---
 
 <div class="category-filter">
   <div class="filter-scroll">
-    {categories.map(cat => (
+    {allCategories.map(cat => (
       <button
-        class:list={['tag', `tag-${cat.id}`, { active: cat.id === 'all' }]}
-        data-category={cat.id}
+        class:list={['tag', `tag-${cat}`, { active: (cat === 'all' && !category) || cat === category }]}
+        data-category={cat}
       >
-        {cat.label}
+        {cat === 'all' ? 'All' : cat}
       </button>
     ))}
   </div>
@@ -25,15 +24,24 @@ const categories = [
 
 <script>
   const buttons = document.querySelectorAll('.tag[data-category]');
-  const cards = document.querySelectorAll('.post-card');
 
   buttons.forEach(btn => {
     btn.addEventListener('click', () => {
       const category = btn.getAttribute('data-category');
+      const cards = document.querySelectorAll('[data-category]');
 
       // Update active button
       buttons.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
+
+      // Update URL
+      const url = new URL(window.location.href);
+      if (category === 'all') {
+        url.searchParams.delete('category');
+      } else {
+        url.searchParams.set('category', category);
+      }
+      window.history.replaceState(null, '', url.toString());
 
       // Filter cards
       cards.forEach(card => {

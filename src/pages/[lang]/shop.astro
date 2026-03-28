@@ -1,17 +1,40 @@
 ---
-import Base from '../layouts/Base.astro';
-import Header from '../components/Header.astro';
-import Footer from '../components/Footer.astro';
+import Base from '../../layouts/Base.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+
+export function getStaticPaths() {
+  return [{ params: { lang: 'en' } }, { params: { lang: 'zh' } }];
+}
+
+const { lang } = Astro.params;
+
+const content = {
+  en: {
+    title: 'Shop',
+    subtitle: 'Coming soon.',
+    heading: 'Building...',
+    desc: 'This section is under development. Check back soon.',
+  },
+  zh: {
+    title: '商店',
+    subtitle: '即將上線。',
+    heading: '建構中...',
+    desc: '這個區塊正在開發中，敬請期待。',
+  },
+};
+
+const c = content[lang as 'en' | 'zh'];
 ---
 
-<Base title="Shop — danielcanfly" description="Small business offerings.">
-  <Header />
+<Base title="Shop — danielcanfly" description="Small business offerings." lang={lang!}>
+  <Header currentLang={lang} />
 
   <main class="shop-main">
     <div class="container">
       <header class="shop-header animate-in">
-        <h1 class="shop-title">Shop</h1>
-        <p class="shop-subtitle muted">Coming soon.</p>
+        <h1 class="shop-title">{c.title}</h1>
+        <p class="shop-subtitle muted">{c.subtitle}</p>
       </header>
 
       <div class="coming-soon animate-in animate-delay-1">
@@ -22,10 +45,8 @@ import Footer from '../components/Footer.astro';
             <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
           </svg>
         </div>
-        <h2>Building...</h2>
-        <p class="muted">
-          This section is under development. Check back soon.
-        </p>
+        <h2>{c.heading}</h2>
+        <p class="muted">{c.desc}</p>
       </div>
     </div>
   </main>

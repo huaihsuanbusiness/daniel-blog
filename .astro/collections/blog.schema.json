@@ -8,16 +8,19 @@
     "description": {
       "type": "string"
     },
-    "category": {
-      "type": "string",
-      "enum": [
-        "web3",
-        "ai",
-        "travel",
-        "openclaw",
-        "business",
-        "tech"
-      ]
+    "categories": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "tags": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
     },
     "date": {
       "type": "string",
@@ -37,7 +40,6 @@
   "required": [
     "title",
     "description",
-    "category",
     "date"
   ]
 }

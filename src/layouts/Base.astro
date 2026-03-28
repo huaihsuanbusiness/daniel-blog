@@ -3,22 +3,21 @@ export interface Props {
   title: string;
   description?: string;
   ogImage?: string;
+  lang?: 'en' | 'zh';
 }
 
-const { title, description = 'Personal blog by Daniel.', ogImage } = Astro.props;
-const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const {
+  title,
+  description = 'Personal blog by Daniel.',
+  ogImage,
+  lang = 'en',
+} = Astro.props;
 
-// Detect language from URL: path segment first, then query param
-const currentPath = Astro.url.pathname;
-const searchParams = Astro.url.searchParams;
-const queryLang = searchParams.get('lang');
-const isZh = currentPath.includes('/zh/') || queryLang === 'zh';
-const isEn = currentPath.includes('/en/') || queryLang === 'en';
-const pageLang = isZh ? 'zh' : isEn ? 'en' : 'en';
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 ---
 
 <!doctype html>
-<html lang={pageLang} data-lang={pageLang}>
+<html lang={lang}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -46,17 +45,5 @@ const pageLang = isZh ? 'zh' : isEn ? 'en' : 'en';
   </head>
   <body>
     <slot />
-    <script is:inline>
-      (function() {
-        var params = new URLSearchParams(window.location.search);
-        var lang = params.get('lang');
-        var path = window.location.pathname;
-        if (path.includes('/zh/') || lang === 'zh') {
-          document.documentElement.setAttribute('data-lang', 'zh');
-        } else {
-          document.documentElement.setAttribute('data-lang', 'en');
-        }
-      })();
-    </script>
   </body>
 </html>

@@ -1,0 +1,210 @@
+---
+import Base from '../../layouts/Base.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+
+export function getStaticPaths() {
+  return [{ params: { lang: 'en' } }, { params: { lang: 'zh' } }];
+}
+
+const { lang } = Astro.params;
+
+const content = {
+  en: {
+    title: "Hello, I'm <span class=\"accent\">Daniel</span>.",
+    tagline: 'Entrepreneur · Researcher · Builder',
+    sections: [
+      {
+        heading: 'Background',
+        body: 'I explore the intersection of technology, business, and human behavior. My work spans Web3, artificial intelligence, and strategic consulting across multiple industries including travel, finance, and emerging tech.',
+      },
+      {
+        heading: 'Interests',
+        items: [
+          'Distributed systems & decentralized protocols',
+          'AI/ML applications and implications',
+          'Business strategy & market dynamics',
+          'Travel & cultural exchange',
+          'Open source & developer tools',
+        ],
+      },
+      {
+        heading: 'This Blog',
+        body: 'A space to share observations, analysis, and ideas. Articles appear in both English and Chinese — a deliberate choice to bridge different audiences and perspectives.',
+      },
+      {
+        heading: 'Connect',
+        socials: [
+          { label: 'GitHub', href: 'https://github.com/huaihsuanbusiness' },
+          { label: 'X / Twitter', href: 'https://x.com/danielcanfly' },
+          { label: 'LinkedIn', href: 'https://linkedin.com/in/danielcanfly' },
+        ],
+      },
+    ],
+  },
+  zh: {
+    title: "嗨，我是 <span class=\"accent\">Daniel</span>。",
+    tagline: '創業者 · 研究者 · 建構者',
+    sections: [
+      {
+        heading: '背景',
+        body: '我探索科技、商業與人類行為的交匯處。我的工作涵蓋 Web3、人工智慧，以及跨旅遊、金融和新興科技等多元產業的策略顧問。',
+      },
+      {
+        heading: '興趣',
+        items: [
+          '分散式系統與去中心化協議',
+          'AI/ML 應用與影響',
+          '商業策略與市場動態',
+          '旅遊與文化交流',
+          '開源與開發者工具',
+        ],
+      },
+      {
+        heading: '關於這個部落格',
+        body: '這是一個分享觀察、分析與想法的空間。文章同時有英文和中文版本——這是刻意為之的選擇，用來連結不同的讀者與觀點。',
+      },
+      {
+        heading: '聯絡',
+        socials: [
+          { label: 'GitHub', href: 'https://github.com/huaihsuanbusiness' },
+          { label: 'X / Twitter', href: 'https://x.com/danielcanfly' },
+          { label: 'LinkedIn', href: 'https://linkedin.com/in/danielcanfly' },
+        ],
+      },
+    ],
+  },
+};
+
+const c = content[lang as 'en' | 'zh'];
+---
+
+<Base title="About — danielcanfly" description="About Daniel." lang={lang!}>
+  <Header currentLang={lang} />
+
+  <main class="about-main">
+    <div class="container">
+      <div class="about-grid">
+        <header class="about-header animate-in">
+          <h1 class="about-title" set:html={c.title}></h1>
+          <p class="about-tagline">{c.tagline}</p>
+        </header>
+
+        <div class="about-content animate-in animate-delay-1">
+          {c.sections.map(section => (
+            <section class="about-section">
+              <h2>{section.heading}</h2>
+              {section.body && <p>{section.body}</p>}
+              {section.items && (
+                <ul class="interest-list">
+                  {section.items.map(item => <li>{item}</li>)}
+                </ul>
+              )}
+              {section.socials && (
+                <div class="social-links">
+                  {section.socials.map(s => (
+                    <a href={s.href} target="_blank" rel="noopener" class="social-link">
+                      {s.label}
+                    </a>
+                  ))}
+                </div>
+              )}
+            </section>
+          ))}
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</Base>
+
+<style>
+  .about-main {
+    padding: var(--space-10) 0;
+  }
+
+  .about-grid {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .about-header {
+    margin-bottom: var(--space-8);
+    padding-bottom: var(--space-6);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .about-title {
+    font-size: clamp(2rem, 5vw, 3rem);
+    margin-bottom: var(--space-2);
+  }
+
+  .about-tagline {
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    color: var(--color-muted);
+  }
+
+  .about-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+  }
+
+  .about-section h2 {
+    font-size: 1.25rem;
+    margin-bottom: var(--space-2);
+    color: var(--color-accent);
+  }
+
+  .about-section p {
+    color: var(--color-text);
+    line-height: 1.7;
+    max-width: 100%;
+  }
+
+  .interest-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+
+  .interest-list li {
+    padding-left: var(--space-3);
+    position: relative;
+    color: var(--color-text);
+    line-height: 1.6;
+  }
+
+  .interest-list li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--color-accent);
+    font-family: var(--font-mono);
+  }
+
+  .social-links {
+    display: flex;
+    gap: var(--space-2);
+    flex-wrap: wrap;
+  }
+
+  .social-link {
+    padding: 8px 16px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    font-family: var(--font-display);
+    font-size: 0.875rem;
+    color: var(--color-text);
+    transition: all var(--transition-fast);
+  }
+
+  .social-link:hover {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+  }
+</style>

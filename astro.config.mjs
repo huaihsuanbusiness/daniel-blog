@@ -6,6 +6,13 @@ export default defineConfig({
   build: {
     assets: '_assets',
   },
+  i18n: {
+    defaultLocale: 'en',
+    locales: ['en', 'zh'],
+    routing: {
+      prefixDefaultLocale: true,
+    },
+  },
   vite: {
     build: {
       cssMinify: true,

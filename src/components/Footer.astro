@@ -24,10 +24,7 @@ const year = new Date().getFullYear();
   <div class="container footer-inner">
     <div class="footer-left">
       <p class="footer-brand">danielcanfly.com</p>
-      <p class="footer-copy muted">
-        <span class="lang-en">&copy; {year} Daniel. All rights reserved.</span>
-        <span class="lang-zh">&copy; {year} Daniel. 版權所有。</span>
-      </p>
+      <p class="footer-copy muted">&copy; {year} Daniel. All rights reserved.</p>
     </div>
 
     <div class="footer-social">
@@ -70,11 +67,6 @@ const year = new Date().getFullYear();
   .footer-copy {
     font-size: 0.75rem;
   }
-
-  /* Bilingual text — show based on page language */
-  .lang-zh { display: none; }
-  [data-lang="zh"] .lang-en { display: none; }
-  [data-lang="zh"] .lang-zh { display: inline; }
 
   .footer-social {
     display: flex;

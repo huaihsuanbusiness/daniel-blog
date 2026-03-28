@@ -1,49 +1,54 @@
 ---
-const navLinks = [
-  { href: '/blog', label_en: 'Blog', label_zh: '部落格' },
-  { href: '/about', label_en: 'About', label_zh: '關於' },
-  { href: '/shop', label_en: 'Shop', label_zh: '商店' },
-];
+export interface Props {
+  currentLang?: 'en' | 'zh';
+}
+
+const { currentLang = 'en' } = Astro.props;
+
+const navLinks = {
+  en: [
+    { href: '/en/blog', label: 'Blog' },
+    { href: '/en/about', label: 'About' },
+    { href: '/en/shop', label: 'Shop' },
+  ],
+  zh: [
+    { href: '/zh/blog', label: '部落格' },
+    { href: '/zh/about', label: '關於' },
+    { href: '/zh/shop', label: '商店' },
+  ],
+};
 
 const currentPath = Astro.url.pathname;
-
-// Detect current language from URL
-const pathSegments = currentPath.split('/').filter(Boolean);
-const lastSegment = pathSegments[pathSegments.length - 1] || '';
-const isZhPage = lastSegment === 'zh' || currentPath.includes('/zh/');
-const isEnPage = lastSegment === 'en' || currentPath.includes('/en/');
-const currentLang = isZhPage ? 'zh' : isEnPage ? 'en' : 'en';
+const links = navLinks[currentLang];
+const otherLang = currentLang === 'zh' ? 'en' : 'zh';
 ---
 
 <header class="site-header" id="site-header">
   <div class="header-inner container">
-    <a href="/" class="logo">
+    <a href={`/${currentLang}/`} class="logo">
       <span class="logo-text">danielcanfly</span>
       <span class="logo-tld">.com</span>
     </a>
 
     <nav class="nav-desktop">
-      {navLinks.map(link => (
+      {links.map(link => (
         <a
           href={link.href}
           class:list={['nav-link', { active: currentPath.startsWith(link.href) }]}
-          data-lang={currentLang}
-          data-label-en={link.label_en}
-          data-label-zh={link.label_zh}
         >
-          {currentLang === 'zh' ? link.label_zh : link.label_en}
+          {link.label}
         </a>
       ))}
     </nav>
 
     <div class="header-actions">
-      <button class="lang-toggle" id="lang-toggle" aria-label="Toggle language">
+      <a href={`/${otherLang}/`} class="lang-toggle" aria-label="Toggle language">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <circle cx="12" cy="12" r="10"/>
           <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
         </svg>
-        <span id="lang-label">{currentLang === 'en' ? 'EN' : '中文'}</span>
-      </button>
+        <span>{otherLang === 'en' ? 'EN' : '中文'}</span>
+      </a>
 
       <button class="search-btn" aria-label="Search" id="search-trigger">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -64,10 +69,9 @@ const currentLang = isZhPage ? 'zh' : isEnPage ? 'en' : 'en';
 
   <!-- Mobile nav -->
   <nav class="nav-mobile" id="mobile-nav">
-    {navLinks.map(link => (
-      <a href={link.href} class="nav-link-mobile" data-lang={currentLang}
-        data-label-en={link.label_en} data-label-zh={link.label_zh}>
-        {currentLang === 'zh' ? link.label_zh : link.label_en}
+    {links.map(link => (
+      <a href={link.href} class="nav-link-mobile">
+        {link.label}
       </a>
     ))}
   </nav>
@@ -77,32 +81,6 @@ const currentLang = isZhPage ? 'zh' : isEnPage ? 'en' : 'en';
   const header = document.getElementById('site-header');
   const mobileNav = document.getElementById('mobile-nav');
   const mobileBtn = document.getElementById('mobile-menu-trigger');
-  const langToggle = document.getElementById('lang-toggle');
-  const langLabel = document.getElementById('lang-label');
-
-  // Detect language from URL: check path segment first, then query param
-  function detectLang() {
-    const pathname = window.location.pathname;
-    const searchParams = new URLSearchParams(window.location.search);
-    const queryLang = searchParams.get('lang');
-
-    // Path-based: /en/ or /zh/ in URL
-    if (pathname.includes('/zh/')) return 'zh';
-    if (pathname.includes('/en/')) return 'en';
-
-    // Query-param based: ?lang=zh or ?lang=en
-    if (queryLang === 'zh' || queryLang === 'en') return queryLang;
-
-    // Default
-    return 'en';
-  }
-
-  const pageLang = detectLang();
-
-  // Set label to show CURRENT language
-  if (langLabel) {
-    langLabel.textContent = pageLang === 'zh' ? '中文' : 'EN';
-  }
 
   // Scroll effect
   window.addEventListener('scroll', () => {
@@ -116,29 +94,6 @@ const currentLang = isZhPage ? 'zh' : isEnPage ? 'en' : 'en';
   // Mobile menu toggle
   mobileBtn?.addEventListener('click', () => {
     mobileNav?.classList.toggle('open');
-  });
-
-  // Language toggle
-  langToggle?.addEventListener('click', () => {
-    const nextLang = pageLang === 'zh' ? 'en' : 'zh';
-    const pathname = window.location.pathname;
-
-    if (pathname.includes('/zh/')) {
-      // On zh post page → switch to en version
-      window.location.href = pathname.replace('/zh/', '/en/');
-    } else if (pathname.includes('/en/')) {
-      // On en post page → switch to zh version
-      window.location.href = pathname.replace('/en/', '/zh/');
-    } else {
-      // Non-language URL (blog index, about, shop) → toggle query param
-      const url = new URL(window.location.href);
-      if (nextLang === 'en') {
-        url.searchParams.delete('lang');
-      } else {
-        url.searchParams.set('lang', 'zh');
-      }
-      window.location.href = url.toString();
-    }
   });
 </script>
 
@@ -235,6 +190,7 @@ const currentLang = isZhPage ? 'zh' : isEnPage ? 'en' : 'en';
     font-size: 0.75rem;
     cursor: pointer;
     transition: all var(--transition-fast);
+    text-decoration: none;
   }
 
   .lang-toggle:hover,

@@ -1,7 +1,8 @@
 ---
 title: "2026 年 AI 版圖：超越炒作"
 description: "清醒地看待 AI 目前的實際狀態——什麼是真實的、什麼是被誇大的，以及真正的機會在哪裡。"
-category: "ai"
+categories: ["ai"]
+tags: ["ai", "landscape", "2026", "analysis"]
 date: 2026-03-25
 featured: false
 ---

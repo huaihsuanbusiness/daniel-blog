@@ -161,10 +161,7 @@ pre code {
 .font-mono { font-family: var(--font-mono); }
 .font-chinese { font-family: var(--font-chinese); }
 
-/* --- Bilingual text support --- */
-.lang-zh { display: none; }
-[data-lang="zh"] .lang-en { display: none; }
-[data-lang="zh"] .lang-zh { display: inline; }
+/* --- Bilingual text support (removed — now uses true static i18n) --- */
 
 /* --- Animations --- */
 @keyframes fadeInUp {
