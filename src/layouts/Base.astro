@@ -46,5 +46,17 @@ const pageLang = isZh ? 'zh' : isEn ? 'en' : 'en';
   </head>
   <body>
     <slot />
+    <script is:inline>
+      (function() {
+        var params = new URLSearchParams(window.location.search);
+        var lang = params.get('lang');
+        var path = window.location.pathname;
+        if (path.includes('/zh/') || lang === 'zh') {
+          document.documentElement.setAttribute('data-lang', 'zh');
+        } else {
+          document.documentElement.setAttribute('data-lang', 'en');
+        }
+      })();
+    </script>
   </body>
 </html>
