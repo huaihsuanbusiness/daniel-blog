@@ -1,5 +1,5 @@
 ---
-import { CATEGORY_ORDER, CATEGORY_LABELS, type BlogLang } from '../utils/categories';
+import { CATEGORY_ORDER, CATEGORY_LABELS, CATEGORY_ICONS, type BlogLang } from '../utils/categories';
 
 export interface Props {
   categories?: string[];
@@ -11,27 +11,33 @@ const category = Astro.url.searchParams.get('category');
 const basePath = `/${lang}/blog`;
 
 const filters = [
-  { id: 'all', label: lang === 'zh' ? '全部' : 'All', href: basePath },
+  { id: 'all', label: lang === 'zh' ? '全部' : 'All', href: basePath, icon: '◌' },
   ...CATEGORY_ORDER.map(cat => ({
     id: cat,
     label: CATEGORY_LABELS[cat][lang],
     href: `${basePath}?category=${cat}`,
+    icon: CATEGORY_ICONS[cat],
   })),
 ];
 ---
 
 <div class="category-filter">
   <div class="filter-scroll">
-    {filters.map(filter => (
-      <a
-        href={filter.href}
-        class:list={['tag', `tag-${filter.id}`, { active: (filter.id === 'all' && !category) || filter.id === category }]}
-        data-filter-category={filter.id}
-        aria-current={(filter.id === 'all' && !category) || filter.id === category ? 'page' : undefined}
-      >
-        {filter.label}
-      </a>
-    ))}
+    {filters.map(filter => {
+      const isActive = (filter.id === 'all' && !category) || filter.id === category;
+      return (
+        <a
+          href={filter.href}
+          class:list={['tag', `tag-${filter.id}`, { active: isActive }]}
+          data-filter-category={filter.id}
+          aria-current={isActive ? 'page' : undefined}
+        >
+          <span class="tag-icon" aria-hidden="true">{filter.icon}</span>
+          <span class="tag-label">{filter.label}</span>
+          <span class="tag-underline" aria-hidden="true"></span>
+        </a>
+      );
+    })}
   </div>
 </div>
 
@@ -54,8 +60,85 @@ const filters = [
   }
 
   .tag {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
     flex-shrink: 0;
     cursor: pointer;
     font-family: var(--font-mono);
+    padding: 8px 14px;
+    border-radius: 999px;
+    overflow: hidden;
+    transform: translateY(0);
+    transition:
+      transform var(--transition-fast),
+      box-shadow var(--transition-fast),
+      border-color var(--transition-fast),
+      background-color var(--transition-fast),
+      color var(--transition-fast);
+  }
+
+  .tag:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--tag-color, var(--color-accent)) 18%, transparent), 0 8px 20px color-mix(in srgb, var(--tag-color, var(--color-accent)) 10%, transparent);
+  }
+
+  .tag-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    color: var(--tag-color, var(--color-accent));
+    transform: translateY(0) scale(1);
+    transition: transform var(--transition-fast), color var(--transition-fast), text-shadow var(--transition-fast);
+  }
+
+  .tag-label {
+    position: relative;
+    z-index: 1;
+  }
+
+  .tag-underline {
+    position: absolute;
+    left: 14px;
+    right: 14px;
+    bottom: 6px;
+    height: 2px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, transparent, var(--tag-color, var(--color-accent)), transparent);
+    opacity: 0;
+    transform: scaleX(0.4);
+    transition: opacity var(--transition-fast), transform var(--transition-fast);
+  }
+
+  .tag.active,
+  .tag[aria-current='page'] {
+    box-shadow:
+      0 0 0 1px color-mix(in srgb, var(--tag-color, var(--color-accent)) 28%, transparent),
+      0 0 20px color-mix(in srgb, var(--tag-color, var(--color-accent)) 18%, transparent),
+      inset 0 0 18px color-mix(in srgb, var(--tag-color, var(--color-accent)) 10%, transparent);
+  }
+
+  .tag.active .tag-icon,
+  .tag[aria-current='page'] .tag-icon {
+    transform: translateY(-1px) scale(1.08);
+    text-shadow: 0 0 12px color-mix(in srgb, var(--tag-color, var(--color-accent)) 40%, transparent);
+    animation: tagIconPulse 1.8s ease-in-out infinite;
+  }
+
+  .tag.active .tag-underline,
+  .tag[aria-current='page'] .tag-underline {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+
+  @keyframes tagIconPulse {
+    0%, 100% {
+      transform: translateY(-1px) scale(1.08);
+    }
+    50% {
+      transform: translateY(-3px) scale(1.14);
+    }
   }
 </style>
