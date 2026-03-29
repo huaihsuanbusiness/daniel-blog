@@ -7,7 +7,7 @@ export interface Props {
 }
 
 const { lang } = Astro.props;
-const { category } = Astro.url.searchParams;
+const category = Astro.url.searchParams.get('category');
 const basePath = `/${lang}/blog`;
 
 const filters = [
