@@ -1,11 +1,15 @@
 import { defineConfig } from 'astro/config';
 
+import cloudflare from '@astrojs/cloudflare';
+
 export default defineConfig({
   output: 'static',
   site: 'https://danielcanfly.com',
+
   build: {
     assets: '_assets',
   },
+
   i18n: {
     defaultLocale: 'en',
     locales: ['en', 'zh'],
@@ -13,9 +17,12 @@ export default defineConfig({
       prefixDefaultLocale: true,
     },
   },
+
   vite: {
     build: {
       cssMinify: true,
     },
   },
+
+  adapter: cloudflare(),
 });
