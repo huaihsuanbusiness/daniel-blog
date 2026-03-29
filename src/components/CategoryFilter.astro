@@ -41,6 +41,26 @@ const filters = [
   </div>
 </div>
 
+<script>
+  const syncCategoryTabs = () => {
+    const activeCategory = new URL(window.location.href).searchParams.get('category') || 'all';
+    const tabs = document.querySelectorAll('[data-filter-category]');
+
+    tabs.forEach((tab) => {
+      const category = tab.getAttribute('data-filter-category');
+      const isActive = category === activeCategory;
+      tab.classList.toggle('active', isActive);
+      if (isActive) {
+        tab.setAttribute('aria-current', 'page');
+      } else {
+        tab.removeAttribute('aria-current');
+      }
+    });
+  };
+
+  syncCategoryTabs();
+</script>
+
 <style>
   .category-filter {
     margin-bottom: var(--space-6);
