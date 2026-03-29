@@ -243,10 +243,11 @@ pre code {
   border-color: var(--color-accent);
 }
 
+.tag-all { --tag-color: #94a3b8; }
 .tag-web3 { --tag-color: #8b5cf6; }
 .tag-ai { --tag-color: #06b6d4; }
 .tag-travel { --tag-color: #10b981; }
-.tag-openclaw { --tag-color: #f59e0b; }
+.tag-openclaw { --tag-color: #f97316; }
 .tag-business { --tag-color: #ec4899; }
 .tag-pm { --tag-color: #6366f1; }
 .tag-startup { --tag-color: #ef4444; }
