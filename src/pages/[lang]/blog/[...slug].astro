@@ -4,15 +4,15 @@ import Header from '../../../components/Header.astro';
 import Footer from '../../../components/Footer.astro';
 import { getCollection, render } from 'astro:content';
 import { calculateReadTime } from '../../../utils/readTime';
+import { getCategoryLabel, normalizeCategory } from '../../../utils/categories';
 
 export async function getStaticPaths() {
   const posts = await getCollection('blog');
 
   return posts.map(post => {
-    // post.id is e.g. "first-post/en" or "ai-landscape-2026/zh"
     const lastSlash = post.id.lastIndexOf('/');
-    const slug = post.id.substring(0, lastSlash); // "first-post"
-    const lang = post.id.substring(lastSlash + 1); // "en"
+    const slug = post.id.substring(0, lastSlash);
+    const lang = post.id.substring(lastSlash + 1);
 
     return {
       params: { lang, slug },
@@ -25,13 +25,11 @@ const { lang, slug } = Astro.params;
 const { post } = Astro.props;
 const { Content } = await render(post);
 
-// Find the same slug in the other language
 const allPosts = await getCollection('blog');
 const otherLang = lang === 'zh' ? 'en' : 'zh';
 const otherPost = allPosts.find(p => p.id === `${slug}/${otherLang}`);
 const otherVersionHref = otherPost ? `/${otherLang}/blog/${otherPost.id.split('/')[0]}` : null;
 
-// Read time
 const readTime = calculateReadTime(post.body);
 
 const formattedDate = new Intl.DateTimeFormat(lang === 'zh' ? 'zh-TW' : 'en-US', {
@@ -40,16 +38,8 @@ const formattedDate = new Intl.DateTimeFormat(lang === 'zh' ? 'zh-TW' : 'en-US',
   day: 'numeric',
 }).format(post.data.date);
 
-const categoryLabels: Record<string, Record<string, string>> = {
-  web3: { en: 'Web3', zh: 'Web3' },
-  ai: { en: 'AI', zh: '人工智慧' },
-  travel: { en: 'Travel', zh: '旅遊' },
-  openclaw: { en: 'OpenClaw', zh: 'OpenClaw' },
-  business: { en: 'Business', zh: '商業' },
-  tech: { en: 'Tech', zh: '技術' },
-};
-
 const otherLangLabel = lang === 'zh' ? 'English' : '中文';
+const primaryCategory = normalizeCategory(post.data.categories[0] || '') ?? null;
 ---
 
 <Base title={`${post.data.title} — danielcanfly`} description={post.data.description} lang={lang!}>
@@ -66,8 +56,8 @@ const otherLangLabel = lang === 'zh' ? 'English' : '中文';
         </a>
 
         <div class="post-meta">
-          <span class={`tag tag-${post.data.categories[0]}`}>
-            {categoryLabels[post.data.categories[0]]?.[lang as 'en' | 'zh'] || post.data.categories[0]}
+          <span class:list={['tag', primaryCategory ? `tag-${primaryCategory}` : undefined]}>
+            {getCategoryLabel(post.data.categories[0] || '', lang as 'en' | 'zh')}
           </span>
           <span class="post-date muted">{formattedDate}</span>
           <span class="post-readtime muted">{readTime} min read</span>
@@ -90,11 +80,14 @@ const otherLangLabel = lang === 'zh' ? 'English' : '中文';
 
       <footer class="post-footer animate-in animate-delay-2">
         <div class="post-tags">
-          {post.data.categories.map(cat => (
-            <span class={`tag tag-${cat}`}>
-              {categoryLabels[cat]?.[lang as 'en' | 'zh'] || cat}
-            </span>
-          ))}
+          {post.data.categories.map(cat => {
+            const normalized = normalizeCategory(cat);
+            return (
+              <span class:list={['tag', normalized ? `tag-${normalized}` : undefined]}>
+                {getCategoryLabel(cat, lang as 'en' | 'zh')}
+              </span>
+            );
+          })}
         </div>
         <div class="post-share">
           <a

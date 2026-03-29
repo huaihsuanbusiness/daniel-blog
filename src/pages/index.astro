@@ -4,6 +4,7 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import PostCard from '../components/PostCard.astro';
 import { getCollection } from 'astro:content';
+import { CATEGORY_ICONS, CATEGORY_LABELS, CATEGORY_ORDER, normalizeCategory } from '../utils/categories';
 
 const lang = 'en';
 
@@ -25,6 +26,12 @@ const heroContent = {
   comingSoon: 'Coming Soon',
   comingSoonDesc: 'Content is being prepared. Check back soon.',
 };
+
+const homepageCategories = CATEGORY_ORDER.map(id => ({
+  id,
+  icon: CATEGORY_ICONS[id],
+  label: CATEGORY_LABELS[id][lang],
+}));
 ---
 
 <Base title="danielcanfly — Ideas Worth Spreading" lang={lang}>
@@ -79,7 +86,7 @@ const heroContent = {
             {posts.slice(0, 6).map((post, i) => (
               <div
                 class:list={['animate-in', { 'animate-delay-1': i % 3 === 1, 'animate-delay-2': i % 3 === 2 }]}
-                data-category={post.data.categories[0]}
+                data-category={post.data.categories.map(cat => normalizeCategory(cat)).filter(Boolean).join(' ')}
               >
                 <PostCard
                   slug={`${lang}/${post.slug}`}
@@ -99,16 +106,11 @@ const heroContent = {
 
     <section class="categories-section">
       <div class="container">
-        <div class="categories-grid">
-          {[
-            { id: 'web3', icon: '◇' },
-            { id: 'ai', icon: '◈' },
-            { id: 'business', icon: '◆' },
-            { id: 'openclaw', icon: '⬡' },
-          ].map(cat => (
+        <div class="categories-grid categories-grid-7">
+          {homepageCategories.map(cat => (
             <a href={`/${lang}/blog?category=${cat.id}`} class={`category-card cat-${cat.id}`}>
               <span class="cat-icon">{cat.icon}</span>
-              <span class="cat-label">{cat.id}</span>
+              <span class="cat-label">{cat.label}</span>
             </a>
           ))}
         </div>
@@ -259,8 +261,11 @@ const heroContent = {
 
   .categories-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
     gap: var(--space-3);
+  }
+
+  .categories-grid-7 {
+    grid-template-columns: repeat(7, minmax(0, 1fr));
   }
 
   .category-card {
@@ -275,6 +280,7 @@ const heroContent = {
     border-radius: 12px;
     text-decoration: none;
     transition: all var(--transition-fast);
+    min-height: 140px;
   }
 
   .category-card:hover {
@@ -292,11 +298,13 @@ const heroContent = {
     font-size: 0.875rem;
     font-weight: 500;
     color: var(--color-text);
+    text-align: center;
+    line-height: 1.35;
   }
 
-  @media (max-width: 1024px) {
-    .categories-grid {
-      grid-template-columns: repeat(2, 1fr);
+  @media (max-width: 1200px) {
+    .categories-grid-7 {
+      grid-template-columns: repeat(4, 1fr);
     }
   }
 
@@ -313,7 +321,7 @@ const heroContent = {
       grid-template-columns: 1fr;
     }
 
-    .categories-grid {
+    .categories-grid-7 {
       grid-template-columns: repeat(2, 1fr);
     }
   }

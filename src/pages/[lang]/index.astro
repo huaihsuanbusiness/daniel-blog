@@ -4,6 +4,7 @@ import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
 import PostCard from '../../components/PostCard.astro';
 import { getCollection } from 'astro:content';
+import { CATEGORY_ICONS, CATEGORY_LABELS, CATEGORY_ORDER, normalizeCategory } from '../../utils/categories';
 
 export function getStaticPaths() {
   return [{ params: { lang: 'en' } }, { params: { lang: 'zh' } }];
@@ -42,13 +43,17 @@ const heroContent = {
 };
 
 const content = heroContent[lang as 'en' | 'zh'];
+const homepageCategories = CATEGORY_ORDER.map(id => ({
+  id,
+  icon: CATEGORY_ICONS[id],
+  label: CATEGORY_LABELS[id][lang as 'en' | 'zh'],
+}));
 ---
 
 <Base title="danielcanfly — Ideas Worth Spreading" lang={lang!}>
   <Header currentLang={lang} />
 
   <main>
-    <!-- Hero -->
     <section class="hero">
       <div class="container hero-inner">
         <div class="hero-content">
@@ -68,7 +73,6 @@ const content = heroContent[lang as 'en' | 'zh'];
       </div>
     </section>
 
-    <!-- Latest Posts -->
     <section class="posts-section">
       <div class="container">
         <div class="section-header animate-in">
@@ -98,7 +102,7 @@ const content = heroContent[lang as 'en' | 'zh'];
             {posts.slice(0, 6).map((post, i) => (
               <div
                 class:list={['animate-in', { 'animate-delay-1': i % 3 === 1, 'animate-delay-2': i % 3 === 2 }]}
-                data-category={post.data.categories[0]}
+                data-category={post.data.categories.map(cat => normalizeCategory(cat)).filter(Boolean).join(' ')}
               >
                 <PostCard
                   slug={`${lang}/${post.slug}`}
@@ -116,19 +120,13 @@ const content = heroContent[lang as 'en' | 'zh'];
       </div>
     </section>
 
-    <!-- Categories Preview -->
     <section class="categories-section">
       <div class="container">
-        <div class="categories-grid">
-          {[
-            { id: 'web3', icon: '◇' },
-            { id: 'ai', icon: '◈' },
-            { id: 'business', icon: '◆' },
-            { id: 'openclaw', icon: '⬡' },
-          ].map(cat => (
+        <div class="categories-grid categories-grid-7">
+          {homepageCategories.map(cat => (
             <a href={`/${lang}/blog?category=${cat.id}`} class={`category-card cat-${cat.id}`}>
               <span class="cat-icon">{cat.icon}</span>
-              <span class="cat-label">{cat.id}</span>
+              <span class="cat-label">{cat.label}</span>
             </a>
           ))}
         </div>
@@ -140,7 +138,6 @@ const content = heroContent[lang as 'en' | 'zh'];
 </Base>
 
 <style>
-  /* Hero */
   .hero {
     min-height: calc(100vh - 80px);
     display: flex;
@@ -220,7 +217,6 @@ const content = heroContent[lang as 'en' | 'zh'];
     50% { transform: scale(1.05); opacity: 0.7; }
   }
 
-  /* Posts Section */
   .posts-section {
     padding: var(--space-10) 0;
   }
@@ -260,7 +256,6 @@ const content = heroContent[lang as 'en' | 'zh'];
     gap: var(--space-4);
   }
 
-  /* Empty State */
   .empty-state {
     text-align: center;
     padding: var(--space-10) 0;
@@ -276,15 +271,17 @@ const content = heroContent[lang as 'en' | 'zh'];
     margin-bottom: var(--space-1);
   }
 
-  /* Categories */
   .categories-section {
     padding: var(--space-6) 0 var(--space-10);
   }
 
   .categories-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
     gap: var(--space-3);
+  }
+
+  .categories-grid-7 {
+    grid-template-columns: repeat(7, minmax(0, 1fr));
   }
 
   .category-card {
@@ -299,6 +296,7 @@ const content = heroContent[lang as 'en' | 'zh'];
     border-radius: 12px;
     text-decoration: none;
     transition: all var(--transition-fast);
+    min-height: 140px;
   }
 
   .category-card:hover {
@@ -316,11 +314,13 @@ const content = heroContent[lang as 'en' | 'zh'];
     font-size: 0.875rem;
     font-weight: 500;
     color: var(--color-text);
+    text-align: center;
+    line-height: 1.35;
   }
 
-  @media (max-width: 1024px) {
-    .categories-grid {
-      grid-template-columns: repeat(2, 1fr);
+  @media (max-width: 1200px) {
+    .categories-grid-7 {
+      grid-template-columns: repeat(4, 1fr);
     }
   }
 
@@ -337,7 +337,7 @@ const content = heroContent[lang as 'en' | 'zh'];
       grid-template-columns: 1fr;
     }
 
-    .categories-grid {
+    .categories-grid-7 {
       grid-template-columns: repeat(2, 1fr);
     }
   }

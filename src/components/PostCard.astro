@@ -1,31 +1,25 @@
 ---
+import { getCategoryLabel, normalizeCategory, type BlogLang } from '../utils/categories';
+
 export interface Props {
   slug: string;
   title: string;
   description: string;
   categories: string[];
   date: Date;
-  lang: 'en' | 'zh';
+  lang: BlogLang;
   featured?: boolean;
 }
 
 const { slug, title, description, categories, date, lang, featured = false } = Astro.props;
 
-const formattedDate = new Intl.DateTimeFormat('en-US', {
+const formattedDate = new Intl.DateTimeFormat(lang === 'zh' ? 'zh-TW' : 'en-US', {
   year: 'numeric',
   month: 'short',
   day: 'numeric',
 }).format(date);
 
-const categoryLabels: Record<string, string> = {
-  web3: 'Web3',
-  ai: 'AI',
-  travel: 'Travel',
-  openclaw: 'OpenClaw',
-  business: 'Business',
-  tech: 'Tech',
-};
-
+const primaryCategory = normalizeCategory(categories[0] || '') ?? null;
 const langLabel = lang === 'zh' ? '中文' : 'EN';
 ---
 
@@ -33,8 +27,8 @@ const langLabel = lang === 'zh' ? '中文' : 'EN';
   <a href={`/blog/${slug}`} class="card-link">
     <div class="card-inner">
       <div class="card-meta">
-        <span class={`tag tag-${categories[0]}`}>
-          {categoryLabels[categories[0]] || categories[0]}
+        <span class:list={['tag', primaryCategory ? `tag-${primaryCategory}` : undefined]}>
+          {getCategoryLabel(categories[0] || '', lang)}
         </span>
         <span class="card-date muted">{formattedDate}</span>
       </div>
@@ -148,7 +142,6 @@ const langLabel = lang === 'zh' ? '中文' : 'EN';
     text-transform: uppercase;
   }
 
-  /* Featured variant */
   .post-card.featured {
     grid-column: span 2;
   }

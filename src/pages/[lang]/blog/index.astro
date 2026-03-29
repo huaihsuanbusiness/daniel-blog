@@ -5,13 +5,14 @@ import Footer from '../../../components/Footer.astro';
 import PostCard from '../../../components/PostCard.astro';
 import CategoryFilter from '../../../components/CategoryFilter.astro';
 import { getCollection } from 'astro:content';
+import { getOrderedCategories, normalizeCategory } from '../../../utils/categories';
 
 export function getStaticPaths() {
   return [{ params: { lang: 'en' } }, { params: { lang: 'zh' } }];
 }
 
 const { lang } = Astro.params;
-const { category } = Astro.url.searchParams;
+const selectedCategory = Astro.url.searchParams.get('category');
 
 const allPosts = await getCollection('blog');
 let posts = allPosts
@@ -22,25 +23,26 @@ let posts = allPosts
     return { ...post, slug };
   });
 
-if (category) {
-  posts = posts.filter(post => post.data.categories.includes(category));
+if (selectedCategory) {
+  posts = posts.filter(post =>
+    post.data.categories.some(cat => normalizeCategory(cat) === selectedCategory)
+  );
 }
 
 const labels = {
-  en: { title: 'Blog', count: (n: number) => `${n} ${n === 1 ? 'article' : 'articles'} on Web3, AI, business, and more.` },
-  zh: { title: '部落格', count: (n: number) => `共 ${n} 篇關於 Web3、AI、商業等的文章。` },
+  en: { title: 'Blog', count: (n: number) => `${n} ${n === 1 ? 'article' : 'articles'} across AI, product, business, Web3, travel, and more.` },
+  zh: { title: '部落格', count: (n: number) => `共 ${n} 篇文章，涵蓋 AI、產品、創業、商業、Web3 與旅行。` },
 };
 
 const label = labels[lang as 'en' | 'zh'];
-
-// Collect all unique categories from posts
-const allCategories = [...new Set(allPosts
-  .filter(p => p.id.startsWith(`${lang}/`))
-  .flatMap(p => p.data.categories)
-)];
+const allCategories = getOrderedCategories(
+  allPosts
+    .filter(p => p.id.startsWith(`${lang}/`))
+    .flatMap(p => p.data.categories)
+);
 ---
 
-<Base title="Blog — danielcanfly" description="Thoughts on Web3, AI, business, and technology." lang={lang!}>
+<Base title="Blog — danielcanfly" description="Thoughts on AI, product, entrepreneurship, business, Web3, and travel." lang={lang!}>
   <Header currentLang={lang} />
 
   <main class="blog-main">
@@ -50,13 +52,13 @@ const allCategories = [...new Set(allPosts
         <p class="blog-subtitle muted">{label.count(posts.length)}</p>
       </header>
 
-      <CategoryFilter categories={allCategories} />
+      <CategoryFilter categories={allCategories} lang={lang as 'en' | 'zh'} />
 
       <div class="posts-grid" id="posts-grid">
         {posts.map((post, i) => (
           <div
             class:list={['animate-in', { 'animate-delay-1': i % 3 === 1, 'animate-delay-2': i % 3 === 2 }]}
-            data-category={post.data.categories[0]}
+            data-category={post.data.categories.map(cat => normalizeCategory(cat)).filter(Boolean).join(' ')}
           >
             <PostCard
               slug={`${lang}/${post.slug}`}

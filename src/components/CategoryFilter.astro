@@ -1,22 +1,28 @@
 ---
+import { CATEGORY_ORDER, CATEGORY_LABELS, type BlogLang } from '../utils/categories';
+
 export interface Props {
-  categories: string[];
+  categories?: string[];
+  lang: BlogLang;
 }
 
-const { categories } = Astro.props;
+const { lang } = Astro.props;
 const { category } = Astro.url.searchParams;
 
-const allCategories = ['all', ...categories];
+const filters = [
+  { id: 'all', label: lang === 'zh' ? '全部' : 'All' },
+  ...CATEGORY_ORDER.map(cat => ({ id: cat, label: CATEGORY_LABELS[cat][lang] })),
+];
 ---
 
 <div class="category-filter">
   <div class="filter-scroll">
-    {allCategories.map(cat => (
+    {filters.map(filter => (
       <button
-        class:list={['tag', `tag-${cat}`, { active: (cat === 'all' && !category) || cat === category }]}
-        data-category={cat}
+        class:list={['tag', `tag-${filter.id}`, { active: (filter.id === 'all' && !category) || filter.id === category }]}
+        data-category={filter.id}
       >
-        {cat === 'all' ? 'All' : cat}
+        {filter.label}
       </button>
     ))}
   </div>
@@ -30,23 +36,20 @@ const allCategories = ['all', ...categories];
       const category = btn.getAttribute('data-category');
       const cards = document.querySelectorAll('[data-category]');
 
-      // Update active button
       buttons.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
 
-      // Update URL
       const url = new URL(window.location.href);
       if (category === 'all') {
         url.searchParams.delete('category');
       } else {
-        url.searchParams.set('category', category);
+        url.searchParams.set('category', category!);
       }
       window.history.replaceState(null, '', url.toString());
 
-      // Filter cards
       cards.forEach(card => {
-        const cardCategory = card.getAttribute('data-category');
-        if (category === 'all' || cardCategory === category) {
+        const cardCategories = (card.getAttribute('data-category') || '').split(' ').filter(Boolean);
+        if (category === 'all' || cardCategories.includes(category || '')) {
           (card as HTMLElement).style.display = '';
         } else {
           (card as HTMLElement).style.display = 'none';
