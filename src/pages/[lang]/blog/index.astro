@@ -33,10 +33,11 @@ const totalPosts = languagePosts.length;
 const labels = {
   en: {
     title: 'Blog',
+    total: 'total',
     summary: (visible: number, total: number, categoryLabel?: string) =>
       categoryLabel
         ? `${visible} ${visible === 1 ? 'article' : 'articles'} in ${categoryLabel}. ${total} total on the site.`
-        : `${visible} ${visible === 1 ? 'article' : 'articles'} across AI, product, entrepreneurship, business, Web3, and travel.`,
+        : `${visible} ${visible === 1 ? 'article' : 'articles'} across AI, product, startup, business, Web3, and travel.`,
     emptyTitle: 'Nothing here yet',
     emptyDesc: (categoryLabel?: string) =>
       categoryLabel
@@ -46,6 +47,7 @@ const labels = {
   },
   zh: {
     title: '部落格',
+    total: '全部',
     summary: (visible: number, total: number, categoryLabel?: string) =>
       categoryLabel
         ? `${categoryLabel} 目前有 ${visible} 篇文章；全站共 ${total} 篇。`
@@ -66,7 +68,7 @@ const selectedCategoryLabel = selectedCategory && selectedCategory in CATEGORY_L
   : undefined;
 ---
 
-<Base title="Blog — danielcanfly" description="Thoughts on AI, product, entrepreneurship, business, Web3, and travel." lang={lang!}>
+<Base title="Blog — danielcanfly" description="Thoughts on AI, product, startup, business, Web3, and travel." lang={lang!}>
   <Header currentLang={lang} />
 
   <main class="blog-main">
@@ -75,7 +77,7 @@ const selectedCategoryLabel = selectedCategory && selectedCategory in CATEGORY_L
         <div class="blog-header-top">
           <h1 class="blog-title">{label.title}</h1>
           <div class="blog-stats">
-            <span class="stat-pill">{totalPosts} total</span>
+            <span class="stat-pill">{totalPosts} {label.total}</span>
             {selectedCategoryLabel && <span class="stat-pill stat-pill-active">{selectedCategoryLabel}</span>}
           </div>
         </div>
@@ -96,6 +98,7 @@ const selectedCategoryLabel = selectedCategory && selectedCategory in CATEGORY_L
           {posts.map((post, i) => (
             <div
               class:list={['animate-in', { 'animate-delay-1': i % 3 === 1, 'animate-delay-2': i % 3 === 2 }]}
+              data-post-card
               data-category={post.data.categories.map(cat => normalizeCategory(cat)).filter(Boolean).join(' ')}
             >
               <PostCard

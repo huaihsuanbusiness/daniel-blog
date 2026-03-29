@@ -64,7 +64,6 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* --- Grain Texture Overlay --- */
 body::before {
   content: '';
   position: fixed;
@@ -75,7 +74,6 @@ body::before {
   opacity: 0.4;
 }
 
-/* --- Scrollbar --- */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -91,7 +89,6 @@ body::before {
   background: var(--color-muted);
 }
 
-/* --- Typography --- */
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-display);
   font-weight: 600;
@@ -142,7 +139,6 @@ pre code {
   padding: 0;
 }
 
-/* --- Utility Classes --- */
 .container {
   max-width: var(--max-width);
   margin: 0 auto;
@@ -161,9 +157,6 @@ pre code {
 .font-mono { font-family: var(--font-mono); }
 .font-chinese { font-family: var(--font-chinese); }
 
-/* --- Bilingual text support (removed — now uses true static i18n) --- */
-
-/* --- Animations --- */
 @keyframes fadeInUp {
   from {
     opacity: 0;
@@ -186,13 +179,11 @@ pre code {
 .animate-delay-4 { animation-delay: 320ms; }
 .animate-delay-5 { animation-delay: 400ms; }
 
-/* --- Focus States --- */
 :focus-visible {
   outline: 2px solid var(--color-accent);
   outline-offset: 2px;
 }
 
-/* --- Buttons --- */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -229,7 +220,6 @@ pre code {
   color: var(--color-accent);
 }
 
-/* --- Tags / Categories --- */
 .tag {
   display: inline-block;
   padding: 4px 10px;
@@ -246,7 +236,8 @@ pre code {
 }
 
 .tag:hover,
-.tag.active {
+.tag.active,
+.tag[aria-current='page'] {
   background: var(--color-accent);
   color: var(--color-bg);
   border-color: var(--color-accent);
@@ -258,4 +249,4 @@ pre code {
 .tag-openclaw { --tag-color: #f59e0b; }
 .tag-business { --tag-color: #ec4899; }
 .tag-pm { --tag-color: #6366f1; }
-.tag-entrepreneurship { --tag-color: #ef4444; }
+.tag-startup { --tag-color: #ef4444; }

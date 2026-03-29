@@ -8,56 +8,32 @@ export interface Props {
 
 const { lang } = Astro.props;
 const { category } = Astro.url.searchParams;
+const basePath = `/${lang}/blog`;
 
 const filters = [
-  { id: 'all', label: lang === 'zh' ? '全部' : 'All' },
-  ...CATEGORY_ORDER.map(cat => ({ id: cat, label: CATEGORY_LABELS[cat][lang] })),
+  { id: 'all', label: lang === 'zh' ? '全部' : 'All', href: basePath },
+  ...CATEGORY_ORDER.map(cat => ({
+    id: cat,
+    label: CATEGORY_LABELS[cat][lang],
+    href: `${basePath}?category=${cat}`,
+  })),
 ];
 ---
 
 <div class="category-filter">
   <div class="filter-scroll">
     {filters.map(filter => (
-      <button
+      <a
+        href={filter.href}
         class:list={['tag', `tag-${filter.id}`, { active: (filter.id === 'all' && !category) || filter.id === category }]}
-        data-category={filter.id}
+        data-filter-category={filter.id}
+        aria-current={(filter.id === 'all' && !category) || filter.id === category ? 'page' : undefined}
       >
         {filter.label}
-      </button>
+      </a>
     ))}
   </div>
 </div>
-
-<script>
-  const buttons = document.querySelectorAll('.tag[data-category]');
-
-  buttons.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const category = btn.getAttribute('data-category');
-      const cards = document.querySelectorAll('[data-category]');
-
-      buttons.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-
-      const url = new URL(window.location.href);
-      if (category === 'all') {
-        url.searchParams.delete('category');
-      } else {
-        url.searchParams.set('category', category!);
-      }
-      window.history.replaceState(null, '', url.toString());
-
-      cards.forEach(card => {
-        const cardCategories = (card.getAttribute('data-category') || '').split(' ').filter(Boolean);
-        if (category === 'all' || cardCategories.includes(category || '')) {
-          (card as HTMLElement).style.display = '';
-        } else {
-          (card as HTMLElement).style.display = 'none';
-        }
-      });
-    });
-  });
-</script>
 
 <style>
   .category-filter {
@@ -80,7 +56,6 @@ const filters = [
   .tag {
     flex-shrink: 0;
     cursor: pointer;
-    border: none;
     font-family: var(--font-mono);
   }
 </style>
