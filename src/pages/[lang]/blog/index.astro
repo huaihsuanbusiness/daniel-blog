@@ -5,7 +5,7 @@ import Footer from '../../../components/Footer.astro';
 import PostCard from '../../../components/PostCard.astro';
 import CategoryFilter from '../../../components/CategoryFilter.astro';
 import { getCollection } from 'astro:content';
-import { getOrderedCategories, normalizeCategory } from '../../../utils/categories';
+import { CATEGORY_LABELS, getOrderedCategories, normalizeCategory } from '../../../utils/categories';
 
 export function getStaticPaths() {
   return [{ params: { lang: 'en' } }, { params: { lang: 'zh' } }];
@@ -15,7 +15,7 @@ const { lang } = Astro.params;
 const selectedCategory = Astro.url.searchParams.get('category');
 
 const allPosts = await getCollection('blog');
-let posts = allPosts
+const languagePosts = allPosts
   .filter(post => post.id.startsWith(`${lang}/`))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
   .map(post => {
@@ -23,23 +23,47 @@ let posts = allPosts
     return { ...post, slug };
   });
 
-if (selectedCategory) {
-  posts = posts.filter(post =>
-    post.data.categories.some(cat => normalizeCategory(cat) === selectedCategory)
-  );
-}
+const posts = selectedCategory
+  ? languagePosts.filter(post =>
+      post.data.categories.some(cat => normalizeCategory(cat) === selectedCategory)
+    )
+  : languagePosts;
 
+const totalPosts = languagePosts.length;
 const labels = {
-  en: { title: 'Blog', count: (n: number) => `${n} ${n === 1 ? 'article' : 'articles'} across AI, product, business, Web3, travel, and more.` },
-  zh: { title: '部落格', count: (n: number) => `共 ${n} 篇文章，涵蓋 AI、產品、創業、商業、Web3 與旅行。` },
+  en: {
+    title: 'Blog',
+    summary: (visible: number, total: number, categoryLabel?: string) =>
+      categoryLabel
+        ? `${visible} ${visible === 1 ? 'article' : 'articles'} in ${categoryLabel}. ${total} total on the site.`
+        : `${visible} ${visible === 1 ? 'article' : 'articles'} across AI, product, entrepreneurship, business, Web3, and travel.`,
+    emptyTitle: 'Nothing here yet',
+    emptyDesc: (categoryLabel?: string) =>
+      categoryLabel
+        ? `No published articles in ${categoryLabel} yet. Try another category or come back soon.`
+        : 'No published articles yet. Check back soon.',
+    clearFilter: 'Show all articles',
+  },
+  zh: {
+    title: '部落格',
+    summary: (visible: number, total: number, categoryLabel?: string) =>
+      categoryLabel
+        ? `${categoryLabel} 目前有 ${visible} 篇文章；全站共 ${total} 篇。`
+        : `目前共 ${visible} 篇文章，涵蓋 AI、產品、創業、商業、Web3 與旅行。`,
+    emptyTitle: '這個分類還沒有文章',
+    emptyDesc: (categoryLabel?: string) =>
+      categoryLabel
+        ? `${categoryLabel} 目前尚未發佈文章，可以先看看其他分類，或之後再回來。`
+        : '目前尚未發佈文章，敬請期待。',
+    clearFilter: '查看全部文章',
+  },
 };
 
 const label = labels[lang as 'en' | 'zh'];
-const allCategories = getOrderedCategories(
-  allPosts
-    .filter(p => p.id.startsWith(`${lang}/`))
-    .flatMap(p => p.data.categories)
-);
+const allCategories = getOrderedCategories(languagePosts.flatMap(p => p.data.categories));
+const selectedCategoryLabel = selectedCategory && selectedCategory in CATEGORY_LABELS
+  ? CATEGORY_LABELS[selectedCategory as keyof typeof CATEGORY_LABELS][lang as 'en' | 'zh']
+  : undefined;
 ---
 
 <Base title="Blog — danielcanfly" description="Thoughts on AI, product, entrepreneurship, business, Web3, and travel." lang={lang!}>
@@ -48,30 +72,45 @@ const allCategories = getOrderedCategories(
   <main class="blog-main">
     <div class="container">
       <header class="blog-header animate-in">
-        <h1 class="blog-title">{label.title}</h1>
-        <p class="blog-subtitle muted">{label.count(posts.length)}</p>
+        <div class="blog-header-top">
+          <h1 class="blog-title">{label.title}</h1>
+          <div class="blog-stats">
+            <span class="stat-pill">{totalPosts} total</span>
+            {selectedCategoryLabel && <span class="stat-pill stat-pill-active">{selectedCategoryLabel}</span>}
+          </div>
+        </div>
+        <p class="blog-subtitle muted">{label.summary(posts.length, totalPosts, selectedCategoryLabel)}</p>
       </header>
 
       <CategoryFilter categories={allCategories} lang={lang as 'en' | 'zh'} />
 
-      <div class="posts-grid" id="posts-grid">
-        {posts.map((post, i) => (
-          <div
-            class:list={['animate-in', { 'animate-delay-1': i % 3 === 1, 'animate-delay-2': i % 3 === 2 }]}
-            data-category={post.data.categories.map(cat => normalizeCategory(cat)).filter(Boolean).join(' ')}
-          >
-            <PostCard
-              slug={`${lang}/${post.slug}`}
-              title={post.data.title}
-              description={post.data.description}
-              categories={post.data.categories}
-              date={post.data.date}
-              lang={lang as 'en' | 'zh'}
-              featured={post.data.featured}
-            />
-          </div>
-        ))}
-      </div>
+      {posts.length === 0 ? (
+        <section class="empty-category animate-in">
+          <div class="empty-category-icon">◌</div>
+          <h2>{label.emptyTitle}</h2>
+          <p class="muted">{label.emptyDesc(selectedCategoryLabel)}</p>
+          <a href={`/${lang}/blog`} class="empty-category-link">{label.clearFilter}</a>
+        </section>
+      ) : (
+        <div class="posts-grid" id="posts-grid">
+          {posts.map((post, i) => (
+            <div
+              class:list={['animate-in', { 'animate-delay-1': i % 3 === 1, 'animate-delay-2': i % 3 === 2 }]}
+              data-category={post.data.categories.map(cat => normalizeCategory(cat)).filter(Boolean).join(' ')}
+            >
+              <PostCard
+                slug={`${lang}/${post.slug}`}
+                title={post.data.title}
+                description={post.data.description}
+                categories={post.data.categories}
+                date={post.data.date}
+                lang={lang as 'en' | 'zh'}
+                featured={post.data.featured}
+              />
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   </main>
 
@@ -90,14 +129,50 @@ const allCategories = getOrderedCategories(
     border-bottom: 1px solid var(--color-border);
   }
 
+  .blog-header-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--space-3);
+    margin-bottom: var(--space-2);
+  }
+
   .blog-title {
     font-size: clamp(2rem, 5vw, 3rem);
-    margin-bottom: var(--space-1);
+  }
+
+  .blog-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: flex-end;
+  }
+
+  .stat-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 36px;
+    padding: 0 14px;
+    border-radius: 999px;
+    border: 1px solid var(--color-border);
+    background: color-mix(in srgb, var(--color-surface) 92%, transparent);
+    color: var(--color-muted);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.03em;
+  }
+
+  .stat-pill-active {
+    border-color: color-mix(in srgb, var(--color-accent) 40%, var(--color-border));
+    color: var(--color-accent);
+    background: color-mix(in srgb, var(--color-accent) 12%, var(--color-surface));
   }
 
   .blog-subtitle {
     font-family: var(--font-mono);
     font-size: 0.875rem;
+    max-width: 72ch;
   }
 
   .posts-grid {
@@ -106,7 +181,71 @@ const allCategories = getOrderedCategories(
     gap: var(--space-4);
   }
 
+  .empty-category {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: var(--space-2);
+    min-height: 320px;
+    padding: var(--space-8) var(--space-4);
+    border: 1px solid var(--color-border);
+    border-radius: 20px;
+    background:
+      radial-gradient(circle at top, color-mix(in srgb, var(--color-accent) 10%, transparent), transparent 55%),
+      linear-gradient(180deg, color-mix(in srgb, var(--color-surface) 94%, transparent), var(--color-surface));
+  }
+
+  .empty-category-icon {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    border: 1px solid color-mix(in srgb, var(--color-accent) 30%, var(--color-border));
+    color: var(--color-accent);
+    font-size: 2rem;
+    background: color-mix(in srgb, var(--color-accent) 8%, var(--color-surface));
+  }
+
+  .empty-category h2 {
+    font-size: clamp(1.5rem, 3vw, 2rem);
+  }
+
+  .empty-category p {
+    max-width: 48ch;
+  }
+
+  .empty-category-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 42px;
+    padding: 0 18px;
+    border-radius: 999px;
+    border: 1px solid var(--color-border);
+    color: var(--color-text);
+    font-family: var(--font-display);
+    font-size: 0.875rem;
+    transition: all var(--transition-fast);
+  }
+
+  .empty-category-link:hover {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+    transform: translateY(-2px);
+  }
+
   @media (max-width: 768px) {
+    .blog-header-top {
+      flex-direction: column;
+    }
+
+    .blog-stats {
+      justify-content: flex-start;
+    }
+
     .posts-grid {
       grid-template-columns: 1fr;
     }
