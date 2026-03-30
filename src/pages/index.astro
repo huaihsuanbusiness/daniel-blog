@@ -10,10 +10,10 @@ const lang = 'en';
 
 const allPosts = await getCollection('blog');
 const posts = allPosts
-  .filter(post => post.id.startsWith(`${lang}/`))
+  .filter(post => post.id.endsWith(`/${lang}`))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
   .map(post => {
-    const slug = post.id.replace(/^[^/]+\//, '');
+    const slug = post.id.split('/')[0];
     return { ...post, slug };
   });
 
