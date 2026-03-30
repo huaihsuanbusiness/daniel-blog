@@ -92,7 +92,7 @@ const homepageCategories = CATEGORY_ORDER.map(id => ({
                 data-category={post.data.categories.map(cat => normalizeCategory(cat)).filter(Boolean).join(' ')}
               >
                 <PostCard
-                  slug={`${lang}/${post.slug}`}
+                  slug={post.slug}
                   title={post.data.title}
                   description={post.data.description}
                   categories={post.data.categories}
