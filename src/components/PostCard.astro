@@ -24,7 +24,7 @@ const langLabel = lang === 'zh' ? '中文' : 'EN';
 ---
 
 <article class:list={['post-card', { featured }]}>
-  <a href={`/blog/${slug}`} class="card-link">
+  <a href={`/${lang}/blog/${slug}`} class="card-link">
     <div class="card-inner">
       <div class="card-meta">
         <span class:list={['tag', primaryCategory ? `tag-${primaryCategory}` : undefined]}>
