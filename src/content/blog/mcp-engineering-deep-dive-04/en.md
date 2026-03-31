@@ -3,7 +3,7 @@ title: "MCP Engineering Deep Dive 04: Skills Are Not the Same Thing as Runtime T
 description: "Part 04 of the MCP Engineering Deep Dive series."
 categories: ["ai"]
 tags: ["ai", "mcp", "agent", "workflow", "automation", "architecture"]
-date: 2026-03-31
+date: 2026-03-31T23:51:00
 featured: false
 ---
 

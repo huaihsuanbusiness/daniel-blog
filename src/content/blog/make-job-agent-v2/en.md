@@ -3,7 +3,7 @@ title: "AI Agentic Workflow Series 4 — Refactoring a Make-first Workflow into 
 description: "How I migrated a Make-first job agent into a clean MCP execution engine, moving from flow-driven design to contract-driven architecture."
 categories: ["ai"]
 tags: ["ai", "make", "mcp", "agent", "workflow", "automation", "architecture"]
-date: 2026-03-31
+date: 2026-03-31T17:45:00
 featured: false
 ---
 

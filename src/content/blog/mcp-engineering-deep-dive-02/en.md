@@ -3,7 +3,7 @@ title: "MCP Engineering Deep Dive 02: Security, Auth, and Public Server Hardenin
 description: "Part 02 of the MCP Engineering Deep Dive series."
 categories: ["ai"]
 tags: ["ai", "mcp", "agent", "workflow", "automation", "architecture"]
-date: 2026-03-31
+date: 2026-03-31T20:11:00
 featured: false
 ---
 

@@ -3,7 +3,7 @@ title: "歡迎來到 danielcanfly"
 description: "關於這個部落格的簡短介紹，以及你可以在這裡期待什麼——Web3、AI、商業與旅遊的交匯點。"
 categories: ["pm"]
 tags: ["intro", "web3", "ai", "business", "travel", "openclaw"]
-date: 2026-03-27
+date: 2026-03-27T21:07:00
 featured: true
 ---
 

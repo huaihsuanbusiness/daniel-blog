@@ -3,7 +3,7 @@ title: "自主建造 MCP Server — Part 3：MCP 高級框架比較與怎麼選"
 description: "Part 3 of the MCP Server build series."
 categories: ["ai"]
 tags: ["ai", "mcp", "agent", "workflow", "automation", "architecture"]
-date: 2026-03-31
+date: 2026-03-31T19:23:00
 featured: false
 ---
 

@@ -3,7 +3,7 @@ title: "AI代理工作流系列 3 — 如何在 Make 裡做出有承先啟後能
 description: "Part 2 聚焦在快速評分、RAG 深度分析與 guardrails，讓 shortlist 變成真正可判斷、可投遞、可準備面試的材料。"
 categories: ["ai"]
 tags: ["ai", "make", "agent", "job-agent", "workflow", "rag", "automation"]
-date: 2026-03-31
+date: 2026-03-31T17:05:00
 featured: false
 ---
 

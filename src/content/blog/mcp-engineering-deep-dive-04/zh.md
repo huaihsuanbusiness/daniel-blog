@@ -3,7 +3,7 @@ title: "MCP 工程深化 04：skills 與 runtime selection 不是一回事"
 description: "Part 04 of the MCP Engineering Deep Dive series."
 categories: ["ai"]
 tags: ["ai", "mcp", "agent", "workflow", "automation", "architecture"]
-date: 2026-03-31
+date: 2026-03-31T23:51:00
 featured: false
 ---
 

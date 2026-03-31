@@ -3,7 +3,7 @@ title: "AI Agentic Workflow Series 1 — How I Choose Between LangGraph, n8n, an
 description: "A practical comparison of LangGraph, n8n, and Make - and why, for my current workflow shape, I'm choosing Make first."
 categories: ["ai"]
 tags: ["ai", "agentic-workflow", "langgraph", "n8n", "make", "automation"]
-date: 2026-03-30
+date: 2026-03-31T00:19:00
 featured: false
 ---
 

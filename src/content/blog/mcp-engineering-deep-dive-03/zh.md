@@ -3,7 +3,7 @@ title: "MCP 工程深化 03：Contract design / schema discipline / versioning �
 description: "Part 03 of the MCP Engineering Deep Dive series."
 categories: ["ai"]
 tags: ["ai", "mcp", "agent", "workflow", "automation", "architecture"]
-date: 2026-03-31
+date: 2026-03-31T20:12:00
 featured: false
 ---
 

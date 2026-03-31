@@ -3,7 +3,7 @@ title: "MCP Engineering Deep Dive 01: Transport and Remote Deployment Are Part o
 description: "Part 01 of the MCP Engineering Deep Dive series."
 categories: ["ai"]
 tags: ["ai", "mcp", "agent", "workflow", "automation", "architecture"]
-date: 2026-03-31
+date: 2026-03-31T20:10:00
 featured: false
 ---
 

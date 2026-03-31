@@ -3,7 +3,7 @@ title: "AI代理工作流系列 1 — 我怎麼在 LangGraph、n8n、Make 之間
 description: "從實務工作型態出發，比較 LangGraph、n8n 與 Make，並說明我目前為什麼先選擇 Make。"
 categories: ["ai"]
 tags: ["ai", "agentic-workflow", "langgraph", "n8n", "make", "automation"]
-date: 2026-03-30
+date: 2026-03-31T00:19:00
 featured: false
 ---
 

@@ -3,7 +3,7 @@ title: "Build Your Own MCP Server — Part 2: How to Deploy a Public MCP Server 
 description: "Part 2 of the MCP Server build series."
 categories: ["ai"]
 tags: ["ai", "mcp", "agent", "workflow", "automation", "architecture"]
-date: 2026-03-31
+date: 2026-03-31T19:23:00
 featured: false
 ---
 

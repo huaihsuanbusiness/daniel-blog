@@ -3,7 +3,7 @@ title: "Build Your Own MCP Server — Part 5: The Pitfalls and Operations Manual
 description: "Part 5 of the MCP Server build series."
 categories: ["ai"]
 tags: ["ai", "mcp", "agent", "workflow", "automation", "architecture"]
-date: 2026-03-31
+date: 2026-03-31T19:29:00
 featured: false
 ---
 

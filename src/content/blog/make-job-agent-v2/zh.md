@@ -3,7 +3,7 @@ title: "AI代理工作流系列 4 — 把 Make-first Workflow 重構成 MCP Exec
 description: "如何把 Make-first job agent 迁移成干净的 MCP execution engine，从流程驱动设计走向契约驱动架构。"
 categories: ["ai"]
 tags: ["ai", "make", "mcp", "agent", "workflow", "automation", "architecture"]
-date: 2026-03-31
+date: 2026-03-31T17:45:00
 featured: false
 ---
 

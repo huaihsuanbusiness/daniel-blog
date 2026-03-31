@@ -3,7 +3,7 @@ title: "Build Your Own MCP Server — Part 1: What MCP Actually Changes"
 description: "Part 1 of the MCP Server build series: understanding what MCP actually changes at the architectural level, and when the migration ladder is worth climbing."
 categories: ["ai"]
 tags: ["ai", "mcp", "agent", "workflow", "automation", "architecture"]
-date: 2026-03-31
+date: 2026-03-31T19:17:00
 featured: false
 ---
 

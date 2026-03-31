@@ -3,7 +3,7 @@ title: "AI Agentic Workflow Series 3 — How to Build a Context-Aware Job Agent 
 description: "Part 2 of the job-agent build log: fast scoring, RAG-based deep analysis, and guardrails that turn shortlisted roles into decision-quality output."
 categories: ["ai"]
 tags: ["ai", "make", "agent", "job-agent", "workflow", "rag", "automation"]
-date: 2026-03-31
+date: 2026-03-31T17:05:00
 featured: false
 ---
 

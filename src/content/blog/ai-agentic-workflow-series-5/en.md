@@ -3,7 +3,7 @@ title: "Why I Eventually Replaced the Make MCP Server with My Own Gateway Server
 description: "AI Agentic Workflow Series 5: migrating from Make MCP Server to a self-hosted FastMCP skill gateway."
 categories: ["ai"]
 tags: ["ai", "mcp", "agent", "workflow", "automation", "architecture"]
-date: 2026-04-01
+date: 2026-04-01T00:14:00
 featured: false
 ---
 

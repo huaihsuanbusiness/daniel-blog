@@ -3,7 +3,7 @@ title: "Build Your Own MCP Server — Part 4: What Skills Are, and How to Design
 description: "Part 4 of the MCP Server build series."
 categories: ["ai"]
 tags: ["ai", "mcp", "agent", "workflow", "automation", "architecture"]
-date: 2026-03-31
+date: 2026-03-31T19:26:00
 featured: false
 ---
 
