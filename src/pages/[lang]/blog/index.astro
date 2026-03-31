@@ -184,6 +184,40 @@ const selectedCategoryLabel = selectedCategory && selectedCategory in CATEGORY_L
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
     gap: var(--space-4);
+    align-items: stretch;
+  }
+
+  /* Uniform height for grid cards */
+  .posts-grid :global(.post-card) {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .posts-grid :global(.card-inner) {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 260px;
+  }
+
+  .posts-grid :global(.card-title) {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    line-height: 1.35;
+  }
+
+  .posts-grid :global(.card-desc) {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    flex: 1;
+  }
+
+  .posts-grid :global(.card-footer) {
+    margin-top: auto;
   }
 
   .posts-grid.view-list {
@@ -195,8 +229,16 @@ const selectedCategoryLabel = selectedCategory && selectedCategory in CATEGORY_L
     border-radius: 8px;
   }
 
+  .posts-grid.view-list :global(.card-inner) {
+    min-height: unset;
+  }
+
+  .posts-grid.view-list :global(.card-title),
   .posts-grid.view-list :global(.card-desc) {
     -webkit-line-clamp: 1;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
 
   .posts-grid.view-list :global(.card-footer) {
