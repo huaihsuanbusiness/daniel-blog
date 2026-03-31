@@ -1,0 +1,79 @@
+<svg width="1280" height="760" viewBox="0 0 1280 760" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<style>
+      .bg { fill: #f8fafc; }
+      .title { font: 700 28px Arial, Inter, sans-serif; fill: #0f172a; }
+      .subtitle { font: 400 14px Arial, Inter, sans-serif; fill: #475569; }
+      .section { font: 700 16px Arial, Inter, sans-serif; fill: #0f172a; }
+      .text { font: 400 13px Arial, Inter, sans-serif; fill: #334155; }
+      .note { font: 400 12px Arial, Inter, sans-serif; fill: #64748b; }
+      .b1 { fill: #dbeafe; stroke: #93c5fd; }
+      .b2 { fill: #ede9fe; stroke: #c4b5fd; }
+      .b3 { fill: #dcfce7; stroke: #86efac; }
+      .b4 { fill: #ffedd5; stroke: #fdba74; }
+      .b5 { fill: #ffffff; stroke: #cbd5e1; }
+      .box { stroke-width: 1.5; rx: 18; ry: 18; }
+      .line { stroke: #64748b; stroke-width: 2.4; fill: none; marker-end: url(#arrow); }
+      .dash { stroke: #94a3b8; stroke-width: 2.2; fill: none; stroke-dasharray: 7 6; marker-end: url(#arrow); }
+    </style>
+<marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#64748b"/></marker>
+</defs>
+<rect class="bg" x="0" y="0" width="1280" height="760"/>
+<text class="title" x="50" y="56">Framework Map</text>
+<text class="subtitle" x="50" y="82">Four MCP routes, four different engineering worldviews.</text>
+<rect class="b3 box" x="50" y="130" width="250" height="180"/>
+<text class="section" x="70" y="160">FastMCP</text>
+<text class="text" x="70" y="186">Python-first</text>
+<text class="text" x="70" y="208">Thin server / thin gateway</text>
+<text class="text" x="70" y="230">Great when you want a</text>
+<text class="text" x="70" y="252">clear MCP layer in front</text>
+<text class="text" x="70" y="274">of existing execution tools</text>
+<rect class="b2 box" x="350" y="130" width="250" height="180"/>
+<text class="section" x="370" y="160">MCP Framework</text>
+<text class="text" x="370" y="186">TypeScript-first</text>
+<text class="text" x="370" y="208">CLI + discovery + structure</text>
+<text class="text" x="370" y="230">Feels like a dedicated</text>
+<text class="text" x="370" y="252">backend framework for</text>
+<text class="text" x="370" y="274">building standalone servers</text>
+<rect class="b4 box" x="650" y="130" width="250" height="180"/>
+<text class="section" x="670" y="160">xmcp</text>
+<text class="text" x="670" y="186">TypeScript web-native</text>
+<text class="text" x="670" y="208">Adapters, plugins, file-based</text>
+<text class="text" x="670" y="230">Strong fit for existing</text>
+<text class="text" x="670" y="252">Next.js / Express /</text>
+<text class="text" x="670" y="274">NestJS applications</text>
+<rect class="b1 box" x="950" y="130" width="250" height="180"/>
+<text class="section" x="970" y="160">Spring AI MCP Server</text>
+<text class="text" x="970" y="186">Java / Spring ecosystem</text>
+<text class="text" x="970" y="208">Boot starters + annotations</text>
+<text class="text" x="970" y="230">Enterprise platform route</text>
+<text class="text" x="970" y="252">for teams already living</text>
+<text class="text" x="970" y="274">inside Spring conventions</text>
+<rect class="b5 box" x="170" y="400" width="280" height="180"/>
+<text class="section" x="190" y="430">Best fit question</text>
+<text class="text" x="190" y="456">Are you building a thin</text>
+<text class="text" x="190" y="478">gateway, an app extension,</text>
+<text class="text" x="190" y="500">or a platform capability?</text>
+<text class="text" x="190" y="534">That matters more than</text>
+<text class="text" x="190" y="556">“Which framework is hottest?”</text>
+<rect class="b5 box" x="520" y="400" width="310" height="180"/>
+<text class="section" x="540" y="430">Primary gravity</text>
+<text class="text" x="540" y="456">FastMCP → thin gateway</text>
+<text class="text" x="540" y="478">MCP Framework → TS framework</text>
+<text class="text" x="540" y="500">xmcp → modern web app</text>
+<text class="text" x="540" y="522">Spring AI → platform layer</text>
+<text class="text" x="540" y="556">Same protocol, different gravity.</text>
+<rect class="b5 box" x="900" y="400" width="250" height="180"/>
+<text class="section" x="920" y="430">What not to do</text>
+<text class="text" x="920" y="456">Do not choose by hello-world</text>
+<text class="text" x="920" y="478">alone.</text>
+<text class="text" x="920" y="512">Choose by transport, auth,</text>
+<text class="text" x="920" y="534">team language, and operating</text>
+<text class="text" x="920" y="556">shape six months later.</text>
+<path class="line" d="M300 220 H350"/>
+<path class="line" d="M600 220 H650"/>
+<path class="line" d="M900 220 H950"/>
+<path class="line" d="M175 310 C175 350, 175 370, 250 400"/>
+<path class="line" d="M775 310 V400"/>
+<path class="line" d="M1075 310 C1075 350, 1075 370, 1025 400"/>
+</svg>

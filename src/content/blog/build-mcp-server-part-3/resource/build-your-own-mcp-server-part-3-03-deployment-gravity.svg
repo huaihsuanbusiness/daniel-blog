@@ -1,0 +1,66 @@
+<svg width="1280" height="760" viewBox="0 0 1280 760" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<style>
+      .bg { fill: #f8fafc; }
+      .title { font: 700 28px Arial, Inter, sans-serif; fill: #0f172a; }
+      .subtitle { font: 400 14px Arial, Inter, sans-serif; fill: #475569; }
+      .section { font: 700 16px Arial, Inter, sans-serif; fill: #0f172a; }
+      .text { font: 400 13px Arial, Inter, sans-serif; fill: #334155; }
+      .note { font: 400 12px Arial, Inter, sans-serif; fill: #64748b; }
+      .b1 { fill: #dbeafe; stroke: #93c5fd; }
+      .b2 { fill: #ede9fe; stroke: #c4b5fd; }
+      .b3 { fill: #dcfce7; stroke: #86efac; }
+      .b4 { fill: #ffedd5; stroke: #fdba74; }
+      .b5 { fill: #ffffff; stroke: #cbd5e1; }
+      .box { stroke-width: 1.5; rx: 18; ry: 18; }
+      .line { stroke: #64748b; stroke-width: 2.4; fill: none; marker-end: url(#arrow); }
+      .dash { stroke: #94a3b8; stroke-width: 2.2; fill: none; stroke-dasharray: 7 6; marker-end: url(#arrow); }
+    </style>
+<marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#64748b"/></marker>
+</defs>
+<rect class="bg" x="0" y="0" width="1280" height="760"/>
+<text class="title" x="50" y="56">Deployment Gravity</text>
+<text class="subtitle" x="50" y="82">The frameworks differ in how much application and platform weight they pull in.</text>
+<rect class="b3 box" x="70" y="150" width="220" height="260"/>
+<text class="section" x="90" y="180">FastMCP</text>
+<text class="text" x="90" y="206">Lowest gravity here</text>
+<text class="text" x="90" y="240">Best when you want:</text>
+<text class="text" x="90" y="262">• a thin remote server</text>
+<text class="text" x="90" y="284">• a narrow public tool surface</text>
+<text class="text" x="90" y="306">• Python-side orchestration</text>
+<text class="text" x="90" y="328">• minimal app baggage</text>
+<rect class="b2 box" x="340" y="150" width="220" height="260"/>
+<text class="section" x="360" y="180">MCP Framework</text>
+<text class="text" x="360" y="206">Medium gravity</text>
+<text class="text" x="360" y="240">Best when you want:</text>
+<text class="text" x="360" y="262">• a dedicated TS framework</text>
+<text class="text" x="360" y="284">• scaffolded server structure</text>
+<text class="text" x="360" y="306">• built-in transport story</text>
+<text class="text" x="360" y="328">• strong project conventions</text>
+<rect class="b4 box" x="610" y="150" width="220" height="260"/>
+<text class="section" x="630" y="180">xmcp</text>
+<text class="text" x="630" y="206">Medium-high gravity</text>
+<text class="text" x="630" y="240">Best when you want:</text>
+<text class="text" x="630" y="262">• MCP inside web apps</text>
+<text class="text" x="630" y="284">• adapters and plugins</text>
+<text class="text" x="630" y="306">• app-level middleware</text>
+<text class="text" x="630" y="328">• Vercel / DX-friendly flow</text>
+<rect class="b1 box" x="880" y="150" width="260" height="260"/>
+<text class="section" x="900" y="180">Spring AI MCP Server</text>
+<text class="text" x="900" y="206">Highest gravity</text>
+<text class="text" x="900" y="240">Best when you want:</text>
+<text class="text" x="900" y="262">• Spring-native platform work</text>
+<text class="text" x="900" y="284">• Boot starter conventions</text>
+<text class="text" x="900" y="306">• annotation-driven server code</text>
+<text class="text" x="900" y="328">• enterprise operating fit</text>
+<rect class="b5 box" x="250" y="480" width="780" height="170"/>
+<text class="section" x="270" y="510">Why I chose FastMCP</text>
+<text class="text" x="270" y="536">My problem was not “embed MCP into an existing web app” and not “build a large enterprise platform”.</text>
+<text class="text" x="270" y="558">My problem was “host a thin skill gateway in front of Make, keep the public surface small,</text>
+<text class="text" x="270" y="580">and control tool exposure without rebuilding the entire execution layer.”</text>
+<text class="text" x="270" y="614">That is precisely why FastMCP had the right amount of gravity.</text>
+<path class="line" d="M180 410 V480"/>
+<path class="line" d="M450 410 V480"/>
+<path class="line" d="M720 410 V480"/>
+<path class="line" d="M1010 410 V480"/>
+</svg>

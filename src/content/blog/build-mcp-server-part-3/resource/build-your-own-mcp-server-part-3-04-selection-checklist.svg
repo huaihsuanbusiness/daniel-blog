@@ -1,0 +1,59 @@
+<svg width="1280" height="760" viewBox="0 0 1280 760" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<style>
+      .bg { fill: #f8fafc; }
+      .title { font: 700 28px Arial, Inter, sans-serif; fill: #0f172a; }
+      .subtitle { font: 400 14px Arial, Inter, sans-serif; fill: #475569; }
+      .section { font: 700 16px Arial, Inter, sans-serif; fill: #0f172a; }
+      .text { font: 400 13px Arial, Inter, sans-serif; fill: #334155; }
+      .note { font: 400 12px Arial, Inter, sans-serif; fill: #64748b; }
+      .b1 { fill: #dbeafe; stroke: #93c5fd; }
+      .b2 { fill: #ede9fe; stroke: #c4b5fd; }
+      .b3 { fill: #dcfce7; stroke: #86efac; }
+      .b4 { fill: #ffedd5; stroke: #fdba74; }
+      .b5 { fill: #ffffff; stroke: #cbd5e1; }
+      .box { stroke-width: 1.5; rx: 18; ry: 18; }
+      .line { stroke: #64748b; stroke-width: 2.4; fill: none; marker-end: url(#arrow); }
+      .dash { stroke: #94a3b8; stroke-width: 2.2; fill: none; stroke-dasharray: 7 6; marker-end: url(#arrow); }
+    </style>
+<marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#64748b"/></marker>
+</defs>
+<rect class="bg" x="0" y="0" width="1280" height="760"/>
+<text class="title" x="50" y="56">Selection Checklist</text>
+<text class="subtitle" x="50" y="82">A practical shortlist you can use before committing to one framework.</text>
+<rect class="b3 box" x="70" y="150" width="250" height="240"/>
+<text class="section" x="90" y="180">Choose FastMCP if…</text>
+<text class="text" x="90" y="206">Python is your natural stack</text>
+<text class="text" x="90" y="228">You want a thin gateway</text>
+<text class="text" x="90" y="250">You want to control</text>
+<text class="text" x="90" y="272">public tool exposure tightly</text>
+<text class="text" x="90" y="294">You do not want a heavy</text>
+<text class="text" x="90" y="316">web framework to dominate</text>
+<rect class="b2 box" x="360" y="150" width="250" height="240"/>
+<text class="section" x="380" y="180">Choose MCP Framework if…</text>
+<text class="text" x="380" y="206">TypeScript is your backend</text>
+<text class="text" x="380" y="228">You want CLI + discovery</text>
+<text class="text" x="380" y="250">You want a stronger</text>
+<text class="text" x="380" y="272">framework feeling</text>
+<text class="text" x="380" y="294">You want a clearer</text>
+<text class="text" x="380" y="316">dedicated MCP server shape</text>
+<rect class="b4 box" x="650" y="150" width="250" height="240"/>
+<text class="section" x="670" y="180">Choose xmcp if…</text>
+<text class="text" x="670" y="206">You are a TS full-stack team</text>
+<text class="text" x="670" y="228">MCP should live inside</text>
+<text class="text" x="670" y="250">Next.js / Express / NestJS</text>
+<text class="text" x="670" y="272">You value adapters, plugins,</text>
+<text class="text" x="670" y="294">and web-native deployment</text>
+<rect class="b1 box" x="940" y="150" width="250" height="240"/>
+<text class="section" x="960" y="180">Choose Spring AI if…</text>
+<text class="text" x="960" y="206">You are already in Spring</text>
+<text class="text" x="960" y="228">You need platform alignment</text>
+<text class="text" x="960" y="250">You want annotations, Boot,</text>
+<text class="text" x="960" y="272">and enterprise operations</text>
+<text class="text" x="960" y="294">to stay first-class</text>
+<rect class="b5 box" x="180" y="460" width="880" height="170"/>
+<text class="section" x="200" y="490">Last check before you commit</text>
+<text class="text" x="200" y="516">Do not choose by hello-world prettiness alone.</text>
+<text class="text" x="200" y="538">Choose by: language habitat, deployment model, auth path, app coupling, and who will still own the server later.</text>
+<text class="text" x="200" y="572">If you are building a gateway, choose a gateway. If you are building a platform, choose a platform.</text>
+</svg>

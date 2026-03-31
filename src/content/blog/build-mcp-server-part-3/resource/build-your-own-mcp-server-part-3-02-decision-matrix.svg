@@ -1,0 +1,78 @@
+<svg width="1280" height="760" viewBox="0 0 1280 760" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<style>
+      .bg { fill: #f8fafc; }
+      .title { font: 700 28px Arial, Inter, sans-serif; fill: #0f172a; }
+      .subtitle { font: 400 14px Arial, Inter, sans-serif; fill: #475569; }
+      .section { font: 700 16px Arial, Inter, sans-serif; fill: #0f172a; }
+      .text { font: 400 13px Arial, Inter, sans-serif; fill: #334155; }
+      .note { font: 400 12px Arial, Inter, sans-serif; fill: #64748b; }
+      .b1 { fill: #dbeafe; stroke: #93c5fd; }
+      .b2 { fill: #ede9fe; stroke: #c4b5fd; }
+      .b3 { fill: #dcfce7; stroke: #86efac; }
+      .b4 { fill: #ffedd5; stroke: #fdba74; }
+      .b5 { fill: #ffffff; stroke: #cbd5e1; }
+      .box { stroke-width: 1.5; rx: 18; ry: 18; }
+      .line { stroke: #64748b; stroke-width: 2.4; fill: none; marker-end: url(#arrow); }
+      .dash { stroke: #94a3b8; stroke-width: 2.2; fill: none; stroke-dasharray: 7 6; marker-end: url(#arrow); }
+    </style>
+<marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#64748b"/></marker>
+</defs>
+<rect class="bg" x="0" y="0" width="1280" height="760"/>
+<text class="title" x="50" y="56">Decision Matrix</text>
+<text class="subtitle" x="50" y="82">Choose by server shape, app coupling, auth pressure, and team habitat.</text>
+<rect class="b5 box" x="60" y="140" width="260" height="220"/>
+<text class="section" x="80" y="170">Question 1</text>
+<text class="text" x="80" y="196">Standalone server or</text>
+<text class="text" x="80" y="218">inside an existing app?</text>
+<text class="text" x="80" y="252">Thin standalone server →</text>
+<text class="text" x="80" y="274">FastMCP / MCP Framework</text>
+<text class="text" x="80" y="296">Embedded app route →</text>
+<text class="text" x="80" y="318">xmcp / Spring AI</text>
+<rect class="b5 box" x="360" y="140" width="260" height="220"/>
+<text class="section" x="380" y="170">Question 2</text>
+<text class="text" x="380" y="196">Tool exposure or platform</text>
+<text class="text" x="380" y="218">integration?</text>
+<text class="text" x="380" y="252">Tool surface first →</text>
+<text class="text" x="380" y="274">FastMCP</text>
+<text class="text" x="380" y="296">Platform integration first →</text>
+<text class="text" x="380" y="318">xmcp / Spring AI</text>
+<rect class="b5 box" x="660" y="140" width="260" height="220"/>
+<text class="section" x="680" y="170">Question 3</text>
+<text class="text" x="680" y="196">How serious is auth?</text>
+<text class="text" x="680" y="230">Remote production auth</text>
+<text class="text" x="680" y="252">pushes you toward</text>
+<text class="text" x="680" y="274">frameworks with a clear</text>
+<text class="text" x="680" y="296">auth story and policies.</text>
+<rect class="b5 box" x="960" y="140" width="260" height="220"/>
+<text class="section" x="980" y="170">Question 4</text>
+<text class="text" x="980" y="196">Who maintains it later?</text>
+<text class="text" x="980" y="230">Solo Python operator →</text>
+<text class="text" x="980" y="252">FastMCP is very natural</text>
+<text class="text" x="980" y="274">Existing Java org →</text>
+<text class="text" x="980" y="296">Spring AI may win</text>
+<rect class="b3 box" x="170" y="430" width="280" height="200"/>
+<text class="section" x="190" y="460">Pragmatic picks</text>
+<text class="text" x="190" y="486">FastMCP → self-hosted</text>
+<text class="text" x="190" y="508">gateway in front of</text>
+<text class="text" x="190" y="530">Make / APIs / vector</text>
+<text class="text" x="190" y="552">search / internal tools</text>
+<rect class="b4 box" x="500" y="430" width="280" height="200"/>
+<text class="section" x="520" y="460">Web-native picks</text>
+<text class="text" x="520" y="486">xmcp → when MCP should</text>
+<text class="text" x="520" y="508">grow inside your existing</text>
+<text class="text" x="520" y="530">TypeScript web application</text>
+<text class="text" x="520" y="552">instead of sitting beside it</text>
+<rect class="b2 box" x="830" y="430" width="280" height="200"/>
+<text class="section" x="850" y="460">Framework / platform picks</text>
+<text class="text" x="850" y="486">MCP Framework → dedicated</text>
+<text class="text" x="850" y="508">TypeScript server framework</text>
+<text class="text" x="850" y="530">Spring AI → mature</text>
+<text class="text" x="850" y="552">Spring operating model</text>
+<path class="line" d="M320 250 H360"/>
+<path class="line" d="M620 250 H660"/>
+<path class="line" d="M920 250 H960"/>
+<path class="line" d="M190 360 V430"/>
+<path class="line" d="M640 360 V430"/>
+<path class="line" d="M1090 360 V430"/>
+</svg>

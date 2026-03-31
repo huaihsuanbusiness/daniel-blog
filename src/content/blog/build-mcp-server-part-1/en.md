@@ -1,5 +1,5 @@
 ---
-title: "AI Agentic Workflow Series 5 — Build Your Own MCP Server — Part 1: What MCP Actually Changes"
+title: "Build Your Own MCP Server — Part 1: What MCP Actually Changes"
 description: "Part 1 of the MCP Server build series: understanding what MCP actually changes at the architectural level, and when the migration ladder is worth climbing."
 categories: ["ai"]
 tags: ["ai", "mcp", "agent", "workflow", "automation", "architecture"]

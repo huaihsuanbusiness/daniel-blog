@@ -1,5 +1,5 @@
 ---
-title: "AI Agentic Workflow Series 5 — 自主建造 MCP Server — Part 1：MCP 到底改變了什麼"
+title: "自主建造 MCP Server — Part 1：MCP 到底改變了什麼"
 description: "Part 1 of the MCP Server build series: understanding what MCP actually changes at the architectural level, and when the migration ladder is worth climbing."
 categories: ["ai"]
 tags: ["ai", "mcp", "agent", "workflow", "automation", "architecture"]
