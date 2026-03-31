@@ -9,6 +9,8 @@ featured: false
 
 更新日期：2026-03-30
 
+![我怎麼在 LangGraph、n8n、Make 之間做選擇](./resource/langgraph-n8n-make-hero.png)
+
 如果你最近也在看 agentic workflow 工具，應該很容易被比較文洗到有點麻。
 
 大家都在問：

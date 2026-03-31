@@ -9,6 +9,8 @@ featured: false
 
 Updated: 2026-03-30
 
+![How I choose between LangGraph, n8n, and Make](./resource/langgraph-n8n-make-hero.png)
+
 If you have been looking at agentic workflow tools lately, you have probably already hit comparison fatigue.
 
 Everyone is asking the same questions:
