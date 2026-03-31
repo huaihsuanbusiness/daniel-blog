@@ -1,0 +1,72 @@
+<svg width="1280" height="620" viewBox="0 0 1280 620" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .bg { fill: #f8fafc; }
+      .title { font: 700 28px Arial, Inter, sans-serif; fill: #0f172a; }
+      .subtitle { font: 400 14px Arial, Inter, sans-serif; fill: #475569; }
+      .box-title { font: 700 16px Arial, Inter, sans-serif; fill: #0f172a; }
+      .box-text { font: 400 13px Arial, Inter, sans-serif; fill: #334155; }
+      .note { font: 400 12px Arial, Inter, sans-serif; fill: #64748b; }
+      .line-chat { fill: #dcfce7; stroke: #86efac; }
+      .logic { fill: #ffedd5; stroke: #fdba74; }
+      .memory { fill: #fce7f3; stroke: #f9a8d4; }
+      .neutral { fill: #ffffff; stroke: #cbd5e1; }
+      .box { stroke-width: 1.5; rx: 18; ry: 18; }
+      .line { stroke: #64748b; stroke-width: 2.5; fill: none; marker-end: url(#arrow); }
+    </style>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+    </marker>
+  </defs>
+
+  <rect class="bg" width="1280" height="620"/>
+  <text class="title" x="50" y="58">Guardrails: repair what drifts, clarify what is blocked</text>
+  <text class="subtitle" x="50" y="84">Part 2 uses two different guardrails: one for content-quality drift, and one for blocked product states that still need a useful next user turn.</text>
+
+  <rect class="logic box" x="70" y="170" width="220" height="118"/>
+  <text class="box-title" x="90" y="202">Generated Analysis</text>
+  <text class="box-text" x="90" y="226">long-form model output</text>
+  <text class="box-text" x="90" y="244">may drift on labels or tone</text>
+
+  <rect class="memory box" x="360" y="150" width="220" height="158"/>
+  <text class="box-title" x="380" y="182">Compliance Checker</text>
+  <text class="box-text" x="380" y="206">section structure</text>
+  <text class="box-text" x="380" y="224">allowed evidence labels</text>
+  <text class="box-text" x="380" y="242">score-to-verdict alignment</text>
+  <text class="box-text" x="380" y="260">decision-memo calibration</text>
+
+  <rect class="memory box" x="650" y="170" width="220" height="118"/>
+  <text class="box-title" x="670" y="202">Repairer</text>
+  <text class="box-text" x="670" y="226">rewrite only if needed</text>
+  <text class="box-text" x="670" y="244">no new facts allowed</text>
+
+  <rect class="line-chat box" x="950" y="170" width="250" height="118"/>
+  <text class="box-title" x="970" y="202">Trustworthy Final Reply</text>
+  <text class="box-text" x="970" y="226">clean structure</text>
+  <text class="box-text" x="970" y="244">better calibration</text>
+
+  <rect class="logic box" x="70" y="390" width="220" height="138"/>
+  <text class="box-title" x="90" y="422">Blocked State</text>
+  <text class="box-text" x="90" y="446">missing_job_reference</text>
+  <text class="box-text" x="90" y="464">invalid_candidate_selection</text>
+  <text class="box-text" x="90" y="482">LINE length overflow</text>
+
+  <rect class="memory box" x="360" y="380" width="300" height="158"/>
+  <text class="box-title" x="380" y="412">Structured Error Formatter</text>
+  <text class="box-text" x="380" y="436">map blocked_reason to human text</text>
+  <text class="box-text" x="380" y="454">render candidate list when needed</text>
+  <text class="box-text" x="380" y="472">truncate safely for LINE</text>
+  <text class="box-text" x="380" y="490">preserve the next useful user action</text>
+
+  <rect class="line-chat box" x="740" y="390" width="460" height="138"/>
+  <text class="box-title" x="760" y="422">Continuation-friendly message</text>
+  <text class="box-text" x="760" y="446">“Which one do you want me to analyse?”</text>
+  <text class="box-text" x="760" y="464">“Reply with a job ID, an ordinal, or a title keyword.”</text>
+  <text class="box-text" x="760" y="482">The system stays recoverable instead of collapsing into generic failure.</text>
+
+  <path class="line" d="M290 229 H360"/>
+  <path class="line" d="M580 229 H650"/>
+  <path class="line" d="M870 229 H950"/>
+  <path class="line" d="M290 459 H360"/>
+  <path class="line" d="M660 459 H740"/>
+</svg>

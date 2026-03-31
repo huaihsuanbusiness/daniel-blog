@@ -1,0 +1,79 @@
+<svg width="1280" height="640" viewBox="0 0 1280 640" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .bg { fill: #f8fafc; }
+      .title { font: 700 28px Arial, Inter, sans-serif; fill: #0f172a; }
+      .subtitle { font: 400 14px Arial, Inter, sans-serif; fill: #475569; }
+      .box-title { font: 700 16px Arial, Inter, sans-serif; fill: #0f172a; }
+      .box-text { font: 400 13px Arial, Inter, sans-serif; fill: #334155; }
+      .note { font: 400 12px Arial, Inter, sans-serif; fill: #64748b; }
+      .line-chat { fill: #dcfce7; stroke: #86efac; }
+      .store { fill: #dbeafe; stroke: #93c5fd; }
+      .logic { fill: #ffedd5; stroke: #fdba74; }
+      .route { fill: #ede9fe; stroke: #c4b5fd; }
+      .memory { fill: #fce7f3; stroke: #f9a8d4; }
+      .neutral { fill: #ffffff; stroke: #cbd5e1; }
+      .box { stroke-width: 1.5; rx: 18; ry: 18; }
+      .line { stroke: #64748b; stroke-width: 2.5; fill: none; marker-end: url(#arrow); }
+      .muted { opacity: 0.72; }
+    </style>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+    </marker>
+  </defs>
+
+  <rect class="bg" width="1280" height="640"/>
+  <text class="title" x="50" y="58">Part 2 Overview: from shortlist to decision-quality output</text>
+  <text class="subtitle" x="50" y="84">This part adds fast scoring, deep RAG analysis, and guardrails after Part 1 has already resolved which job the user means.</text>
+
+  <rect class="store box" x="50" y="160" width="180" height="96"/>
+  <text class="box-title" x="70" y="192">Saved Job Pool</text>
+  <text class="box-text" x="70" y="216">shortlist in jobs_raw</text>
+  <text class="box-text" x="70" y="234">new and old roles</text>
+
+  <rect class="logic box" x="290" y="130" width="230" height="156"/>
+  <text class="box-title" x="310" y="162">Fast Scoring Lane</text>
+  <text class="box-text" x="310" y="186">scan unscored jobs</text>
+  <text class="box-text" x="310" y="204">extract clean JD text</text>
+  <text class="box-text" x="310" y="222">run conservative LLM scoring</text>
+  <text class="box-text" x="310" y="240">write score back in batch</text>
+  <text class="note" x="310" y="264">cheap triage before heavy analysis</text>
+
+  <rect class="store box" x="590" y="160" width="170" height="96"/>
+  <text class="box-title" x="610" y="192">Ranked Shortlist</text>
+  <text class="box-text" x="610" y="216">score, relevance,</text>
+  <text class="box-text" x="610" y="234">reason summary</text>
+
+  <rect class="logic box" x="820" y="116" width="270" height="184"/>
+  <text class="box-title" x="840" y="148">Deep Analysis Lane</text>
+  <text class="box-text" x="840" y="172">resolve one target job</text>
+  <text class="box-text" x="840" y="190">retrieve CV evidence</text>
+  <text class="box-text" x="840" y="208">build company brief</text>
+  <text class="box-text" x="840" y="226">generate analyse / apply / interview output</text>
+  <text class="box-text" x="840" y="244">then run compliance checks</text>
+
+  <rect class="memory box" x="820" y="350" width="270" height="118"/>
+  <text class="box-title" x="840" y="382">Guardrails</text>
+  <text class="box-text" x="840" y="406">repair drifted analysis output</text>
+  <text class="box-text" x="840" y="424">format blocked states for LINE</text>
+  <text class="box-text" x="840" y="442">keep failure states continuable</text>
+
+  <rect class="line-chat box" x="1150" y="130" width="90" height="136"/>
+  <text class="box-title" x="1166" y="162">User</text>
+  <text class="box-text" x="1166" y="186">clear score</text>
+  <text class="box-text" x="1166" y="204">deep review</text>
+  <text class="box-text" x="1166" y="222">cover letter</text>
+  <text class="box-text" x="1166" y="240">interview prep</text>
+
+  <rect class="neutral box" x="50" y="392" width="670" height="146"/>
+  <text class="box-title" x="70" y="424">Key design idea</text>
+  <text class="box-text" x="70" y="448">Part 1 makes the workflow context-aware enough to resolve the right job.</text>
+  <text class="box-text" x="70" y="470">Part 2 then uses a cheap triage layer to save attention, and only sends a</text>
+  <text class="box-text" x="70" y="492">small number of promising roles into the more expensive evidence-and-judgement path.</text>
+
+  <path class="line" d="M230 208 H290"/>
+  <path class="line" d="M520 208 H590"/>
+  <path class="line" d="M760 208 H820"/>
+  <path class="line" d="M1090 208 H1150"/>
+  <path class="line" d="M955 300 V350"/>
+</svg>

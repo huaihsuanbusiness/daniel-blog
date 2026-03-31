@@ -1,0 +1,80 @@
+<svg width="1280" height="620" viewBox="0 0 1280 620" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .bg { fill: #f8fafc; }
+      .title { font: 700 28px Arial, Inter, sans-serif; fill: #0f172a; }
+      .subtitle { font: 400 14px Arial, Inter, sans-serif; fill: #475569; }
+      .box-title { font: 700 16px Arial, Inter, sans-serif; fill: #0f172a; }
+      .box-text { font: 400 13px Arial, Inter, sans-serif; fill: #334155; }
+      .note { font: 400 12px Arial, Inter, sans-serif; fill: #64748b; }
+      .store { fill: #dbeafe; stroke: #93c5fd; }
+      .logic { fill: #ffedd5; stroke: #fdba74; }
+      .route { fill: #ede9fe; stroke: #c4b5fd; }
+      .neutral { fill: #ffffff; stroke: #cbd5e1; }
+      .box { stroke-width: 1.5; rx: 18; ry: 18; }
+      .line { stroke: #64748b; stroke-width: 2.5; fill: none; marker-end: url(#arrow); }
+    </style>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+    </marker>
+  </defs>
+
+  <rect class="bg" width="1280" height="620"/>
+  <text class="title" x="50" y="58">Fast scoring lane: cheap enough to run in bulk, strict enough to be useful</text>
+  <text class="subtitle" x="50" y="84">This lane is not the final judge. It is a conservative sorter that makes the shortlist much more usable.</text>
+
+  <rect class="store box" x="50" y="170" width="180" height="100"/>
+  <text class="box-title" x="70" y="202">Unscored Jobs</text>
+  <text class="box-text" x="70" y="226">rows with no score yet</text>
+  <text class="box-text" x="70" y="244">from jobs_raw</text>
+
+  <rect class="logic box" x="290" y="146" width="200" height="148"/>
+  <text class="box-title" x="310" y="178">JD Fetch</text>
+  <text class="box-text" x="310" y="202">pull detail page</text>
+  <text class="box-text" x="310" y="220">through Zyte</text>
+  <text class="box-text" x="310" y="238">one role at a time</text>
+
+  <rect class="logic box" x="550" y="130" width="230" height="180"/>
+  <text class="box-title" x="570" y="162">JD Text Extract</text>
+  <text class="box-text" x="570" y="186">decode body</text>
+  <text class="box-text" x="570" y="204">strip HTML noise</text>
+  <text class="box-text" x="570" y="222">cut to usable JD body</text>
+  <text class="box-text" x="570" y="240">build short query_text</text>
+
+  <rect class="route box" x="840" y="120" width="260" height="200"/>
+  <text class="box-title" x="860" y="152">Constrained LLM Scoring</text>
+  <text class="box-text" x="860" y="176">candidate profile + COMPANY_NAME + JOB_TEXT</text>
+  <text class="box-text" x="860" y="194">no web, no fame bonus, no rumours</text>
+  <text class="box-text" x="860" y="212">missing evidence defaults to neutral</text>
+  <text class="box-text" x="860" y="230">return score + is_relevant + reason</text>
+
+  <rect class="store box" x="50" y="370" width="220" height="118"/>
+  <text class="box-title" x="70" y="402">Staging Store</text>
+  <text class="box-text" x="70" y="426">collect per-job scoring rows</text>
+  <text class="box-text" x="70" y="444">before sheet writeback</text>
+
+  <rect class="store box" x="340" y="370" width="220" height="118"/>
+  <text class="box-title" x="360" y="402">Batch Aggregator</text>
+  <text class="box-text" x="360" y="426">merge staged rows</text>
+  <text class="box-text" x="360" y="444">into one update payload</text>
+
+  <rect class="store box" x="630" y="370" width="220" height="118"/>
+  <text class="box-title" x="650" y="402">Bulk Writeback</text>
+  <text class="box-text" x="650" y="426">update jobs_raw</text>
+  <text class="box-text" x="650" y="444">score, relevance, reason</text>
+
+  <rect class="neutral box" x="910" y="370" width="320" height="144"/>
+  <text class="box-title" x="930" y="402">Why this lane matters</text>
+  <text class="box-text" x="930" y="426">It does not try to replace judgement.</text>
+  <text class="box-text" x="930" y="448">It creates a better order of attention so that</text>
+  <text class="box-text" x="930" y="470">expensive deep analysis is reserved for the roles</text>
+  <text class="box-text" x="930" y="492">that most likely deserve it.</text>
+
+  <path class="line" d="M230 220 H290"/>
+  <path class="line" d="M490 220 H550"/>
+  <path class="line" d="M780 220 H840"/>
+  <path class="line" d="M970 320 C940 350, 840 390, 850 430"/>
+  <path class="line" d="M270 430 H340"/>
+  <path class="line" d="M560 430 H630"/>
+  <path class="line" d="M850 430 H910"/>
+</svg>
