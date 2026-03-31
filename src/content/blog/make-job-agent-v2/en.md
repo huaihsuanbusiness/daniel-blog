@@ -7,13 +7,13 @@ date: 2026-03-31
 featured: false
 ---
 
-My earlier job agent was a very typical Make-first design.
+My earlier job agent was a very typical Make-first design
 
-Start with a workflow that runs.  
-Then add intake.  
-Then add a router.  
-Then bolt on scoring, RAG, and error formatting.  
-Eventually it starts to look like an agent, and to be fair, it does work.
+Start with a workflow that runs
+Then add intake
+Then add a router
+Then bolt on scoring, RAG, and error formatting
+Eventually it starts to look like an agent, and to be fair, it does work
 
 But the longer I lived with it, the clearer one thing became: **the problem was not missing features. The problem was that the “brain” was sitting in the wrong place.**
 
@@ -25,7 +25,7 @@ The moment you want to upgrade the whole thing into **ChatGPT as the planner, wi
 - Who is meant to read and write data, run batches, score jobs, and produce outputs?
 - Which fields are run logs, and which ones are really planner state?
 
-So this article is not merely about “hooking Make up to MCP”.  
+So this article is not merely about “hooking Make up to MCP”
 The real subject is this: **how to take a system that was using flowcharts to fake orchestration and refactor it into a set of tools with clear boundaries and stable contracts that ChatGPT can call reliably.**
 
 If I had to compress the migration into a single line, it would be this:
@@ -36,8 +36,8 @@ If I had to compress the migration into a single line, it would be this:
 
 ## What problem this article is actually solving
 
-I did not build this v2 because v1 was unusable.  
-I built it because v1 eventually hit a very obvious “hybrid creature” ceiling.
+I did not build this v2 because v1 was unusable
+I built it because v1 eventually hit a very obvious “hybrid creature” ceiling
 
 In v1, Make was doing too many jobs at once:
 
@@ -49,8 +49,8 @@ In v1, Make was doing too many jobs at once:
 - state machine  
 - run logger
 
-That is perfectly reasonable when the workflow is still small.  
-Once ChatGPT enters the picture, though, the design starts fighting itself.
+That is perfectly reasonable when the workflow is still small
+Once ChatGPT enters the picture, though, the design starts fighting itself
 
 Because ChatGPT is naturally better at:
 
@@ -69,8 +69,8 @@ Whereas Make is better at:
 - logging / persistence
 - background work
 
-So the core of v2 is not “more features”.  
-It is **cleaner responsibility boundaries**.
+So the core of v2 is not “more features”
+It is **cleaner responsibility boundaries**
 
 ## The decision rule I am keeping from this migration
 
@@ -79,7 +79,7 @@ If the first two articles were about making a workflow feel more agentic, the mo
 > **If a step is mainly about understanding the user, deciding the next move, or composing the final reply, it should move upwards to the client side.**  
 > **If a step can be described as a stable input-output transformation, a deterministic side effect, or a bounded integration, it should stay in Make.**
 
-That rule ended up being my main knife for separating v1 from v2.
+That rule ended up being my main knife for separating v1 from v2
 
 It also saved me from a lot of unnecessary abstract debates, such as:
 
@@ -100,41 +100,41 @@ v1 was not bad. In fact, it already had quite a few good ideas:
 - separate lanes for `query_jobs`, `analyze_job`, and `generate_application_pack`
 - structured clarification instead of generic fallback
 
-But as soon as ChatGPT became part of the system, three structural bottlenecks became hard to ignore.
+But as soon as ChatGPT became part of the system, three structural bottlenecks became hard to ignore
 
 ### 1. Reasoning was still trapped inside the flowchart
 
-v1 cared deeply about intake, but semantic parsing, continuation logic, route selection, and bits of fallback logic still lived in Make.
+v1 cared deeply about intake, but semantic parsing, continuation logic, route selection, and bits of fallback logic still lived in Make
 
-That means the real planner was not ChatGPT. It was a combination of scenario filters, task tables, and router branches.
+That means the real planner was not ChatGPT. It was a combination of scenario filters, task tables, and router branches
 
 The system could still be useful, but it came with a cost:  
 **on the surface you had an LLM “brain”, but in reality the flowchart was still quietly making the important decisions.**
 
 ### 2. User-facing language was still inside the execution layer
 
-The error formatter in v1 had a lot of product sense, but it was still Make speaking directly to the user.
+The error formatter in v1 had a lot of product sense, but it was still Make speaking directly to the user
 
 That creates an awkward experience:  
-ChatGPT is supposedly the planner, yet the user often ends up reading sentences produced by workflow nodes rather than replies integrated by the model.
+ChatGPT is supposedly the planner, yet the user often ends up reading sentences produced by workflow nodes rather than replies integrated by the model
 
 ### 3. Planner state and run logs were mixed together
 
-In v1, a table like `agent_tasks` made sense because it doubled as a queue and a memory source.
+In v1, a table like `agent_tasks` made sense because it doubled as a queue and a memory source
 
 In an MCP world, those two ideas need to be separated:
 
 - what the tool run did
 - what the system believes should happen next
 
-The first is a **run log**.  
-The second is **client-side reasoning**.
+The first is a **run log**
+The second is **client-side reasoning**
 
-If those remain blended in Make, you end up with logs that are verbose but not very reusable, tools that run but do not compose well, and helpers that exist without truly becoming dependencies.
+If those remain blended in Make, you end up with logs that are verbose but not very reusable, tools that run but do not compose well, and helpers that exist without truly becoming dependencies
 
 ## What v2 really changes is not the entry point, but the responsibility model
 
-I did not rewrite the whole system into some other framework.  
+I did not rewrite the whole system into some other framework
 What I did was more restrained, but also more painful: **I moved the “brain” out of the old system and left execution behind.**
 
 The split now looks much more like this:
@@ -166,7 +166,7 @@ The most important change is this:
 
 ## The tool map I ended up keeping in v2
 
-This time I did not keep the old scenario IDs, nor did I use raw Make module numbers. I renamed things in the order a reader can actually understand them.
+This time I did not keep the old scenario IDs, nor did I use raw Make module numbers. I renamed things in the order a reader can actually understand them
 
 ### v2 tool map
 
@@ -181,12 +181,12 @@ This time I did not keep the old scenario IDs, nor did I use raw Make module num
 | V2-07 | Generate Job Output Tool | public tool | Performs deep analysis, cover-letter generation, or interview-brief generation after resolution succeeds. |
 | V2-08 | Tool Run Logger | internal pattern | Records standardised run metadata, outputs, and errors. |
 
-The full naming map is in `./resource/component-index.md`.
+The full naming map is in `./resource/component-index.md`
 
-## Phase 1: do not start with toolisation. Start with the contract.
+## Phase 1: do not start with toolisation. Start with the contract
 
-The most important first step in this migration was not renaming scenarios.  
-It was designing a shared contract.
+The most important first step in this migration was not renaming scenarios
+It was designing a shared contract
 
 If you inspect the five v2 blueprints, you will notice that almost all of them begin with a very similar pre-processing layer:
 
@@ -203,7 +203,7 @@ If you inspect the five v2 blueprints, you will notice that almost all of them b
 - stamp `started_at`
 - standardise `context_error_code` / `context_error_message`
 
-That sounds dull, but it is the foundation of the whole migration.
+That sounds dull, but it is the foundation of the whole migration
 
 Without that layer, you quickly end up with:
 
@@ -249,24 +249,24 @@ Without that layer, you quickly end up with:
 - `finished_at`
 - `duration_ms`
 
-That is why I call this migration “from toolisation to contracts”.  
-Only once every tool agrees to the same basic contract can the MCP client treat them as a coherent capability surface rather than five unrelated mini-workflows.
+That is why I call this migration “from toolisation to contracts”
+Only once every tool agrees to the same basic contract can the MCP client treat them as a coherent capability surface rather than five unrelated mini-workflows
 
 ## Phase 2: separate public tools from helpers, or the architecture will grow crooked
 
-In v2 I deliberately made `v2_helper_resolve_job_reference` a **helper**, not a public tool. It validates request context, attempts to extract a job reference from `target_job_id` or `user_message_raw`, or falls back to `target_company + target_title`, and then returns a `completed`, `blocked`, or `failed` result. It is explicitly marked `is_public_tool: false`.
+In v2 I deliberately made `v2_helper_resolve_job_reference` a **helper**, not a public tool. It validates request context, attempts to extract a job reference from `target_job_id` or `user_message_raw`, or falls back to `target_company + target_title`, and then returns a `completed`, `blocked`, or `failed` result. It is explicitly marked `is_public_tool: false`
 
 That distinction matters because it avoids a very common trap:
 
 > **Just because a helper exists as a callable unit does not mean the architecture is correctly wired.**
 
-If `generate_job_output` merely “might call” the helper, correctness still depends on whether the client happened to choose the right call order.
+If `generate_job_output` merely “might call” the helper, correctness still depends on whether the client happened to choose the right call order
 
-That is not stable enough.
+That is not stable enough
 
-What matters is that the **main tool truly depends on the helper internally**.
+What matters is that the **main tool truly depends on the helper internally**
 
-And that is exactly what `v2_tool_generate_job_output` does. It normalises `task_type`, restricts execution to `analyze_job`, `generate_application_pack`, and `prepare_interview_brief`, and then calls the `v2_helper_resolve_job_reference` subscenario before doing anything expensive. Only after resolution succeeds does it continue to JD fetch, Qdrant retrieval, company research, and generation.
+And that is exactly what `v2_tool_generate_job_output` does. It normalises `task_type`, restricts execution to `analyze_job`, `generate_application_pack`, and `prepare_interview_brief`, and then calls the `v2_helper_resolve_job_reference` subscenario before doing anything expensive. Only after resolution succeeds does it continue to JD fetch, Qdrant retrieval, company research, and generation
 
 One practical rule I am keeping from that mistake is:
 
@@ -277,7 +277,7 @@ One practical rule I am keeping from that mistake is:
 
 ### V2-03 Recent Job Fetch Tool
 
-This tool brings recent jobs into the local pool, but it is not merely a scraper.
+This tool brings recent jobs into the local pool, but it is not merely a scraper
 
 It normalises parameters such as:
 
@@ -287,7 +287,7 @@ It normalises parameters such as:
 - `page_from`
 - `page_to`
 
-Then it generates JobStreet search URLs, fetches the result pages, extracts job cards, filters out obviously bad rows, deduplicates against `jobs_raw`, and returns inserted jobs and diagnostics. It also generates a **lite response**, keeping only summary fields and previews so that no single spreadsheet cell becomes absurdly large.
+Then it generates JobStreet search URLs, fetches the result pages, extracts job cards, filters out obviously bad rows, deduplicates against `jobs_raw`, and returns inserted jobs and diagnostics. It also generates a **lite response**, keeping only summary fields and previews so that no single spreadsheet cell becomes absurdly large
 
 This is exactly the sort of job Make should keep doing:
 
@@ -296,11 +296,11 @@ This is exactly the sort of job Make should keep doing:
 - write side effects
 - summarised outputs
 
-It does not need the client to “think” for it.
+It does not need the client to “think” for it
 
 ### V2-04 Job Query Tool
 
-This tool turns local shortlist querying into a genuinely useful MCP tool rather than an old router lane with a new label.
+This tool turns local shortlist querying into a genuinely useful MCP tool rather than an old router lane with a new label
 
 It supports:
 
@@ -312,15 +312,15 @@ It supports:
 - `sort_by`
 - `sort_order`
 
-And it is not rigid about parameter names. Aliases such as `topK`, `sortBy`, and `score_threshold` are normalised into the same query specification. It also chooses sensible default ordering based on the presence of ranking signals: if you are clearly ranking, it prefers score; otherwise it leans towards recency. The response is structured rather than chatty, containing `jobs`, `count`, `relevant_count`, `primary_job_id`, and `job_ids`.
+And it is not rigid about parameter names. Aliases such as `topK`, `sortBy`, and `score_threshold` are normalised into the same query specification. It also chooses sensible default ordering based on the presence of ranking signals: if you are clearly ranking, it prefers score; otherwise it leans towards recency. The response is structured rather than chatty, containing `jobs`, `count`, `relevant_count`, `primary_job_id`, and `job_ids`
 
-That matters in an MCP setting because the job of a query tool is not to “sound clever”. Its job is to return results that the client can compose reliably.
+That matters in an MCP setting because the job of a query tool is not to “sound clever”. Its job is to return results that the client can compose reliably
 
 ### V2-05 Bulk Scoring Tool
 
-This tool inherits the fast-scoring logic from Part 2, but it is no longer a hidden lane inside a chat workflow. It is now a clearly surfaced public tool.
+This tool inherits the fast-scoring logic from Part 2, but it is no longer a hidden lane inside a chat workflow. It is now a clearly surfaced public tool
 
-It first builds a Google Sheets query using `target_job_id` and `force_rescore`. Without a target job, it defaults to all rows that still have a `detail_url` and no score. Then it fetches detail pages one by one, extracts JD text, and even prepares a retrieval query string so that the scoring prompt can look at more than just the job title.
+It first builds a Google Sheets query using `target_job_id` and `force_rescore`. Without a target job, it defaults to all rows that still have a `detail_url` and no score. Then it fetches detail pages one by one, extracts JD text, and even prepares a retrieval query string so that the scoring prompt can look at more than just the job title
 
 What I like most is that the response remains intentionally narrow:
 
@@ -329,13 +329,13 @@ What I like most is that the response remains intentionally narrow:
 - `jobs`
 - `summary`
 
-That makes it feel like a real execution tool rather than a pseudo-agent trying to narrate the whole decision.
+That makes it feel like a real execution tool rather than a pseudo-agent trying to narrate the whole decision
 
 ### V2-06 Resolve Job Reference Helper
 
 I have already mentioned this helper, but it has another teaching value:
 
-it shows what it means to treat **reference resolution as its own capability** rather than a side effect of chat logic.
+it shows what it means to treat **reference resolution as its own capability** rather than a side effect of chat logic
 
 Whether you give it:
 
@@ -343,14 +343,14 @@ Whether you give it:
 - `user_message_raw`
 - `target_company + target_title`
 
-it turns the input into a bounded lookup against `jobs_raw`. If context is incomplete, it returns explicit failures such as `INVALID_REQUEST_CONTEXT` or `MISSING_JOB_REFERENCE` rather than trying to improvise.
+it turns the input into a bounded lookup against `jobs_raw`. If context is incomplete, it returns explicit failures such as `INVALID_REQUEST_CONTEXT` or `MISSING_JOB_REFERENCE` rather than trying to improvise
 
 That gives the client a clean answer to a very important question:  
 did this fail because the reference was unresolved, or because the downstream generator failed?
 
 ### V2-07 Generate Job Output Tool
 
-This is the most substantial tool in v2.
+This is the most substantial tool in v2
 
 It wraps an entire expensive pipeline into one high-value public interface:
 
@@ -375,22 +375,22 @@ What is worth learning from this tool is not that it does many things. It is tha
 - raw markdown must coexist with structured extraction
 - final generation must be separate from the repair layer
 
-That separation is what makes the output much easier for the client to trust and reuse.
+That separation is what makes the output much easier for the client to trust and reuse
 
 ![Public tools, helper dependency, and the deep-output path](./resource/make-mcp-refactor-03-tools.svg)
 
 ## The eight migration pitfalls that are worth writing down
 
-I am writing this section very directly because these mistakes are painfully easy to repeat.
+I am writing this section very directly because these mistakes are painfully easy to repeat
 
 ### Pitfall 1: scenario-as-tool is not the same as architecture-as-tools
 
-Renaming an old scenario and exposing it through MCP is only step one.  
-If the underlying responsibility model has not changed, what you really have is an “MCP shell with an old router brain”.
+Renaming an old scenario and exposing it through MCP is only step one
+If the underlying responsibility model has not changed, what you really have is an “MCP shell with an old router brain”
 
 ### Pitfall 2: a helper being called once does not mean dependency is established
 
-If the main path does not **internally require** reference resolution, correctness still depends on whether the client happened to choose the right order. That is fragile.
+If the main path does not **internally require** reference resolution, correctness still depends on whether the client happened to choose the right order. That is fragile
 
 ### Pitfall 3: returning only long prose starves the client
 
@@ -401,32 +401,32 @@ If a tool returns nothing but a long markdown block, the client quickly loses th
 - `error`
 - `meta`
 
-rather than only body text.
+rather than only body text
 
 ### Pitfall 4: inconsistent context fields will break tracing very quickly
 
-`request_id`, `session_id`, and `trace_id` look tedious at first. The moment one of them is missing, cross-tool tracing, subscenario debugging, and failure diagnosis all become messier than they should be. That is why v2 validates them almost everywhere.
+`request_id`, `session_id`, and `trace_id` look tedious at first. The moment one of them is missing, cross-tool tracing, subscenario debugging, and failure diagnosis all become messier than they should be. That is why v2 validates them almost everywhere
 
 ### Pitfall 5: Google Sheets is convenient, but it is not a long-form content store
 
-I had already felt this in v1, and in v2 I formalised the workaround.  
-`fetch_recent_jobs` explicitly generates a lite response rather than stuffing the full payload back into one huge cell.
+I had already felt this in v1, and in v2 I formalised the workaround
+`fetch_recent_jobs` explicitly generates a lite response rather than stuffing the full payload back into one huge cell
 
 ### Pitfall 6: enums should not pretend to be free-form strings
 
-If a field will be consumed by downstream state logic, the model should not be allowed to invent new variants. `generate_job_output` handles this by normalising aliases before collapsing them into an allowed set.
+If a field will be consumed by downstream state logic, the model should not be allowed to invent new variants. `generate_job_output` handles this by normalising aliases before collapsing them into an allowed set
 
 ### Pitfall 7: mixing company research with final judgement muddies the evidence chain
 
-If the same step is searching, summarising, and judging all at once, facts and inferences begin to blur. Splitting the company brief from the final generation step keeps the evidence trail far cleaner.
+If the same step is searching, summarising, and judging all at once, facts and inferences begin to blur. Splitting the company brief from the final generation step keeps the evidence trail far cleaner
 
 ### Pitfall 8: you cannot assume one generation pass will always be compliant
 
-The compliance checker and repair layer after `generate_job_output` are not over-engineering. They are simply an honest response to the fact that generative outputs will occasionally drift in structure and calibration even when the prompt is already strict.
+The compliance checker and repair layer after `generate_job_output` are not over-engineering. They are simply an honest response to the fact that generative outputs will occasionally drift in structure and calibration even when the prompt is already strict
 
 ## When you should not rush into this kind of v2
 
-I also want to add a counterexample section, because not every Make workflow deserves this sort of MCP migration.
+I also want to add a counterexample section, because not every Make workflow deserves this sort of MCP migration
 
 ### Cases where v2 may be overkill
 
@@ -437,7 +437,7 @@ I also want to add a counterexample section, because not every Make workflow des
 - the user is clicking buttons rather than having natural dialogue
 - your biggest bottleneck is data quality rather than orchestration
 
-In those situations, a simpler Make scenario, perhaps with a modest LLM step, may already be enough. If you force MCP into the system too early, you may end up with more contracts, more logs, and more maintenance without gaining corresponding value.
+In those situations, a simpler Make scenario, perhaps with a modest LLM step, may already be enough. If you force MCP into the system too early, you may end up with more contracts, more logs, and more maintenance without gaining corresponding value
 
 So my practical rule now is this:
 
@@ -448,12 +448,12 @@ So my practical rule now is this:
 
 ### Step 1. Separate “thinking” steps from “doing” steps
 
-Do not begin by cutting along scenario names.  
-Cut along responsibility boundaries.
+Do not begin by cutting along scenario names
+Cut along responsibility boundaries
 
 ### Step 2. Define a common contract before defining public tools
 
-Without a shared contract, every tool becomes a bespoke adapter.
+Without a shared contract, every tool becomes a bespoke adapter
 
 ### Step 3. Separate helpers from public tools
 
@@ -462,16 +462,16 @@ is this a genuinely independent capability, or a mandatory dependency inside the
 
 ### Step 4. Make public tools return structured results, not just prose
 
-At minimum: `summary`, `data`, `error`, `meta`.
+At minimum: `summary`, `data`, `error`, `meta`
 
 ### Step 5. Move user-facing reasoning back up to the client
 
-Let Make execute.  
-Let ChatGPT speak, ask, integrate, and decide.
+Let Make execute
+Let ChatGPT speak, ask, integrate, and decide
 
 ### Step 6. Solve the boring production problems early
 
-Response size, traceability, retries, and stable logging feel unglamorous. In practice, they are the things that will bite you every week.
+Response size, traceability, retries, and stable logging feel unglamorous. In practice, they are the things that will bite you every week
 
 ![Migration playbook and the pitfalls that matter](./resource/make-mcp-refactor-04-playbook.svg)
 
@@ -481,9 +481,9 @@ If the first two articles were about giving a Make workflow an agentic feel, thi
 
 > **Once ChatGPT becomes the planner, Make is most valuable not as a fake “brain”, but as a stable execution layer made of tools with explicit contracts and clear boundaries.**
 
-That, to me, is the most worthwhile part of the whole refactor.
+That, to me, is the most worthwhile part of the whole refactor
 
-The system did not become better because the number of scenarios increased.  
+The system did not become better because the number of scenarios increased
 It became better because from this point on:
 
 - the planner and the executor are separate
@@ -491,6 +491,6 @@ It became better because from this point on:
 - run logs and user replies are no longer blended
 - results can be composed reliably instead of being trapped inside one old flow
 
-That is the moment the system starts to feel less like a growing flowchart maze and more like an execution layer that can actually evolve.
+That is the moment the system starts to feel less like a growing flowchart maze and more like an execution layer that can actually evolve
 
 ---

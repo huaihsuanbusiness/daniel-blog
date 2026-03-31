@@ -82,6 +82,25 @@ const sortLabel = sortLabels[lang];
 </div>
 
 <script>
+  // ── Category tab sync ──────────────────────────────────────
+  function syncCategoryTabs() {
+    const url = window.location.href;
+    const activeCategory = new URL(url).searchParams.get('category') || 'all';
+    const tabs = document.querySelectorAll('[data-filter-category]');
+    tabs.forEach((tab) => {
+      const cat = tab.getAttribute('data-filter-category');
+      const isActive = cat === activeCategory;
+      tab.classList.toggle('active', isActive);
+      if (isActive) {
+        tab.setAttribute('aria-current', 'page');
+      } else {
+        tab.removeAttribute('aria-current');
+      }
+    });
+  }
+
+  syncCategoryTabs();
+
   // ── View toggle ──────────────────────────────────────────────
   const gridBtn = document.getElementById('view-grid');
   const listBtn = document.getElementById('view-list');
