@@ -89,8 +89,6 @@ Part 1 uses `JA-01` to `JA-21`. Part 2 will continue from `JA-22`, so the naming
 | JA-20 | Reply Composer | Converts results into LINE-friendly human text. |
 | JA-21 | LINE Messenger | Sends the final message back to LINE. |
 
-The full series index is also available in `./resource/component-index.md`.
-
 ## Why I deliberately did **not** use an LLM for the first parser
 
 This is probably the easiest part of the design to misunderstand.

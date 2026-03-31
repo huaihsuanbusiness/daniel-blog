@@ -229,12 +229,13 @@ const primaryCategory = normalizeCategory(post.data.categories[0] || '') ?? null
     border-collapse: separate;
     border-spacing: 0;
     margin: var(--space-5) 0;
-    overflow: hidden;
     border: 1px solid var(--color-border);
     border-radius: 14px;
     background: color-mix(in srgb, var(--color-surface) 96%, transparent);
     display: block;
     overflow-x: auto;
+    overflow-y: auto;
+    max-height: 520px;
   }
 
   .post-content :global(thead) {

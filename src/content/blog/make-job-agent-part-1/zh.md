@@ -89,8 +89,6 @@ featured: false
 | JA-20 | Reply Composer | 把結果整理成 LINE 可讀的回覆。 |
 | JA-21 | LINE Messenger | 把訊息真正送回 LINE。 |
 
-完整的系列編號表我另外放在 `./resource/component-index.md`。
-
 ## 為什麼 intake 這一層，我刻意先不用 LLM
 
 這篇最容易被誤會的地方，反而是這一段。
