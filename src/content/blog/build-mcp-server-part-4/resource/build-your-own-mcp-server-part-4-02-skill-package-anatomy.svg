@@ -1,0 +1,62 @@
+<svg width="1280" height="760" viewBox="0 0 1280 760" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<style>
+      .bg { fill: #f8fafc; }
+      .title { font: 700 28px Arial, Inter, sans-serif; fill: #0f172a; }
+      .subtitle { font: 400 14px Arial, Inter, sans-serif; fill: #475569; }
+      .section { font: 700 16px Arial, Inter, sans-serif; fill: #0f172a; }
+      .text { font: 400 13px Arial, Inter, sans-serif; fill: #334155; }
+      .note { font: 400 12px Arial, Inter, sans-serif; fill: #64748b; }
+      .b1 { fill: #dbeafe; stroke: #93c5fd; }
+      .b2 { fill: #ede9fe; stroke: #c4b5fd; }
+      .b3 { fill: #dcfce7; stroke: #86efac; }
+      .b4 { fill: #ffedd5; stroke: #fdba74; }
+      .b5 { fill: #ffffff; stroke: #cbd5e1; }
+      .box { stroke-width: 1.5; rx: 18; ry: 18; }
+      .line { stroke: #64748b; stroke-width: 2.4; fill: none; marker-end: url(#arrow); }
+      .dash { stroke: #94a3b8; stroke-width: 2.2; fill: none; stroke-dasharray: 7 6; marker-end: url(#arrow); }
+    </style>
+<marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#64748b"/></marker>
+</defs>
+<rect class="bg" x="0" y="0" width="1280" height="760"/>
+<text class="title" x="50" y="56">Skill Package Anatomy</text>
+<text class="subtitle" x="50" y="82">A useful skill layer separates manifests, instructions, examples, eval notes, and backend contracts.</text>
+<rect class="b4 box" x="60" y="140" width="250" height="260"/>
+<text class="section" x="80" y="170">skills/job_scoring</text>
+<text class="text" x="80" y="196">manifest.yaml</text>
+<text class="text" x="80" y="218">instructions.md</text>
+<text class="text" x="80" y="240">examples.md</text>
+<text class="text" x="80" y="262">eval-notes.md</text>
+<text class="text" x="80" y="296">This is the skill package.</text>
+<rect class="b5 box" x="360" y="140" width="250" height="260"/>
+<text class="section" x="380" y="170">contracts/</text>
+<text class="text" x="380" y="196">Backend contracts</text>
+<text class="text" x="380" y="218">Input / output shapes</text>
+<text class="text" x="380" y="240">Execution semantics</text>
+<text class="text" x="380" y="274">What the execution layer</text>
+<text class="text" x="380" y="296">actually promises</text>
+<rect class="b5 box" x="660" y="140" width="250" height="260"/>
+<text class="section" x="680" y="170">make_adapter/</text>
+<text class="text" x="680" y="196">Endpoints</text>
+<text class="text" x="680" y="218">Request / response mapping</text>
+<text class="text" x="680" y="240">Secret boundary</text>
+<text class="text" x="680" y="274">Where execution integration</text>
+<text class="text" x="680" y="296">details belong</text>
+<rect class="b3 box" x="960" y="140" width="250" height="260"/>
+<text class="section" x="980" y="170">mcp_server/</text>
+<text class="text" x="980" y="196">Skill loader</text>
+<text class="text" x="980" y="218">Router / allow rules</text>
+<text class="text" x="980" y="240">Public tool exposure</text>
+<text class="text" x="980" y="274">Where skills become a</text>
+<text class="text" x="980" y="296">live runtime surface</text>
+<rect class="b1 box" x="250" y="450" width="760" height="190"/>
+<text class="section" x="270" y="480">Three-layer architecture</text>
+<text class="text" x="270" y="506">ChatGPT host → FastMCP skill server → Make execution layer</text>
+<text class="text" x="270" y="540">Skills live above backend tools.</text>
+<text class="text" x="270" y="562">They do not replace the execution contracts; they organise them into a clearer capability surface.</text>
+<path class="line" d="M310 270 H360"/>
+<path class="line" d="M610 270 H660"/>
+<path class="line" d="M910 270 H960"/>
+<path class="line" d="M1080 400 V450"/>
+<path class="line" d="M185 400 V450"/>
+</svg>

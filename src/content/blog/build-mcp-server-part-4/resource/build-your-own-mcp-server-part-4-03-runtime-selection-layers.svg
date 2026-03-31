@@ -1,0 +1,59 @@
+<svg width="1280" height="760" viewBox="0 0 1280 760" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<style>
+      .bg { fill: #f8fafc; }
+      .title { font: 700 28px Arial, Inter, sans-serif; fill: #0f172a; }
+      .subtitle { font: 400 14px Arial, Inter, sans-serif; fill: #475569; }
+      .section { font: 700 16px Arial, Inter, sans-serif; fill: #0f172a; }
+      .text { font: 400 13px Arial, Inter, sans-serif; fill: #334155; }
+      .note { font: 400 12px Arial, Inter, sans-serif; fill: #64748b; }
+      .b1 { fill: #dbeafe; stroke: #93c5fd; }
+      .b2 { fill: #ede9fe; stroke: #c4b5fd; }
+      .b3 { fill: #dcfce7; stroke: #86efac; }
+      .b4 { fill: #ffedd5; stroke: #fdba74; }
+      .b5 { fill: #ffffff; stroke: #cbd5e1; }
+      .box { stroke-width: 1.5; rx: 18; ry: 18; }
+      .line { stroke: #64748b; stroke-width: 2.4; fill: none; marker-end: url(#arrow); }
+      .dash { stroke: #94a3b8; stroke-width: 2.2; fill: none; stroke-dasharray: 7 6; marker-end: url(#arrow); }
+    </style>
+<marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#64748b"/></marker>
+</defs>
+<rect class="bg" x="0" y="0" width="1280" height="760"/>
+<text class="title" x="50" y="56">Runtime Selection Layers</text>
+<text class="subtitle" x="50" y="82">The model is influenced by more than the repository skill files.</text>
+<rect class="b5 box" x="60" y="150" width="250" height="220"/>
+<text class="section" x="80" y="180">Layer 1: repo assets</text>
+<text class="text" x="80" y="206">manifest.yaml</text>
+<text class="text" x="80" y="228">instructions.md</text>
+<text class="text" x="80" y="250">examples.md</text>
+<text class="text" x="80" y="272">eval-notes.md</text>
+<text class="text" x="80" y="306">Great, but not sufficient.</text>
+<rect class="b4 box" x="360" y="150" width="250" height="220"/>
+<text class="section" x="380" y="180">Layer 2: tool metadata</text>
+<text class="text" x="380" y="206">Tool name</text>
+<text class="text" x="380" y="228">Description / docstring</text>
+<text class="text" x="380" y="250">Input schema</text>
+<text class="text" x="380" y="284">This often has a stronger</text>
+<text class="text" x="380" y="306">immediate effect on choice.</text>
+<rect class="b2 box" x="660" y="150" width="250" height="220"/>
+<text class="section" x="680" y="180">Layer 3: live deployment</text>
+<text class="text" x="680" y="206">Was the code deployed?</text>
+<text class="text" x="680" y="228">Was the service restarted?</text>
+<text class="text" x="680" y="250">Was inventory reloaded?</text>
+<text class="text" x="680" y="284">Static repo != live runtime</text>
+<rect class="b3 box" x="960" y="150" width="250" height="220"/>
+<text class="section" x="980" y="180">Layer 4: host session</text>
+<text class="text" x="980" y="206">Did the client refresh?</text>
+<text class="text" x="980" y="228">Is the new tool view live?</text>
+<text class="text" x="980" y="250">Is old behaviour cached</text>
+<text class="text" x="980" y="272">in the current session?</text>
+<text class="text" x="980" y="306">Sessions matter.</text>
+<rect class="b1 box" x="180" y="440" width="900" height="180"/>
+<text class="section" x="200" y="470">Failure mode that taught me this</text>
+<text class="text" x="200" y="496">“Score all unscored jobs” was being routed to job_ingestion rather than job_scoring.</text>
+<text class="text" x="200" y="518">The issue was not only the skill files. The public tool surface still made ingestion look like a Swiss army knife.</text>
+<text class="text" x="200" y="552">That is why runtime selection is a multi-layer problem.</text>
+<path class="line" d="M310 260 H360"/>
+<path class="line" d="M610 260 H660"/>
+<path class="line" d="M910 260 H960"/>
+</svg>

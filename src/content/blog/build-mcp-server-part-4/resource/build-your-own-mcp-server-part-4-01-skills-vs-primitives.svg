@@ -1,0 +1,55 @@
+<svg width="1280" height="760" viewBox="0 0 1280 760" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<style>
+      .bg { fill: #f8fafc; }
+      .title { font: 700 28px Arial, Inter, sans-serif; fill: #0f172a; }
+      .subtitle { font: 400 14px Arial, Inter, sans-serif; fill: #475569; }
+      .section { font: 700 16px Arial, Inter, sans-serif; fill: #0f172a; }
+      .text { font: 400 13px Arial, Inter, sans-serif; fill: #334155; }
+      .note { font: 400 12px Arial, Inter, sans-serif; fill: #64748b; }
+      .b1 { fill: #dbeafe; stroke: #93c5fd; }
+      .b2 { fill: #ede9fe; stroke: #c4b5fd; }
+      .b3 { fill: #dcfce7; stroke: #86efac; }
+      .b4 { fill: #ffedd5; stroke: #fdba74; }
+      .b5 { fill: #ffffff; stroke: #cbd5e1; }
+      .box { stroke-width: 1.5; rx: 18; ry: 18; }
+      .line { stroke: #64748b; stroke-width: 2.4; fill: none; marker-end: url(#arrow); }
+      .dash { stroke: #94a3b8; stroke-width: 2.2; fill: none; stroke-dasharray: 7 6; marker-end: url(#arrow); }
+    </style>
+<marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#64748b"/></marker>
+</defs>
+<rect class="bg" x="0" y="0" width="1280" height="760"/>
+<text class="title" x="50" y="56">Skills vs MCP Primitives</text>
+<text class="subtitle" x="50" y="82">Skills are a layer you design; tools, resources, and prompts are protocol primitives.</text>
+<rect class="b1 box" x="70" y="140" width="300" height="220"/>
+<text class="section" x="90" y="170">MCP primitives</text>
+<text class="text" x="90" y="196">Tools</text>
+<text class="text" x="90" y="218">Resources</text>
+<text class="text" x="90" y="240">Prompts</text>
+<text class="text" x="90" y="274">These are part of the</text>
+<text class="text" x="90" y="296">protocol surface itself.</text>
+<rect class="b4 box" x="460" y="140" width="340" height="220"/>
+<text class="section" x="480" y="170">Skill layer</text>
+<text class="text" x="480" y="196">High-level intent packaging</text>
+<text class="text" x="480" y="218">Allowed backend tools</text>
+<text class="text" x="480" y="240">Guardrails and fallbacks</text>
+<text class="text" x="480" y="262">Input contract and examples</text>
+<text class="text" x="480" y="296">This is your design layer,</text>
+<text class="text" x="480" y="318">not a built-in MCP primitive.</text>
+<rect class="b3 box" x="890" y="140" width="300" height="220"/>
+<text class="section" x="910" y="170">Runtime surface</text>
+<text class="text" x="910" y="196">Public tool names</text>
+<text class="text" x="910" y="218">Descriptions</text>
+<text class="text" x="910" y="240">Input schema</text>
+<text class="text" x="910" y="262">Session-visible inventory</text>
+<text class="text" x="910" y="296">This is what the model</text>
+<text class="text" x="910" y="318">actually chooses from.</text>
+<rect class="b5 box" x="180" y="430" width="860" height="180"/>
+<text class="section" x="200" y="460">Working rule</text>
+<text class="text" x="200" y="486">Skills help you organise capability boundaries above raw tools.</text>
+<text class="text" x="200" y="508">They become valuable when the server loads them, aligns public tool metadata with them,</text>
+<text class="text" x="200" y="530">and exposes only the surfaces you actually want the model to see.</text>
+<path class="line" d="M370 250 H460"/>
+<path class="line" d="M800 250 H890"/>
+<path class="line" d="M630 360 V430"/>
+</svg>

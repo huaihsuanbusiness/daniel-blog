@@ -1,0 +1,63 @@
+<svg width="1280" height="760" viewBox="0 0 1280 760" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<style>
+      .bg { fill: #f8fafc; }
+      .title { font: 700 28px Arial, Inter, sans-serif; fill: #0f172a; }
+      .subtitle { font: 400 14px Arial, Inter, sans-serif; fill: #475569; }
+      .section { font: 700 16px Arial, Inter, sans-serif; fill: #0f172a; }
+      .text { font: 400 13px Arial, Inter, sans-serif; fill: #334155; }
+      .note { font: 400 12px Arial, Inter, sans-serif; fill: #64748b; }
+      .b1 { fill: #dbeafe; stroke: #93c5fd; }
+      .b2 { fill: #ede9fe; stroke: #c4b5fd; }
+      .b3 { fill: #dcfce7; stroke: #86efac; }
+      .b4 { fill: #ffedd5; stroke: #fdba74; }
+      .b5 { fill: #ffffff; stroke: #cbd5e1; }
+      .box { stroke-width: 1.5; rx: 18; ry: 18; }
+      .line { stroke: #64748b; stroke-width: 2.4; fill: none; marker-end: url(#arrow); }
+      .dash { stroke: #94a3b8; stroke-width: 2.2; fill: none; stroke-dasharray: 7 6; marker-end: url(#arrow); }
+    </style>
+<marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#64748b"/></marker>
+</defs>
+<rect class="bg" x="0" y="0" width="1280" height="760"/>
+<text class="title" x="50" y="56">Skill Development Loop</text>
+<text class="subtitle" x="50" y="82">A repeatable loop helps prevent beautiful skill files from drifting away from runtime behaviour.</text>
+<rect class="b4 box" x="80" y="160" width="220" height="150"/>
+<text class="section" x="100" y="190">1. Cut the boundary</text>
+<text class="text" x="100" y="216">What is this skill for?</text>
+<text class="text" x="100" y="238">What must it not do?</text>
+<text class="text" x="100" y="260">Should helpers stay hidden?</text>
+<rect class="b2 box" x="360" y="160" width="220" height="150"/>
+<text class="section" x="380" y="190">2. Write the manifest</text>
+<text class="text" x="380" y="216">Name, version, context,</text>
+<text class="text" x="380" y="238">allowed backends, guardrails,</text>
+<text class="text" x="380" y="260">fallbacks, output contract</text>
+<rect class="b5 box" x="640" y="160" width="220" height="150"/>
+<text class="section" x="660" y="190">3. Write instructions</text>
+<text class="text" x="660" y="216">Use / do not use</text>
+<text class="text" x="660" y="238">Backend rules</text>
+<text class="text" x="660" y="260">Operational response style</text>
+<rect class="b3 box" x="920" y="160" width="220" height="150"/>
+<text class="section" x="940" y="190">4. Align server surface</text>
+<text class="text" x="940" y="216">Tool names</text>
+<text class="text" x="940" y="238">Descriptions</text>
+<text class="text" x="940" y="260">Input schema</text>
+<text class="text" x="940" y="282">Public vs internal tools</text>
+<rect class="b5 box" x="220" y="410" width="300" height="170"/>
+<text class="section" x="240" y="440">5. Test edge cases</text>
+<text class="text" x="240" y="466">Score-only vs ingestion</text>
+<text class="text" x="240" y="488">Ambiguous user requests</text>
+<text class="text" x="240" y="510">Missing reference cases</text>
+<text class="text" x="240" y="532">Targeted vs bulk paths</text>
+<rect class="b1 box" x="620" y="410" width="300" height="170"/>
+<text class="section" x="640" y="440">6. Verify live runtime</text>
+<text class="text" x="640" y="466">Deploy</text>
+<text class="text" x="640" y="488">Restart service</text>
+<text class="text" x="640" y="510">Reload inventory</text>
+<text class="text" x="640" y="532">Refresh host session</text>
+<path class="line" d="M300 235 H360"/>
+<path class="line" d="M580 235 H640"/>
+<path class="line" d="M860 235 H920"/>
+<path class="line" d="M1030 310 C1030 360, 900 360, 900 410"/>
+<path class="line" d="M370 310 C370 360, 370 380, 370 410"/>
+<path class="line" d="M520 495 H620"/>
+</svg>
