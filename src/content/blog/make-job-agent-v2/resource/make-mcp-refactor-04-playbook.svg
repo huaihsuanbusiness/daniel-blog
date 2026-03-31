@@ -1,0 +1,78 @@
+<svg width="1280" height="820" viewBox="0 0 1280 820" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .bg { fill:#f8fafc; }
+      .title { font:700 28px Arial, Inter, sans-serif; fill:#0f172a; }
+      .subtitle { font:400 14px Arial, Inter, sans-serif; fill:#475569; }
+      .boxTitle { font:700 16px Arial, Inter, sans-serif; fill:#0f172a; }
+      .text { font:400 13px Arial, Inter, sans-serif; fill:#334155; }
+      .small { font:400 12px Arial, Inter, sans-serif; fill:#64748b; }
+      .step { fill:#dbeafe; stroke:#60a5fa; stroke-width:1.6; }
+      .pit { fill:#fff7ed; stroke:#fb923c; stroke-width:1.6; }
+      .note { fill:#ffffff; stroke:#cbd5e1; stroke-width:1.4; }
+      .line { stroke:#64748b; stroke-width:2.4; fill:none; marker-end:url(#arrow); }
+    </style>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8.5" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+    </marker>
+  </defs>
+  <rect class="bg" x="0" y="0" width="1280" height="820"/>
+  <text class="title" x="50" y="56">Migration Playbook and Pitfalls</text>
+  <text class="subtitle" x="50" y="82">A practical order of operations beats elegant diagrams designed too early.</text>
+
+  <rect class="note" x="50" y="124" rx="22" ry="22" width="560" height="636"/>
+  <text class="boxTitle" x="78" y="160">6-step migration playbook</text>
+
+  <rect class="step" x="86" y="188" rx="16" ry="16" width="488" height="74"/>
+  <text class="boxTitle" x="108" y="216">1. Separate “thinking” from “doing”</text>
+  <text class="text" x="108" y="240">Cut by responsibility, not by old scenario names.</text>
+
+  <rect class="step" x="86" y="286" rx="16" ry="16" width="488" height="74"/>
+  <text class="boxTitle" x="108" y="314">2. Define a shared contract first</text>
+  <text class="text" x="108" y="338">Context, run metadata, response envelope, traceability.</text>
+
+  <rect class="step" x="86" y="384" rx="16" ry="16" width="488" height="74"/>
+  <text class="boxTitle" x="108" y="412">3. Expose public tools only where it helps</text>
+  <text class="text" x="108" y="436">Do not confuse tool count with architectural progress.</text>
+
+  <rect class="step" x="86" y="482" rx="16" ry="16" width="488" height="74"/>
+  <text class="boxTitle" x="108" y="510">4. Turn helpers into real dependencies</text>
+  <text class="text" x="108" y="534">If the main path needs it, wire it inside the main path.</text>
+
+  <rect class="step" x="86" y="580" rx="16" ry="16" width="488" height="74"/>
+  <text class="boxTitle" x="108" y="608">5. Return structured outputs, not only prose</text>
+  <text class="text" x="108" y="632">The client should be able to inspect and recombine results.</text>
+
+  <rect class="step" x="86" y="678" rx="16" ry="16" width="488" height="54"/>
+  <text class="boxTitle" x="108" y="708">6. Solve response size and tracing early</text>
+
+  <rect class="note" x="670" y="124" rx="22" ry="22" width="560" height="636"/>
+  <text class="boxTitle" x="698" y="160">8 pitfalls that matter</text>
+
+  <rect class="pit" x="706" y="188" rx="14" ry="14" width="488" height="50"/>
+  <text class="text" x="724" y="218">1. Scenario-as-tool ≠ architecture-as-tools</text>
+
+  <rect class="pit" x="706" y="252" rx="14" ry="14" width="488" height="50"/>
+  <text class="text" x="724" y="282">2. “Helper exists” ≠ “dependency is real”</text>
+
+  <rect class="pit" x="706" y="316" rx="14" ry="14" width="488" height="50"/>
+  <text class="text" x="724" y="346">3. Long markdown only → weak composition</text>
+
+  <rect class="pit" x="706" y="380" rx="14" ry="14" width="488" height="50"/>
+  <text class="text" x="724" y="410">4. Missing request / session / trace fields</text>
+
+  <rect class="pit" x="706" y="444" rx="14" ry="14" width="488" height="50"/>
+  <text class="text" x="724" y="474">5. Sheets used as a full content warehouse</text>
+
+  <rect class="pit" x="706" y="508" rx="14" ry="14" width="488" height="50"/>
+  <text class="text" x="724" y="538">6. Enums treated as free text</text>
+
+  <rect class="pit" x="706" y="572" rx="14" ry="14" width="488" height="50"/>
+  <text class="text" x="724" y="602">7. Company research and judgement mixed together</text>
+
+  <rect class="pit" x="706" y="636" rx="14" ry="14" width="488" height="50"/>
+  <text class="text" x="724" y="666">8. No compliance checker or repair path</text>
+
+  <rect class="note" x="770" y="704" rx="16" ry="16" width="360" height="36"/>
+  <text class="small" x="792" y="727">Boundary before elegance. Contract before cleverness.</text>
+</svg>

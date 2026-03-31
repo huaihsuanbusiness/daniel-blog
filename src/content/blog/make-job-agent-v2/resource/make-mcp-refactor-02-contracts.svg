@@ -1,0 +1,83 @@
+<svg width="1280" height="760" viewBox="0 0 1280 760" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .bg { fill:#f8fafc; }
+      .title { font:700 28px Arial, Inter, sans-serif; fill:#0f172a; }
+      .subtitle { font:400 14px Arial, Inter, sans-serif; fill:#475569; }
+      .boxTitle { font:700 16px Arial, Inter, sans-serif; fill:#0f172a; }
+      .text { font:400 13px Arial, Inter, sans-serif; fill:#334155; }
+      .small { font:400 12px Arial, Inter, sans-serif; fill:#64748b; }
+      .green { fill:#dcfce7; stroke:#4ade80; stroke-width:1.6; }
+      .blue { fill:#dbeafe; stroke:#60a5fa; stroke-width:1.6; }
+      .orange { fill:#ffedd5; stroke:#fb923c; stroke-width:1.6; }
+      .purple { fill:#ede9fe; stroke:#a78bfa; stroke-width:1.6; }
+      .note { fill:#ffffff; stroke:#cbd5e1; stroke-width:1.4; }
+      .line { stroke:#64748b; stroke-width:2.4; fill:none; marker-end:url(#arrow); }
+    </style>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8.5" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+    </marker>
+  </defs>
+  <rect class="bg" x="0" y="0" width="1280" height="760"/>
+  <text class="title" x="50" y="56">Contract-first Architecture</text>
+  <text class="subtitle" x="50" y="82">Public tools share one response envelope, so the client can compose them predictably.</text>
+
+  <rect class="green" x="70" y="150" rx="18" ry="18" width="250" height="110"/>
+  <text class="boxTitle" x="90" y="180">MCP Client</text>
+  <text class="text" x="90" y="204">Understand request</text>
+  <text class="text" x="90" y="224">Choose tool order</text>
+  <text class="text" x="90" y="244">Integrate final reply</text>
+
+  <rect class="blue" x="430" y="150" rx="18" ry="18" width="250" height="110"/>
+  <text class="boxTitle" x="450" y="180">Make MCP Server</text>
+  <text class="text" x="450" y="204">Expose scenarios</text>
+  <text class="text" x="450" y="224">Route calls to execution</text>
+  <text class="text" x="450" y="244">Keep logs and persistence</text>
+
+  <rect class="orange" x="790" y="124" rx="18" ry="18" width="420" height="166"/>
+  <text class="boxTitle" x="810" y="154">Shared Request Contract</text>
+  <text class="text" x="810" y="180">request_id</text>
+  <text class="text" x="810" y="202">session_id</text>
+  <text class="text" x="810" y="224">trace_id</text>
+  <text class="text" x="810" y="246">source_channel / actor_id / parent_run_id</text>
+  <text class="text" x="810" y="268">tool_name / tool_version / schema_version / run_id</text>
+
+  <rect class="purple" x="430" y="360" rx="18" ry="18" width="780" height="314"/>
+  <text class="boxTitle" x="450" y="390">Shared Response Envelope</text>
+  <text class="small" x="450" y="412">Every tool should be easy to inspect, trace, and compose.</text>
+
+  <rect class="note" x="458" y="438" rx="14" ry="14" width="220" height="190"/>
+  <text class="boxTitle" x="476" y="466">Top-level shape</text>
+  <text class="text" x="476" y="492">ok</text>
+  <text class="text" x="476" y="514">status</text>
+  <text class="text" x="476" y="536">summary</text>
+  <text class="text" x="476" y="558">data</text>
+  <text class="text" x="476" y="580">error</text>
+  <text class="text" x="476" y="602">meta</text>
+
+  <rect class="note" x="710" y="438" rx="14" ry="14" width="220" height="190"/>
+  <text class="boxTitle" x="728" y="466">Traceability fields</text>
+  <text class="text" x="728" y="492">response_json</text>
+  <text class="text" x="728" y="514">response_size_bytes</text>
+  <text class="text" x="728" y="536">result_preview</text>
+  <text class="text" x="728" y="558">result_ref</text>
+  <text class="text" x="728" y="580">finished_at</text>
+  <text class="text" x="728" y="602">duration_ms</text>
+
+  <rect class="note" x="962" y="438" rx="14" ry="14" width="220" height="190"/>
+  <text class="boxTitle" x="980" y="466">Why it matters</text>
+  <text class="text" x="980" y="492">Stable tool composition</text>
+  <text class="text" x="980" y="514">Consistent error handling</text>
+  <text class="text" x="980" y="536">Cross-tool traces</text>
+  <text class="text" x="980" y="558">Retryability</text>
+  <text class="text" x="980" y="580">Cleaner client logic</text>
+
+  <path class="line" d="M320 205 H430"/>
+  <path class="line" d="M680 205 H790"/>
+  <path class="line" d="M555 260 V360"/>
+  <rect class="note" x="70" y="360" rx="16" ry="16" width="250" height="160"/>
+  <text class="boxTitle" x="90" y="392">Boundary rule</text>
+  <text class="text" x="90" y="418">Reasoning goes up</text>
+  <text class="text" x="90" y="440">Bounded execution stays down</text>
+  <text class="text" x="90" y="462">Contract fields make that split hold</text>
+</svg>

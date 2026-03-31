@@ -1,0 +1,86 @@
+<svg width="1280" height="780" viewBox="0 0 1280 780" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .bg { fill:#f8fafc; }
+      .title { font:700 28px Arial, Inter, sans-serif; fill:#0f172a; }
+      .subtitle { font:400 14px Arial, Inter, sans-serif; fill:#475569; }
+      .boxTitle { font:700 16px Arial, Inter, sans-serif; fill:#0f172a; }
+      .text { font:400 13px Arial, Inter, sans-serif; fill:#334155; }
+      .small { font:400 12px Arial, Inter, sans-serif; fill:#64748b; }
+      .tool { fill:#dbeafe; stroke:#60a5fa; stroke-width:1.6; }
+      .helper { fill:#fce7f3; stroke:#f472b6; stroke-width:1.6; }
+      .internal { fill:#ffedd5; stroke:#fb923c; stroke-width:1.6; }
+      .note { fill:#ffffff; stroke:#cbd5e1; stroke-width:1.4; }
+      .line { stroke:#64748b; stroke-width:2.4; fill:none; marker-end:url(#arrow); }
+      .dash { stroke:#94a3b8; stroke-width:2; fill:none; stroke-dasharray:7 6; marker-end:url(#arrow); }
+    </style>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8.5" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+    </marker>
+  </defs>
+  <rect class="bg" x="0" y="0" width="1280" height="780"/>
+  <text class="title" x="50" y="56">Public Tools and the Helper Dependency</text>
+  <text class="subtitle" x="50" y="82">The key architectural move is not exposing more tools. It is wiring the mandatory dependency correctly.</text>
+
+  <rect class="tool" x="70" y="150" rx="18" ry="18" width="220" height="104"/>
+  <text class="boxTitle" x="90" y="180">fetch_recent_jobs</text>
+  <text class="text" x="90" y="204">Build URLs</text>
+  <text class="text" x="90" y="224">Fetch pages, parse, dedupe</text>
+  <text class="text" x="90" y="244">Insert new rows</text>
+
+  <rect class="tool" x="70" y="318" rx="18" ry="18" width="220" height="104"/>
+  <text class="boxTitle" x="90" y="348">query_jobs</text>
+  <text class="text" x="90" y="372">Filter shortlist</text>
+  <text class="text" x="90" y="392">Score / keyword / sort</text>
+  <text class="text" x="90" y="412">Return structured jobs</text>
+
+  <rect class="tool" x="70" y="486" rx="18" ry="18" width="220" height="104"/>
+  <text class="boxTitle" x="90" y="516">bulk_score_new_jobs</text>
+  <text class="text" x="90" y="540">Find unscored jobs</text>
+  <text class="text" x="90" y="560">Fetch JD and score in batch</text>
+  <text class="text" x="90" y="580">Write back scores</text>
+
+  <rect class="tool" x="402" y="318" rx="18" ry="18" width="260" height="104"/>
+  <text class="boxTitle" x="422" y="348">generate_job_output</text>
+  <text class="text" x="422" y="372">Public entry point</text>
+  <text class="text" x="422" y="392">analyze_job / cover letter / interview brief</text>
+  <text class="text" x="422" y="412">Must not start blind</text>
+
+  <rect class="helper" x="760" y="318" rx="18" ry="18" width="250" height="104"/>
+  <text class="boxTitle" x="780" y="348">resolve_job_reference</text>
+  <text class="text" x="780" y="372">Helper only</text>
+  <text class="text" x="780" y="392">job_id or company + title</text>
+  <text class="text" x="780" y="412">completed / blocked / failed</text>
+
+  <rect class="internal" x="1090" y="150" rx="18" ry="18" width="150" height="92"/>
+  <text class="boxTitle" x="1110" y="180">Fetch JD</text>
+  <text class="text" x="1110" y="204">detail page</text>
+  <text class="text" x="1110" y="224">clean text</text>
+
+  <rect class="internal" x="1090" y="278" rx="18" ry="18" width="150" height="92"/>
+  <text class="boxTitle" x="1110" y="308">Retrieve CV</text>
+  <text class="text" x="1110" y="332">Qdrant evidence</text>
+  <text class="text" x="1110" y="352">top snippets</text>
+
+  <rect class="internal" x="1090" y="406" rx="18" ry="18" width="150" height="92"/>
+  <text class="boxTitle" x="1110" y="436">Company Brief</text>
+  <text class="text" x="1110" y="460">facts vs inference</text>
+  <text class="text" x="1110" y="480">search grounding</text>
+
+  <rect class="internal" x="1090" y="534" rx="18" ry="18" width="150" height="92"/>
+  <text class="boxTitle" x="1110" y="564">Generate + Repair</text>
+  <text class="text" x="1110" y="588">final markdown</text>
+  <text class="text" x="1110" y="608">compliance check</text>
+
+  <path class="dash" d="M662 370 H760"/>
+  <path class="line" d="M1010 370 H1090"/>
+  <path class="line" d="M1165 242 V278"/>
+  <path class="line" d="M1165 370 V406"/>
+  <path class="line" d="M1165 498 V534"/>
+
+  <rect class="note" x="402" y="510" rx="16" ry="16" width="608" height="138"/>
+  <text class="boxTitle" x="424" y="538">Why the helper matters</text>
+  <text class="text" x="424" y="564">Bad architecture: the client “usually” remembers to call the helper first.</text>
+  <text class="text" x="424" y="586">Better architecture: generate_job_output internally requires the resolution layer.</text>
+  <text class="text" x="424" y="608">That turns “helper exists” into “dependency is real”.</text>
+</svg>

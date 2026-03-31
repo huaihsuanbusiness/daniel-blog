@@ -1,0 +1,96 @@
+<svg width="1280" height="740" viewBox="0 0 1280 740" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .bg { fill:#f8fafc; }
+      .title { font:700 28px Arial, Inter, sans-serif; fill:#0f172a; }
+      .subtitle { font:400 14px Arial, Inter, sans-serif; fill:#475569; }
+      .boxTitle { font:700 16px Arial, Inter, sans-serif; fill:#0f172a; }
+      .text { font:400 13px Arial, Inter, sans-serif; fill:#334155; }
+      .small { font:400 12px Arial, Inter, sans-serif; fill:#64748b; }
+      .v1 { fill:#ffedd5; stroke:#fb923c; stroke-width:1.6; }
+      .v2 { fill:#dbeafe; stroke:#60a5fa; stroke-width:1.6; }
+      .client { fill:#dcfce7; stroke:#4ade80; stroke-width:1.6; }
+      .helper { fill:#fce7f3; stroke:#f472b6; stroke-width:1.6; }
+      .note { fill:#ffffff; stroke:#cbd5e1; stroke-width:1.4; }
+      .line { stroke:#64748b; stroke-width:2.4; fill:none; marker-end:url(#arrow); }
+      .dash { stroke:#94a3b8; stroke-width:2; fill:none; stroke-dasharray:7 6; marker-end:url(#arrow); }
+    </style>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8.5" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+    </marker>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="1280" height="740"/>
+  <text class="title" x="50" y="56">V2 Refactor Overview</text>
+  <text class="subtitle" x="50" y="82">From a Make-first hybrid to a contract-first MCP execution engine.</text>
+
+  <rect class="note" x="50" y="120" rx="22" ry="22" width="540" height="560"/>
+  <text class="boxTitle" x="78" y="158">Before: Make-first Hybrid</text>
+  <text class="small" x="78" y="180">The “brain” and the “hands” are mixed together.</text>
+
+  <rect class="v1" x="88" y="214" rx="18" ry="18" width="200" height="92"/>
+  <text class="boxTitle" x="108" y="244">Chat / LINE Intake</text>
+  <text class="text" x="108" y="268">Webhook events</text>
+  <text class="text" x="108" y="288">Short user messages</text>
+
+  <rect class="v1" x="340" y="214" rx="18" ry="18" width="200" height="92"/>
+  <text class="boxTitle" x="360" y="244">Semantic Parsing</text>
+  <text class="text" x="360" y="268">Intent guessing</text>
+  <text class="text" x="360" y="288">Reference resolution</text>
+
+  <rect class="v1" x="88" y="354" rx="18" ry="18" width="200" height="92"/>
+  <text class="boxTitle" x="108" y="384">Router &amp; State</text>
+  <text class="text" x="108" y="408">Route type</text>
+  <text class="text" x="108" y="428">Dependency status</text>
+
+  <rect class="v1" x="340" y="354" rx="18" ry="18" width="200" height="92"/>
+  <text class="boxTitle" x="360" y="384">LLM / RAG / Errors</text>
+  <text class="text" x="360" y="408">Scoring</text>
+  <text class="text" x="360" y="428">Analysis + fallback text</text>
+
+  <rect class="v1" x="214" y="494" rx="18" ry="18" width="200" height="92"/>
+  <text class="boxTitle" x="234" y="524">User-facing Replies</text>
+  <text class="text" x="234" y="548">Templates from flow nodes</text>
+  <text class="text" x="234" y="568">Logs + planner state mixed</text>
+
+  <path class="line" d="M288 260 H340"/>
+  <path class="line" d="M188 306 V354"/>
+  <path class="line" d="M440 306 V354"/>
+  <path class="line" d="M288 540 H214"/>
+
+  <rect class="note" x="690" y="120" rx="22" ry="22" width="540" height="560"/>
+  <text class="boxTitle" x="718" y="158">After: MCP Execution Engine</text>
+  <text class="small" x="718" y="180">Reasoning moves up. Execution stays bounded.</text>
+
+  <rect class="client" x="728" y="214" rx="18" ry="18" width="464" height="98"/>
+  <text class="boxTitle" x="748" y="244">ChatGPT MCP Client</text>
+  <text class="text" x="748" y="268">Understand the user</text>
+  <text class="text" x="748" y="288">Pick tools, decide order, ask follow-ups, compose the final answer</text>
+
+  <rect class="v2" x="840" y="366" rx="18" ry="18" width="240" height="88"/>
+  <text class="boxTitle" x="860" y="396">Make MCP Server</text>
+  <text class="text" x="860" y="420">Expose scenarios as tools</text>
+  <text class="text" x="860" y="440">Keep execution deterministic</text>
+
+  <rect class="v2" x="728" y="510" rx="18" ry="18" width="180" height="96"/>
+  <text class="boxTitle" x="748" y="540">Public Tools</text>
+  <text class="text" x="748" y="564">fetch_recent_jobs</text>
+  <text class="text" x="748" y="584">query_jobs</text>
+
+  <rect class="v2" x="932" y="510" rx="18" ry="18" width="180" height="96"/>
+  <text class="boxTitle" x="952" y="540">Public Tools</text>
+  <text class="text" x="952" y="564">bulk_score_new_jobs</text>
+  <text class="text" x="952" y="584">generate_job_output</text>
+
+  <rect class="helper" x="1136" y="510" rx="18" ry="18" width="74" height="96"/>
+  <text class="boxTitle" x="1148" y="540">Helper</text>
+  <text class="text" x="1148" y="564">resolve</text>
+  <text class="text" x="1148" y="584">job ref</text>
+
+  <path class="line" d="M960 312 V366"/>
+  <path class="line" d="M960 454 V510"/>
+  <path class="dash" d="M1112 558 H1136"/>
+
+  <rect class="note" x="774" y="622" rx="16" ry="16" width="372" height="40"/>
+  <text class="small" x="792" y="648">Key shift: the client plans; Make executes through contracts.</text>
+</svg>
