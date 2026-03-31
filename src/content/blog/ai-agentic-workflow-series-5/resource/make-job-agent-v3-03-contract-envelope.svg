@@ -1,0 +1,30 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+<defs><style>.bg{fill:#f8fafc}.title{font:700 28px Arial,Inter,sans-serif;fill:#0f172a}.subtitle{font:400 14px Arial,Inter,sans-serif;fill:#475569}.boxt{font:700 16px Arial,Inter,sans-serif;fill:#0f172a}.txt{font:400 13px Arial,Inter,sans-serif;fill:#334155}.note{font:400 12px Arial,Inter,sans-serif;fill:#64748b}.edge{stroke-width:1.6;rx:18;ry:18}.line{stroke:#64748b;stroke-width:2.4;fill:none;marker-end:url(#arrow)}.g{fill:#dcfce7;stroke:#86efac}.b{fill:#dbeafe;stroke:#93c5fd}.o{fill:#ffedd5;stroke:#fdba74}.p{fill:#ede9fe;stroke:#c4b5fd}.n{fill:#fff;stroke:#cbd5e1}.r{fill:#ffe4e6;stroke:#fda4af}</style><marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#64748b"/></marker></defs>
+<rect class="bg" x="0" y="0" width="1280" height="720"/>
+<text class="title" x="50" y="56">The v3 contract envelope and internal helper policy</text>
+<text class="subtitle" x="50" y="82">Public tool runs carry consistent context and response shapes.</text>
+<rect class="b edge" x="80" y="150" width="270" height="180"/>
+<text class="boxt" x="98" y="180">Request context</text>
+<text class="txt" x="98" y="206">request_id</text>
+<text class="txt" x="98" y="226">session_id</text>
+<text class="txt" x="98" y="246">trace_id</text>
+<text class="txt" x="98" y="266">actor_id</text>
+<text class="txt" x="98" y="286">parent_run_id</text>
+<rect class="o edge" x="420" y="130" width="420" height="220"/>
+<text class="boxt" x="438" y="160">Response envelope</text>
+<text class="txt" x="438" y="186">ok / status / tool_name</text>
+<text class="txt" x="438" y="206">request_id / trace_id / run_id</text>
+<text class="txt" x="438" y="226">summary / data / error / meta</text>
+<text class="txt" x="438" y="246">tool_version / schema_version</text>
+<rect class="r edge" x="910" y="150" width="280" height="180"/>
+<text class="boxt" x="928" y="180">Internal helper policy</text>
+<text class="txt" x="928" y="206">resolve_job_reference</text>
+<text class="txt" x="928" y="226">stays internal</text>
+<text class="txt" x="928" y="246">called by decision support only</text>
+<rect class="n edge" x="270" y="410" width="700" height="120"/>
+<text class="boxt" x="288" y="440">Why it matters</text>
+<text class="txt" x="288" y="466">A stable envelope makes logging, replay, debugging, and host-side branching much easier.</text>
+<path class="line" d="M350 240 H420"/>
+<path class="line" d="M840 240 H910"/>
+<path class="line" d="M630 350 V410"/>
+</svg>

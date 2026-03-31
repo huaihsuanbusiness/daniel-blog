@@ -1,0 +1,34 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+<defs><style>.bg{fill:#f8fafc}.title{font:700 28px Arial,Inter,sans-serif;fill:#0f172a}.subtitle{font:400 14px Arial,Inter,sans-serif;fill:#475569}.boxt{font:700 16px Arial,Inter,sans-serif;fill:#0f172a}.txt{font:400 13px Arial,Inter,sans-serif;fill:#334155}.note{font:400 12px Arial,Inter,sans-serif;fill:#64748b}.edge{stroke-width:1.6;rx:18;ry:18}.line{stroke:#64748b;stroke-width:2.4;fill:none;marker-end:url(#arrow)}.g{fill:#dcfce7;stroke:#86efac}.b{fill:#dbeafe;stroke:#93c5fd}.o{fill:#ffedd5;stroke:#fdba74}.p{fill:#ede9fe;stroke:#c4b5fd}.n{fill:#fff;stroke:#cbd5e1}.r{fill:#ffe4e6;stroke:#fda4af}</style><marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#64748b"/></marker></defs>
+<rect class="bg" x="0" y="0" width="1280" height="720"/>
+<text class="title" x="50" y="56">The v3 architecture</text>
+<text class="subtitle" x="50" y="82">ChatGPT talks to a FastMCP gateway, which loads skill assets and calls stable Make execution tools.</text>
+<rect class="g edge" x="70" y="150" width="180" height="120"/>
+<text class="boxt" x="88" y="180">ChatGPT</text>
+<text class="txt" x="88" y="206">host</text>
+<text class="txt" x="88" y="226">user-facing orchestrator</text>
+<rect class="p edge" x="310" y="150" width="220" height="140"/>
+<text class="boxt" x="328" y="180">FastMCP gateway</text>
+<text class="txt" x="328" y="206">public skills</text>
+<text class="txt" x="328" y="226">visibility rules</text>
+<text class="txt" x="328" y="246">adapter layer</text>
+<rect class="r edge" x="590" y="130" width="240" height="180"/>
+<text class="boxt" x="608" y="160">GitHub skill registry</text>
+<text class="txt" x="608" y="186">manifests</text>
+<text class="txt" x="608" y="206">instructions</text>
+<text class="txt" x="608" y="226">examples</text>
+<text class="txt" x="608" y="246">router policy</text>
+<rect class="o edge" x="890" y="150" width="250" height="140"/>
+<text class="boxt" x="908" y="180">Make execution tools</text>
+<text class="txt" x="908" y="206">fetch_recent_jobs</text>
+<text class="txt" x="908" y="226">bulk_score_new_jobs</text>
+<text class="txt" x="908" y="246">query_jobs</text>
+<text class="txt" x="908" y="266">generate_job_output</text>
+<rect class="n edge" x="450" y="410" width="380" height="120"/>
+<text class="boxt" x="468" y="440">Internal helper</text>
+<text class="txt" x="468" y="466">resolve_job_reference stays behind the public surface</text>
+<path class="line" d="M250 210 H310"/>
+<path class="line" d="M530 220 H590"/>
+<path class="line" d="M830 220 H890"/>
+<path class="line" d="M700 310 V410"/>
+</svg>

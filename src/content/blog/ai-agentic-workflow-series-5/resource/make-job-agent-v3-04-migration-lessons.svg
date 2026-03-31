@@ -1,0 +1,33 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+<defs><style>.bg{fill:#f8fafc}.title{font:700 28px Arial,Inter,sans-serif;fill:#0f172a}.subtitle{font:400 14px Arial,Inter,sans-serif;fill:#475569}.boxt{font:700 16px Arial,Inter,sans-serif;fill:#0f172a}.txt{font:400 13px Arial,Inter,sans-serif;fill:#334155}.note{font:400 12px Arial,Inter,sans-serif;fill:#64748b}.edge{stroke-width:1.6;rx:18;ry:18}.line{stroke:#64748b;stroke-width:2.4;fill:none;marker-end:url(#arrow)}.g{fill:#dcfce7;stroke:#86efac}.b{fill:#dbeafe;stroke:#93c5fd}.o{fill:#ffedd5;stroke:#fdba74}.p{fill:#ede9fe;stroke:#c4b5fd}.n{fill:#fff;stroke:#cbd5e1}.r{fill:#ffe4e6;stroke:#fda4af}</style><marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#64748b"/></marker></defs>
+<rect class="bg" x="0" y="0" width="1280" height="720"/>
+<text class="title" x="50" y="56">The migration lessons from v2 to v3</text>
+<text class="subtitle" x="50" y="82">Keep Make for execution, but move public contracts and skill assets into a layer you govern directly.</text>
+<rect class="g edge" x="90" y="160" width="260" height="150"/>
+<text class="boxt" x="108" y="190">Keep</text>
+<text class="txt" x="108" y="216">Make business logic</text>
+<text class="txt" x="108" y="236">Sheets / datastore</text>
+<text class="txt" x="108" y="256">HTTP integrations</text>
+<rect class="r edge" x="410" y="160" width="260" height="150"/>
+<text class="boxt" x="428" y="190">Move</text>
+<text class="txt" x="428" y="216">public tool surface</text>
+<text class="txt" x="428" y="236">skill registry</text>
+<text class="txt" x="428" y="256">visibility policy</text>
+<rect class="b edge" x="730" y="160" width="260" height="150"/>
+<text class="boxt" x="748" y="190">Standardise</text>
+<text class="txt" x="748" y="216">request context</text>
+<text class="txt" x="748" y="236">response envelope</text>
+<text class="txt" x="748" y="256">version metadata</text>
+<rect class="p edge" x="1050" y="160" width="170" height="150"/>
+<text class="boxt" x="1068" y="190">Gain</text>
+<text class="txt" x="1068" y="216">cleaner routing</text>
+<text class="txt" x="1068" y="236">safer helpers</text>
+<text class="txt" x="1068" y="256">easier evolution</text>
+<rect class="n edge" x="280" y="410" width="660" height="120"/>
+<text class="boxt" x="298" y="440">Migration rule</text>
+<text class="txt" x="298" y="466">Do not migrate because “self-hosting sounds cooler”. Migrate when you need cleaner public contracts than the builder naturally exposes.</text>
+<path class="line" d="M350 235 H410"/>
+<path class="line" d="M670 235 H730"/>
+<path class="line" d="M990 235 H1050"/>
+<path class="line" d="M630 310 V410"/>
+</svg>
