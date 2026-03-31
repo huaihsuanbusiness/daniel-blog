@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1220" height="610" viewBox="0 0 1220 610">
+  <defs>
+    <style>
+      .title { font: 700 28px Inter, Arial, sans-serif; fill: #0f172a; }
+      .subtitle { font: 400 14px Inter, Arial, sans-serif; fill: #475569; }
+      .line { stroke: #64748b; stroke-width: 2.5; fill: none; marker-end: url(#arrow); }
+      .dash { stroke: #94a3b8; stroke-width: 2; fill: none; stroke-dasharray: 6 6; marker-end: url(#arrow); }
+      .note { font: 12px Inter, Arial, sans-serif; fill: #64748b; }
+    </style>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+    </marker>
+  </defs>
+  <rect width="1220" height="610" fill="#f8fafc"/>
+  <text x="48" y="52" class="title">Host / client / server boundaries</text>
+  <text x="48" y="78" class="subtitle">The host should reason. The server should expose capability. The backend should execute.</text>
+  <rect x="70" y="180" width="220" height="150" rx="18" ry="18" fill="#dcfce7" stroke="#86efac" stroke-width="1.5"/>
+<text x="90" y="210" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="700" fill="#0f172a">Host</text>
+<text x="90" y="235" font-family="Inter, Arial, sans-serif" font-size="13" fill="#334155">user interaction</text>
+<text x="90" y="255" font-family="Inter, Arial, sans-serif" font-size="13" fill="#334155">reasoning loop</text>
+<text x="90" y="275" font-family="Inter, Arial, sans-serif" font-size="13" fill="#334155">tool choice</text>
+<text x="90" y="295" font-family="Inter, Arial, sans-serif" font-size="13" fill="#334155">final answer</text>
+<rect x="360" y="180" width="220" height="150" rx="18" ry="18" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+<text x="380" y="210" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="700" fill="#0f172a">Client</text>
+<text x="380" y="235" font-family="Inter, Arial, sans-serif" font-size="13" fill="#334155">protocol session</text>
+<text x="380" y="255" font-family="Inter, Arial, sans-serif" font-size="13" fill="#334155">capability negotiation</text>
+<text x="380" y="275" font-family="Inter, Arial, sans-serif" font-size="13" fill="#334155">transport handling</text>
+<text x="380" y="295" font-family="Inter, Arial, sans-serif" font-size="13" fill="#334155">server connection</text>
+<rect x="650" y="180" width="220" height="150" rx="18" ry="18" fill="#ede9fe" stroke="#c4b5fd" stroke-width="1.5"/>
+<text x="670" y="210" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="700" fill="#0f172a">MCP Server</text>
+<text x="670" y="235" font-family="Inter, Arial, sans-serif" font-size="13" fill="#334155">skill exposure</text>
+<text x="670" y="255" font-family="Inter, Arial, sans-serif" font-size="13" fill="#334155">tool descriptions</text>
+<text x="670" y="275" font-family="Inter, Arial, sans-serif" font-size="13" fill="#334155">light routing</text>
+<text x="670" y="295" font-family="Inter, Arial, sans-serif" font-size="13" fill="#334155">contract surface</text>
+<rect x="940" y="180" width="200" height="150" rx="18" ry="18" fill="#dbeafe" stroke="#93c5fd" stroke-width="1.5"/>
+<text x="960" y="210" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="700" fill="#0f172a">Backend</text>
+<text x="960" y="235" font-family="Inter, Arial, sans-serif" font-size="13" fill="#334155">Make flows</text>
+<text x="960" y="255" font-family="Inter, Arial, sans-serif" font-size="13" fill="#334155">HTTP / DB / Sheets</text>
+<text x="960" y="275" font-family="Inter, Arial, sans-serif" font-size="13" fill="#334155">side effects</text>
+<text x="960" y="295" font-family="Inter, Arial, sans-serif" font-size="13" fill="#334155">execution</text>
+<rect x="200" y="420" width="360" height="130" rx="18" ry="18" fill="#fff1f2" stroke="#fda4af" stroke-width="1.5"/>
+<text x="220" y="450" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="700" fill="#0f172a">Do not bury here</text>
+<text x="220" y="475" font-family="Inter, Arial, sans-serif" font-size="13" fill="#334155">follow-up resolution</text>
+<text x="220" y="495" font-family="Inter, Arial, sans-serif" font-size="13" fill="#334155">which skill to call next</text>
+<text x="220" y="515" font-family="Inter, Arial, sans-serif" font-size="13" fill="#334155">how to answer the user</text>
+<rect x="680" y="420" width="360" height="130" rx="18" ry="18" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+<text x="700" y="450" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="700" fill="#0f172a">Good things to keep here</text>
+<text x="700" y="475" font-family="Inter, Arial, sans-serif" font-size="13" fill="#334155">fetch jobs</text>
+<text x="700" y="495" font-family="Inter, Arial, sans-serif" font-size="13" fill="#334155">query shortlist</text>
+<text x="700" y="515" font-family="Inter, Arial, sans-serif" font-size="13" fill="#334155">score jobs</text>
+<text x="700" y="535" font-family="Inter, Arial, sans-serif" font-size="13" fill="#334155">generate job-specific output</text>
+<path class="line" d="M290 255 H360"/>
+<path class="line" d="M580 255 H650"/>
+<path class="line" d="M870 255 H940"/>
+<path class="dash" d="M470 330 V420"/>
+<path class="dash" d="M760 330 V420"/>
+</svg>

@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1220" height="610" viewBox="0 0 1220 610">
+  <defs>
+    <style>
+      .title { font: 700 28px Inter, Arial, sans-serif; fill: #0f172a; }
+      .subtitle { font: 400 14px Inter, Arial, sans-serif; fill: #475569; }
+      .line { stroke: #64748b; stroke-width: 2.5; fill: none; marker-end: url(#arrow); }
+      .dash { stroke: #94a3b8; stroke-width: 2; fill: none; stroke-dasharray: 6 6; marker-end: url(#arrow); }
+      .note { font: 12px Inter, Arial, sans-serif; fill: #64748b; }
+    </style>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+    </marker>
+  </defs>
+  <rect width="1220" height="610" fill="#f8fafc"/>
+  <text x="48" y="52" class="title">Migration ladder</text>
+  <text x="48" y="78" class="subtitle">The safe path is usually contracts first, remote server later.</text>
+  <rect x="70" y="200" width="240" height="150" rx="18" ry="18" fill="#dbeafe" stroke="#93c5fd" stroke-width="1.5"/>
+<text x="90" y="230" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="700" fill="#0f172a">1. Stabilise backend contracts</text>
+<text x="90" y="255" font-family="Inter, Arial, sans-serif" font-size="13" fill="#334155">clean inputs / outputs</text>
+<text x="90" y="275" font-family="Inter, Arial, sans-serif" font-size="13" fill="#334155">predictable failures</text>
+<path class="line" d="M310 275 H360"/>
+<rect x="360" y="200" width="240" height="150" rx="18" ry="18" fill="#ede9fe" stroke="#c4b5fd" stroke-width="1.5"/>
+<text x="380" y="230" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="700" fill="#0f172a">2. Define high-level skills</text>
+<text x="380" y="255" font-family="Inter, Arial, sans-serif" font-size="13" fill="#334155">group tools by user intent</text>
+<text x="380" y="275" font-family="Inter, Arial, sans-serif" font-size="13" fill="#334155">hide raw flow names</text>
+<path class="line" d="M600 275 H650"/>
+<rect x="650" y="200" width="240" height="150" rx="18" ry="18" fill="#dcfce7" stroke="#86efac" stroke-width="1.5"/>
+<text x="670" y="230" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="700" fill="#0f172a">3. Add a thin MCP server</text>
+<text x="670" y="255" font-family="Inter, Arial, sans-serif" font-size="13" fill="#334155">expose only public capabilities</text>
+<text x="670" y="275" font-family="Inter, Arial, sans-serif" font-size="13" fill="#334155">keep helpers internal</text>
+<path class="line" d="M890 275 H940"/>
+<rect x="940" y="200" width="240" height="150" rx="18" ry="18" fill="#ffedd5" stroke="#fdba74" stroke-width="1.5"/>
+<text x="960" y="230" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="700" fill="#0f172a">4. Connect a host</text>
+<text x="960" y="255" font-family="Inter, Arial, sans-serif" font-size="13" fill="#334155">ChatGPT reasons over skills</text>
+<text x="960" y="275" font-family="Inter, Arial, sans-serif" font-size="13" fill="#334155">server executes safely</text>
+<rect x="320" y="430" width="520" height="120" rx="18" ry="18" fill="#fff1f2" stroke="#fda4af" stroke-width="1.5"/>
+<text x="340" y="460" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="700" fill="#0f172a">What not to do</text>
+<text x="340" y="485" font-family="Inter, Arial, sans-serif" font-size="13" fill="#334155">Do not self-host first and hope that contracts, naming, and descriptions somehow sort themselves out later.</text>
+</svg>
