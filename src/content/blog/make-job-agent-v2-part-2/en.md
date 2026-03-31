@@ -1,5 +1,5 @@
 ---
-title: "How to Build a Context-Aware Job Agent in Make — Part 2"
+title: "AI Agentic Workflow Series 2 — How to Build a Context-Aware Job Agent in Make — Part 2"
 description: "Part 2 of the job-agent build log: fast scoring, RAG-based deep analysis, and guardrails that turn shortlisted roles into decision-quality output."
 categories: ["ai"]
 tags: ["ai", "make", "agent", "job-agent", "workflow", "rag", "automation"]
