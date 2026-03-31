@@ -37,7 +37,7 @@ There is one principle underneath both steps that I ended up trusting more and m
 
 > **not every job deserves heavyweight analysis**
 >
-> If you can use a cheap, conservative, well-bounded triage layer to push obvious mismatches down the queue, you preserve both compute and human attention for the roles that genuinely justify deeper work. [^anthropic-effective-agents][^openai-practical-agents]
+> If you can use a cheap, conservative, well-bounded triage layer to push obvious mismatches down the queue, you preserve both compute and human attention for the roles that genuinely justify deeper work.
 
 ## Part 2 component map
 
@@ -80,7 +80,7 @@ That is exactly why I am comfortable letting the model do more here. The problem
 - which gaps are learnable, and which ones are real shortlist risks
 - if I do apply, how should I position my experience credibly
 
-If you try to force all of that through a purely rule-based flow, the result often becomes brittle and fragmented. A model can do this sort of evaluative work rather naturally, provided the inputs are bounded, the output is disciplined, and the guardrails are explicit. [^anthropic-effective-agents][^rag-paper]
+If you try to force all of that through a purely rule-based flow, the result often becomes brittle and fragmented. A model can do this sort of evaluative work rather naturally, provided the inputs are bounded, the output is disciplined, and the guardrails are explicit.
 
 ## Stage one: fast scoring is not the final answer, it is a time-saving triage layer
 
@@ -158,7 +158,7 @@ What matters here is not just that there is a vector database in the loop. What 
 
 > deep analysis does not need the whole CV. It needs **the parts of the CV that are most relevant to this specific JD**.
 
-That is what makes RAG genuinely useful here. In the original RAG formulation, Lewis et al. argued for explicit retrieval precisely because parametric memory on its own is limited, difficult to update, and weak at grounded provenance. The point is not to stuff more text into the prompt. The point is to retrieve the right external evidence at the right moment. [^rag-paper]
+That is what makes RAG genuinely useful here. In the original RAG formulation, Lewis et al. argued for explicit retrieval precisely because parametric memory on its own is limited, difficult to update, and weak at grounded provenance. The point is not to stuff more text into the prompt. The point is to retrieve the right external evidence at the right moment.
 
 ![RAG deep analysis lane: resolve, retrieve, research, then judge](./resource/make-context-aware-job-agent-part2-03-rag-analysis.svg)
 
@@ -186,7 +186,7 @@ Then `JA-37`, the final analysis generator, is explicitly forbidden from browsin
 
 That split is elegant because it separates **searching** from **judging**.
 
-If one model does both jobs in one step, it often ends up searching, guessing, and writing all at once. The output may look comprehensive, but it becomes much harder to tell which lines are grounded and which ones are interpretive drift. Splitting the stages creates a cleaner evidence chain. [^openai-practical-agents]
+If one model does both jobs in one step, it often ends up searching, guessing, and writing all at once. The output may look comprehensive, but it becomes much harder to tell which lines are grounded and which ones are interpretive drift. Splitting the stages creates a cleaner evidence chain.
 
 ### What the deep-analysis lane is really buying you
 
@@ -219,7 +219,7 @@ For example:
 
 If the answer is no, `JA-39` does not fetch new evidence and does not search again. It runs a narrow repair pass instead. It is allowed to rewrite bullets, tighten wording, fix labels, and repair calibration, but **it is not allowed to invent new facts**.
 
-This effectively treats generation as a step that deserves its own QA fixture afterwards. It acknowledges a very practical truth: even well-prompted model outputs can drift on format and calibration. Rather than pretending that one prompt will always solve this, the workflow places a repair rail behind the generator. In practice, that is often far more robust than endlessly inflating the prompt itself. [^anthropic-effective-agents]
+This effectively treats generation as a step that deserves its own QA fixture afterwards. It acknowledges a very practical truth: even well-prompted model outputs can drift on format and calibration. Rather than pretending that one prompt will always solve this, the workflow places a repair rail behind the generator. In practice, that is often far more robust than endlessly inflating the prompt itself.
 
 ## Stage three, deliberately shorter: error handling is not the star, but it decides whether the tool feels usable
 
@@ -284,8 +284,4 @@ For me, that is the point where the whole tool starts to feel agent-like.
 
 Not because it says more, but because it finally helps me **avoid paying the full cost of attention too early, and on the wrong opportunities**.
 
-## Notes
 
-[^anthropic-effective-agents]: Anthropic, *Building Effective AI Agents*.
-[^openai-practical-agents]: OpenAI, *A practical guide to building AI agents*.
-[^rag-paper]: Lewis et al., *Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks*.
