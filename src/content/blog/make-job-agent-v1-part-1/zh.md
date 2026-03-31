@@ -1,5 +1,5 @@
 ---
-title: "AI代理工作流系列 1 — 如何在 Make 裡做出有承先啟後能力的 Job Agent — Part 1"
+title: "AI代理工作流系列 2 — 如何在 Make 裡做出有承先啟後能力的 Job Agent — Part 1"
 description: "用實際案例拆解如何在 Make 裡打造一個具備承前啟後能力的 Job Agent，先從 LINE intake、continuation、routing 與 recent jobs scraping 講起。"
 categories: ["ai"]
 tags: ["ai", "make", "agent", "job-agent", "workflow", "line", "automation"]

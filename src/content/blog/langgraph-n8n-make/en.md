@@ -1,6 +1,6 @@
 ---
-title: "How I Choose Between LangGraph, n8n, and Make: Why I’m Backing Make for Now"
-description: "A practical comparison of LangGraph, n8n, and Make — and why, for my current workflow shape, I’m choosing Make first."
+title: "AI Agentic Workflow Series 1 — How I Choose Between LangGraph, n8n, and Make: Why I'm Backing Make for Now"
+description: "A practical comparison of LangGraph, n8n, and Make - and why, for my current workflow shape, I'm choosing Make first."
 categories: ["ai"]
 tags: ["ai", "agentic-workflow", "langgraph", "n8n", "make", "automation"]
 date: 2026-03-30
@@ -22,7 +22,7 @@ Everyone is asking the same questions:
 
 The more of these comparisons I read, though, the more I felt that many of them start from the wrong question.
 
-Because **LangGraph, n8n, and Make do not really live at the same layer**. Of course they overlap. But the thing that usually decides the choice is not “can all of them do it?”, but this:
+Because **LangGraph, n8n, and Make do not really live at the same layer**. Of course they overlap. But the thing that usually decides the choice is not "can all of them do it?", but this:
 
 > **Is the main complexity in front of me workflow integration, or agent runtime governance?**
 
@@ -39,7 +39,7 @@ This time I did not rely only on the nine source files Daniel had collected. I a
 ### Here is what I am treating as factual ground
 
 - **LangGraph** documentation does in fact place persistence, durable execution, interrupts, resume, and human-in-the-loop near the centre of its model.
-- **n8n** publicly lists Cloud pricing where the Starter and Pro entry points sit noticeably above Make’s entry pricing, while still clearly maintaining a self-hosted route.
+- **n8n** publicly lists Cloud pricing where the Starter and Pro entry points sit noticeably above Make's entry pricing, while still clearly maintaining a self-hosted route.
 - **Make** documentation confirms a few important things:
   - If-else / Merge launched in **open beta on 2026-03-10**
   - after an If-else flow, you **cannot add a Router or another If-else**
@@ -52,7 +52,7 @@ This time I did not rely only on the nine source files Daniel had collected. I a
 - how much engineering complexity I am willing to absorb in exchange for more control
 - whether I care more, right now, about lower-friction delivery or a higher-ceiling runtime abstraction
 
-So the more accurate claim is this: **this is Daniel’s choice under Daniel’s current task shape, not the one true answer for every team.**
+So the more accurate claim is this: **this is Daniel's choice under Daniel's current task shape, not the one true answer for every team.**
 
 ---
 
@@ -83,7 +83,7 @@ This is a very typical shape:
 - send the stronger matches into a deeper AI / RAG pass
 - notify me or write the result back into a sheet or store
 
-There is AI in this workflow, but the skeleton is still a workflow. The main problem is not “how does the agent preserve state?”, but “how does the data move, how do services connect, and how does the flow stay stable?”.
+There is AI in this workflow, but the skeleton is still a workflow. The main problem is not "how does the agent preserve state?", but "how does the data move, how do services connect, and how does the flow stay stable?".
 
 In that workload:
 
@@ -131,11 +131,11 @@ Suppose I am building a system like this:
 - it must preserve state and recover later
 - I need to know which checkpoint it is at, why it stopped there, and how to replay it
 
-At that point, the real question is no longer “can it call APIs?”, but this:
+At that point, the real question is no longer "can it call APIs?", but this:
 
 > **What exactly am I using to govern the execution lifecycle of the agent?**
 
-At that level, LangGraph’s advantage becomes very natural. It is not just handling “more steps”; it is handling runtime semantics themselves: state, persistence, interrupts, resume, durable execution, and human-in-the-loop.
+At that level, LangGraph's advantage becomes very natural. It is not just handling "more steps"; it is handling runtime semantics themselves: state, persistence, interrupts, resume, durable execution, and human-in-the-loop.
 
 That is why I do not claim that Make or n8n are design-equivalent to LangGraph in this class of workload. You can assemble something usable in several ways. That does not mean the underlying abstraction is the same.
 
@@ -169,7 +169,7 @@ So this is the more careful way I would phrase it:
 
 > **For the kind of AI-enhanced business workflows I am mostly building right now, Make gives me the highest delivery return per unit of effort.**
 
-That is a more defensible claim than saying it is simply “the most honest answer”.
+That is a more defensible claim than saying it is simply "the most honest answer".
 
 ### Second reason: its entry threshold is friendlier for the kind of start I need
 
@@ -179,9 +179,9 @@ I am deliberately being careful here, because these platforms do not share the s
 - **n8n** currently publishes Cloud entry pricing around **Starter €20 / month** and **Pro €50 / month** when billed annually
 - **LangGraph** can look inexpensive on the surface because the open-source side is so accessible, but the real cost often appears as engineering time, deployment, infrastructure, observability, testing, and maintenance
 
-So I am not pretending I can turn all three into one neat “cheapest tool” table. That would be false precision.
+So I am not pretending I can turn all three into one neat "cheapest tool" table. That would be false precision.
 
-But if the question is simply: **which public entry ticket feels lighter when I want to get started now?**  
+But if the question is simply: **which public entry ticket feels lighter when I want to get started now?**
 Make does feel easier to enter.
 
 ### Third reason: its ceiling is higher than many people assume on first contact
@@ -198,15 +198,15 @@ It has now clearly brought these into its formal capability map:
 - If-else / Merge, which is a more complete control-flow layer than its earlier Router-heavy phase
 - Code / API escape hatches when the visual layer stops being enough
 
-So my position is not “Make can replace everything”. It is this:
+So my position is not "Make can replace everything". It is this:
 
 > **Before I hit genuine runtime limits, it can probably carry a surprising amount of real-world work.**
 
-And for me, that value — getting a large share of real work done before I hit the ceiling — arrives earlier than abstraction purity does.
+And for me, that value - getting a large share of real work done before I hit the ceiling - arrives earlier than abstraction purity does.
 
 ---
 
-## But I do not want to hide Make’s sharp edges
+## But I do not want to hide Make's sharp edges
 
 I am not going to smooth Make out just because I currently lean towards it.
 
@@ -220,7 +220,7 @@ Looking back through Make Community, the pain points are fairly consistent:
 - for example, a semicolon may be treated as a function-argument delimiter rather than the literal character I want to enter
 - complex expressions often push people into editing externally and pasting back in
 
-None of that makes the platform unusable overnight. But it does erode the tactile experience over time. Worse, it is not the sort of issue where “if you do it correctly, the problem disappears”. The editor itself begins to push back.
+None of that makes the platform unusable overnight. But it does erode the tactile experience over time. Worse, it is not the sort of issue where "if you do it correctly, the problem disappears". The editor itself begins to push back.
 
 So my practical rule is simple:
 - simple logic stays in the visual mapping layer
@@ -232,7 +232,7 @@ At that point, it is better to admit the tool boundary early than to wrestle the
 
 This is one of those details that is easy to miss if you never check the official release notes.
 
-Make’s **If-else / Merge** arrived in **open beta on 2026-03-10**. Before that, a lot of conditional branching depended more heavily on Router.
+Make's **If-else / Merge** arrived in **open beta on 2026-03-10**. Before that, a lot of conditional branching depended more heavily on Router.
 
 Router is useful, of course. But it does not solve quite the same problem:
 - Router is closer to multi-path distribution
@@ -244,7 +244,7 @@ That difference may not matter much in a small scenario. Once the flow grows, it
 
 The documentation is very explicit here: inside an **If-else flow**, you **cannot add a Router or another If-else**.
 
-That is not a tiny bug. It is a structural reminder that **Make is still designed around manageable, visual scenarios — not around letting me build a deeply nested control-flow runtime without limit.**
+That is not a tiny bug. It is a structural reminder that **Make is still designed around manageable, visual scenarios - not around letting me build a deeply nested control-flow runtime without limit.**
 
 So if the main problem in front of me is:
 - deep branching
@@ -261,11 +261,11 @@ then I would not recommend pretending that If-else / Merge suddenly makes Make a
 
 ### If the team is already code-first
 
-Then Make’s lower friction may not be the most valuable thing in the room. If the team is already comfortable owning infrastructure, logic, and deployment governance, the pull of n8n or LangGraph gets stronger very quickly.
+Then Make's lower friction may not be the most valuable thing in the room. If the team is already comfortable owning infrastructure, logic, and deployment governance, the pull of n8n or LangGraph gets stronger very quickly.
 
 ### If self-hosting, data control, or internal deployment is non-negotiable
 
-Then n8n’s weight rises immediately. At that point the question is no longer about assembly speed, but about environmental control.
+Then n8n's weight rises immediately. At that point the question is no longer about assembly speed, but about environmental control.
 
 ### If the core problem is not integration, but runtime semantics
 
@@ -277,7 +277,7 @@ In other words, if the real pain is:
 
 then my conclusion tilts towards LangGraph.
 
-Put differently, I am not leaning towards Make because it is always right.  
+Put differently, I am not leaning towards Make because it is always right.
 I am leaning towards it because **the main complexity in most of my current work has not yet moved up into the runtime layer.**
 
 ---
@@ -294,8 +294,8 @@ I am choosing it because, when I bring the question back to the ground, I realis
 - where human checkpoints still belong
 - where overdesign is simply not worth it
 
-For those problems, Make is not giving me a perfect answer.  
+For those problems, Make is not giving me a perfect answer.
 What it is giving me is **the fastest path to a useful result, with a lighter starting threshold, and enough headroom to stay useful for longer than many people assume.**
 
-That will not suit every team.  
+That will not suit every team.
 But for the shape of work I am doing right now, it fits best.

@@ -1,5 +1,5 @@
 ---
-title: "AI Agentic Workflow Series 1 — How to Build a Context-Aware Job Agent in Make — Part 1"
+title: "AI Agentic Workflow Series 2 — How to Build a Context-Aware Job Agent in Make — Part 1"
 description: "Part 1 of a practical build log on creating a context-aware job agent in Make, covering LINE intake, continuation handling, routing, and recent-job scraping."
 categories: ["ai"]
 tags: ["ai", "make", "agent", "job-agent", "workflow", "line", "automation"]
