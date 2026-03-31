@@ -1,0 +1,88 @@
+<svg width="1280" height="620" viewBox="0 0 1280 620" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .bg { fill: #f8fafc; }
+      .title { font: 700 28px Arial, Inter, sans-serif; fill: #0f172a; }
+      .subtitle { font: 400 14px Arial, Inter, sans-serif; fill: #475569; }
+      .box-title { font: 700 16px Arial, Inter, sans-serif; fill: #0f172a; }
+      .box-text { font: 400 13px Arial, Inter, sans-serif; fill: #334155; }
+      .note { font: 400 12px Arial, Inter, sans-serif; fill: #64748b; }
+      .line-chat { fill: #dcfce7; stroke: #86efac; }
+      .store { fill: #dbeafe; stroke: #93c5fd; }
+      .logic { fill: #ffedd5; stroke: #fdba74; }
+      .route { fill: #ede9fe; stroke: #c4b5fd; }
+      .memory { fill: #fce7f3; stroke: #f9a8d4; }
+      .neutral { fill: #ffffff; stroke: #cbd5e1; }
+      .box { stroke-width: 1.5; rx: 18; ry: 18; }
+      .line { stroke: #64748b; stroke-width: 2.5; fill: none; marker-end: url(#arrow); }
+      .muted { opacity: 0.68; }
+    </style>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+    </marker>
+  </defs>
+
+  <rect class="bg" width="1280" height="620" />
+  <text class="title" x="50" y="58">Part 1 Overview: from LINE message to a trustworthy job queue</text>
+  <text class="subtitle" x="50" y="84">This part focuses on intake, context resolution, routing, and job ingestion. Fast scoring and deep analysis continue in Part 2.</text>
+
+  <rect class="line-chat box" x="50" y="150" width="170" height="92"/>
+  <text class="box-title" x="70" y="182">LINE Message</text>
+  <text class="box-text" x="70" y="206">short user request</text>
+  <text class="box-text" x="70" y="224">often incomplete</text>
+
+  <rect class="store box" x="280" y="136" width="210" height="120"/>
+  <text class="box-title" x="300" y="168">Recent Task Lookup</text>
+  <text class="box-text" x="300" y="192">read latest agent_tasks rows</text>
+  <text class="box-text" x="300" y="210">compress reusable memory</text>
+  <text class="box-text" x="300" y="228">build history_context</text>
+
+  <rect class="logic box" x="550" y="118" width="240" height="156"/>
+  <text class="box-title" x="570" y="150">Deterministic Intake</text>
+  <text class="box-text" x="570" y="174">split multi-intent text</text>
+  <text class="box-text" x="570" y="192">extract job IDs, days, pages</text>
+  <text class="box-text" x="570" y="210">resolve continuation or clarify</text>
+  <text class="box-text" x="570" y="228">emit task_record</text>
+  <text class="note" x="570" y="252">No LLM at this stage</text>
+
+  <rect class="route box" x="850" y="150" width="180" height="92"/>
+  <text class="box-title" x="870" y="182">Route Selector</text>
+  <text class="box-text" x="870" y="206">choose execution lane</text>
+  <text class="box-text" x="870" y="224">from task_type + route_type</text>
+
+  <rect class="route box" x="1080" y="74" width="150" height="92"/>
+  <text class="box-title" x="1100" y="106">Sheet Query</text>
+  <text class="box-text" x="1100" y="130">query_jobs</text>
+  <text class="box-text" x="1100" y="148">browse saved jobs</text>
+
+  <rect class="route box" x="1080" y="196" width="150" height="92"/>
+  <text class="box-title" x="1100" y="228">Ingestion Lane</text>
+  <text class="box-text" x="1100" y="252">fetch_recent_jobs</text>
+  <text class="box-text" x="1100" y="270">scrape new roles</text>
+
+  <rect class="neutral box muted" x="1080" y="318" width="150" height="92"/>
+  <text class="box-title" x="1100" y="350">Part 2</text>
+  <text class="box-text" x="1100" y="374">scoring, RAG,</text>
+  <text class="box-text" x="1100" y="392">deep analysis</text>
+
+  <rect class="store box" x="280" y="364" width="230" height="120"/>
+  <text class="box-title" x="300" y="396">jobs_raw + agent_tasks</text>
+  <text class="box-text" x="300" y="420">saved jobs for browsing</text>
+  <text class="box-text" x="300" y="438">task queue and memory source</text>
+  <text class="box-text" x="300" y="456">reply-ready result state</text>
+
+  <rect class="neutral box" x="550" y="350" width="480" height="134"/>
+  <text class="box-title" x="570" y="382">Core design choice</text>
+  <text class="box-text" x="570" y="406">The workflow does not treat every message as a fresh webhook event.</text>
+  <text class="box-text" x="570" y="428">It reads recent structured state first, then decides whether the message</text>
+  <text class="box-text" x="570" y="450">starts a new task, continues a previous one, or requires clarification.</text>
+
+  <path class="line" d="M220 196 H280"/>
+  <path class="line" d="M490 196 H550"/>
+  <path class="line" d="M790 196 H850"/>
+  <path class="line" d="M1030 196 H1080"/>
+  <path class="line" d="M940 150 C980 120, 1030 120, 1080 120"/>
+  <path class="line" d="M940 242 C980 242, 1030 242, 1080 242"/>
+  <path class="line" d="M940 242 C980 340, 1020 364, 1080 364"/>
+  <path class="line" d="M395 256 V364"/>
+</svg>

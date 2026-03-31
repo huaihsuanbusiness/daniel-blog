@@ -1,0 +1,90 @@
+<svg width="1360" height="700" viewBox="0 0 1360 700" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .bg { fill: #f8fafc; }
+      .title { font: 700 28px Arial, Inter, sans-serif; fill: #0f172a; }
+      .subtitle { font: 400 14px Arial, Inter, sans-serif; fill: #475569; }
+      .box-title { font: 700 16px Arial, Inter, sans-serif; fill: #0f172a; }
+      .box-text { font: 400 13px Arial, Inter, sans-serif; fill: #334155; }
+      .note { font: 400 12px Arial, Inter, sans-serif; fill: #64748b; }
+      .store { fill: #dbeafe; stroke: #93c5fd; }
+      .logic { fill: #ffedd5; stroke: #fdba74; }
+      .route { fill: #ede9fe; stroke: #c4b5fd; }
+      .neutral { fill: #ffffff; stroke: #cbd5e1; }
+      .box { stroke-width: 1.5; rx: 18; ry: 18; }
+      .line { stroke: #64748b; stroke-width: 2.5; fill: none; marker-end: url(#arrow); }
+      .dash { stroke: #94a3b8; stroke-width: 2; fill: none; stroke-dasharray: 6 6; marker-end: url(#arrow); }
+    </style>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+    </marker>
+  </defs>
+
+  <rect class="bg" width="1360" height="700"/>
+  <text class="title" x="50" y="58">Recent-job scraping lane</text>
+  <text class="subtitle" x="50" y="84">This lane turns a vague request like “fetch recent product roles” into clean rows in jobs_raw, without re-inserting duplicates.</text>
+
+  <rect class="logic box" x="50" y="156" width="170" height="104"/>
+  <text class="box-title" x="70" y="188">Subscenario Input</text>
+  <text class="box-text" x="70" y="212">days</text>
+  <text class="box-text" x="70" y="230">page range</text>
+  <text class="box-text" x="70" y="248">role keyword</text>
+
+  <rect class="logic box" x="280" y="134" width="220" height="148"/>
+  <text class="box-title" x="300" y="166">URL Queue Builder</text>
+  <text class="box-text" x="300" y="190">normalise role keyword</text>
+  <text class="box-text" x="300" y="208">default days = 3</text>
+  <text class="box-text" x="300" y="226">default pages = 1..3</text>
+  <text class="box-text" x="300" y="244">emit ready-to-fetch URLs</text>
+
+  <rect class="store box" x="280" y="352" width="220" height="118"/>
+  <text class="box-title" x="300" y="384">Existing Job-ID Snapshot</text>
+  <text class="box-text" x="300" y="408">read jobs_raw</text>
+  <text class="box-text" x="300" y="426">aggregate known job IDs</text>
+  <text class="box-text" x="300" y="444">for deduplication</text>
+
+  <rect class="logic box" x="570" y="156" width="200" height="104"/>
+  <text class="box-title" x="590" y="188">Page Fetcher</text>
+  <text class="box-text" x="590" y="212">POST to Zyte API</text>
+  <text class="box-text" x="590" y="230">request httpResponseBody</text>
+  <text class="box-text" x="590" y="248">one page per run</text>
+
+  <rect class="logic box" x="840" y="124" width="260" height="168"/>
+  <text class="box-title" x="860" y="156">HTML Extractor &amp; Role Filter</text>
+  <text class="box-text" x="860" y="180">unwrap and decode response body</text>
+  <text class="box-text" x="860" y="198">extract job cards by data-job-id</text>
+  <text class="box-text" x="860" y="216">keep title, company, location, date</text>
+  <text class="box-text" x="860" y="234">remove junior / noisy adjacent roles</text>
+  <text class="box-text" x="860" y="252">return only passed items</text>
+
+  <rect class="route box" x="840" y="366" width="260" height="118"/>
+  <text class="box-title" x="860" y="398">Deduplicator &amp; Row Mapper</text>
+  <text class="box-text" x="860" y="422">skip jobs already present</text>
+  <text class="box-text" x="860" y="440">map clean rows for jobs_raw</text>
+  <text class="box-text" x="860" y="458">keep JobStreet URL + job_id</text>
+
+  <rect class="store box" x="1160" y="136" width="150" height="100"/>
+  <text class="box-title" x="1180" y="168">jobs_raw</text>
+  <text class="box-text" x="1180" y="192">add rows</text>
+  <text class="box-text" x="1180" y="210">if list is not empty</text>
+
+  <rect class="neutral box" x="1160" y="320" width="150" height="100"/>
+  <text class="box-title" x="1180" y="352">Return State</text>
+  <text class="box-text" x="1180" y="376">rows added</text>
+  <text class="box-text" x="1180" y="394">or no_data_added</text>
+
+  <rect class="neutral box" x="50" y="520" width="720" height="110"/>
+  <text class="box-title" x="70" y="552">Why this lane matters</text>
+  <text class="box-text" x="70" y="576">The scraper is not just fetching pages. It is already applying product judgement: normalising search inputs,</text>
+  <text class="box-text" x="70" y="598">filtering noisy roles, and preventing duplicate inserts before the user ever sees the shortlist.</text>
+
+  <path class="line" d="M220 208 H280"/>
+  <path class="line" d="M500 208 H570"/>
+  <path class="line" d="M770 208 H840"/>
+  <path class="line" d="M970 292 V366"/>
+  <path class="line" d="M1100 184 H1160"/>
+  <path class="line" d="M1100 425 H1160"/>
+  <path class="dash" d="M500 410 C640 410, 700 410, 840 410"/>
+  <text class="note" x="322" y="118">URL array</text>
+  <text class="note" x="608" y="140">Zyte</text>
+</svg>

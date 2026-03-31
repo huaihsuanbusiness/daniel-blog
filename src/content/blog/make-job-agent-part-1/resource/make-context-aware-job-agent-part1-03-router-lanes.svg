@@ -1,0 +1,88 @@
+<svg width="1360" height="700" viewBox="0 0 1360 700" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .bg { fill: #f8fafc; }
+      .title { font: 700 28px Arial, Inter, sans-serif; fill: #0f172a; }
+      .subtitle { font: 400 14px Arial, Inter, sans-serif; fill: #475569; }
+      .box-title { font: 700 16px Arial, Inter, sans-serif; fill: #0f172a; }
+      .box-text { font: 400 13px Arial, Inter, sans-serif; fill: #334155; }
+      .note { font: 400 12px Arial, Inter, sans-serif; fill: #64748b; }
+      .store { fill: #dbeafe; stroke: #93c5fd; }
+      .logic { fill: #ffedd5; stroke: #fdba74; }
+      .route { fill: #ede9fe; stroke: #c4b5fd; }
+      .neutral { fill: #ffffff; stroke: #cbd5e1; }
+      .muted { opacity: 0.68; }
+      .box { stroke-width: 1.5; rx: 18; ry: 18; }
+      .line { stroke: #64748b; stroke-width: 2.5; fill: none; marker-end: url(#arrow); }
+    </style>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+    </marker>
+  </defs>
+
+  <rect class="bg" width="1360" height="700"/>
+  <text class="title" x="50" y="58">Router and execution lanes</text>
+  <text class="subtitle" x="50" y="84">The router should decide how to execute a prepared task, not guess what the user meant. That guesswork already happened in intake.</text>
+
+  <rect class="store box" x="50" y="148" width="180" height="98"/>
+  <text class="box-title" x="70" y="180">Task Queue</text>
+  <text class="box-text" x="70" y="204">agent_tasks rows</text>
+  <text class="box-text" x="70" y="222">status = new</text>
+  <text class="box-text" x="70" y="240">dependency = ready</text>
+
+  <rect class="logic box" x="290" y="136" width="210" height="122"/>
+  <text class="box-title" x="310" y="168">Queue Loader &amp; Locker</text>
+  <text class="box-text" x="310" y="192">pull ready tasks</text>
+  <text class="box-text" x="310" y="210">lock a row for execution</text>
+  <text class="box-text" x="310" y="228">avoid duplicate runs</text>
+
+  <rect class="route box" x="560" y="148" width="190" height="98"/>
+  <text class="box-title" x="580" y="180">Route Selector</text>
+  <text class="box-text" x="580" y="204">use task_type + route_type</text>
+  <text class="box-text" x="580" y="222">to choose a lane</text>
+
+  <rect class="route box" x="820" y="70" width="220" height="122"/>
+  <text class="box-title" x="840" y="102">Sheet Query Lane</text>
+  <text class="box-text" x="840" y="126">build Google query from</text>
+  <text class="box-text" x="840" y="144">days, score, keyword, top_k</text>
+  <text class="box-text" x="840" y="162">read jobs_raw and format reply</text>
+
+  <rect class="route box" x="820" y="236" width="220" height="122"/>
+  <text class="box-title" x="840" y="268">Ingestion Lane</text>
+  <text class="box-text" x="840" y="292">launch recent-job scraping</text>
+  <text class="box-text" x="840" y="310">normalise result into memory</text>
+  <text class="box-text" x="840" y="328">update queue state</text>
+
+  <rect class="neutral box muted" x="820" y="402" width="220" height="122"/>
+  <text class="box-title" x="840" y="434">Vector / RAG Lane</text>
+  <text class="box-text" x="840" y="458">deep analysis, packs,</text>
+  <text class="box-text" x="840" y="476">and interview prep</text>
+  <text class="note" x="840" y="500">Covered in Part 2</text>
+
+  <rect class="logic box" x="1110" y="148" width="200" height="98"/>
+  <text class="box-title" x="1130" y="180">Result Normaliser</text>
+  <text class="box-text" x="1130" y="204">compact memory capsule</text>
+  <text class="box-text" x="1130" y="222">summary + result_text</text>
+
+  <rect class="store box" x="1110" y="316" width="200" height="110"/>
+  <text class="box-title" x="1130" y="348">State Writeback</text>
+  <text class="box-text" x="1130" y="372">update agent_tasks</text>
+  <text class="box-text" x="1130" y="390">ready for next turn</text>
+  <text class="box-text" x="1130" y="408">or next worker step</text>
+
+  <rect class="neutral box" x="290" y="436" width="460" height="140"/>
+  <text class="box-title" x="310" y="468">Why this split matters</text>
+  <text class="box-text" x="310" y="492">If the router also tries to infer the user’s intention, bugs become slippery:</text>
+  <text class="box-text" x="310" y="514">a list-selection can silently drift back into query_jobs, or a follow-up can</text>
+  <text class="box-text" x="310" y="536">be mistaken for a brand-new task. Intake decides meaning; the router executes.</text>
+
+  <path class="line" d="M230 197 H290"/>
+  <path class="line" d="M500 197 H560"/>
+  <path class="line" d="M750 197 H820"/>
+  <path class="line" d="M750 197 C790 120, 800 120, 820 120"/>
+  <path class="line" d="M750 197 C790 292, 800 292, 820 292"/>
+  <path class="line" d="M750 197 C790 458, 800 458, 820 458"/>
+  <path class="line" d="M1040 130 C1080 130, 1070 197, 1110 197"/>
+  <path class="line" d="M1040 297 C1080 297, 1070 365, 1110 365"/>
+  <path class="line" d="M1210 246 V316"/>
+</svg>

@@ -1,0 +1,93 @@
+<svg width="1360" height="680" viewBox="0 0 1360 680" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .bg { fill: #f8fafc; }
+      .title { font: 700 28px Arial, Inter, sans-serif; fill: #0f172a; }
+      .subtitle { font: 400 14px Arial, Inter, sans-serif; fill: #475569; }
+      .box-title { font: 700 16px Arial, Inter, sans-serif; fill: #0f172a; }
+      .box-text { font: 400 13px Arial, Inter, sans-serif; fill: #334155; }
+      .note { font: 400 12px Arial, Inter, sans-serif; fill: #64748b; }
+      .line-chat { fill: #dcfce7; stroke: #86efac; }
+      .store { fill: #dbeafe; stroke: #93c5fd; }
+      .logic { fill: #ffedd5; stroke: #fdba74; }
+      .memory { fill: #fce7f3; stroke: #f9a8d4; }
+      .neutral { fill: #ffffff; stroke: #cbd5e1; }
+      .box { stroke-width: 1.5; rx: 18; ry: 18; }
+      .line { stroke: #64748b; stroke-width: 2.5; fill: none; marker-end: url(#arrow); }
+      .dash { stroke: #94a3b8; stroke-width: 2; fill: none; stroke-dasharray: 6 6; marker-end: url(#arrow); }
+    </style>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+    </marker>
+  </defs>
+
+  <rect class="bg" width="1360" height="680" />
+  <text class="title" x="50" y="58">Intake, continuation, and clarification</text>
+  <text class="subtitle" x="50" y="84">The first parser is deliberately deterministic: it reads recent structure, resolves references, and only then creates a task.</text>
+
+  <rect class="line-chat box" x="50" y="142" width="170" height="100"/>
+  <text class="box-title" x="70" y="174">LINE Webhook</text>
+  <text class="box-text" x="70" y="198">raw message</text>
+  <text class="box-text" x="70" y="216">reply token</text>
+  <text class="box-text" x="70" y="234">user ID</text>
+
+  <rect class="store box" x="280" y="120" width="210" height="144"/>
+  <text class="box-title" x="300" y="152">Recent Task Lookup</text>
+  <text class="box-text" x="300" y="176">read latest 5 rows from</text>
+  <text class="box-text" x="300" y="194">agent_tasks for this user</text>
+  <text class="box-text" x="300" y="212">task type, target job,</text>
+  <text class="box-text" x="300" y="230">result summary, result_json</text>
+
+  <rect class="memory box" x="550" y="102" width="250" height="180"/>
+  <text class="box-title" x="570" y="134">History Context Builder</text>
+  <text class="box-text" x="570" y="158">latest_task</text>
+  <text class="box-text" x="570" y="176">latest_list_context</text>
+  <text class="box-text" x="570" y="194">latest_single_context</text>
+  <text class="box-text" x="570" y="212">open_clarification</text>
+  <text class="box-text" x="570" y="230">has_usable_history</text>
+  <text class="note" x="570" y="256">built from compact memory, not full transcripts</text>
+
+  <rect class="logic box" x="860" y="90" width="280" height="204"/>
+  <text class="box-title" x="880" y="122">Deterministic Semantic Parser</text>
+  <text class="box-text" x="880" y="146">split multi-intent messages</text>
+  <text class="box-text" x="880" y="164">extract days, pages, source site</text>
+  <text class="box-text" x="880" y="182">extract job IDs, URLs, title hints</text>
+  <text class="box-text" x="880" y="200">spot selection signals like “second” or “4”</text>
+  <text class="box-text" x="880" y="218">preserve explicit references over old context</text>
+  <text class="note" x="880" y="246">Designed to be reproducible and debuggable</text>
+
+  <rect class="memory box" x="1180" y="120" width="130" height="144"/>
+  <text class="box-title" x="1198" y="152">Resolution</text>
+  <text class="box-text" x="1200" y="176">new task</text>
+  <text class="box-text" x="1200" y="194">continue list</text>
+  <text class="box-text" x="1200" y="212">continue single</text>
+  <text class="box-text" x="1200" y="230">clarify</text>
+
+  <rect class="logic box" x="550" y="378" width="270" height="160"/>
+  <text class="box-title" x="570" y="410">Task Record Builder</text>
+  <text class="box-text" x="570" y="434">task_type</text>
+  <text class="box-text" x="570" y="452">route_type</text>
+  <text class="box-text" x="570" y="470">target_job_id / company / title</text>
+  <text class="box-text" x="570" y="488">dependency and blocked state</text>
+  <text class="box-text" x="570" y="506">clarification context if needed</text>
+
+  <rect class="neutral box" x="900" y="384" width="410" height="154"/>
+  <text class="box-title" x="920" y="416">Why no LLM here?</text>
+  <text class="box-text" x="920" y="440">Because this stage needs stable, inspectable behaviour more than eloquence.</text>
+  <text class="box-text" x="920" y="462">If the system misreads “4” or a bare job ID, you want a patchable branch,</text>
+  <text class="box-text" x="920" y="484">not a fuzzy answer that is difficult to reproduce in the debugger.</text>
+  <text class="box-text" x="920" y="506">The model is more valuable later, when judgement and synthesis matter.</text>
+
+  <rect class="neutral box" x="50" y="404" width="420" height="116"/>
+  <text class="box-title" x="70" y="436">Clarification is a product feature</text>
+  <text class="box-text" x="70" y="460">When the system knows the action but not the target job,</text>
+  <text class="box-text" x="70" y="478">it should ask a structured follow-up instead of throwing a generic error.</text>
+
+  <path class="line" d="M220 192 H280"/>
+  <path class="line" d="M490 192 H550"/>
+  <path class="line" d="M800 192 H860"/>
+  <path class="line" d="M1140 192 H1180"/>
+  <path class="line" d="M685 282 V378"/>
+  <path class="dash" d="M1180 236 C1100 320, 980 340, 820 430"/>
+  <path class="dash" d="M1180 236 C1100 300, 620 320, 470 450"/>
+</svg>
