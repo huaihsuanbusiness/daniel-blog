@@ -7,7 +7,8 @@ export type CategoryId =
   | 'startup'
   | 'business'
   | 'web3'
-  | 'travel';
+  | 'travel'
+  | 'murmurs';
 
 export const CATEGORY_ORDER: CategoryId[] = [
   'ai',
@@ -17,6 +18,7 @@ export const CATEGORY_ORDER: CategoryId[] = [
   'business',
   'web3',
   'travel',
+  'murmurs',
 ];
 
 export const CATEGORY_LABELS: Record<CategoryId, Record<BlogLang, string>> = {
@@ -27,6 +29,7 @@ export const CATEGORY_LABELS: Record<CategoryId, Record<BlogLang, string>> = {
   business: { en: 'Business', zh: '商業' },
   web3: { en: 'Web3', zh: 'Web3' },
   travel: { en: 'Travel', zh: '旅行' },
+  murmurs: { en: 'Murmurs', zh: '隨筆' },
 };
 
 export const CATEGORY_ICONS: Record<CategoryId, string> = {
@@ -37,6 +40,7 @@ export const CATEGORY_ICONS: Record<CategoryId, string> = {
   business: '◆',
   web3: '◇',
   travel: '✦',
+  murmurs: '✎',
 };
 
 const CATEGORY_ALIASES: Record<string, CategoryId> = {
@@ -45,6 +49,10 @@ const CATEGORY_ALIASES: Record<string, CategoryId> = {
   business: 'business',
   web3: 'web3',
   travel: 'travel',
+  murmurs: 'murmurs',
+  notes: 'murmurs',
+  reflection: 'murmurs',
+  reflections: 'murmurs',
   pm: 'pm',
   product: 'pm',
   tech: 'pm',
