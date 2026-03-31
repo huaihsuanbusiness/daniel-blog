@@ -120,6 +120,8 @@ The model is not banished. It is simply more valuable later, when the job become
 
 ![Intake, continuation, and clarification](./resource/make-context-aware-job-agent-part1-02-intake-context.svg)
 
+![line-intake](./resource/line-intake.png)
+
 ## `agent_tasks` is not just a queue
 
 If you think of `agent_tasks` as nothing more than a task table, the architecture does not really make sense.
@@ -186,6 +188,8 @@ There is also a heavier **Vector / RAG Lane**, but that belongs to Part 2.
 
 ![Router and execution lanes](./resource/make-context-aware-job-agent-part1-03-router-lanes.svg)
 
+![router](./resource/router.png)
+
 ## The sheet-query lane solves a very specific problem
 
 When people hear “job agent”, they often jump straight to the scraper. In practice, the local shortlist experience matters just as much.
@@ -231,6 +235,8 @@ I split that lane into a set of article-friendly components:
 That is why I do not think of this lane as “just the scraper”. It is already a **front-end screening layer**. It pushes obvious noise away before the more expensive judgement in Part 2 ever starts.
 
 ![Recent-job scraping lane](./resource/make-context-aware-job-agent-part1-04-job-scraping.svg)
+
+![job-scraping](./resource/job-scraping.png)
 
 ## An important counterexample: not every job workflow needs this much structure
 
