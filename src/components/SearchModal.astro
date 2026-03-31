@@ -186,7 +186,7 @@ const categoryColors = JSON.stringify(CATEGORY_COLORS);
 })();
 </script>
 
-<style>
+<style is:global>
   .search-modal {
     display: none;
     position: fixed;
@@ -305,6 +305,11 @@ const categoryColors = JSON.stringify(CATEGORY_COLORS);
     border-radius: 10px;
     overflow: hidden;
     transition: background 0.1s;
+    margin-bottom: 4px;
+  }
+
+  .search-result-item:last-child {
+    margin-bottom: 0;
   }
 
   .search-result-item::after {
@@ -314,7 +319,7 @@ const categoryColors = JSON.stringify(CATEGORY_COLORS);
     left: 16px;
     right: 16px;
     height: 1px;
-    background: color-mix(in srgb, var(--color-border) 60%, transparent);
+    background: color-mix(in srgb, var(--color-border) 50%, transparent);
     pointer-events: none;
   }
 
@@ -356,7 +361,7 @@ const categoryColors = JSON.stringify(CATEGORY_COLORS);
 
   .result-date {
     color: var(--result-color, var(--color-accent));
-    opacity: 0.7;
+    opacity: 0.75;
   }
 
   .result-title {
