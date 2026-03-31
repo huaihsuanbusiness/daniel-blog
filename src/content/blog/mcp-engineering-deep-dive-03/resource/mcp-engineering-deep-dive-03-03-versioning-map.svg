@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="700" viewBox="0 0 1200 700">
+
+  <defs>
+    <style>
+      .bg { fill: #f8fafc; }
+      .title { font: 700 30px Arial, Inter, sans-serif; fill: #0f172a; }
+      .subtitle { font: 400 14px Arial, Inter, sans-serif; fill: #475569; }
+      .box { rx: 18; ry: 18; stroke-width: 1.5; }
+      .t1 { font: 700 16px Arial, Inter, sans-serif; fill: #0f172a; }
+      .t2 { font: 400 13px Arial, Inter, sans-serif; fill: #334155; }
+      .note { font: 400 12px Arial, Inter, sans-serif; fill: #64748b; }
+      .line { stroke: #64748b; stroke-width: 2.5; fill: none; marker-end: url(#arrow); }
+    </style>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#64748b" />
+    </marker>
+  </defs>
+    
+<rect class="bg" x="0" y="0" width="1200" height="700"/>
+<text class="title" x="50" y="58">Versioning map</text>
+<text class="subtitle" x="50" y="84">Not every change deserves a new tool, but every breaking change deserves a plan.</text>
+<rect class="box" x="80" y="150" width="270" height="160" fill="#dbeafe" stroke="#93c5fd"/>
+<text class="t1" x="100" y="180">Safe additive changes</text>
+<text class="t2" x="100" y="204">New optional fields</text>
+<text class="t2" x="100" y="226">Extra metadata</text>
+<text class="t2" x="100" y="248">New non-breaking enum values</text>
+<rect class="box" x="400" y="150" width="270" height="160" fill="#ede9fe" stroke="#c4b5fd"/>
+<text class="t1" x="420" y="180">Breaking changes</text>
+<text class="t2" x="420" y="204">Renamed keys</text>
+<text class="t2" x="420" y="226">Changed meanings</text>
+<text class="t2" x="420" y="248">Required new inputs</text>
+<text class="t2" x="420" y="270">Different side effects</text>
+<rect class="box" x="720" y="150" width="320" height="180" fill="#ffedd5" stroke="#fdba74"/>
+<text class="t1" x="740" y="180">Versioning options</text>
+<text class="t2" x="740" y="204">Keep old + new side by side</text>
+<text class="t2" x="740" y="226">Use tool version metadata</text>
+<text class="t2" x="740" y="248">Deprecate with dates and migration notes</text>
+<rect class="box" x="240" y="390" width="620" height="170" fill="#dcfce7" stroke="#86efac"/>
+<text class="t1" x="260" y="420">What to remember</text>
+<text class="t2" x="260" y="444">Versioning is for clients, not for your codebase aesthetics</text>
+<text class="t2" x="260" y="466">Multiple clients rarely upgrade in lockstep</text>
+<text class="t2" x="260" y="488">Backward compatibility is an operational feature</text>
+<path class="line" d="M350 230 H400"/>
+<path class="line" d="M670 230 H720"/>
+<path class="line" d="M560 310 V390"/>
+</svg>

@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="700" viewBox="0 0 1200 700">
+
+  <defs>
+    <style>
+      .bg { fill: #f8fafc; }
+      .title { font: 700 30px Arial, Inter, sans-serif; fill: #0f172a; }
+      .subtitle { font: 400 14px Arial, Inter, sans-serif; fill: #475569; }
+      .box { rx: 18; ry: 18; stroke-width: 1.5; }
+      .t1 { font: 700 16px Arial, Inter, sans-serif; fill: #0f172a; }
+      .t2 { font: 400 13px Arial, Inter, sans-serif; fill: #334155; }
+      .note { font: 400 12px Arial, Inter, sans-serif; fill: #64748b; }
+      .line { stroke: #64748b; stroke-width: 2.5; fill: none; marker-end: url(#arrow); }
+    </style>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#64748b" />
+    </marker>
+  </defs>
+    
+<rect class="bg" x="0" y="0" width="1200" height="700"/>
+<text class="title" x="50" y="58">Security starts at the tool surface</text>
+<text class="subtitle" x="50" y="84">Auth without surface discipline still leaks power.</text>
+<rect class="box" x="60" y="130" width="210" height="130" fill="#dbeafe" stroke="#93c5fd"/>
+<text class="t1" x="80" y="160">Public tool list</text>
+<text class="t2" x="80" y="184">What can the model see?</text>
+<text class="t2" x="80" y="206">Which tools are discoverable?</text>
+<text class="t2" x="80" y="228">Which ones should stay helper-only?</text>
+<rect class="box" x="330" y="130" width="230" height="150" fill="#ede9fe" stroke="#c4b5fd"/>
+<text class="t1" x="350" y="160">Authentication</text>
+<text class="t2" x="350" y="184">API key, bearer token, OAuth</text>
+<text class="t2" x="350" y="206">Identity proof at the edge</text>
+<text class="t2" x="350" y="228">Never assume public access is harmless</text>
+<rect class="box" x="630" y="130" width="240" height="150" fill="#ffedd5" stroke="#fdba74"/>
+<text class="t1" x="650" y="160">Authorization</text>
+<text class="t2" x="650" y="184">Which actor can call which tool?</text>
+<text class="t2" x="650" y="206">Scopes, roles, per-tool checks</text>
+<text class="t2" x="650" y="228">Read is not write</text>
+<rect class="box" x="930" y="130" width="210" height="150" fill="#dcfce7" stroke="#86efac"/>
+<text class="t1" x="950" y="160">Response discipline</text>
+<text class="t2" x="950" y="184">Don't overshare internals</text>
+<text class="t2" x="950" y="206">Return structured errors</text>
+<text class="t2" x="950" y="228">Trim sensitive payloads</text>
+<rect class="box" x="330" y="360" width="540" height="180" fill="#fce7f3" stroke="#f9a8d4"/>
+<text class="t1" x="350" y="390">What hardening really means</text>
+<text class="t2" x="350" y="414">Tool minimisation</text>
+<text class="t2" x="350" y="436">TLS and proxy sanity</text>
+<text class="t2" x="350" y="458">Header forwarding discipline</text>
+<text class="t2" x="350" y="480">Rate limiting and logs</text>
+<text class="t2" x="350" y="502">Prompt-injection-aware tool design</text>
+<path class="line" d="M270 195 H330"/>
+<path class="line" d="M560 205 H630"/>
+<path class="line" d="M870 205 H930"/>
+<path class="line" d="M735 280 V360"/>
+</svg>

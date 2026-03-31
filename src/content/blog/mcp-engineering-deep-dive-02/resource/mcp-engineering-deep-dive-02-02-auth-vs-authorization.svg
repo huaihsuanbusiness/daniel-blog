@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="700" viewBox="0 0 1200 700">
+
+  <defs>
+    <style>
+      .bg { fill: #f8fafc; }
+      .title { font: 700 30px Arial, Inter, sans-serif; fill: #0f172a; }
+      .subtitle { font: 400 14px Arial, Inter, sans-serif; fill: #475569; }
+      .box { rx: 18; ry: 18; stroke-width: 1.5; }
+      .t1 { font: 700 16px Arial, Inter, sans-serif; fill: #0f172a; }
+      .t2 { font: 400 13px Arial, Inter, sans-serif; fill: #334155; }
+      .note { font: 400 12px Arial, Inter, sans-serif; fill: #64748b; }
+      .line { stroke: #64748b; stroke-width: 2.5; fill: none; marker-end: url(#arrow); }
+    </style>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#64748b" />
+    </marker>
+  </defs>
+    
+<rect class="bg" x="0" y="0" width="1200" height="700"/>
+<text class="title" x="50" y="58">Authentication and authorization are different jobs</text>
+<text class="subtitle" x="50" y="84">One answers who you are. The other answers what you may do.</text>
+<rect class="box" x="80" y="150" width="240" height="140" fill="#dbeafe" stroke="#93c5fd"/>
+<text class="t1" x="100" y="180">Authentication</text>
+<text class="t2" x="100" y="204">Verify identity</text>
+<text class="t2" x="100" y="226">API keys or OAuth</text>
+<text class="t2" x="100" y="248">Token audience and validity</text>
+<rect class="box" x="400" y="150" width="240" height="140" fill="#ede9fe" stroke="#c4b5fd"/>
+<text class="t1" x="420" y="180">Authorization</text>
+<text class="t2" x="420" y="204">Check scopes / roles</text>
+<text class="t2" x="420" y="226">Filter tool visibility</text>
+<text class="t2" x="420" y="248">Block disallowed execution</text>
+<rect class="box" x="720" y="150" width="350" height="180" fill="#ffedd5" stroke="#fdba74"/>
+<text class="t1" x="740" y="180">Why teams mix them up</text>
+<text class="t2" x="740" y="204">'The request had a token' is not enough</text>
+<text class="t2" x="740" y="226">A valid token can still be over-privileged</text>
+<text class="t2" x="740" y="248">Public servers need both layers</text>
+<rect class="box" x="260" y="380" width="560" height="180" fill="#dcfce7" stroke="#86efac"/>
+<text class="t1" x="280" y="410">Safer default</text>
+<text class="t2" x="280" y="434">Deny by default</text>
+<text class="t2" x="280" y="456">Expose fewer tools publicly</text>
+<text class="t2" x="280" y="478">Use server-level policy plus per-tool checks</text>
+<text class="t2" x="280" y="500">Keep STDIO assumptions out of remote deployments</text>
+<path class="line" d="M320 220 H400"/>
+<path class="line" d="M640 220 H720"/>
+<path class="line" d="M540 290 V380"/>
+</svg>

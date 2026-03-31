@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="700" viewBox="0 0 1200 700">
+
+  <defs>
+    <style>
+      .bg { fill: #f8fafc; }
+      .title { font: 700 30px Arial, Inter, sans-serif; fill: #0f172a; }
+      .subtitle { font: 400 14px Arial, Inter, sans-serif; fill: #475569; }
+      .box { rx: 18; ry: 18; stroke-width: 1.5; }
+      .t1 { font: 700 16px Arial, Inter, sans-serif; fill: #0f172a; }
+      .t2 { font: 400 13px Arial, Inter, sans-serif; fill: #334155; }
+      .note { font: 400 12px Arial, Inter, sans-serif; fill: #64748b; }
+      .line { stroke: #64748b; stroke-width: 2.5; fill: none; marker-end: url(#arrow); }
+    </style>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#64748b" />
+    </marker>
+  </defs>
+    
+<rect class="bg" x="0" y="0" width="1200" height="700"/>
+<text class="title" x="50" y="58">Public server hardening checklist</text>
+<text class="subtitle" x="50" y="84">Think edge, proxy, server, tool, and response layers together.</text>
+<rect class="box" x="60" y="150" width="200" height="140" fill="#dbeafe" stroke="#93c5fd"/>
+<text class="t1" x="80" y="180">Edge</text>
+<text class="t2" x="80" y="204">Cloudflare / CDN</text>
+<text class="t2" x="80" y="226">TLS termination</text>
+<text class="t2" x="80" y="248">Bot and abuse controls</text>
+<rect class="box" x="300" y="150" width="200" height="140" fill="#ede9fe" stroke="#c4b5fd"/>
+<text class="t1" x="320" y="180">Proxy</text>
+<text class="t2" x="320" y="204">Path rewriting</text>
+<text class="t2" x="320" y="226">Header forwarding</text>
+<text class="t2" x="320" y="248">Timeouts and body sizes</text>
+<rect class="box" x="540" y="150" width="220" height="160" fill="#ffedd5" stroke="#fdba74"/>
+<text class="t1" x="560" y="180">Server</text>
+<text class="t2" x="560" y="204">Auth middleware</text>
+<text class="t2" x="560" y="226">Scope checks</text>
+<text class="t2" x="560" y="248">Rate limiting / logging</text>
+<text class="t2" x="560" y="270">Health endpoints</text>
+<rect class="box" x="810" y="150" width="260" height="160" fill="#dcfce7" stroke="#86efac"/>
+<text class="t1" x="830" y="180">Tool layer</text>
+<text class="t2" x="830" y="204">Minimise write tools</text>
+<text class="t2" x="830" y="226">Validate inputs strictly</text>
+<text class="t2" x="830" y="248">No secret leakage in output</text>
+<text class="t2" x="830" y="270">Bound expensive calls</text>
+<rect class="box" x="250" y="390" width="610" height="170" fill="#fce7f3" stroke="#f9a8d4"/>
+<text class="t1" x="270" y="420">Response layer</text>
+<text class="t2" x="270" y="444">Use structured error codes</text>
+<text class="t2" x="270" y="466">Redact internals</text>
+<text class="t2" x="270" y="488">Return actionable but bounded messages</text>
+<text class="t2" x="270" y="510">Avoid verbose stack traces to public clients</text>
+<path class="line" d="M260 220 H300"/>
+<path class="line" d="M500 220 H540"/>
+<path class="line" d="M760 220 H810"/>
+<path class="line" d="M650 310 V390"/>
+</svg>

@@ -1,0 +1,46 @@
+<svg width="1100" height="520" viewBox="0 0 1100 520" xmlns="http://www.w3.org/2000/svg">
+<defs><style>
+      .bg { fill: #f8fafc; }
+      .title { font: 700 28px Arial, Inter, sans-serif; fill: #0f172a; }
+      .subtitle { font: 400 14px Arial, Inter, sans-serif; fill: #475569; }
+      .box-title { font: 700 16px Arial, Inter, sans-serif; fill: #0f172a; }
+      .box-text { font: 400 13px Arial, Inter, sans-serif; fill: #334155; }
+      .note { font: 400 12px Arial, Inter, sans-serif; fill: #64748b; }
+      .green { fill: #dcfce7; stroke: #86efac; }
+      .blue { fill: #dbeafe; stroke: #93c5fd; }
+      .orange { fill: #ffedd5; stroke: #fdba74; }
+      .purple { fill: #ede9fe; stroke: #c4b5fd; }
+      .pink { fill: #fce7f3; stroke: #f9a8d4; }
+      .neutral { fill: #ffffff; stroke: #cbd5e1; }
+      .edge { stroke-width: 1.5; rx: 18; ry: 18; }
+      .line { stroke: #64748b; stroke-width: 2.5; fill: none; marker-end: url(#arrow); }
+      .dash { stroke: #94a3b8; stroke-width: 2; fill: none; stroke-dasharray: 6 6; marker-end: url(#arrow); }
+    </style><marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#64748b"/></marker></defs>
+<rect class="bg" x="0" y="0" width="1100" height="520"/>
+<text class="title" x="50" y="56">Transport Decision Ladder</text>
+<text class="subtitle" x="50" y="82">Transport choice follows runtime shape, client expectations, and edge requirements.</text>
+<rect class="blue edge" x="60" y="150" width="180" height="100"/>
+<text class="box-title" x="80" y="180">stdio</text>
+<text class="box-text" x="80" y="204">local dev</text>
+<text class="box-text" x="80" y="224">single client</text>
+<rect class="orange edge" x="310" y="150" width="180" height="100"/>
+<text class="box-title" x="330" y="180">SSE</text>
+<text class="box-text" x="330" y="204">legacy compatibility</text>
+<text class="box-text" x="330" y="224">older setups</text>
+<rect class="purple edge" x="560" y="150" width="200" height="100"/>
+<text class="box-title" x="580" y="180">Streamable HTTP</text>
+<text class="box-text" x="580" y="204">recommended for new</text>
+<text class="box-text" x="580" y="224">production remote use</text>
+<rect class="green edge" x="830" y="150" width="200" height="100"/>
+<text class="box-title" x="850" y="180">Remote Deployment</text>
+<text class="box-text" x="850" y="204">proxy, TLS, auth</text>
+<text class="box-text" x="850" y="224">public entrypoint</text>
+<rect class="neutral edge" x="310" y="330" width="450" height="120"/>
+<text class="box-title" x="330" y="360">Selection rule</text>
+<text class="box-text" x="330" y="384">Choose based on how the server must live,</text>
+<text class="box-text" x="330" y="404">not on what feels easiest in a demo.</text>
+<path class="line" d="M240 200 H310"/>
+<path class="line" d="M490 200 H560"/>
+<path class="line" d="M760 200 H830"/>
+<path class="line" d="M535 250 V330"/>
+</svg>

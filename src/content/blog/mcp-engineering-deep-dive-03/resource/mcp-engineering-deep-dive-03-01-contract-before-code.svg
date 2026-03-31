@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="700" viewBox="0 0 1200 700">
+
+  <defs>
+    <style>
+      .bg { fill: #f8fafc; }
+      .title { font: 700 30px Arial, Inter, sans-serif; fill: #0f172a; }
+      .subtitle { font: 400 14px Arial, Inter, sans-serif; fill: #475569; }
+      .box { rx: 18; ry: 18; stroke-width: 1.5; }
+      .t1 { font: 700 16px Arial, Inter, sans-serif; fill: #0f172a; }
+      .t2 { font: 400 13px Arial, Inter, sans-serif; fill: #334155; }
+      .note { font: 400 12px Arial, Inter, sans-serif; fill: #64748b; }
+      .line { stroke: #64748b; stroke-width: 2.5; fill: none; marker-end: url(#arrow); }
+    </style>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#64748b" />
+    </marker>
+  </defs>
+    
+<rect class="bg" x="0" y="0" width="1200" height="700"/>
+<text class="title" x="50" y="58">Contract before code</text>
+<text class="subtitle" x="50" y="84">Stable tools start with stable inputs, outputs, and error shapes.</text>
+<rect class="box" x="70" y="150" width="230" height="150" fill="#dbeafe" stroke="#93c5fd"/>
+<text class="t1" x="90" y="180">Input contract</text>
+<text class="t2" x="90" y="204">Required fields</text>
+<text class="t2" x="90" y="226">Optional fields</text>
+<text class="t2" x="90" y="248">Defaults and bounds</text>
+<rect class="box" x="360" y="150" width="230" height="150" fill="#ede9fe" stroke="#c4b5fd"/>
+<text class="t1" x="380" y="180">Execution semantics</text>
+<text class="t2" x="380" y="204">What the tool actually does</text>
+<text class="t2" x="380" y="226">Side effects</text>
+<text class="t2" x="380" y="248">Deterministic vs model-shaped</text>
+<rect class="box" x="650" y="150" width="230" height="150" fill="#ffedd5" stroke="#fdba74"/>
+<text class="t1" x="670" y="180">Output contract</text>
+<text class="t2" x="670" y="204">Data payload</text>
+<text class="t2" x="670" y="226">Summary payload</text>
+<text class="t2" x="670" y="248">Stable keys and types</text>
+<rect class="box" x="940" y="150" width="180" height="150" fill="#dcfce7" stroke="#86efac"/>
+<text class="t1" x="960" y="180">Error contract</text>
+<text class="t2" x="960" y="204">Codes, not prose</text>
+<text class="t2" x="960" y="226">Recoverable vs fatal</text>
+<rect class="box" x="250" y="390" width="640" height="180" fill="#fce7f3" stroke="#f9a8d4"/>
+<text class="t1" x="270" y="420">Versioning discipline</text>
+<text class="t2" x="270" y="444">Additive changes first</text>
+<text class="t2" x="270" y="466">Break only with version bumps</text>
+<text class="t2" x="270" y="488">Keep old and new tools side by side when needed</text>
+<text class="t2" x="270" y="510">Document schema drift explicitly</text>
+<path class="line" d="M300 220 H360"/>
+<path class="line" d="M590 220 H650"/>
+<path class="line" d="M880 220 H940"/>
+<path class="line" d="M590 300 V390"/>
+</svg>

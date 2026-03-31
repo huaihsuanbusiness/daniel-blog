@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="700" viewBox="0 0 1200 700">
+
+  <defs>
+    <style>
+      .bg { fill: #f8fafc; }
+      .title { font: 700 30px Arial, Inter, sans-serif; fill: #0f172a; }
+      .subtitle { font: 400 14px Arial, Inter, sans-serif; fill: #475569; }
+      .box { rx: 18; ry: 18; stroke-width: 1.5; }
+      .t1 { font: 700 16px Arial, Inter, sans-serif; fill: #0f172a; }
+      .t2 { font: 400 13px Arial, Inter, sans-serif; fill: #334155; }
+      .note { font: 400 12px Arial, Inter, sans-serif; fill: #64748b; }
+      .line { stroke: #64748b; stroke-width: 2.5; fill: none; marker-end: url(#arrow); }
+    </style>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#64748b" />
+    </marker>
+  </defs>
+    
+<rect class="bg" x="0" y="0" width="1200" height="700"/>
+<text class="title" x="50" y="58">A practical security decision ladder</text>
+<text class="subtitle" x="50" y="84">The earlier you answer these questions, the less chaos you ship.</text>
+<rect class="box" x="70" y="140" width="250" height="120" fill="#dbeafe" stroke="#93c5fd"/>
+<text class="t1" x="90" y="170">1. Is this server public?</text>
+<text class="t2" x="90" y="194">If yes, stop assuming trust</text>
+<text class="t2" x="90" y="216">Design for hostile traffic</text>
+<rect class="box" x="360" y="140" width="250" height="120" fill="#ede9fe" stroke="#c4b5fd"/>
+<text class="t1" x="380" y="170">2. What may be listed?</text>
+<text class="t2" x="380" y="194">Public tools are a product choice</text>
+<text class="t2" x="380" y="216">Hidden helpers stay hidden</text>
+<rect class="box" x="650" y="140" width="250" height="120" fill="#ffedd5" stroke="#fdba74"/>
+<text class="t1" x="670" y="170">3. What may be executed?</text>
+<text class="t2" x="670" y="194">Per-tool authz beats broad allowlists</text>
+<rect class="box" x="940" y="140" width="190" height="120" fill="#dcfce7" stroke="#86efac"/>
+<text class="t1" x="960" y="170">4. What may be returned?</text>
+<text class="t2" x="960" y="194">Least necessary output</text>
+<rect class="box" x="250" y="340" width="700" height="190" fill="#fce7f3" stroke="#f9a8d4"/>
+<text class="t1" x="270" y="370">Operational stance</text>
+<text class="t2" x="270" y="394">Golden prompts before launch</text>
+<text class="t2" x="270" y="416">Inspect real JSON request/response pairs</text>
+<text class="t2" x="270" y="438">Log enough to debug, not enough to leak</text>
+<text class="t2" x="270" y="460">Review auth and scopes whenever tool contracts change</text>
+<path class="line" d="M320 200 H360"/>
+<path class="line" d="M610 200 H650"/>
+<path class="line" d="M900 200 H940"/>
+<path class="line" d="M600 260 V340"/>
+</svg>

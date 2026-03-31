@@ -1,0 +1,46 @@
+<svg width="980" height="520" viewBox="0 0 980 520" xmlns="http://www.w3.org/2000/svg">
+<defs><style>
+      .bg { fill: #f8fafc; }
+      .title { font: 700 28px Arial, Inter, sans-serif; fill: #0f172a; }
+      .subtitle { font: 400 14px Arial, Inter, sans-serif; fill: #475569; }
+      .box-title { font: 700 16px Arial, Inter, sans-serif; fill: #0f172a; }
+      .box-text { font: 400 13px Arial, Inter, sans-serif; fill: #334155; }
+      .note { font: 400 12px Arial, Inter, sans-serif; fill: #64748b; }
+      .green { fill: #dcfce7; stroke: #86efac; }
+      .blue { fill: #dbeafe; stroke: #93c5fd; }
+      .orange { fill: #ffedd5; stroke: #fdba74; }
+      .purple { fill: #ede9fe; stroke: #c4b5fd; }
+      .pink { fill: #fce7f3; stroke: #f9a8d4; }
+      .neutral { fill: #ffffff; stroke: #cbd5e1; }
+      .edge { stroke-width: 1.5; rx: 18; ry: 18; }
+      .line { stroke: #64748b; stroke-width: 2.5; fill: none; marker-end: url(#arrow); }
+      .dash { stroke: #94a3b8; stroke-width: 2; fill: none; stroke-dasharray: 6 6; marker-end: url(#arrow); }
+    </style><marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#64748b"/></marker></defs>
+<rect class="bg" x="0" y="0" width="980" height="520"/>
+<text class="title" x="50" y="56">End-to-End Transport Path</text>
+<text class="subtitle" x="50" y="82">A remote MCP request crosses more layers than the app alone.</text>
+<rect class="blue edge" x="60" y="160" width="160" height="90"/>
+<text class="box-title" x="80" y="190">Client</text>
+<text class="box-text" x="80" y="214">ChatGPT</text>
+<text class="box-text" x="80" y="234">API caller</text>
+<rect class="orange edge" x="280" y="160" width="160" height="90"/>
+<text class="box-title" x="300" y="190">Edge</text>
+<text class="box-text" x="300" y="214">DNS</text>
+<text class="box-text" x="300" y="234">Cloudflare</text>
+<rect class="purple edge" x="500" y="160" width="180" height="90"/>
+<text class="box-title" x="520" y="190">Reverse Proxy</text>
+<text class="box-text" x="520" y="214">nginx</text>
+<text class="box-text" x="520" y="234">TLS / path</text>
+<rect class="green edge" x="740" y="160" width="180" height="90"/>
+<text class="box-title" x="760" y="190">MCP App</text>
+<text class="box-text" x="760" y="214">FastMCP</text>
+<text class="box-text" x="760" y="234">uvicorn</text>
+<rect class="neutral edge" x="340" y="340" width="300" height="110"/>
+<text class="box-title" x="360" y="370">Why the path matters</text>
+<text class="box-text" x="360" y="394">/mcp is an end-to-end contract,</text>
+<text class="box-text" x="360" y="414">not only an internal route.</text>
+<path class="line" d="M220 205 H280"/>
+<path class="line" d="M440 205 H500"/>
+<path class="line" d="M680 205 H740"/>
+<path class="line" d="M590 250 V340"/>
+</svg>

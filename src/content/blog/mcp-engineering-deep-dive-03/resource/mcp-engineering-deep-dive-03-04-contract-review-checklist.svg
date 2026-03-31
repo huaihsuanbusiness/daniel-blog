@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="700" viewBox="0 0 1200 700">
+
+  <defs>
+    <style>
+      .bg { fill: #f8fafc; }
+      .title { font: 700 30px Arial, Inter, sans-serif; fill: #0f172a; }
+      .subtitle { font: 400 14px Arial, Inter, sans-serif; fill: #475569; }
+      .box { rx: 18; ry: 18; stroke-width: 1.5; }
+      .t1 { font: 700 16px Arial, Inter, sans-serif; fill: #0f172a; }
+      .t2 { font: 400 13px Arial, Inter, sans-serif; fill: #334155; }
+      .note { font: 400 12px Arial, Inter, sans-serif; fill: #64748b; }
+      .line { stroke: #64748b; stroke-width: 2.5; fill: none; marker-end: url(#arrow); }
+    </style>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#64748b" />
+    </marker>
+  </defs>
+    
+<rect class="bg" x="0" y="0" width="1200" height="700"/>
+<text class="title" x="50" y="58">Contract review checklist</text>
+<text class="subtitle" x="50" y="84">A short review saves long debugging sessions.</text>
+<rect class="box" x="70" y="150" width="250" height="150" fill="#dbeafe" stroke="#93c5fd"/>
+<text class="t1" x="90" y="180">Naming</text>
+<text class="t2" x="90" y="204">Would another engineer infer the same meaning?</text>
+<text class="t2" x="90" y="226">Are aliases still needed?</text>
+<rect class="box" x="360" y="150" width="250" height="150" fill="#ede9fe" stroke="#c4b5fd"/>
+<text class="t1" x="380" y="180">Types</text>
+<text class="t2" x="380" y="204">Do example calls match schema types?</text>
+<text class="t2" x="380" y="226">Are null and empty string distinct?</text>
+<rect class="box" x="650" y="150" width="250" height="150" fill="#ffedd5" stroke="#fdba74"/>
+<text class="t1" x="670" y="180">Errors</text>
+<text class="t2" x="670" y="204">Can the client branch on codes?</text>
+<text class="t2" x="670" y="226">Do messages leak internals?</text>
+<rect class="box" x="940" y="150" width="180" height="150" fill="#dcfce7" stroke="#86efac"/>
+<text class="t1" x="960" y="180">Versions</text>
+<text class="t2" x="960" y="204">What breaks?</text>
+<text class="t2" x="960" y="226">Who depends on it?</text>
+<rect class="box" x="250" y="390" width="630" height="170" fill="#fce7f3" stroke="#f9a8d4"/>
+<text class="t1" x="270" y="420">Release discipline</text>
+<text class="t2" x="270" y="444">Run golden prompts</text>
+<text class="t2" x="270" y="466">Test with real clients</text>
+<text class="t2" x="270" y="488">Update references and examples</text>
+<text class="t2" x="270" y="510">Track schema and behavior together</text>
+<path class="line" d="M320 225 H360"/>
+<path class="line" d="M610 225 H650"/>
+<path class="line" d="M900 225 H940"/>
+<path class="line" d="M565 300 V390"/>
+</svg>

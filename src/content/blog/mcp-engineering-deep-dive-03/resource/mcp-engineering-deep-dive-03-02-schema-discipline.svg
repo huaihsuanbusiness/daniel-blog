@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="700" viewBox="0 0 1200 700">
+
+  <defs>
+    <style>
+      .bg { fill: #f8fafc; }
+      .title { font: 700 30px Arial, Inter, sans-serif; fill: #0f172a; }
+      .subtitle { font: 400 14px Arial, Inter, sans-serif; fill: #475569; }
+      .box { rx: 18; ry: 18; stroke-width: 1.5; }
+      .t1 { font: 700 16px Arial, Inter, sans-serif; fill: #0f172a; }
+      .t2 { font: 400 13px Arial, Inter, sans-serif; fill: #334155; }
+      .note { font: 400 12px Arial, Inter, sans-serif; fill: #64748b; }
+      .line { stroke: #64748b; stroke-width: 2.5; fill: none; marker-end: url(#arrow); }
+    </style>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#64748b" />
+    </marker>
+  </defs>
+    
+<rect class="bg" x="0" y="0" width="1200" height="700"/>
+<text class="title" x="50" y="58">Schema discipline reduces model guesswork</text>
+<text class="subtitle" x="50" y="84">Loose schemas force the model to improvise; strict schemas teach it how to behave.</text>
+<rect class="box" x="80" y="150" width="250" height="160" fill="#dbeafe" stroke="#93c5fd"/>
+<text class="t1" x="100" y="180">Loose schema</text>
+<text class="t2" x="100" y="204">Ambiguous names</text>
+<text class="t2" x="100" y="226">Inconsistent types</text>
+<text class="t2" x="100" y="248">Optional-everything inputs</text>
+<text class="t2" x="100" y="270">Chatty free-form errors</text>
+<rect class="box" x="390" y="150" width="250" height="160" fill="#ede9fe" stroke="#c4b5fd"/>
+<text class="t1" x="410" y="180">Strict schema</text>
+<text class="t2" x="410" y="204">Clear names</text>
+<text class="t2" x="410" y="226">Typed fields</text>
+<text class="t2" x="410" y="248">Explicit defaults</text>
+<text class="t2" x="410" y="270">Structured errors</text>
+<rect class="box" x="700" y="150" width="360" height="180" fill="#ffedd5" stroke="#fdba74"/>
+<text class="t1" x="720" y="180">Why it matters</text>
+<text class="t2" x="720" y="204">Tool choice depends on metadata</text>
+<text class="t2" x="720" y="226">Arguments are generated from schema</text>
+<text class="t2" x="720" y="248">Contract drift becomes runtime confusion</text>
+<text class="t2" x="720" y="270">Good schemas improve both safety and recall</text>
+<rect class="box" x="260" y="390" width="560" height="170" fill="#dcfce7" stroke="#86efac"/>
+<text class="t1" x="280" y="420">Practical rules</text>
+<text class="t2" x="280" y="444">Use stable nouns</text>
+<text class="t2" x="280" y="466">Keep one concept per field</text>
+<text class="t2" x="280" y="488">Prefer enums over folklore strings</text>
+<text class="t2" x="280" y="510">Separate helper-only data from public outputs</text>
+<path class="line" d="M330 230 H390"/>
+<path class="line" d="M640 230 H700"/>
+<path class="line" d="M570 310 V390"/>
+</svg>
