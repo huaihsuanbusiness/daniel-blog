@@ -99,6 +99,7 @@ const selectedCategoryLabel = selectedCategory && selectedCategory in CATEGORY_L
             <div
               class:list={['animate-in', { 'animate-delay-1': i % 3 === 1, 'animate-delay-2': i % 3 === 2 }]}
               data-post-card
+              data-date={post.data.date.toISOString()}
               data-category={post.data.categories.map(cat => normalizeCategory(cat)).filter(Boolean).join(' ')}
             >
               <PostCard
@@ -182,6 +183,25 @@ const selectedCategoryLabel = selectedCategory && selectedCategory in CATEGORY_L
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
     gap: var(--space-4);
+  }
+
+  .posts-grid.view-list {
+    grid-template-columns: 1fr;
+    gap: var(--space-2);
+  }
+
+  .posts-grid.view-list :global(.post-card) {
+    border-radius: 8px;
+  }
+
+  .posts-grid.view-list :global(.card-desc) {
+    -webkit-line-clamp: 1;
+  }
+
+  .posts-grid.view-list :global(.card-footer) {
+    border-top: none;
+    padding-top: 0;
+    margin-top: 0;
   }
 
   .empty-category {

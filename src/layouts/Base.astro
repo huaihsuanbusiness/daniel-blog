@@ -1,4 +1,6 @@
 ---
+import SearchModal from '../components/SearchModal.astro';
+
 export interface Props {
   title: string;
   description?: string;
@@ -45,5 +47,6 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
   </head>
   <body>
     <slot />
+    <SearchModal lang={lang} />
   </body>
 </html>
