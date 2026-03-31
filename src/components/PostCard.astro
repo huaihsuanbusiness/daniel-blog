@@ -56,6 +56,9 @@ const langLabel = lang === 'zh' ? '中文' : 'EN';
     border-radius: 12px;
     overflow: hidden;
     transition: all var(--transition-fast);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
   }
 
   .post-card:hover {
@@ -65,7 +68,9 @@ const langLabel = lang === 'zh' ? '中文' : 'EN';
   }
 
   .card-link {
-    display: block;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
     text-decoration: none;
     color: inherit;
   }
@@ -75,7 +80,8 @@ const langLabel = lang === 'zh' ? '中文' : 'EN';
     display: flex;
     flex-direction: column;
     gap: var(--space-2);
-    height: 100%;
+    flex: 1;
+    min-height: 260px;
   }
 
   .card-meta {
@@ -91,11 +97,15 @@ const langLabel = lang === 'zh' ? '中文' : 'EN';
 
   .card-title {
     font-family: var(--font-display);
-    font-size: 1.25rem;
+    font-size: 1.125rem;
     font-weight: 600;
     line-height: 1.3;
     color: var(--color-text);
     transition: color var(--transition-fast);
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
 
   .post-card:hover .card-title {
@@ -148,9 +158,6 @@ const langLabel = lang === 'zh' ? '中文' : 'EN';
 
   .post-card.featured .card-title {
     font-size: 1.75rem;
-  }
-
-  .post-card.featured .card-desc {
     -webkit-line-clamp: 4;
   }
 

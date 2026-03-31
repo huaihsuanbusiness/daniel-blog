@@ -99,7 +99,7 @@ const selectedCategoryLabel = selectedCategory && selectedCategory in CATEGORY_L
             <div
               class:list={['animate-in', { 'animate-delay-1': i % 3 === 1, 'animate-delay-2': i % 3 === 2 }]}
               data-post-card
-              data-date={post.data.date.toISOString()}
+              data-sort-key={post.data.date.toISOString().slice(0,16) + '-' + post.slug}
               data-category={post.data.categories.map(cat => normalizeCategory(cat)).filter(Boolean).join(' ')}
               data-categories={JSON.stringify(post.data.categories.map(cat => normalizeCategory(cat)).filter(Boolean))}
             >

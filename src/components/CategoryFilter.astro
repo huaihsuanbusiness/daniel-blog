@@ -129,9 +129,10 @@ const sortLabel = sortLabels[lang];
     if (!postsGrid) return;
     const cards = Array.from(postsGrid.querySelectorAll('[data-post-card]'));
     cards.sort((a, b) => {
-      const dateA = new Date((a as HTMLElement).dataset.date || 0).valueOf();
-      const dateB = new Date((b as HTMLElement).dataset.date || 0).valueOf();
-      return sort === 'old' ? dateA - dateB : dateB - dateA;
+      const keyA = (a as HTMLElement).dataset.sortKey || '';
+      const keyB = (b as HTMLElement).dataset.sortKey || '';
+      // data-sort-key format: "YYYY-MM-DDTHH:MM-slug" — string sort = chronological + slug tie-break
+      return sort === 'old' ? keyA.localeCompare(keyB) : keyB.localeCompare(keyA);
     });
     cards.forEach(card => postsGrid.appendChild(card));
   }
