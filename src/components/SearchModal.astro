@@ -17,20 +17,28 @@ const languagePosts = allPosts
     return {
       slug,
       title: post.data.title,
-      description: post.data.description,
+      description: post.data.description || '',
       category: normalizeCategory(post.data.categories[0] || '') ?? '',
       date: post.data.date.toISOString().slice(0, 10),
     };
   });
 
 const labels = {
-  en: { placeholder: 'Search articles…', noResults: 'No results found.', hint: 'ESC to close' },
-  zh: { placeholder: '搜尋文章…', noResults: '找不到符合的文章。', hint: 'ESC 關閉' },
+  en: { placeholder: 'Search articles…', noResults: 'No results found.' },
+  zh: { placeholder: '搜尋文章…', noResults: '找不到符合的文章。' },
 };
 const label = labels[lang];
+const searchData = JSON.stringify(languagePosts);
 ---
 
-<!-- Search Modal — hidden by default, shown via class -->
+<!-- Inject posts data as global BEFORE the inline script runs -->
+<script is:inline define:vars={{ searchData, label, lang }}>
+  window.BLOG_SEARCH_DATA = JSON.parse(searchData);
+  window.BLOG_SEARCH_LANG = lang;
+  window.BLOG_SEARCH_LABEL = label;
+</script>
+
+<!-- Search Modal -->
 <div id="search-modal" class="search-modal" role="dialog" aria-modal="true" aria-label="Search">
   <div class="search-backdrop" id="search-backdrop"></div>
   <div class="search-panel">
@@ -59,125 +67,107 @@ const label = labels[lang];
       <ul id="search-results" class="search-results" role="listbox"></ul>
       <p id="search-empty" class="search-empty">{label.noResults}</p>
     </div>
-    <div class="search-footer">
-      <kbd>ESC</kbd> {label.hint} &nbsp;·&nbsp; <kbd>↑↓</kbd> navigate &nbsp;·&nbsp; <kbd>Enter</kbd> open
-    </div>
   </div>
 </div>
 
-<script define:vars={{ posts: languagePosts, label }}>
-  const modal = document.getElementById('search-modal');
-  const backdrop = document.getElementById('search-backdrop');
-  const closeBtn = document.getElementById('search-close');
-  const input = document.getElementById('search-input');
-  const results = document.getElementById('search-results');
-  const emptyMsg = document.getElementById('search-empty');
+<script is:inline>
+  (function () {
+    var posts = window.BLOG_SEARCH_DATA || [];
+    var lang = window.BLOG_SEARCH_LANG || 'en';
+    var label = window.BLOG_SEARCH_LABEL || {};
 
-  function isOpen() {
-    return modal && modal.classList.contains('is-open');
-  }
+    var modal = document.getElementById('search-modal');
+    var backdrop = document.getElementById('search-backdrop');
+    var closeBtn = document.getElementById('search-close');
+    var input = document.getElementById('search-input');
+    var results = document.getElementById('search-results');
+    var emptyMsg = document.getElementById('search-empty');
 
-  function openModal() {
-    if (!modal) return;
-    modal.classList.add('is-open');
-    document.body.style.overflow = 'hidden';
-    requestAnimationFrame(() => input && input.focus());
-  }
-
-  function closeModal() {
-    if (!modal) return;
-    modal.classList.remove('is-open');
-    document.body.style.overflow = '';
-  }
-
-  // Open: trigger is the search button in Header (already in DOM)
-  document.getElementById('search-trigger')?.addEventListener('click', openModal);
-
-  // Close: backdrop, close button, or ESC
-  backdrop?.addEventListener('click', closeModal);
-  closeBtn?.addEventListener('click', closeModal);
-
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && isOpen()) closeModal();
-    if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
-      e.preventDefault();
-      isOpen() ? closeModal() : openModal();
+    function isOpen() {
+      return modal && modal.classList.contains('is-open');
     }
-  });
 
-  // ── Search logic ──────────────────────────────────────────
-  function render(resultsList) {
-    if (!results || !emptyMsg) return;
-    if (resultsList.length === 0) {
-      results.innerHTML = '';
-      emptyMsg.style.display = '';
-      return;
-    }
-    emptyMsg.style.display = 'none';
-    results.innerHTML = resultsList.map((p, i) => `
-      <li role="option" data-index="${i}">
-        <a href="/${lang}/blog/${p.slug}" class="search-result-item">
-          <div class="result-meta">
-            <span class="result-category">${p.category}</span>
-            <span class="result-date">${p.date}</span>
-          </div>
-          <div class="result-title">${p.title}</div>
-          <div class="result-desc">${p.description || ''}</div>
-        </a>
-      </li>
-    `).join('');
-  }
-
-  let selectedIndex = -1;
-
-  input?.addEventListener('input', () => {
-    selectedIndex = -1;
-    const q = input.value.trim().toLowerCase();
-    if (!q) {
-      render([]);
-      return;
-    }
-    const filtered = posts.filter(p =>
-      p.title.toLowerCase().includes(q) ||
-      (p.description && p.description.toLowerCase().includes(q))
-    );
-    render(filtered);
-  });
-
-  // Keyboard nav in results
-  input?.addEventListener('keydown', (e) => {
-    if (!results) return;
-    const items = results.querySelectorAll('li');
-    if (e.key === 'ArrowDown') {
-      e.preventDefault();
-      selectedIndex = Math.min(selectedIndex + 1, items.length - 1);
-      updateSelection(items);
-    } else if (e.key === 'ArrowUp') {
-      e.preventDefault();
-      selectedIndex = Math.max(selectedIndex - 1, -1);
-      updateSelection(items);
-    } else if (e.key === 'Enter' && selectedIndex >= 0) {
-      const selected = items[selectedIndex];
-      const link = selected?.querySelector('a');
-      if (link) {
-        closeModal();
-        window.location.href = link.href;
+    function openModal() {
+      if (!modal) return;
+      modal.classList.add('is-open');
+      document.body.style.overflow = 'hidden';
+      if (input) {
+        input.value = '';
+        input.focus();
       }
+      if (results) results.innerHTML = '';
+      if (emptyMsg) emptyMsg.style.display = 'none';
     }
-  });
 
-  function updateSelection(items) {
-    items.forEach((item, i) => {
-      item.classList.toggle('is-selected', i === selectedIndex);
-    });
-    if (selectedIndex >= 0) {
-      items[selectedIndex]?.scrollIntoView({ block: 'nearest' });
+    function closeModal() {
+      if (!modal) return;
+      modal.classList.remove('is-open');
+      document.body.style.overflow = '';
     }
-  }
+
+    // Open: header search button
+    var trigger = document.getElementById('search-trigger');
+    if (trigger) trigger.addEventListener('click', openModal);
+
+    // Close
+    if (backdrop) backdrop.addEventListener('click', closeModal);
+    if (closeBtn) closeBtn.addEventListener('click', closeModal);
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && isOpen()) closeModal();
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        isOpen() ? closeModal() : openModal();
+      }
+    });
+
+    function render(resultsList) {
+      if (!results || !emptyMsg) return;
+      if (resultsList.length === 0) {
+        results.innerHTML = '';
+        emptyMsg.style.display = '';
+        return;
+      }
+      emptyMsg.style.display = 'none';
+      var html = '';
+      for (var i = 0; i < resultsList.length; i++) {
+        var p = resultsList[i];
+        html += '<li role="option">\
+          <a href="/' + lang + '/blog/' + p.slug + '" class="search-result-item">\
+            <div class="result-meta">\
+              <span class="result-category">' + p.category + '</span>\
+              <span class="result-date">' + p.date + '</span>\
+            </div>\
+            <div class="result-title">' + p.title + '</div>\
+            <div class="result-desc">' + (p.description || '') + '</div>\
+          </a>\
+        </li>';
+      }
+      results.innerHTML = html;
+    }
+
+    if (input) {
+      input.addEventListener('input', function () {
+        var q = input.value.trim().toLowerCase();
+        if (!q) {
+          render([]);
+          return;
+        }
+        var filtered = [];
+        for (var i = 0; i < posts.length; i++) {
+          var p = posts[i];
+          if (p.title.toLowerCase().indexOf(q) !== -1 ||
+              (p.description && p.description.toLowerCase().indexOf(q) !== -1)) {
+            filtered.push(p);
+          }
+        }
+        render(filtered);
+      });
+    }
+  })();
 </script>
 
 <style>
-  /* Hidden state */
   .search-modal {
     display: none;
     position: fixed;
@@ -290,11 +280,6 @@ const label = labels[lang];
     gap: 2px;
   }
 
-  .search-results li.is-selected .search-result-item,
-  .search-result-item:hover {
-    background: color-mix(in srgb, var(--color-accent) 10%, var(--color-surface));
-  }
-
   .search-result-item {
     display: flex;
     flex-direction: column;
@@ -304,6 +289,10 @@ const label = labels[lang];
     text-decoration: none;
     color: inherit;
     transition: background 0.1s;
+  }
+
+  .search-result-item:hover {
+    background: color-mix(in srgb, var(--color-accent) 10%, var(--color-surface));
   }
 
   .result-meta {
@@ -350,25 +339,5 @@ const label = labels[lang];
     font-family: var(--font-mono);
     font-size: 0.875rem;
     margin: 0;
-  }
-
-  .search-footer {
-    padding: 8px 20px;
-    border-top: 1px solid var(--color-border);
-    font-family: var(--font-mono);
-    font-size: 0.6875rem;
-    color: var(--color-muted);
-    display: flex;
-    align-items: center;
-    gap: 4px;
-  }
-
-  .search-footer kbd {
-    background: var(--color-bg);
-    border: 1px solid var(--color-border);
-    border-radius: 4px;
-    padding: 1px 5px;
-    font-family: var(--font-mono);
-    font-size: 0.6875rem;
   }
 </style>
