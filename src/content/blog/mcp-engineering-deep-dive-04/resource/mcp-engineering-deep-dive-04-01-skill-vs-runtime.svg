@@ -1,0 +1,34 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+<defs><style>.bg{fill:#f8fafc}.title{font:700 28px Arial,Inter,sans-serif;fill:#0f172a}.subtitle{font:400 14px Arial,Inter,sans-serif;fill:#475569}.boxt{font:700 16px Arial,Inter,sans-serif;fill:#0f172a}.txt{font:400 13px Arial,Inter,sans-serif;fill:#334155}.note{font:400 12px Arial,Inter,sans-serif;fill:#64748b}.edge{stroke-width:1.6;rx:18;ry:18}.line{stroke:#64748b;stroke-width:2.4;fill:none;marker-end:url(#arrow)}.g{fill:#dcfce7;stroke:#86efac}.b{fill:#dbeafe;stroke:#93c5fd}.o{fill:#ffedd5;stroke:#fdba74}.p{fill:#ede9fe;stroke:#c4b5fd}.n{fill:#fff;stroke:#cbd5e1}.r{fill:#ffe4e6;stroke:#fda4af}</style><marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#64748b"/></marker></defs>
+<rect class="bg" x="0" y="0" width="1280" height="720"/>
+<text class="title" x="50" y="56">Skill assets are not the same thing as runtime selection</text>
+<text class="subtitle" x="50" y="82">A skill-first repo still needs a clean runtime surface, live inventory, and aligned metadata.</text>
+<rect class="r edge" x="60" y="150" width="240" height="120"/>
+<text class="boxt" x="78" y="180">Skill assets</text>
+<text class="txt" x="78" y="206">manifest.yaml</text>
+<text class="txt" x="78" y="226">instructions.md</text>
+<text class="txt" x="78" y="246">examples.md</text>
+<rect class="b edge" x="360" y="150" width="240" height="120"/>
+<text class="boxt" x="378" y="180">Server tool surface</text>
+<text class="txt" x="378" y="206">tool name</text>
+<text class="txt" x="378" y="226">description</text>
+<text class="txt" x="378" y="246">input schema</text>
+<rect class="o edge" x="660" y="150" width="240" height="120"/>
+<text class="boxt" x="678" y="180">Live inventory</text>
+<text class="txt" x="678" y="206">deployed version</text>
+<text class="txt" x="678" y="226">visible tools</text>
+<text class="txt" x="678" y="246">session refresh</text>
+<rect class="p edge" x="960" y="150" width="240" height="120"/>
+<text class="boxt" x="978" y="180">Runtime selection</text>
+<text class="txt" x="978" y="206">model picks tool</text>
+<text class="txt" x="978" y="226">builds arguments</text>
+<text class="txt" x="978" y="246">executes call</text>
+<rect class="n edge" x="260" y="360" width="700" height="140"/>
+<text class="boxt" x="278" y="390">Why drift happens</text>
+<text class="txt" x="278" y="416">A skill package can be correct while the public tool surface still emits the wrong signal.</text>
+<text class="txt" x="278" y="436">If descriptions, schemas, visibility rules, and session state are not aligned, runtime behaviour will drift.</text>
+<path class="line" d="M300 210 H360"/>
+<path class="line" d="M600 210 H660"/>
+<path class="line" d="M900 210 H960"/>
+<path class="line" d="M630 270 V360"/>
+</svg>

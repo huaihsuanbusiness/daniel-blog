@@ -1,0 +1,33 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+<defs><style>.bg{fill:#f8fafc}.title{font:700 28px Arial,Inter,sans-serif;fill:#0f172a}.subtitle{font:400 14px Arial,Inter,sans-serif;fill:#475569}.boxt{font:700 16px Arial,Inter,sans-serif;fill:#0f172a}.txt{font:400 13px Arial,Inter,sans-serif;fill:#334155}.note{font:400 12px Arial,Inter,sans-serif;fill:#64748b}.edge{stroke-width:1.6;rx:18;ry:18}.line{stroke:#64748b;stroke-width:2.4;fill:none;marker-end:url(#arrow)}.g{fill:#dcfce7;stroke:#86efac}.b{fill:#dbeafe;stroke:#93c5fd}.o{fill:#ffedd5;stroke:#fdba74}.p{fill:#ede9fe;stroke:#c4b5fd}.n{fill:#fff;stroke:#cbd5e1}.r{fill:#ffe4e6;stroke:#fda4af}</style><marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#64748b"/></marker></defs>
+<rect class="bg" x="0" y="0" width="1280" height="720"/>
+<text class="title" x="50" y="56">The four layers that shape runtime selection</text>
+<text class="subtitle" x="50" y="82">Most routing bugs are really cross-layer alignment bugs.</text>
+<rect class="r edge" x="70" y="150" width="250" height="130"/>
+<text class="boxt" x="88" y="180">1. Repo layer</text>
+<text class="txt" x="88" y="206">skills/</text>
+<text class="txt" x="88" y="226">router policy</text>
+<text class="txt" x="88" y="246">eval notes</text>
+<rect class="b edge" x="380" y="150" width="250" height="130"/>
+<text class="boxt" x="398" y="180">2. Server layer</text>
+<text class="txt" x="398" y="206">docstrings</text>
+<text class="txt" x="398" y="226">tool schemas</text>
+<text class="txt" x="398" y="246">visibility</text>
+<rect class="o edge" x="690" y="150" width="250" height="130"/>
+<text class="boxt" x="708" y="180">3. Deployment layer</text>
+<text class="txt" x="708" y="206">current code</text>
+<text class="txt" x="708" y="226">current inventory</text>
+<text class="txt" x="708" y="246">current session</text>
+<rect class="p edge" x="1000" y="150" width="220" height="130"/>
+<text class="boxt" x="1018" y="180">4. Runtime layer</text>
+<text class="txt" x="1018" y="206">tool choice</text>
+<text class="txt" x="1018" y="226">argument shape</text>
+<text class="txt" x="1018" y="246">execution path</text>
+<rect class="n edge" x="190" y="390" width="900" height="120"/>
+<text class="boxt" x="208" y="420">Debug question</text>
+<text class="txt" x="208" y="446">When runtime goes wrong, ask which layer is out of sync before blaming the model.</text>
+<path class="line" d="M320 215 H380"/>
+<path class="line" d="M630 215 H690"/>
+<path class="line" d="M940 215 H1000"/>
+<path class="line" d="M610 280 V390"/>
+</svg>

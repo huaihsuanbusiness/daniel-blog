@@ -181,14 +181,23 @@ const selectedCategoryLabel = selectedCategory && selectedCategory in CATEGORY_L
   }
 
   .posts-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    display: flex;
+    flex-wrap: wrap;
     gap: var(--space-4);
     align-items: stretch;
   }
 
-  /* Uniform height for grid cards */
+  /* Each card takes equal width up to 3 columns */
   .posts-grid :global(.post-card) {
+    flex: 1 1 calc(33.333% - var(--space-4) * 2 / 3);
+    min-width: 300px;
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .posts-grid :global(.card-link) {
+    flex: 1;
     display: flex;
     flex-direction: column;
   }
@@ -220,13 +229,16 @@ const selectedCategoryLabel = selectedCategory && selectedCategory in CATEGORY_L
     margin-top: auto;
   }
 
+  /* List view: stack vertically */
   .posts-grid.view-list {
-    grid-template-columns: 1fr;
-    gap: var(--space-2);
+    flex-direction: column;
+    gap: var(--space-3);
   }
 
   .posts-grid.view-list :global(.post-card) {
-    border-radius: 8px;
+    flex: none;
+    width: 100%;
+    min-width: unset;
   }
 
   .posts-grid.view-list :global(.card-inner) {
@@ -312,8 +324,9 @@ const selectedCategoryLabel = selectedCategory && selectedCategory in CATEGORY_L
       justify-content: flex-start;
     }
 
-    .posts-grid {
-      grid-template-columns: 1fr;
+    .posts-grid :global(.post-card) {
+      flex-basis: 100%;
+      min-width: unset;
     }
   }
 </style>

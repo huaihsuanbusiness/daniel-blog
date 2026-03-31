@@ -1,0 +1,28 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+<defs><style>.bg{fill:#f8fafc}.title{font:700 28px Arial,Inter,sans-serif;fill:#0f172a}.subtitle{font:400 14px Arial,Inter,sans-serif;fill:#475569}.boxt{font:700 16px Arial,Inter,sans-serif;fill:#0f172a}.txt{font:400 13px Arial,Inter,sans-serif;fill:#334155}.note{font:400 12px Arial,Inter,sans-serif;fill:#64748b}.edge{stroke-width:1.6;rx:18;ry:18}.line{stroke:#64748b;stroke-width:2.4;fill:none;marker-end:url(#arrow)}.g{fill:#dcfce7;stroke:#86efac}.b{fill:#dbeafe;stroke:#93c5fd}.o{fill:#ffedd5;stroke:#fdba74}.p{fill:#ede9fe;stroke:#c4b5fd}.n{fill:#fff;stroke:#cbd5e1}.r{fill:#ffe4e6;stroke:#fda4af}</style><marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#64748b"/></marker></defs>
+<rect class="bg" x="0" y="0" width="1280" height="720"/>
+<text class="title" x="50" y="56">The fix is boundary redesign, not just prompt tweaking</text>
+<text class="subtitle" x="50" y="82">Separating public intents is more effective than polishing one overloaded tool.</text>
+<rect class="r edge" x="80" y="160" width="280" height="160"/>
+<text class="boxt" x="98" y="190">Overloaded path</text>
+<text class="txt" x="98" y="216">job_ingestion</text>
+<text class="txt" x="98" y="236">fetch + refresh + maybe score</text>
+<text class="txt" x="98" y="256">looks too broad to the model</text>
+<rect class="g edge" x="500" y="140" width="280" height="200"/>
+<text class="boxt" x="518" y="170">Split public skills</text>
+<text class="txt" x="518" y="196">job_ingestion</text>
+<text class="txt" x="518" y="216">job_scoring</text>
+<text class="txt" x="518" y="236">job_querying</text>
+<text class="txt" x="518" y="256">job_decision_support</text>
+<rect class="b edge" x="930" y="160" width="270" height="160"/>
+<text class="boxt" x="948" y="190">Runtime result</text>
+<text class="txt" x="948" y="216">clearer selection</text>
+<text class="txt" x="948" y="236">less accidental chaining</text>
+<text class="txt" x="948" y="256">better summaries</text>
+<rect class="n edge" x="290" y="410" width="700" height="120"/>
+<text class="boxt" x="308" y="440">Boundary rule</text>
+<text class="txt" x="308" y="466">One public tool should own one primary user intent.</text>
+<path class="line" d="M360 240 C420 240,440 240,500 240"/>
+<path class="line" d="M780 240 C840 240,870 240,930 240"/>
+<path class="line" d="M640 340 V410"/>
+</svg>
