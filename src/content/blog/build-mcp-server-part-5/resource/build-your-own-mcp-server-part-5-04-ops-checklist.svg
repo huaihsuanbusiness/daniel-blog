@@ -1,0 +1,51 @@
+<svg width="1180" height="500" viewBox="0 0 1180 500" xmlns="http://www.w3.org/2000/svg">
+<defs><style>
+      .bg { fill: #f8fafc; }
+      .title { font: 700 28px Arial, Inter, sans-serif; fill: #0f172a; }
+      .subtitle { font: 400 14px Arial, Inter, sans-serif; fill: #475569; }
+      .box-title { font: 700 16px Arial, Inter, sans-serif; fill: #0f172a; }
+      .box-text { font: 400 13px Arial, Inter, sans-serif; fill: #334155; }
+      .note { font: 400 12px Arial, Inter, sans-serif; fill: #64748b; }
+      .green { fill: #dcfce7; stroke: #86efac; }
+      .blue { fill: #dbeafe; stroke: #93c5fd; }
+      .orange { fill: #ffedd5; stroke: #fdba74; }
+      .purple { fill: #ede9fe; stroke: #c4b5fd; }
+      .pink { fill: #fce7f3; stroke: #f9a8d4; }
+      .neutral { fill: #ffffff; stroke: #cbd5e1; }
+      .edge { stroke-width: 1.5; rx: 18; ry: 18; }
+      .line { stroke: #64748b; stroke-width: 2.5; fill: none; marker-end: url(#arrow); }
+      .dash { stroke: #94a3b8; stroke-width: 2; fill: none; stroke-dasharray: 6 6; marker-end: url(#arrow); }
+    </style><marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#64748b"/></marker></defs>
+<rect class="bg" x="0" y="0" width="1180" height="500"/>
+<text class="title" x="50" y="56">Operations Checklist</text>
+<text class="subtitle" x="50" y="82">A predictable order is the cheapest reliability tool you can own.</text>
+<rect class="blue edge" x="60" y="130" width="180" height="90"/>
+<text class="box-title" x="80" y="160">1. Reach Host</text>
+<text class="box-text" x="80" y="184">SSH</text>
+<text class="box-text" x="80" y="204">public IP</text>
+<rect class="orange edge" x="280" y="130" width="180" height="90"/>
+<text class="box-title" x="300" y="160">2. Inspect Ports</text>
+<text class="box-text" x="300" y="184">80 / 443 / 8000</text>
+<text class="box-text" x="300" y="204">systemd status</text>
+<rect class="purple edge" x="500" y="130" width="180" height="90"/>
+<text class="box-title" x="520" y="160">3. Split Paths</text>
+<text class="box-text" x="520" y="184">localhost test</text>
+<text class="box-text" x="520" y="204">public HTTPS test</text>
+<rect class="pink edge" x="720" y="130" width="180" height="90"/>
+<text class="box-title" x="740" y="160">4. Read Logs</text>
+<text class="box-text" x="740" y="184">nginx</text>
+<text class="box-text" x="740" y="204">job-mcp</text>
+<rect class="green edge" x="940" y="130" width="180" height="90"/>
+<text class="box-title" x="960" y="160">5. Inspect App</text>
+<text class="box-text" x="960" y="184">server.py</text>
+<text class="box-text" x="960" y="204">tool defs</text>
+<rect class="neutral edge" x="280" y="310" width="620" height="120"/>
+<text class="box-title" x="300" y="340">Rule of thumb</text>
+<text class="box-text" x="300" y="364">Never jump to the app layer first.</text>
+<text class="box-text" x="300" y="384">Move from network → proxy → transport → tools.</text>
+<path class="line" d="M240 175 H280"/>
+<path class="line" d="M460 175 H500"/>
+<path class="line" d="M680 175 H720"/>
+<path class="line" d="M900 175 H940"/>
+<path class="line" d="M590 220 V310"/>
+</svg>

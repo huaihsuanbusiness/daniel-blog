@@ -1,0 +1,48 @@
+<svg width="1040" height="540" viewBox="0 0 1040 540" xmlns="http://www.w3.org/2000/svg">
+<defs><style>
+      .bg { fill: #f8fafc; }
+      .title { font: 700 28px Arial, Inter, sans-serif; fill: #0f172a; }
+      .subtitle { font: 400 14px Arial, Inter, sans-serif; fill: #475569; }
+      .box-title { font: 700 16px Arial, Inter, sans-serif; fill: #0f172a; }
+      .box-text { font: 400 13px Arial, Inter, sans-serif; fill: #334155; }
+      .note { font: 400 12px Arial, Inter, sans-serif; fill: #64748b; }
+      .green { fill: #dcfce7; stroke: #86efac; }
+      .blue { fill: #dbeafe; stroke: #93c5fd; }
+      .orange { fill: #ffedd5; stroke: #fdba74; }
+      .purple { fill: #ede9fe; stroke: #c4b5fd; }
+      .pink { fill: #fce7f3; stroke: #f9a8d4; }
+      .neutral { fill: #ffffff; stroke: #cbd5e1; }
+      .edge { stroke-width: 1.5; rx: 18; ry: 18; }
+      .line { stroke: #64748b; stroke-width: 2.5; fill: none; marker-end: url(#arrow); }
+      .dash { stroke: #94a3b8; stroke-width: 2; fill: none; stroke-dasharray: 6 6; marker-end: url(#arrow); }
+    </style><marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#64748b"/></marker></defs>
+<rect class="bg" x="0" y="0" width="1040" height="540"/>
+<text class="title" x="50" y="56">Where HTTPS Breaks</text>
+<text class="subtitle" x="50" y="82">SSH success and public IP visibility do not prove that 443 is healthy.</text>
+<rect class="blue edge" x="60" y="150" width="160" height="100"/>
+<text class="box-title" x="80" y="180">Public IP</text>
+<text class="box-text" x="80" y="204">looks fine</text>
+<text class="box-text" x="80" y="224">can still mislead</text>
+<rect class="orange edge" x="290" y="150" width="180" height="100"/>
+<text class="box-title" x="310" y="180">OCI Rules</text>
+<text class="box-text" x="310" y="204">route table</text>
+<text class="box-text" x="310" y="224">security list / NSG</text>
+<rect class="purple edge" x="540" y="150" width="180" height="100"/>
+<text class="box-title" x="560" y="180">nginx :443</text>
+<text class="box-text" x="560" y="204">TLS entrypoint</text>
+<text class="box-text" x="560" y="224">reverse proxy</text>
+<rect class="green edge" x="790" y="150" width="180" height="100"/>
+<text class="box-title" x="810" y="180">FastMCP</text>
+<text class="box-text" x="810" y="204">127.0.0.1:8000</text>
+<text class="box-text" x="810" y="224">/mcp app</text>
+<rect class="neutral edge" x="290" y="330" width="430" height="120"/>
+<text class="box-title" x="310" y="360">Most common breakpoints</text>
+<text class="box-text" x="310" y="384">443 not open</text>
+<text class="box-text" x="310" y="404">route table bound to wrong subnet</text>
+<text class="box-text" x="310" y="424">nginx active but not listening</text>
+<text class="box-text" x="310" y="444">origin healthy but edge still not aligned</text>
+<path class="line" d="M220 200 H290"/>
+<path class="line" d="M470 200 H540"/>
+<path class="line" d="M720 200 H790"/>
+<path class="line" d="M630 250 V330"/>
+</svg>
