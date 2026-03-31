@@ -116,6 +116,8 @@ JA-26 不輸出一篇 essay，只輸出四個欄位：`score`、`is_relevant`、
 
 ![Fast scoring lane: cheap enough to run in bulk, strict enough to be useful](./resource/make-context-aware-job-agent-part2-02-fast-scoring.svg)
 
+![bulk-score](./resource/bulk-score.png)
+
 ### 為什麼我只講到原則層，不把快篩包裝成真理機器
 
 你前面有特別交代，這段講到原則層就好。我覺得這個判斷是對的。
@@ -159,6 +161,8 @@ JA-31 到 JA-34 是這條 lane 最像 RAG 的地方。
 這就是 RAG 真正有價值的地方。Lewis 等人在提出 RAG 時，強調的也不是「把更多上下文塞給模型」，而是透過顯式 retrieval 去補足 parametric memory 的限制，讓生成過程建立在更可更新、也更可追溯的外部記憶上。[^rag-paper]
 
 ![RAG deep analysis lane: resolve, retrieve, research, then judge](./resource/make-context-aware-job-agent-part2-03-rag-analysis.svg)
+
+![RAG-analysis](./resource/RAG-analysis.png)
 
 ### 第三段，把 company research 和 final judgment 拆成兩步
 

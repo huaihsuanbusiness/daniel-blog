@@ -116,6 +116,8 @@ Instead of updating the sheet row by row as soon as each role is scored, the lan
 
 ![Fast scoring lane: cheap enough to run in bulk, strict enough to be useful](./resource/make-context-aware-job-agent-part2-02-fast-scoring.svg)
 
+![bulk-score](./resource/bulk-score.png)
+
 ### Why I only describe the scorer at the principle level
 
 You explicitly asked for the fast-scoring section to stay at the principle layer, and I think that is the right call.
@@ -159,6 +161,8 @@ What matters here is not just that there is a vector database in the loop. What 
 That is what makes RAG genuinely useful here. In the original RAG formulation, Lewis et al. argued for explicit retrieval precisely because parametric memory on its own is limited, difficult to update, and weak at grounded provenance. The point is not to stuff more text into the prompt. The point is to retrieve the right external evidence at the right moment. [^rag-paper]
 
 ![RAG deep analysis lane: resolve, retrieve, research, then judge](./resource/make-context-aware-job-agent-part2-03-rag-analysis.svg)
+
+![RAG-analysis](./resource/RAG-analysis.png)
 
 ### Step three: separate company research from final judgement
 
