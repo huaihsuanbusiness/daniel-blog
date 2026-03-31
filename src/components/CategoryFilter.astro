@@ -131,7 +131,9 @@ const sortLabel = sortLabels[lang];
     cards.sort((a, b) => {
       const keyA = (a as HTMLElement).dataset.sortKey || '';
       const keyB = (b as HTMLElement).dataset.sortKey || '';
-      // data-sort-key format: "YYYY-MM-DDTHH:MM-slug" — string sort = chronological + slug tie-break
+      // key format: "YYYY-MM-DDTHH:MM" (slug removed)
+      // Astro collection order = commit order for same-date items
+      // For "newest first": newer keys first (reverse Astro default)
       return sort === 'old' ? keyA.localeCompare(keyB) : keyB.localeCompare(keyA);
     });
     cards.forEach(card => postsGrid.appendChild(card));

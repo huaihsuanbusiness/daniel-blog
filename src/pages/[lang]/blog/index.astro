@@ -99,7 +99,7 @@ const selectedCategoryLabel = selectedCategory && selectedCategory in CATEGORY_L
             <div
               class:list={['animate-in', { 'animate-delay-1': i % 3 === 1, 'animate-delay-2': i % 3 === 2 }]}
               data-post-card
-              data-sort-key={post.data.date.toISOString().slice(0,16) + '-' + post.slug}
+              data-sort-key={post.data.date.toISOString().slice(0,16)}
               data-category={post.data.categories.map(cat => normalizeCategory(cat)).filter(Boolean).join(' ')}
               data-categories={JSON.stringify(post.data.categories.map(cat => normalizeCategory(cat)).filter(Boolean))}
             >
@@ -181,31 +181,29 @@ const selectedCategoryLabel = selectedCategory && selectedCategory in CATEGORY_L
   }
 
   .posts-grid {
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
     gap: var(--space-4);
-    align-items: stretch;
+    align-items: start;
   }
 
-  /* Each card takes equal width up to 3 columns */
+  /* Each card is a full-height flex container */
   .posts-grid :global(.post-card) {
-    flex: 1 1 calc(33.333% - var(--space-4) * 2 / 3);
-    min-width: 300px;
-    max-width: 100%;
     display: flex;
     flex-direction: column;
+    height: 100%;
   }
 
   .posts-grid :global(.card-link) {
-    flex: 1;
     display: flex;
     flex-direction: column;
+    flex: 1;
   }
 
   .posts-grid :global(.card-inner) {
-    flex: 1;
     display: flex;
     flex-direction: column;
+    flex: 1;
     min-height: 260px;
   }
 
@@ -229,16 +227,9 @@ const selectedCategoryLabel = selectedCategory && selectedCategory in CATEGORY_L
     margin-top: auto;
   }
 
-  /* List view: stack vertically */
+  /* List view: 1 column */
   .posts-grid.view-list {
-    flex-direction: column;
-    gap: var(--space-3);
-  }
-
-  .posts-grid.view-list :global(.post-card) {
-    flex: none;
-    width: 100%;
-    min-width: unset;
+    grid-template-columns: 1fr;
   }
 
   .posts-grid.view-list :global(.card-inner) {
@@ -324,9 +315,8 @@ const selectedCategoryLabel = selectedCategory && selectedCategory in CATEGORY_L
       justify-content: flex-start;
     }
 
-    .posts-grid :global(.post-card) {
-      flex-basis: 100%;
-      min-width: unset;
+    .posts-grid {
+      grid-template-columns: 1fr;
     }
   }
 </style>
