@@ -7,8 +7,6 @@ date: 2026-03-30
 featured: false
 ---
 
-# 我怎麼在 LangGraph、n8n、Make 之間做選擇：為什麼我現在先押 Make
-
 更新日期：2026-03-30
 
 如果你最近也在看 agentic workflow 工具，應該很容易被比較文洗到有點麻。
