@@ -301,9 +301,25 @@ const categoryColors = JSON.stringify(CATEGORY_COLORS);
   }
 
   .search-result-item {
+    position: relative;
     border-radius: 10px;
     overflow: hidden;
     transition: background 0.1s;
+  }
+
+  .search-result-item::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 16px;
+    right: 16px;
+    height: 1px;
+    background: color-mix(in srgb, var(--color-border) 60%, transparent);
+    pointer-events: none;
+  }
+
+  .search-result-item:last-child::after {
+    display: none;
   }
 
   .search-result-item:hover {
@@ -313,15 +329,10 @@ const categoryColors = JSON.stringify(CATEGORY_COLORS);
   .result-link {
     display: flex;
     flex-direction: column;
-    gap: 4px;
-    padding: 14px 16px;
+    gap: 5px;
+    padding: 14px 16px 16px;
     text-decoration: none;
     color: inherit;
-    border-bottom: 1px solid var(--color-border);
-  }
-
-  .search-result-item:last-child .result-link {
-    border-bottom: none;
   }
 
   .result-meta {
@@ -345,15 +356,15 @@ const categoryColors = JSON.stringify(CATEGORY_COLORS);
 
   .result-date {
     color: var(--result-color, var(--color-accent));
-    opacity: 0.75;
+    opacity: 0.7;
   }
 
   .result-title {
     font-family: var(--font-display);
-    font-size: 0.9375rem;
+    font-size: 1rem;
     font-weight: 600;
     color: #ffffff;
-    line-height: 1.35;
+    line-height: 1.4;
   }
 
   .search-result-item:hover .result-title {

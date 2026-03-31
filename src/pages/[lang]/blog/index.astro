@@ -101,6 +101,7 @@ const selectedCategoryLabel = selectedCategory && selectedCategory in CATEGORY_L
               data-post-card
               data-date={post.data.date.toISOString()}
               data-category={post.data.categories.map(cat => normalizeCategory(cat)).filter(Boolean).join(' ')}
+              data-categories={JSON.stringify(post.data.categories.map(cat => normalizeCategory(cat)).filter(Boolean))}
             >
               <PostCard
                 slug={post.slug}
@@ -274,3 +275,36 @@ const selectedCategoryLabel = selectedCategory && selectedCategory in CATEGORY_L
     }
   }
 </style>
+
+<script>
+  function applyCategoryFilter() {
+    const params = new URL(window.location.href).searchParams;
+    const activeCat = params.get('category') || 'all';
+    const cards = document.querySelectorAll('[data-post-card]');
+    let visible = 0;
+
+    cards.forEach(card => {
+      const cats = JSON.parse((card as HTMLElement).dataset.categories || '[]');
+      const show = activeCat === 'all' || cats.includes(activeCat);
+      (card as HTMLElement).style.display = show ? '' : 'none';
+      if (show) visible++;
+    });
+
+    const empty = document.querySelector('.posts-grid-empty-state');
+    if (empty) (empty as HTMLElement).style.display = visible === 0 ? '' : 'none';
+  }
+
+  // Run on load and whenever tabs change
+  applyCategoryFilter();
+
+  // Also run when category tabs are clicked (listen on filter container)
+  document.querySelector('.category-filter')?.addEventListener('click', () => {
+    setTimeout(applyCategoryFilter, 0);
+  });
+
+  // Re-apply when sort changes (it updates URL)
+  const sortSelect = document.getElementById('sort-select');
+  sortSelect?.addEventListener('change', () => {
+    setTimeout(applyCategoryFilter, 0);
+  });
+</script>
