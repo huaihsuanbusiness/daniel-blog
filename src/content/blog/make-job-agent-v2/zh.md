@@ -7,7 +7,6 @@ date: 2026-03-31T17:45:00
 featured: false
 ---
 
-
 我前面那套 job agent，原本是很典型的 Make-first 設計
 先有一條能跑的 workflow
 再把 intake 做進去

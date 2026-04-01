@@ -1,13 +1,12 @@
 ---
 title: "Build Your Own MCP Server — Part 3: How to Compare MCP Frameworks and Choose One"
-description: "Part 3 of the MCP Server build series."
+description: "FastMCP, MCP Framework, xmcp, and Spring AI MCP Server are not four skins over the same idea. The real question is which one fits your language habitat, deployment model, auth pressure, and long-term operating style."
 categories: ["ai"]
 tags: ["ai", "mcp", "agent", "workflow", "automation", "architecture"]
 date: 2026-03-31T19:24:00
 featured: false
+subtitle: "FastMCP, MCP Framework, xmcp, and Spring AI MCP Server are not four skins over the same idea. The real question is which one fits your language habitat, deployment model, auth pressure, and long-term operating style."
 ---
-
-**Subtitle: FastMCP, MCP Framework, xmcp, and Spring AI MCP Server are not four skins over the same idea. The real question is which one fits your language habitat, deployment model, auth pressure, and long-term operating style.**
 
 By this point, the story starts to look less like an MCP introduction and more like an engineering selection problem.
 

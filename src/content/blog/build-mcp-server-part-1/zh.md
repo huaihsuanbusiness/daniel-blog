@@ -1,13 +1,12 @@
 ---
 title: "自主建造 MCP Server — Part 1：MCP 到底改變了什麼"
-description: "Part 1 of the MCP Server build series: understanding what MCP actually changes at the architectural level, and when the migration ladder is worth climbing."
+description: "從 workflow 腦到 client / server / tool contract 的責任重切，MCP 真正改變的不是「可不可以呼叫工具」，而是「誰該負責思考，誰該負責執行」。"
 categories: ["ai"]
 tags: ["ai", "mcp", "agent", "workflow", "automation", "architecture"]
 date: 2026-03-31T19:17:00
 featured: false
+subtitle: "從 workflow 腦到 client / server / tool contract 的責任重切，MCP 真正改變的不是「可不可以呼叫工具」，而是「誰該負責思考，誰該負責執行」。"
 ---
-
-**副標：從 workflow 腦到 client / server / tool contract 的責任重切，MCP 真正改變的不是「可不可以呼叫工具」，而是「誰該負責思考，誰該負責執行」。**
 
 我前一版的 job agent，其實已經能跑了。
 

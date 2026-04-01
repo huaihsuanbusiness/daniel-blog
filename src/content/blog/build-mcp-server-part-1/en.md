@@ -1,13 +1,12 @@
 ---
 title: "Build Your Own MCP Server — Part 1: What MCP Actually Changes"
-description: "Part 1 of the MCP Server build series: understanding what MCP actually changes at the architectural level, and when the migration ladder is worth climbing."
+description: "This is not just about making tools callable. It is about redrawing the line between reasoning, capability exposure, and execution."
 categories: ["ai"]
 tags: ["ai", "mcp", "agent", "workflow", "automation", "architecture"]
 date: 2026-03-31T19:17:00
 featured: false
+subtitle: "This is not just about making tools callable. It is about redrawing the line between reasoning, capability exposure, and execution."
 ---
-
-**Subtitle: This is not just about making tools callable. It is about redrawing the line between reasoning, capability exposure, and execution.**
 
 My previous job-agent stack was already working.
 

@@ -1,13 +1,12 @@
 ---
 title: "MCP Engineering Deep Dive 03: Contract Design, Schema Discipline, and Versioning Decide Whether Your Tools Can Grow Up"
-description: "Part 03 of the MCP Engineering Deep Dive series."
+description: "The hardest MCP servers to evolve are not the ones with too many tools. They are the ones with loose contracts. Once you have multiple clients, public tools, and helper tools, schema discipline becomes the real stability layer."
 categories: ["ai"]
 tags: ["ai", "mcp", "agent", "workflow", "automation", "architecture"]
 date: 2026-03-31T20:12:00
 featured: false
+subtitle: "The hardest MCP servers to evolve are not the ones with too many tools. They are the ones with loose contracts. Once you have multiple clients, public tools, and helper tools, schema discipline becomes the real stability layer."
 ---
-
-**Subtitle: The hardest MCP servers to evolve are not the ones with too many tools. They are the ones with loose contracts. Once you have multiple clients, public tools, and helper tools, schema discipline becomes the real stability layer.**
 
 When teams first write MCP tools, most of the energy goes into one question:
 

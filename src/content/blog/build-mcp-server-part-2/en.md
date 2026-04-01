@@ -1,13 +1,12 @@
 ---
 title: "Build Your Own MCP Server — Part 2: How to Deploy a Public MCP Server on Oracle VM"
-description: "Part 2 of the MCP Server build series."
+description: "Using Oracle VM, Cloudflare, nginx, and FastMCP to turn an MCP server that merely runs in a terminal into a public `/mcp` endpoint that ChatGPT can actually reach."
 categories: ["ai"]
 tags: ["ai", "mcp", "agent", "workflow", "automation", "architecture"]
 date: 2026-03-31T19:23:00
 featured: false
+subtitle: "Using Oracle VM, Cloudflare, nginx, and FastMCP to turn an MCP server that merely runs in a terminal into a public `/mcp` endpoint that ChatGPT can actually reach."
 ---
-
-**Subtitle: Using Oracle VM, Cloudflare, nginx, and FastMCP to turn an MCP server that merely runs in a terminal into a public `/mcp` endpoint that ChatGPT can actually reach.**
 
 In Part 1, I focused on the conceptual boundary: MCP changes responsibility lines more than it changes wiring style.
 

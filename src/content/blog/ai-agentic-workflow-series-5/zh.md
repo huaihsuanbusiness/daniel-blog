@@ -8,7 +8,6 @@ featured: false
 subtitle: "v2 解決的是把 Make-first workflow 整理成比較像 execution engine。v3 則往前再走一步，把模型真正看到的能力表面，從 Make MCP server 換成自己掌控的 FastMCP skill gateway。"
 ---
 
-
 我很喜歡 Make MCP server。
 
 這句話不是客套。

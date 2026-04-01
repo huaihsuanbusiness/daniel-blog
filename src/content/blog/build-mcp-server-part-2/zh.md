@@ -1,13 +1,12 @@
 ---
 title: "自主建造 MCP Server — Part 2：如何在 Oracle VM 上部署公開的 MCP Server"
-description: "Part 2 of the MCP Server build series."
+description: "用 Oracle VM、Cloudflare、nginx 與 FastMCP，把一個本來只會在 terminal 裡跑的 MCP server，變成 ChatGPT 真能連上的公開 `/mcp` 端點。"
 categories: ["ai"]
 tags: ["ai", "mcp", "agent", "workflow", "automation", "architecture"]
 date: 2026-03-31T19:23:00
 featured: false
+subtitle: "用 Oracle VM、Cloudflare、nginx 與 FastMCP，把一個本來只會在 terminal 裡跑的 MCP server，變成 ChatGPT 真能連上的公開 `/mcp` 端點。"
 ---
-
-**副標：用 Oracle VM、Cloudflare、nginx 與 FastMCP，把一個本來只會在 terminal 裡跑的 MCP server，變成 ChatGPT 真能連上的公開 `/mcp` 端點。**
 
 上一篇我談的是觀念邊界：MCP 真正改變的是責任分工，不只是工具接線方式。
 

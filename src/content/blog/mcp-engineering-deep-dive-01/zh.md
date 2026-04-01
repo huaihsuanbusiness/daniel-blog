@@ -1,13 +1,12 @@
 ---
 title: "MCP 工程深化 01：Transport / remote deployment 不是部署細節，而是設計的一部分"
-description: "Part 01 of the MCP Engineering Deep Dive series."
+description: "如果你把 transport 當成最後一哩，MCP 專案通常會在最醜的地方出問題。真正成熟的 remote server，從一開始就應該把 transport、proxy、session、client compatibility 一起想進去。"
 categories: ["ai"]
 tags: ["ai", "mcp", "agent", "workflow", "automation", "architecture"]
 date: 2026-03-31T20:10:00
 featured: false
+subtitle: "如果你把 transport 當成最後一哩，MCP 專案通常會在最醜的地方出問題。真正成熟的 remote server，從一開始就應該把 transport、proxy、session、client compatibility 一起想進去。"
 ---
-
-**副標：如果你把 transport 當成最後一哩，MCP 專案通常會在最醜的地方出問題。真正成熟的 remote server，從一開始就應該把 transport、proxy、session、client compatibility 一起想進去。**
 
 很多人第一次接觸 MCP 時，最容易把 transport 想成這樣：
 

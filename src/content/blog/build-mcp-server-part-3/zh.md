@@ -1,13 +1,12 @@
 ---
 title: "自主建造 MCP Server — Part 3：MCP 高級框架比較與怎麼選"
-description: "Part 3 of the MCP Server build series."
+description: "FastMCP、MCP Framework、xmcp、Spring AI MCP Server 四條路線，真正該比的不是誰功能表最長，而是你的語言棲地、部署模型、auth 壓力、以及團隊未來要怎麼維運。"
 categories: ["ai"]
 tags: ["ai", "mcp", "agent", "workflow", "automation", "architecture"]
 date: 2026-03-31T19:24:00
 featured: false
+subtitle: "FastMCP、MCP Framework、xmcp、Spring AI MCP Server 四條路線，真正該比的不是誰功能表最長，而是你的語言棲地、部署模型、auth 壓力、以及團隊未來要怎麼維運。"
 ---
-
-**副標：FastMCP、MCP Framework、xmcp、Spring AI MCP Server 四條路線，真正該比的不是誰功能表最長，而是你的語言棲地、部署模型、auth 壓力、以及團隊未來要怎麼維運。**
 
 到這一篇，事情終於開始變得比較像工程選型，而不是概念導讀。
 

@@ -1,13 +1,12 @@
 ---
 title: "MCP Engineering Deep Dive 04: Skills Are Not the Same Thing as Runtime Tool Selection"
-description: "Part 04 of the MCP Engineering Deep Dive series."
+description: "Having skills in your repo does not mean the runtime will actually route by them. In practice, the model is far more influenced by the tool surface you expose, the live inventory a session can see, and whether your descriptions, schemas, and instructions line up."
 categories: ["ai"]
 tags: ["ai", "mcp", "agent", "workflow", "automation", "architecture"]
 date: 2026-03-31T23:51:00
 featured: false
+subtitle: "Having skills in your repo does not mean the runtime will actually route by them. In practice, the model is far more influenced by the tool surface you expose, the live inventory a session can see, and whether your descriptions, schemas, and instructions line up."
 ---
-
-**Subtitle: Having skills in your repo does not mean the runtime will actually route by them. In practice, the model is far more influenced by the tool surface you expose, the live inventory a session can see, and whether your descriptions, schemas, and instructions line up.**
 
 This is not another “skills are important” article.
 

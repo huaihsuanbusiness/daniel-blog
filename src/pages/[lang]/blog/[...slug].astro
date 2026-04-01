@@ -72,7 +72,6 @@ const primaryCategory = normalizeCategory(post.data.categories[0] || '') ?? null
         </div>
 
         <h1 class="post-title">{post.data.title}</h1>
-        {post.data.subtitle && <p class="post-subtitle">{post.data.subtitle}</p>}
         <p class="post-description">{post.data.description}</p>
 
         {otherVersionHref && (
@@ -224,33 +223,35 @@ const primaryCategory = normalizeCategory(post.data.categories[0] || '') ?? null
     position: fixed;
     top: 50%;
     transform: translateY(-50%);
-    z-index: 20;
+    z-index: 30;
     display: flex;
     align-items: center;
-    gap: 8px;
-    padding: 12px 10px;
+    gap: 10px;
+    padding: 14px 12px;
     border-radius: 999px;
     color: var(--color-muted);
     text-decoration: none;
-    opacity: 0.25;
-    transition: opacity var(--transition-fast), transform var(--transition-fast), color var(--transition-fast), background var(--transition-fast);
-    background: color-mix(in srgb, var(--color-surface) 82%, transparent);
-    backdrop-filter: blur(8px);
+    opacity: 0.05;
+    transition: opacity var(--transition-fast), transform var(--transition-fast), color var(--transition-fast), background var(--transition-fast), box-shadow var(--transition-fast);
+    background: color-mix(in srgb, var(--color-surface) 88%, transparent);
+    backdrop-filter: blur(10px);
     border: 1px solid color-mix(in srgb, var(--color-border) 70%, transparent);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
   }
 
   .side-nav-left {
-    left: max(16px, calc((100vw - 1100px) / 2 - 56px));
+    left: 12px;
   }
 
   .side-nav-right {
-    right: max(16px, calc((100vw - 1100px) / 2 - 56px));
+    right: 12px;
   }
 
   .side-nav:hover {
     opacity: 1;
     color: var(--color-text);
     transform: translateY(-50%) scale(1.04);
+    background: color-mix(in srgb, var(--color-accent) 10%, var(--color-surface));
   }
 
   .side-nav-arrow {

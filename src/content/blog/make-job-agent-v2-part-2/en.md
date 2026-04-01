@@ -284,4 +284,3 @@ For me, that is the point where the whole tool starts to feel agent-like.
 
 Not because it says more, but because it finally helps me **avoid paying the full cost of attention too early, and on the wrong opportunities**.
 
-

@@ -1,13 +1,12 @@
 ---
 title: "AI Agentic Workflow Series 5 — Why I Eventually Replaced the Make MCP Server with My Own Gateway Server"
-description: "AI Agentic Workflow Series 5: migrating from Make MCP Server to a self-hosted FastMCP skill gateway."
+description: "v2 solved the “Make-first workflow as execution engine” problem. v3 takes the next step and moves the capability surface the model actually sees from the Make MCP server into a self-hosted FastMCP skill gateway."
 categories: ["ai"]
 tags: ["ai", "mcp", "agent", "workflow", "automation", "architecture"]
 date: 2026-04-01T00:14:00
 featured: false
+subtitle: "v2 solved the “Make-first workflow as execution engine” problem. v3 takes the next step and moves the capability surface the model actually sees from the Make MCP server into a self-hosted FastMCP skill gateway."
 ---
-
-**Subtitle: v2 solved the “Make-first workflow as execution engine” problem. v3 takes the next step and moves the capability surface the model actually sees from the Make MCP server into a self-hosted FastMCP skill gateway.**
 
 I genuinely like the Make MCP server.
 

@@ -6,9 +6,6 @@ tags: ["intro", "web3", "ai", "business", "travel", "openclaw"]
 date: 2026-03-27T21:07:00
 featured: true
 ---
-
-## Why This Blog?
-
 This space exists because ideas deserve a home. Not a tweet that disappears in 24 hours, not a newsletter that gets buried — but something permanent, thoughtful, and worth returning to.
 
 Here, I'll share observations and analysis from years of working at the intersection of technology, business, and human behavior.
