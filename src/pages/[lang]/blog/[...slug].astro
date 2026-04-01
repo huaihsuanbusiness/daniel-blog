@@ -84,14 +84,18 @@ const primaryCategory = normalizeCategory(post.data.categories[0] || '') ?? null
 
       {prevPost && (
         <a href={`/${lang}/blog/${prevPost.slug}`} class="side-nav side-nav-left" aria-label={lang === 'zh' ? '上一篇' : 'Previous post'}>
-          <span class="side-nav-arrow">←</span>
-          <span class="side-nav-label">{lang === 'zh' ? '上一篇' : 'Previous'}</span>
+          <span class="side-nav-chip">
+            <span class="side-nav-arrow">←</span>
+            <span class="side-nav-label">{lang === 'zh' ? '上一篇' : 'Previous'}</span>
+          </span>
         </a>
       )}
       {nextPost && (
         <a href={`/${lang}/blog/${nextPost.slug}`} class="side-nav side-nav-right" aria-label={lang === 'zh' ? '下一篇' : 'Next post'}>
-          <span class="side-nav-label">{lang === 'zh' ? '下一篇' : 'Next'}</span>
-          <span class="side-nav-arrow">→</span>
+          <span class="side-nav-chip">
+            <span class="side-nav-label">{lang === 'zh' ? '下一篇' : 'Next'}</span>
+            <span class="side-nav-arrow">→</span>
+          </span>
         </a>
       )}
 
@@ -221,37 +225,57 @@ const primaryCategory = normalizeCategory(post.data.categories[0] || '') ?? null
 
   .side-nav {
     position: fixed;
-    top: 50%;
-    transform: translateY(-50%);
+    top: 0;
+    bottom: 0;
+    width: 72px;
     z-index: 30;
     display: flex;
+    align-items: center;
+    text-decoration: none;
+  }
+
+  .side-nav-left {
+    left: 0;
+    justify-content: flex-start;
+  }
+
+  .side-nav-right {
+    right: 0;
+    justify-content: flex-end;
+  }
+
+  .side-nav-chip {
+    display: inline-flex;
     align-items: center;
     gap: 10px;
     padding: 14px 12px;
     border-radius: 999px;
     color: var(--color-muted);
-    text-decoration: none;
-    opacity: 0.05;
-    transition: opacity var(--transition-fast), transform var(--transition-fast), color var(--transition-fast), background var(--transition-fast), box-shadow var(--transition-fast);
     background: color-mix(in srgb, var(--color-surface) 88%, transparent);
     backdrop-filter: blur(10px);
     border: 1px solid color-mix(in srgb, var(--color-border) 70%, transparent);
     box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    opacity: 0;
+    transform: translateX(0) scale(0.96);
+    transition: opacity var(--transition-fast), transform var(--transition-fast), color var(--transition-fast), background var(--transition-fast), box-shadow var(--transition-fast);
+    pointer-events: none;
   }
 
-  .side-nav-left {
-    left: 12px;
+  .side-nav-left .side-nav-chip {
+    margin-left: 10px;
+    transform: translateX(-8px) scale(0.96);
   }
 
-  .side-nav-right {
-    right: 12px;
+  .side-nav-right .side-nav-chip {
+    margin-right: 10px;
+    transform: translateX(8px) scale(0.96);
   }
 
-  .side-nav:hover {
+  .side-nav:hover .side-nav-chip {
     opacity: 1;
     color: var(--color-text);
-    transform: translateY(-50%) scale(1.04);
     background: color-mix(in srgb, var(--color-accent) 10%, var(--color-surface));
+    transform: translateX(0) scale(1);
   }
 
   .side-nav-arrow {
