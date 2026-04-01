@@ -154,18 +154,13 @@ const langLabel = lang === 'zh' ? '中文' : 'EN';
     text-transform: uppercase;
   }
 
+  /* Keep featured cards visually aligned with the standard grid */
   .post-card.featured {
-    grid-column: span 2;
+    grid-column: span 1;
   }
 
   .post-card.featured .card-title {
-    font-size: 1.75rem;
-    -webkit-line-clamp: 4;
-  }
-
-  @media (max-width: 768px) {
-    .post-card.featured {
-      grid-column: span 1;
-    }
+    font-size: 1.125rem;
+    -webkit-line-clamp: 3;
   }
 </style>
