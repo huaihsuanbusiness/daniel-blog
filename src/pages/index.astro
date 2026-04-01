@@ -59,10 +59,16 @@ const homepageCategories = CATEGORY_ORDER.map(id => ({
           <div class="deco-circle"></div>
           <div class="deco-line"></div>
         </div>
+        <a href="#latest-posts" class="scroll-hint" aria-label={lang === 'zh' ? '往下閱讀' : 'Scroll down'}>
+          <span class="scroll-hint-mouse" aria-hidden="true">
+            <span class="scroll-hint-wheel"></span>
+          </span>
+          <span class="scroll-hint-text">{lang === 'zh' ? '往下滑' : 'Scroll'}</span>
+        </a>
       </div>
     </section>
 
-    <section class="posts-section">
+    <section id="latest-posts" class="posts-section">
       <div class="container">
         <div class="section-header animate-in">
           <h2 class="section-title">{heroContent.latestLabel}</h2>
@@ -140,7 +146,7 @@ const homepageCategories = CATEGORY_ORDER.map(id => ({
     min-height: calc(100vh - 80px);
     display: flex;
     align-items: center;
-    padding: var(--space-10) 0;
+    padding: var(--space-10) 0 96px;
     position: relative;
     overflow: hidden;
   }
@@ -237,6 +243,61 @@ const homepageCategories = CATEGORY_ORDER.map(id => ({
   @keyframes pulse {
     0%, 100% { transform: scale(1); opacity: 1; }
     50% { transform: scale(1.05); opacity: 0.7; }
+  }
+
+  .scroll-hint {
+    position: absolute;
+    left: 50%;
+    bottom: 22px;
+    transform: translateX(-50%);
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    color: var(--color-muted);
+    opacity: 0.92;
+    transition: transform var(--transition-fast), color var(--transition-fast), opacity var(--transition-fast);
+    z-index: 2;
+  }
+
+  .scroll-hint:hover {
+    color: var(--color-accent);
+    opacity: 1;
+    transform: translateX(-50%) translateY(-2px);
+  }
+
+  .scroll-hint-mouse {
+    width: 26px;
+    height: 42px;
+    border-radius: 999px;
+    border: 1.5px solid color-mix(in srgb, currentColor 75%, transparent);
+    display: inline-flex;
+    justify-content: center;
+    padding-top: 7px;
+    box-shadow: 0 0 0 1px color-mix(in srgb, currentColor 8%, transparent), 0 10px 24px color-mix(in srgb, currentColor 12%, transparent);
+  }
+
+  .scroll-hint-wheel {
+    width: 4px;
+    height: 9px;
+    border-radius: 999px;
+    background: currentColor;
+    animation: scrollWheel 1.4s ease-in-out infinite;
+  }
+
+  .scroll-hint-text {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  @keyframes scrollWheel {
+    0% { transform: translateY(0); opacity: 1; }
+    45% { transform: translateY(9px); opacity: 0.25; }
+    46% { transform: translateY(0); opacity: 0; }
+    100% { transform: translateY(0); opacity: 1; }
   }
 
   .posts-section {
