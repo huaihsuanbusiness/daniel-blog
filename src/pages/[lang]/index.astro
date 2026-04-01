@@ -26,6 +26,7 @@ const heroContent = {
     eyebrow: 'Welcome',
     title: 'Not here to sound smart.\nHere to make things work.',
     subtitle: 'AI・Tech・Business・Web3・Travel',
+    heroCta: 'See all posts',
     latestLabel: 'Latest',
     viewAll: 'View all',
     comingSoon: 'Coming Soon',
@@ -38,6 +39,7 @@ const heroContent = {
     eyebrow: '歡迎',
     title: 'Not here to sound smart.\nHere to make things work.',
     subtitle: 'AI・Tech・Business・Web3・Travel',
+    heroCta: '查看所有文章',
     latestLabel: '最新文章',
     viewAll: '查看全部',
     comingSoon: '即將上線',
@@ -70,6 +72,7 @@ const homepageCategories = CATEGORY_ORDER.map(id => ({
             ))}
           </h1>
           <p class="hero-subtitle animate-in animate-delay-2">{content.subtitle}</p>
+          <a href={`/${lang}/blog`} class="hero-cta animate-in animate-delay-2">{content.heroCta}</a>
         </div>
 
         <div class="hero-decoration">
@@ -191,6 +194,30 @@ const homepageCategories = CATEGORY_ORDER.map(id => ({
     font-size: 0.875rem;
     color: var(--color-muted);
     letter-spacing: 0.05em;
+    margin-bottom: var(--space-4);
+  }
+
+  .hero-cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.9rem 1.25rem;
+    border-radius: 999px;
+    border: 1px solid color-mix(in srgb, var(--color-accent) 35%, var(--color-border));
+    background: color-mix(in srgb, var(--color-accent) 10%, var(--color-surface));
+    color: var(--color-text);
+    font-family: var(--font-display);
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: transform var(--transition-fast), border-color var(--transition-fast), background var(--transition-fast), box-shadow var(--transition-fast);
+    width: fit-content;
+  }
+
+  .hero-cta:hover {
+    transform: translateY(-2px);
+    border-color: var(--color-accent);
+    box-shadow: 0 10px 24px color-mix(in srgb, var(--color-accent) 18%, transparent);
   }
 
   .hero-decoration {
@@ -331,7 +358,7 @@ const homepageCategories = CATEGORY_ORDER.map(id => ({
   }
 
   .categories-grid-7 {
-    grid-template-columns: repeat(7, minmax(0, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 
   .category-card {
