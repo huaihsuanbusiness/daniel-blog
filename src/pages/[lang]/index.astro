@@ -113,24 +113,29 @@ const homepageCategories = CATEGORY_ORDER.map(id => ({
             <p class="muted">{content.comingSoonDesc}</p>
           </div>
         ) : (
-          <div class="posts-grid">
-            {posts.slice(0, 6).map((post, i) => (
-              <div
-                class:list={['animate-in', { 'animate-delay-1': i % 3 === 1, 'animate-delay-2': i % 3 === 2 }]}
-                data-category={post.data.categories.map(cat => normalizeCategory(cat)).filter(Boolean).join(' ')}
-              >
-                <PostCard
-                  slug={post.slug}
-                  title={post.data.title}
-                  description={post.data.description}
-                  categories={post.data.categories}
-                  date={post.data.date}
-                  lang={lang as 'en' | 'zh'}
-                  featured={post.data.featured}
-                />
-              </div>
-            ))}
-          </div>
+          <>
+            <div class="posts-grid">
+              {posts.slice(0, 6).map((post, i) => (
+                <div
+                  class:list={['animate-in', { 'animate-delay-1': i % 3 === 1, 'animate-delay-2': i % 3 === 2 }]}
+                  data-category={post.data.categories.map(cat => normalizeCategory(cat)).filter(Boolean).join(' ')}
+                >
+                  <PostCard
+                    slug={post.slug}
+                    title={post.data.title}
+                    description={post.data.description}
+                    categories={post.data.categories}
+                    date={post.data.date}
+                    lang={lang as 'en' | 'zh'}
+                    featured={post.data.featured}
+                  />
+                </div>
+              ))}
+            </div>
+            <div class="posts-cta-wrap animate-in animate-delay-2">
+              <a href={`/${lang}/blog`} class="hero-cta posts-cta">{content.heroCta}</a>
+            </div>
+          </>
         )}
       </div>
     </section>
@@ -357,6 +362,16 @@ const homepageCategories = CATEGORY_ORDER.map(id => ({
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
     gap: var(--space-4);
+  }
+
+  .posts-cta-wrap {
+    display: flex;
+    justify-content: center;
+    margin-top: var(--space-6);
+  }
+
+  .posts-cta {
+    min-width: 180px;
   }
 
   .empty-state {
