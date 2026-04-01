@@ -4,7 +4,8 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import PostCard from '../components/PostCard.astro';
 import { getCollection } from 'astro:content';
-import { CATEGORY_ICONS, CATEGORY_LABELS, CATEGORY_ORDER, normalizeCategory } from '../utils/categories';
+import { CATEGORY_LABELS, CATEGORY_ORDER, normalizeCategory } from '../utils/categories';
+import CategoryIcon from '../components/CategoryIcon.astro';
 
 const lang = 'en';
 
@@ -33,7 +34,6 @@ const heroContent = {
 
 const homepageCategories = CATEGORY_ORDER.map(id => ({
   id,
-  icon: CATEGORY_ICONS[id],
   label: CATEGORY_LABELS[id][lang],
 }));
 ---
@@ -123,7 +123,7 @@ const homepageCategories = CATEGORY_ORDER.map(id => ({
           {homepageCategories.map((cat, index) => (
             <a href={`/${lang}/blog?category=${cat.id}`} class={`category-card cat-${cat.id} animate-in`} style={`animation-delay:${120 + index * 40}ms`}>
               <span class="cat-orbit"></span>
-              <span class="cat-icon">{cat.icon}</span>
+              <span class="cat-icon"><CategoryIcon id={cat.id} class="cat-icon-svg" size={28} /></span>
               <span class="cat-label">{cat.label}</span>
             </a>
           ))}

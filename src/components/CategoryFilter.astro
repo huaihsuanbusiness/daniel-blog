@@ -1,5 +1,6 @@
 ---
-import { CATEGORY_ORDER, CATEGORY_LABELS, CATEGORY_ICONS, type BlogLang } from '../utils/categories';
+import { CATEGORY_ORDER, CATEGORY_LABELS, type BlogLang } from '../utils/categories';
+import CategoryIcon from './CategoryIcon.astro';
 
 export interface Props {
   categories?: string[];
@@ -11,12 +12,11 @@ const category = Astro.url.searchParams.get('category');
 const basePath = `/${lang}/blog`;
 
 const filters = [
-  { id: 'all', label: lang === 'zh' ? '全部' : 'All', href: basePath, icon: '◌' },
+  { id: 'all', label: lang === 'zh' ? '全部' : 'All', href: basePath },
   ...CATEGORY_ORDER.map(cat => ({
     id: cat,
     label: CATEGORY_LABELS[cat][lang],
     href: `${basePath}?category=${cat}`,
-    icon: CATEGORY_ICONS[cat],
   })),
 ];
 
@@ -39,7 +39,9 @@ const sortLabel = sortLabels[lang];
             data-filter-category={filter.id}
             aria-current={isActive ? 'page' : undefined}
           >
-            <span class="tag-icon" aria-hidden="true">{filter.icon}</span>
+            <span class="tag-icon" aria-hidden="true">
+              {filter.id === 'all' ? '◌' : <CategoryIcon id={filter.id} class="tag-icon-svg" size={16} />}
+            </span>
             <span class="tag-label">{filter.label}</span>
             <span class="tag-underline" aria-hidden="true"></span>
           </a>
