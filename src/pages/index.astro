@@ -19,8 +19,8 @@ const posts = allPosts
 
 const heroContent = {
   eyebrow: 'Welcome',
-  title: 'Ideas\nWorth\nSpreading.',
-  subtitle: 'Web3 · AI · Business · Travel',
+  title: 'Not here to sound smart.\nHere to make things work.',
+  subtitle: 'AI・Tech・Business・Web3・Travel',
   latestLabel: 'Latest',
   viewAll: 'View all',
   comingSoon: 'Coming Soon',
@@ -37,7 +37,7 @@ const homepageCategories = CATEGORY_ORDER.map(id => ({
 }));
 ---
 
-<Base title="danielcanfly — Ideas Worth Spreading" lang={lang}>
+<Base title="danielcanfly — Not here to sound smart" lang={lang}>
   <Header currentLang={lang} />
 
   <main>
@@ -47,7 +47,7 @@ const homepageCategories = CATEGORY_ORDER.map(id => ({
           <p class="hero-eyebrow animate-in">{heroContent.eyebrow}</p>
           <h1 class="hero-title animate-in animate-delay-1">
             {heroContent.title.split('\n').map((line, i) => (
-              <>{line}{i < 2 && <br />}</>
+              <>{line}{i < 1 && <br />}</>
             ))}
           </h1>
           <p class="hero-subtitle animate-in animate-delay-2">{heroContent.subtitle}</p>
