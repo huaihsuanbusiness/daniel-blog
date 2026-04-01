@@ -5,9 +5,8 @@ categories: ["ai"]
 tags: ["ai", "mcp", "agent", "workflow", "automation", "architecture"]
 date: 2026-03-31T20:11:00
 featured: false
+subtitle: "如果你的 MCP server 會對外、會寫資料、會碰到真實使用者，那安全就不是最後一層 middleware，而是從工具暴露面、認證流、授權範圍到回應內容都必須一起設計的系統邊界。"
 ---
-
-**副標：如果你的 MCP server 會對外、會寫資料、會碰到真實使用者，那安全就不是最後一層 middleware，而是從工具暴露面、認證流、授權範圍到回應內容都必須一起設計的系統邊界。**
 
 很多人第一次把 MCP server 對外公開時，腦中浮現的安全清單通常長這樣：
 

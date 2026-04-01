@@ -5,11 +5,9 @@ categories: ["ai"]
 tags: ["ai", "mcp", "agent", "workflow", "automation", "architecture"]
 date: 2026-04-01T00:14:00
 featured: false
+subtitle: "v2 解決的是把 Make-first workflow 整理成比較像 execution engine。v3 則往前再走一步，把模型真正看到的能力表面，從 Make MCP server 換成自己掌控的 FastMCP skill gateway。"
 ---
 
-#AI代理工作流系列 5 — 為什麼我最後連 Make MCP server 也換掉，改成自己架 gateway server
-
-**副標：v2 解決的是把 Make-first workflow 整理成比較像 execution engine。v3 則往前再走一步，把模型真正看到的能力表面，從 Make MCP server 換成自己掌控的 FastMCP skill gateway。**
 
 我很喜歡 Make MCP server。
 

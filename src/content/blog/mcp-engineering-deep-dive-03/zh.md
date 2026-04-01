@@ -5,9 +5,8 @@ categories: ["ai"]
 tags: ["ai", "mcp", "agent", "workflow", "automation", "architecture"]
 date: 2026-03-31T20:12:00
 featured: false
+subtitle: "真正難維護的 MCP 伺服器，不是 tool 太少，而是 contract 太鬆。當你開始面對多 client、版本演進、helper tool 與 public tool 並存時，schema discipline 才是穩定性的主角。"
 ---
-
-**副標：真正難維護的 MCP 伺服器，不是 tool 太少，而是 contract 太鬆。當你開始面對多 client、版本演進、helper tool 與 public tool 並存時，schema discipline 才是穩定性的主角。**
 
 很多團隊第一次寫 MCP tool 時，注意力都放在「功能能不能跑」。
 

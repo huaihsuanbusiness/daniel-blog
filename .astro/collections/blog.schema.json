@@ -30,6 +30,9 @@
       "default": false,
       "type": "boolean"
     },
+    "subtitle": {
+      "type": "string"
+    },
     "coverImage": {
       "type": "string"
     },

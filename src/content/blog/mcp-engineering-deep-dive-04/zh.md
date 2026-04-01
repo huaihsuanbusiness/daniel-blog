@@ -5,9 +5,8 @@ categories: ["ai"]
 tags: ["ai", "mcp", "agent", "workflow", "automation", "architecture"]
 date: 2026-03-31T23:51:00
 featured: false
+subtitle: "repo 裡有 skill，不等於 runtime 真的會照它選工具。真正決定模型怎麼選的，常常是你最後暴露出去的 tool surface、session 看到的 inventory，以及 server instructions 與 schema 是否彼此一致。"
 ---
-
-**副標：repo 裡有 skill，不等於 runtime 真的會照它選工具。真正決定模型怎麼選的，常常是你最後暴露出去的 tool surface、session 看到的 inventory，以及 server instructions 與 schema 是否彼此一致。**
 
 我這篇想寫的，不是「skills 很重要」這種誰都會點頭的句子。
 
