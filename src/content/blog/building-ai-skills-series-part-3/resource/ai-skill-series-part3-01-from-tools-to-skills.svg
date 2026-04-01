@@ -1,0 +1,58 @@
+<svg width="1200" height="760" viewBox="0 0 1200 760" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<style>
+text{font-family:Arial,Inter,sans-serif; fill:#0f172a}
+.title{font-size:30px;font-weight:700}
+.sub{font-size:15px;fill:#475569}
+.box{rx:20;ry:20;stroke:#cbd5e1;stroke-width:1.5}
+.h{font-size:20px;font-weight:700}
+.b{font-size:14px}
+.small{font-size:13px;fill:#475569}
+</style>
+<marker id="a" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#64748b"/></marker>
+</defs>
+<rect width="1200" height="760" fill="#f8fafc"/>
+<text x="50" y="60" class="title">From Make tools to a skill layer</text>
+<text x="50" y="88" class="sub">Keep execution contracts where they are. Lift task methodology into a higher layer.</text>
+
+<rect x="70" y="150" width="480" height="470" class="box" fill="#fff7ed"/>
+<text x="100" y="185" class="h">Execution tools</text>
+<rect x="100" y="220" width="420" height="70" class="box" fill="#ffffff"/>
+<text x="120" y="248" class="b">v2_tool_fetch_recent_jobs</text>
+<text x="120" y="270" class="small">scrape and insert fresh jobs</text>
+<rect x="100" y="310" width="420" height="70" class="box" fill="#ffffff"/>
+<text x="120" y="338" class="b">v2_tool_bulk_score_new_jobs</text>
+<text x="120" y="360" class="small">score missing or refreshed jobs</text>
+<rect x="100" y="400" width="420" height="70" class="box" fill="#ffffff"/>
+<text x="120" y="428" class="b">v2_tool_query_jobs</text>
+<text x="120" y="450" class="small">retrieve shortlist candidates</text>
+<rect x="100" y="490" width="420" height="70" class="box" fill="#ffffff"/>
+<text x="120" y="518" class="b">v2_tool_generate_job_output</text>
+<text x="120" y="540" class="small">analyze, application pack, interview brief</text>
+<rect x="100" y="580" width="420" height="50" class="box" fill="#ffffff"/>
+<text x="120" y="612" class="small">internal helper: v2_helper_resolve_job_reference</text>
+
+<rect x="650" y="150" width="480" height="470" class="box" fill="#f5f3ff"/>
+<text x="680" y="185" class="h">Skill layer</text>
+<rect x="680" y="220" width="390" height="70" class="box" fill="#ffffff"/>
+<text x="700" y="248" class="b">job_ingestion</text>
+<text x="700" y="270" class="small">refresh pool, then optionally score inserts</text>
+<rect x="680" y="310" width="390" height="70" class="box" fill="#ffffff"/>
+<text x="700" y="338" class="b">job_scoring</text>
+<text x="700" y="360" class="small">score unscored jobs or force-rescore a known job</text>
+<rect x="680" y="400" width="390" height="70" class="box" fill="#ffffff"/>
+<text x="700" y="428" class="b">job_querying</text>
+<text x="700" y="450" class="small">translate user shortlist requests into query specs</text>
+<rect x="680" y="490" width="390" height="70" class="box" fill="#ffffff"/>
+<text x="700" y="518" class="b">job_decision_support</text>
+<text x="700" y="540" class="small">resolve reference, gather context, generate decision material</text>
+
+<line x1="520" y1="255" x2="680" y2="255" stroke="#64748b" stroke-width="3" marker-end="url(#a)"/>
+<line x1="520" y1="345" x2="680" y2="255" stroke="#64748b" stroke-width="3" marker-end="url(#a)"/>
+<line x1="520" y1="435" x2="680" y2="435" stroke="#64748b" stroke-width="3" marker-end="url(#a)"/>
+<line x1="520" y1="525" x2="680" y2="525" stroke="#64748b" stroke-width="3" marker-end="url(#a)"/>
+<line x1="520" y1="605" x2="680" y2="525" stroke="#64748b" stroke-width="3" marker-end="url(#a)"/>
+
+<rect x="650" y="650" width="480" height="60" class="box" fill="#ffffff"/>
+<text x="680" y="687" class="small">Manifests, instructions, examples, and eval notes live above the tools.</text>
+</svg>

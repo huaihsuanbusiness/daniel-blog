@@ -1,0 +1,51 @@
+<svg width="1200" height="720" viewBox="0 0 1200 720" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<style>
+text{font-family:Arial,Inter,sans-serif; fill:#0f172a}
+.title{font-size:30px;font-weight:700}
+.sub{font-size:15px;fill:#475569}
+.box{rx:20;ry:20;stroke:#cbd5e1;stroke-width:1.5}
+.h{font-size:20px;font-weight:700}
+.b{font-size:14px}
+.small{font-size:13px;fill:#475569}
+</style>
+<marker id="a" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#64748b"/></marker>
+</defs>
+<rect width="1200" height="720" fill="#f8fafc"/>
+<text x="50" y="60" class="title">Direct-tool access vs skill-first gateway</text>
+<text x="50" y="88" class="sub">The difference is not only prettier architecture. It is where policy, risk, and task meaning actually live.</text>
+
+<rect x="60" y="140" width="480" height="500" class="box" fill="#fff1f2"/>
+<text x="90" y="178" class="h">Direct-tool access</text>
+<rect x="95" y="210" width="410" height="68" class="box" fill="#ffffff"/>
+<text x="115" y="252" class="b">ChatGPT sees low-level tools directly</text>
+<rect x="95" y="315" width="410" height="210" class="box" fill="#ffffff"/>
+<text x="115" y="350" class="h" style="font-size:18px">Model must improvise</text>
+<text x="115" y="380" class="b">• Which tool to call first?</text>
+<text x="115" y="405" class="b">• Should it rescore or only query?</text>
+<text x="115" y="430" class="b">• Which tools are safe to expose now?</text>
+<text x="115" y="455" class="b">• When should it ask for clarification?</text>
+<text x="115" y="480" class="b">• How should multi-step outputs be stitched?</text>
+<rect x="95" y="555" width="410" height="55" class="box" fill="#ffffff"/>
+<text x="115" y="588" class="small">Result: tool soup, policy drift, harder debugging.</text>
+
+<rect x="660" y="140" width="480" height="500" class="box" fill="#ecfeff"/>
+<text x="690" y="178" class="h">Skill-first gateway</text>
+<rect x="695" y="210" width="410" height="68" class="box" fill="#ffffff"/>
+<text x="715" y="252" class="b">ChatGPT sees a small number of task-level skills</text>
+<rect x="695" y="315" width="410" height="210" class="box" fill="#ffffff"/>
+<text x="715" y="350" class="h" style="font-size:18px">Gateway controls</text>
+<text x="715" y="380" class="b">• skill selection</text>
+<text x="715" y="405" class="b">• tool allowlists</text>
+<text x="715" y="430" class="b">• helper invocation</text>
+<text x="715" y="455" class="b">• response normalisation</text>
+<text x="715" y="480" class="b">• failure and blocked handling</text>
+<rect x="695" y="555" width="410" height="55" class="box" fill="#ffffff"/>
+<text x="715" y="588" class="small">Result: smaller surface area, better governance, more stable behaviour.</text>
+
+<line x1="300" y1="280" x2="300" y2="314" stroke="#64748b" stroke-width="3" marker-end="url(#a)"/>
+<line x1="900" y1="280" x2="900" y2="314" stroke="#64748b" stroke-width="3" marker-end="url(#a)"/>
+
+<text x="535" y="390" class="h" style="font-size:28px">→</text>
+<text x="545" y="425" class="small">Move policy here</text>
+</svg>
