@@ -538,7 +538,3 @@ Because once you decide you want even more freedom, or you simply do not want so
 
 ---
 
-## Image Asset Plan
-
-This draft does not need additional artwork.  
-If I ever add a graphic later, it would only be a single SVG showing provider routes and cost layers after the main comparison table. No decorative clutter, no compulsory diagram theatre.
