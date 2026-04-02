@@ -24,11 +24,14 @@ const sortLabels = {
   en: { new: 'Newest first', old: 'Oldest first' },
   zh: { new: '最新優先', old: '最早優先' },
 };
-const sortLabel = sortLabels[lang];
+
 const seriesUi = {
-  en: { button: 'Browse series', close: 'Close series filter' },
-  zh: { button: '查看系列', close: '關閉系列篩選' },
-}[lang];
+  en: { button: 'Browse series', placeholder: 'Browse series', close: 'Close series filter' },
+  zh: { button: '查看系列', placeholder: '查看系列', close: '關閉系列篩選' },
+};
+
+const sortLabel = sortLabels[lang];
+const seriesLabel = seriesUi[lang];
 ---
 
 <div class="blog-controls">
@@ -37,7 +40,7 @@ const seriesUi = {
       <div class="tag tag-temp" id="series-temp-tab" hidden>
         <span class="tag-icon" id="series-temp-icon" aria-hidden="true">◌</span>
         <span class="tag-label" id="series-temp-label"></span>
-        <button class="tag-close" id="series-temp-close" type="button" aria-label={seriesUi.close}>×</button>
+        <button class="tag-close" id="series-temp-close" type="button" aria-label={seriesLabel.close}>×</button>
         <span class="tag-underline" aria-hidden="true"></span>
       </div>
 
@@ -62,6 +65,15 @@ const seriesUi = {
   </div>
 
   <div class="controls-right">
+    <div class="sort-wrap series-wrap" id="series-wrap" hidden>
+      <select id="series-select" class="sort-select" aria-label={seriesLabel.button}>
+        <option value="">{seriesLabel.placeholder}</option>
+      </select>
+      <svg class="sort-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <path d="m6 15 6-6 6-6"/>
+      </svg>
+    </div>
+
     <div class="sort-wrap">
       <select id="sort-select" class="sort-select" aria-label={lang === 'zh' ? '排序' : 'Sort'}>
         <option value="new">{sortLabel.new}</option>
@@ -92,36 +104,25 @@ const seriesUi = {
   </div>
 </div>
 
-<div class="series-filter-row" id="series-filter-row" hidden>
-  <div class="sort-wrap series-sort-wrap">
-    <button class="sort-select series-filter-button" id="series-filter-button" type="button">{seriesUi.button}</button>
-    <svg class="sort-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-      <path d="m6 15 6-6 6-6"/>
-    </svg>
-  </div>
-  <div class="series-filter-dropdown" id="series-filter-dropdown" hidden></div>
-</div>
-
 <script>
   const postsGrid = document.getElementById('posts-grid');
   const tempTab = document.getElementById('series-temp-tab');
   const tempLabel = document.getElementById('series-temp-label');
   const tempClose = document.getElementById('series-temp-close');
-  const seriesRow = document.getElementById('series-filter-row');
-  const seriesButton = document.getElementById('series-filter-button');
-  const seriesDropdown = document.getElementById('series-filter-dropdown');
+  const seriesWrap = document.getElementById('series-wrap');
+  const seriesSelect = document.getElementById('series-select');
+  const sortSelect = document.getElementById('sort-select');
   const gridBtn = document.getElementById('view-grid');
   const listBtn = document.getElementById('view-list');
-  const sortSelect = document.getElementById('sort-select');
 
-  let selectedSeriesKey = '';
   let activeCategory = new URL(window.location.href).searchParams.get('category') || 'all';
+  let activeSeries = '';
 
   function collectSeries(category) {
     const cards = Array.from(document.querySelectorAll('[data-post-card]'));
     const map = new Map();
     cards.forEach((card) => {
-      const el = card;
+      const el = /** @type {HTMLElement} */ (card);
       const key = el.dataset.seriesKey || '';
       const label = el.dataset.seriesLabel || '';
       const categories = (el.dataset.category || '').split(' ');
@@ -135,75 +136,82 @@ const seriesUi = {
   function applySeriesFilter() {
     const cards = Array.from(document.querySelectorAll('[data-post-card]'));
     cards.forEach((card) => {
-      card.style.display = !selectedSeriesKey || card.dataset.seriesKey === selectedSeriesKey ? '' : 'none';
+      const el = /** @type {HTMLElement} */ (card);
+      const show = !activeSeries || el.dataset.seriesKey === activeSeries;
+      el.style.display = show ? '' : 'none';
     });
   }
 
-  function closeDropdown() { if (seriesDropdown) seriesDropdown.hidden = true; }
-
   function clearSeriesFilter() {
-    selectedSeriesKey = '';
+    activeSeries = '';
+    if (seriesSelect) seriesSelect.value = '';
     if (tempTab) tempTab.hidden = true;
     applySeriesFilter();
-    closeDropdown();
   }
 
-  function renderSeriesButton() {
+  function syncSeriesControl() {
     const options = collectSeries(activeCategory);
-    if (!seriesRow || !seriesButton || !seriesDropdown) return;
+    if (!seriesWrap || !seriesSelect) return;
+
     if (activeCategory === 'all' || options.length === 0) {
-      seriesRow.hidden = true;
-      closeDropdown();
+      seriesWrap.hidden = true;
       clearSeriesFilter();
       return;
     }
-    seriesRow.hidden = false;
-    seriesDropdown.innerHTML = '';
+
+    seriesWrap.hidden = false;
+    seriesSelect.innerHTML = '';
+
+    const placeholder = document.createElement('option');
+    placeholder.value = '';
+    placeholder.textContent = seriesSelect.getAttribute('aria-label') === '查看系列' ? '查看系列' : 'Browse series';
+    seriesSelect.appendChild(placeholder);
+
     options.forEach((option) => {
-      const btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'series-filter-option';
-      btn.textContent = option.label;
-      btn.addEventListener('click', () => {
-        selectedSeriesKey = option.key;
-        if (tempTab && tempLabel) {
-          tempTab.hidden = false;
-          tempLabel.textContent = option.label;
-        }
-        applySeriesFilter();
-        closeDropdown();
-      });
-      seriesDropdown.appendChild(btn);
+      const el = document.createElement('option');
+      el.value = option.key;
+      el.textContent = option.label;
+      seriesSelect.appendChild(el);
     });
+
+    if (!activeSeries) {
+      seriesSelect.value = '';
+      if (tempTab) tempTab.hidden = true;
+    }
   }
 
   document.querySelectorAll('[data-filter-category]').forEach((tab) => {
     tab.addEventListener('click', () => {
       activeCategory = tab.getAttribute('data-filter-category') || 'all';
       clearSeriesFilter();
-      renderSeriesButton();
+      syncSeriesControl();
     });
+  });
+
+  seriesSelect?.addEventListener('change', () => {
+    const select = /** @type {HTMLSelectElement} */ (seriesSelect);
+    activeSeries = select.value;
+    const selectedOption = select.options[select.selectedIndex];
+
+    if (!activeSeries) {
+      clearSeriesFilter();
+      return;
+    }
+
+    if (tempTab && tempLabel) {
+      tempTab.hidden = false;
+      tempLabel.textContent = selectedOption?.textContent || '';
+    }
+
+    applySeriesFilter();
   });
 
   tempClose?.addEventListener('click', (event) => {
     event.preventDefault();
     event.stopPropagation();
     clearSeriesFilter();
-    if (tempTab) tempTab.hidden = true;
-    renderSeriesButton();
+    syncSeriesControl();
   });
-
-  seriesButton?.addEventListener('click', (event) => {
-    event.stopPropagation();
-    if (seriesDropdown?.hidden) seriesDropdown.hidden = false;
-    else closeDropdown();
-  });
-  document.addEventListener('click', (event) => {
-    const target = event.target;
-    if (!(target instanceof Node)) return;
-    if (seriesRow && !seriesRow.contains(target)) closeDropdown();
-  });
-
 
   function applyView(view) {
     postsGrid?.classList.toggle('view-list', view === 'list');
@@ -213,6 +221,7 @@ const seriesUi = {
     listBtn?.setAttribute('aria-pressed', view === 'list' ? 'true' : 'false');
     localStorage.setItem('blog-view', view);
   }
+
   gridBtn?.addEventListener('click', () => applyView('grid'));
   listBtn?.addEventListener('click', () => applyView('list'));
   applyView(localStorage.getItem('blog-view') || 'grid');
@@ -221,47 +230,186 @@ const seriesUi = {
     if (!postsGrid) return;
     const cards = Array.from(postsGrid.querySelectorAll('[data-post-card]'));
     cards.sort((a, b) => {
-      const keyA = a.dataset.sortKey || '';
-      const keyB = b.dataset.sortKey || '';
+      const keyA = /** @type {HTMLElement} */ (a).dataset.sortKey || '';
+      const keyB = /** @type {HTMLElement} */ (b).dataset.sortKey || '';
       return sort === 'old' ? keyA.localeCompare(keyB) : keyB.localeCompare(keyA);
     });
     cards.forEach(card => postsGrid.appendChild(card));
   }
+
   sortSelect?.addEventListener('change', () => {
-    const sort = sortSelect.value;
+    const select = /** @type {HTMLSelectElement} */ (sortSelect);
+    const sort = select.value;
     const url = new URL(window.location.href);
     url.searchParams.set('sort', sort);
     history.replaceState({}, '', url.toString());
     applySort(sort);
   });
+
   const initialSort = new URL(window.location.href).searchParams.get('sort') || 'new';
   if (sortSelect) sortSelect.value = initialSort;
   applySort(initialSort);
-  renderSeriesButton();
+  syncSeriesControl();
 </script>
 
 <style>
-  .blog-controls { display:flex; align-items:center; justify-content:space-between; gap:var(--space-3); margin-bottom:var(--space-4); flex-wrap:wrap; }
-  .filter-scroll-wrap { flex:1; overflow:hidden; }
-  .filter-scroll { display:flex; gap:var(--space-1); overflow-x:auto; padding-bottom:2px; scrollbar-width:none; }
-  .filter-scroll::-webkit-scrollbar { display:none; }
-  .controls-right { display:flex; align-items:center; gap:var(--space-2); flex-shrink:0; }
-  .sort-wrap { position:relative; display:flex; align-items:center; }
-  .sort-select { appearance:none; background:color-mix(in srgb,var(--color-surface) 92%,transparent); border:1px solid var(--color-border); border-radius:8px; color:var(--color-text); font-family:var(--font-mono); font-size:.75rem; padding:6px 28px 6px 10px; cursor:pointer; }
-  .sort-chevron { position:absolute; right:8px; pointer-events:none; color:var(--color-muted); }
-  .view-toggle { display:flex; border:1px solid var(--color-border); border-radius:8px; overflow:hidden; }
-  .view-btn { display:flex; align-items:center; justify-content:center; width:34px; height:34px; background:transparent; border:none; color:var(--color-muted); cursor:pointer; }
-  .view-btn.active { color:var(--color-accent); background:color-mix(in srgb,var(--color-accent) 10%,transparent); }
-  .tag { position:relative; display:inline-flex; align-items:center; gap:8px; flex-shrink:0; font-family:var(--font-mono); padding:8px 14px; border-radius:999px; text-decoration:none; color:var(--color-text); border:1px solid var(--color-border); background:color-mix(in srgb,var(--color-surface) 88%,transparent); }
-  .tag-icon { display:inline-flex; align-items:center; justify-content:center; color:var(--tag-color, var(--color-accent)); }
-  .tag.active,.tag[aria-current='page'],.tag-temp { box-shadow:0 0 0 1px color-mix(in srgb,var(--tag-color, var(--color-accent)) 28%,transparent),0 0 20px color-mix(in srgb,var(--tag-color, var(--color-accent)) 18%,transparent),inset 0 0 18px color-mix(in srgb,var(--tag-color, var(--color-accent)) 10%,transparent); border-color:color-mix(in srgb,var(--tag-color, var(--color-accent)) 40%,transparent); }
-  .tag-close { display:inline-flex; align-items:center; justify-content:center; width:22px; height:22px; border:none; background:transparent; color:inherit; font-size:1rem; line-height:1; cursor:pointer; padding:0; margin-left:2px; flex:0 0 auto; }
-  .tag-underline { display:none; }
-  .series-filter-row { display:flex; align-items:flex-start; gap:10px; margin:0 0 var(--space-5); position:relative; }
-  .series-sort-wrap { min-width: 170px; }
-  .series-filter-button { width:100%; text-align:left; }
-  .series-filter-dropdown { width:min(100%,320px); padding:8px; border-radius:12px; border:1px solid var(--color-border); background:color-mix(in srgb,var(--color-surface) 98%,transparent); box-shadow:0 12px 30px rgba(0,0,0,.08); display:grid; gap:8px; position:absolute; top:46px; left:0; z-index:5; }
-  .series-filter-option { text-align:left; padding:10px 12px; border-radius:12px; border:1px solid transparent; background:transparent; color:var(--color-text); cursor:pointer; }
-  .series-filter-option:hover { background:color-mix(in srgb,var(--color-accent) 8%,var(--color-surface)); border-color:color-mix(in srgb,var(--color-accent) 20%,var(--color-border)); }
-  @media (max-width:720px){ .filter-scroll-wrap{flex:1 1 100%; width:100%;} .controls-right{width:100%; justify-content:flex-end; padding-top:4px;} }
+  .blog-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    margin-bottom: var(--space-6);
+    flex-wrap: wrap;
+  }
+
+  .filter-scroll-wrap {
+    flex: 1;
+    overflow: hidden;
+  }
+
+  .filter-scroll {
+    display: flex;
+    gap: var(--space-1);
+    overflow-x: auto;
+    padding-bottom: 2px;
+    scrollbar-width: none;
+  }
+
+  .filter-scroll::-webkit-scrollbar {
+    display: none;
+  }
+
+  .controls-right {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    flex-shrink: 0;
+  }
+
+  .sort-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .sort-select {
+    appearance: none;
+    background: color-mix(in srgb, var(--color-surface) 92%, transparent);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    color: var(--color-text);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    padding: 6px 28px 6px 10px;
+    cursor: pointer;
+    outline: none;
+    transition: border-color var(--transition-fast);
+  }
+
+  .sort-select:hover,
+  .sort-select:focus {
+    border-color: var(--color-accent);
+  }
+
+  .sort-chevron {
+    position: absolute;
+    right: 8px;
+    pointer-events: none;
+    color: var(--color-muted);
+  }
+
+  .view-toggle {
+    display: flex;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .view-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    background: transparent;
+    border: none;
+    color: var(--color-muted);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+  }
+
+  .view-btn.active {
+    color: var(--color-accent);
+    background: color-mix(in srgb, var(--color-accent) 10%, transparent);
+  }
+
+  .tag {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+    font-family: var(--font-mono);
+    padding: 8px 14px;
+    border-radius: 999px;
+    text-decoration: none;
+    color: var(--color-text);
+    border: 1px solid var(--color-border);
+    background: color-mix(in srgb, var(--color-surface) 88%, transparent);
+  }
+
+  .tag.active,
+  .tag[aria-current='page'],
+  .tag-temp {
+    box-shadow:
+      0 0 0 1px color-mix(in srgb, var(--tag-color, var(--color-accent)) 28%, transparent),
+      0 0 20px color-mix(in srgb, var(--tag-color, var(--color-accent)) 18%, transparent),
+      inset 0 0 18px color-mix(in srgb, var(--tag-color, var(--color-accent)) 10%, transparent);
+    border-color: color-mix(in srgb, var(--tag-color, var(--color-accent)) 40%, transparent);
+  }
+
+  .tag-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--tag-color, var(--color-accent));
+  }
+
+  .tag-underline {
+    display: none;
+  }
+
+  .tag-close {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border: none;
+    background: transparent;
+    color: inherit;
+    font-size: 1rem;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0;
+    margin-left: 2px;
+    flex: 0 0 auto;
+  }
+
+  .series-wrap {
+    min-width: 170px;
+  }
+
+  @media (max-width: 720px) {
+    .filter-scroll-wrap {
+      flex: 1 1 100%;
+      width: 100%;
+    }
+
+    .controls-right {
+      width: 100%;
+      justify-content: flex-end;
+      padding-top: 4px;
+    }
+  }
 </style>
