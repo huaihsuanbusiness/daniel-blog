@@ -68,6 +68,9 @@ const selectedCategoryLabel = selectedCategory && selectedCategory in CATEGORY_L
   : undefined;
 
 function getSeriesMeta(slug: string, lang: string) {
+  if (/^openclaw-getting-started-\d+$/.test(slug)) {
+    return { key: 'openclaw-getting-started', order: 1, label: lang === 'zh' ? '1. OpenClaw 快速上手系列' : '1. OpenClaw Getting Started' };
+  }
   if (/^ai-agentic-workflow-series-\d+$/.test(slug)) {
     return { key: 'ai-agentic-workflow', order: 1, label: lang === 'zh' ? '1. AI 代理工作流系列' : '1. AI Agentic Workflow Series' };
   }

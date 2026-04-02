@@ -1,0 +1,92 @@
+<svg width="1200" height="760" viewBox="0 0 1200 760" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg2" x1="0" y1="0" x2="1200" y2="760" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0B1220"/>
+      <stop offset="1" stop-color="#10192E"/>
+    </linearGradient>
+    <filter id="shadow2" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="16" stdDeviation="18" flood-color="#000" flood-opacity="0.24"/>
+    </filter>
+  </defs>
+  <rect width="1200" height="760" rx="28" fill="url(#bg2)"/>
+  <text x="66" y="86" fill="#F8FAFC" font-family="Inter, Arial, sans-serif" font-size="34" font-weight="700">Task Fit Map: Chat UI vs Codex CLI vs OpenClaw</text>
+  <text x="66" y="120" fill="#94A3B8" font-family="Inter, Arial, sans-serif" font-size="18">Use OpenClaw only when the task truly needs persistence, your own host boundary, or a narrow private background loop.</text>
+
+  <g filter="url(#shadow2)">
+    <rect x="76" y="176" width="180" height="88" rx="22" fill="#0F172A" stroke="#38BDF8" stroke-width="1.5"/>
+    <text x="106" y="212" fill="#38BDF8" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="700">START</text>
+    <text x="106" y="242" fill="#F8FAFC" font-family="Inter, Arial, sans-serif" font-size="26" font-weight="700">A task arrives</text>
+  </g>
+
+  <g filter="url(#shadow2)">
+    <rect x="314" y="152" width="234" height="116" rx="24" fill="#0F172A" stroke="#34D399" stroke-width="1.5"/>
+    <text x="340" y="192" fill="#34D399" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="700">QUESTION 1</text>
+    <text x="340" y="226" fill="#F8FAFC" font-family="Inter, Arial, sans-serif" font-size="24" font-weight="700">Does it need persistence?</text>
+    <text x="340" y="252" fill="#CBD5E1" font-family="Inter, Arial, sans-serif" font-size="15">Sessions, memory, ongoing context</text>
+  </g>
+
+  <g filter="url(#shadow2)">
+    <rect x="620" y="132" width="260" height="124" rx="24" fill="#0F172A" stroke="#818CF8" stroke-width="1.5"/>
+    <text x="648" y="172" fill="#818CF8" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="700">QUESTION 2</text>
+    <text x="648" y="206" fill="#F8FAFC" font-family="Inter, Arial, sans-serif" font-size="24" font-weight="700">Needs your own host boundary</text>
+    <text x="648" y="232" fill="#CBD5E1" font-family="Inter, Arial, sans-serif" font-size="15">or a messaging surface?</text>
+  </g>
+
+  <g filter="url(#shadow2)">
+    <rect x="952" y="152" width="190" height="116" rx="24" fill="#0F172A" stroke="#A78BFA" stroke-width="1.5"/>
+    <text x="980" y="192" fill="#A78BFA" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="700">QUESTION 3</text>
+    <text x="980" y="226" fill="#F8FAFC" font-family="Inter, Arial, sans-serif" font-size="24" font-weight="700">Worth the ops?</text>
+    <text x="980" y="252" fill="#CBD5E1" font-family="Inter, Arial, sans-serif" font-size="15">Gateway overhead justified?</text>
+  </g>
+
+  <path d="M256 220H314" stroke="#64748B" stroke-width="3" stroke-linecap="round"/>
+  <path d="M548 210H620" stroke="#64748B" stroke-width="3" stroke-linecap="round"/>
+  <path d="M880 210H952" stroke="#64748B" stroke-width="3" stroke-linecap="round"/>
+
+  <text x="382" y="144" fill="#CBD5E1" font-family="Inter, Arial, sans-serif" font-size="14">yes →</text>
+  <text x="678" y="124" fill="#CBD5E1" font-family="Inter, Arial, sans-serif" font-size="14">yes →</text>
+  <text x="1002" y="144" fill="#CBD5E1" font-family="Inter, Arial, sans-serif" font-size="14">yes →</text>
+
+  <g filter="url(#shadow2)">
+    <rect x="120" y="378" width="250" height="154" rx="24" fill="#111827" stroke="#38BDF8" stroke-width="1.5"/>
+    <text x="148" y="418" fill="#38BDF8" font-family="Inter, Arial, sans-serif" font-size="15" font-weight="700">CHATGPT / NORMAL CHAT UI</text>
+    <text x="148" y="454" fill="#F8FAFC" font-family="Inter, Arial, sans-serif" font-size="22" font-weight="700">Use this when the task is</text>
+    <text x="148" y="480" fill="#F8FAFC" font-family="Inter, Arial, sans-serif" font-size="22" font-weight="700">short-lived and disposable</text>
+    <text x="148" y="514" fill="#CBD5E1" font-family="Inter, Arial, sans-serif" font-size="16">• quick questions</text>
+    <text x="148" y="540" fill="#CBD5E1" font-family="Inter, Arial, sans-serif" font-size="16">• brainstorming</text>
+    <text x="148" y="566" fill="#CBD5E1" font-family="Inter, Arial, sans-serif" font-size="16">• low-stakes one-off help</text>
+  </g>
+
+  <g filter="url(#shadow2)">
+    <rect x="462" y="378" width="278" height="154" rx="24" fill="#111827" stroke="#34D399" stroke-width="1.5"/>
+    <text x="490" y="418" fill="#34D399" font-family="Inter, Arial, sans-serif" font-size="15" font-weight="700">CODEX CLI</text>
+    <text x="490" y="454" fill="#F8FAFC" font-family="Inter, Arial, sans-serif" font-size="22" font-weight="700">Use this for pure local</text>
+    <text x="490" y="480" fill="#F8FAFC" font-family="Inter, Arial, sans-serif" font-size="22" font-weight="700">coding loops</text>
+    <text x="490" y="514" fill="#CBD5E1" font-family="Inter, Arial, sans-serif" font-size="16">• repo editing</text>
+    <text x="490" y="540" fill="#CBD5E1" font-family="Inter, Arial, sans-serif" font-size="16">• tests / refactors / scripts</text>
+    <text x="490" y="566" fill="#CBD5E1" font-family="Inter, Arial, sans-serif" font-size="16">• no messaging or persistent ops</text>
+  </g>
+
+  <g filter="url(#shadow2)">
+    <rect x="812" y="360" width="292" height="188" rx="24" fill="#111827" stroke="#A78BFA" stroke-width="1.5"/>
+    <text x="840" y="400" fill="#A78BFA" font-family="Inter, Arial, sans-serif" font-size="15" font-weight="700">OPENCLAW</text>
+    <text x="840" y="436" fill="#F8FAFC" font-family="Inter, Arial, sans-serif" font-size="22" font-weight="700">Use this for persistent</text>
+    <text x="840" y="462" fill="#F8FAFC" font-family="Inter, Arial, sans-serif" font-size="22" font-weight="700">personal assistant work</text>
+    <text x="840" y="496" fill="#CBD5E1" font-family="Inter, Arial, sans-serif" font-size="16">• browser + memory research</text>
+    <text x="840" y="522" fill="#CBD5E1" font-family="Inter, Arial, sans-serif" font-size="16">• narrow private background tasks</text>
+    <text x="840" y="548" fill="#CBD5E1" font-family="Inter, Arial, sans-serif" font-size="16">• one gateway = one trust boundary</text>
+  </g>
+
+  <path d="M432 268V330H246V378" stroke="#64748B" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M750 256V330H600V378" stroke="#64748B" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M1047 268V320V360" stroke="#64748B" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <text x="250" y="320" fill="#CBD5E1" font-family="Inter, Arial, sans-serif" font-size="14">no →</text>
+  <text x="602" y="320" fill="#CBD5E1" font-family="Inter, Arial, sans-serif" font-size="14">no →</text>
+
+  <g filter="url(#shadow2)">
+    <rect x="760" y="610" width="356" height="92" rx="20" fill="#111827" stroke="#F59E0B" stroke-width="1.5" stroke-dasharray="10 10"/>
+    <text x="790" y="650" fill="#F59E0B" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="700">RISK FENCE</text>
+    <text x="790" y="680" fill="#CBD5E1" font-family="Inter, Arial, sans-serif" font-size="16">If the task expands your trust boundary, slow down before you automate it.</text>
+  </g>
+</svg>
