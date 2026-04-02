@@ -65,15 +65,6 @@ const seriesLabel = seriesUi[lang];
   </div>
 
   <div class="controls-right">
-    <div class="sort-wrap series-wrap" id="series-wrap" hidden>
-      <select id="series-select" class="sort-select" aria-label={seriesLabel.button}>
-        <option value="">{seriesLabel.placeholder}</option>
-      </select>
-      <svg class="sort-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-        <path d="m6 15 6-6 6-6"/>
-      </svg>
-    </div>
-
     <div class="sort-wrap">
       <select id="sort-select" class="sort-select" aria-label={lang === 'zh' ? '排序' : 'Sort'}>
         <option value="new">{sortLabel.new}</option>
@@ -104,11 +95,23 @@ const seriesLabel = seriesUi[lang];
   </div>
 </div>
 
+<div class="series-row" id="series-row" hidden>
+  <div class="sort-wrap series-wrap" id="series-wrap">
+    <select id="series-select" class="sort-select" aria-label={seriesLabel.button}>
+      <option value="">{seriesLabel.placeholder}</option>
+    </select>
+    <svg class="sort-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+      <path d="m6 15 6-6 6-6"/>
+    </svg>
+  </div>
+</div>
+
 <script>
   const postsGrid = document.getElementById('posts-grid');
   const tempTab = document.getElementById('series-temp-tab');
   const tempLabel = document.getElementById('series-temp-label');
   const tempClose = document.getElementById('series-temp-close');
+  const seriesRow = document.getElementById('series-row');
   const seriesWrap = document.getElementById('series-wrap');
   const seriesSelect = document.getElementById('series-select');
   const sortSelect = document.getElementById('sort-select');
@@ -151,15 +154,15 @@ const seriesLabel = seriesUi[lang];
 
   function syncSeriesControl() {
     const options = collectSeries(activeCategory);
-    if (!seriesWrap || !seriesSelect) return;
+    if (!seriesWrap || !seriesSelect || !seriesRow) return;
 
     if (activeCategory === 'all' || options.length === 0) {
-      seriesWrap.hidden = true;
+      seriesRow.hidden = true;
       clearSeriesFilter();
       return;
     }
 
-    seriesWrap.hidden = false;
+    seriesRow.hidden = false;
     seriesSelect.innerHTML = '';
 
     const placeholder = document.createElement('option');
@@ -210,6 +213,7 @@ const seriesLabel = seriesUi[lang];
     event.preventDefault();
     event.stopPropagation();
     clearSeriesFilter();
+    if (tempTab) tempTab.hidden = true;
     syncSeriesControl();
   });
 
@@ -349,13 +353,27 @@ const seriesLabel = seriesUi[lang];
     align-items: center;
     gap: 8px;
     flex-shrink: 0;
+    cursor: pointer;
     font-family: var(--font-mono);
     padding: 8px 14px;
     border-radius: 999px;
+    overflow: hidden;
+    transform: translateY(0);
+    transition:
+      transform var(--transition-fast),
+      box-shadow var(--transition-fast),
+      border-color var(--transition-fast),
+      background-color var(--transition-fast),
+      color var(--transition-fast);
     text-decoration: none;
     color: var(--color-text);
     border: 1px solid var(--color-border);
     background: color-mix(in srgb, var(--color-surface) 88%, transparent);
+  }
+
+  .tag:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--tag-color, var(--color-accent)) 18%, transparent), 0 8px 20px color-mix(in srgb, var(--tag-color, var(--color-accent)) 10%, transparent);
   }
 
   .tag.active,
@@ -373,10 +391,35 @@ const seriesLabel = seriesUi[lang];
     align-items: center;
     justify-content: center;
     color: var(--tag-color, var(--color-accent));
+    transform: translateY(0) scale(1);
+    transition: transform var(--transition-fast), color var(--transition-fast), text-shadow var(--transition-fast);
+  }
+
+  .tag.active .tag-icon,
+  .tag[aria-current='page'] .tag-icon,
+  .tag-temp .tag-icon {
+    transform: translateY(-1px) scale(1.08);
+    text-shadow: 0 0 12px color-mix(in srgb, var(--tag-color, var(--color-accent)) 40%, transparent);
   }
 
   .tag-underline {
-    display: none;
+    position: absolute;
+    left: 14px;
+    right: 14px;
+    bottom: 6px;
+    height: 2px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, transparent, var(--tag-color, var(--color-accent)), transparent);
+    opacity: 0;
+    transform: scaleX(0.4);
+    transition: opacity var(--transition-fast), transform var(--transition-fast);
+  }
+
+  .tag.active .tag-underline,
+  .tag[aria-current='page'] .tag-underline,
+  .tag-temp .tag-underline {
+    opacity: 1;
+    transform: scaleX(1);
   }
 
   .tag-close {
@@ -394,6 +437,10 @@ const seriesLabel = seriesUi[lang];
     padding: 0;
     margin-left: 2px;
     flex: 0 0 auto;
+  }
+
+  .series-row {
+    margin: -10px 0 var(--space-5);
   }
 
   .series-wrap {
