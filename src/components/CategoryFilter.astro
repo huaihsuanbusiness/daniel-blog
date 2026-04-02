@@ -93,16 +93,16 @@ const seriesLabel = seriesUi[lang];
       </button>
     </div>
   </div>
-</div>
 
-<div class="series-row" id="series-row" hidden>
-  <div class="sort-wrap series-wrap" id="series-wrap">
-    <select id="series-select" class="sort-select" aria-label={seriesLabel.button}>
-      <option value="">{seriesLabel.placeholder}</option>
-    </select>
-    <svg class="sort-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-      <path d="m6 9 6 6 6-6"/>
-    </svg>
+  <div class="series-row" id="series-row" hidden>
+    <div class="sort-wrap series-wrap" id="series-wrap">
+      <select id="series-select" class="sort-select series-select" aria-label={seriesLabel.button}>
+        <option value="">{seriesLabel.placeholder}</option>
+      </select>
+      <svg class="sort-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <path d="m6 9 6 6 6-6"/>
+      </svg>
+    </div>
   </div>
 </div>
 
@@ -243,17 +243,20 @@ const seriesLabel = seriesUi[lang];
   });
 
   function applyView(view) {
-    postsGrid?.classList.toggle('view-list', view === 'list');
-    gridBtn?.classList.toggle('active', view === 'grid');
-    listBtn?.classList.toggle('active', view === 'list');
-    gridBtn?.setAttribute('aria-pressed', view === 'grid' ? 'true' : 'false');
-    listBtn?.setAttribute('aria-pressed', view === 'list' ? 'true' : 'false');
-    localStorage.setItem('blog-view', view);
+    const mobile = window.matchMedia('(max-width: 720px)').matches;
+    const resolvedView = mobile ? 'list' : view;
+    postsGrid?.classList.toggle('view-list', resolvedView === 'list');
+    gridBtn?.classList.toggle('active', resolvedView === 'grid');
+    listBtn?.classList.toggle('active', resolvedView === 'list');
+    gridBtn?.setAttribute('aria-pressed', resolvedView === 'grid' ? 'true' : 'false');
+    listBtn?.setAttribute('aria-pressed', resolvedView === 'list' ? 'true' : 'false');
+    if (!mobile) localStorage.setItem('blog-view', resolvedView);
   }
 
   gridBtn?.addEventListener('click', () => applyView('grid'));
   listBtn?.addEventListener('click', () => applyView('list'));
   applyView(localStorage.getItem('blog-view') || 'grid');
+  window.addEventListener('resize', () => applyView(localStorage.getItem('blog-view') || 'grid'));
 
   function applySort(sort) {
     if (!postsGrid) return;
@@ -486,10 +489,11 @@ const seriesLabel = seriesUi[lang];
     min-width: 0;
   }
 
-  .series-wrap .sort-select {
+  .series-select {
     width: auto;
     min-width: 0;
     padding-right: 30px;
+    max-width: 160px;
   }
 
   @media (max-width: 720px) {
@@ -498,17 +502,26 @@ const seriesLabel = seriesUi[lang];
       width: 100%;
     }
 
+    .view-toggle {
+      display: none;
+    }
+
     .controls-right {
       width: auto;
       justify-content: flex-end;
-      padding-top: 4px;
+      padding-top: 0;
       order: 2;
+      margin-left: auto;
     }
 
     .series-row {
       flex-basis: auto;
       margin: 0 0 var(--space-3);
       order: 2;
+    }
+
+    .series-select {
+      max-width: 140px;
     }
   }
 </style>
