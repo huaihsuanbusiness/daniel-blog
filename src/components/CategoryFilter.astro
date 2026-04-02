@@ -261,6 +261,8 @@ const seriesLabel = seriesUi[lang];
 
   function applySort(sort) {
     if (!postsGrid) return;
+    const preservedSeries = activeSeries;
+    const preservedLabel = tempLabel?.textContent || '';
     const cards = Array.from(postsGrid.querySelectorAll('[data-post-card]'));
     cards.sort((a, b) => {
       const keyA = /** @type {HTMLElement} */ (a).dataset.sortKey || '';
@@ -268,6 +270,11 @@ const seriesLabel = seriesUi[lang];
       return sort === 'old' ? keyA.localeCompare(keyB) : keyB.localeCompare(keyA);
     });
     cards.forEach(card => postsGrid.appendChild(card));
+    activeSeries = preservedSeries;
+    if (preservedSeries && tempTab && tempLabel) {
+      tempTab.hidden = false;
+      tempLabel.textContent = preservedLabel;
+    }
     applySeriesFilter();
   }
 

@@ -133,6 +133,7 @@ function getSeriesMeta(slug: string, lang: string) {
                 date={post.data.date}
                 lang={lang as 'en' | 'zh'}
                 featured={post.data.featured}
+                search={selectedCategory ? `?category=${selectedCategory}${Astro.url.searchParams.get('sort') ? `&sort=${Astro.url.searchParams.get('sort')}` : ''}` : Astro.url.searchParams.get('sort') ? `?sort=${Astro.url.searchParams.get('sort')}` : ''}
               />
             </div>
           ))}
