@@ -358,26 +358,3 @@ If you only keep ten points from this article, keep these:
 
 ---
 
-## Image Asset Plan
-
-1. filename: openclaw-02-part2-discord-security-map.svg  
-   purpose: explain the relationship between pairing, allowlists, mention gating, and guild/channel policy  
-   placement: after the Discord access-control section  
-   alt: OpenClaw Discord pairing and access-control model  
-   prompt: A blog-friendly SVG diagram showing the relationship between Discord pairing, allowlist, guild policy, channel policy, and mention gating in OpenClaw. English labels, clear arrows, minimal clutter.
-
-2. filename: openclaw-02-part2-memory-remote-access.svg  
-   purpose: show memory layering and remote access routes  
-   placement: between the Memory and Remote Access sections  
-   alt: OpenClaw memory layers and remote access baseline  
-   prompt: A clean SVG showing OpenClaw memory layers (MEMORY.md and daily notes) plus remote access paths (localhost, SSH tunnel, Tailscale Serve). Modern technical blog style, English labels, rounded boxes.
-
-3. filename: openclaw-02-part2-sandbox-policy.svg  
-   purpose: clarify the boundaries between coding, full, sandboxing, and exec approvals  
-   placement: after the safety-baseline section  
-   alt: OpenClaw tool profile, sandbox, and exec approval boundaries  
-   prompt: A blog-friendly SVG clarifying the boundaries between coding profile, full profile, sandboxing, and exec approvals in OpenClaw. English labels, modern clean layout.
-
----
-
-See `./resource/references.md` for the source pack.

@@ -410,20 +410,3 @@ That is where the system starts to feel like a real assistant rather than a fres
 
 ---
 
-## Image Asset Plan
-
-1. filename: openclaw-02-part1-install-flow.svg  
-   purpose: show the macOS / Mac mini install and validation flow  
-   placement: after the Step 1 to Step 5 sections  
-   alt: OpenClaw installation and validation flow on macOS  
-   prompt: A clean blog-friendly SVG showing the installation flow of OpenClaw on macOS / Mac mini: Node check, install, onboard, daemon install, gateway status, dashboard auth. English labels, soft colours, rounded boxes.
-
-2. filename: openclaw-02-part1-deployment-choice.svg  
-   purpose: compare Mac mini, Oracle VM, and Docker as first-step deployment choices  
-   placement: after the “Why this article uses Mac mini” section  
-   alt: OpenClaw first-install deployment choices  
-   prompt: A clean SVG comparing Mac mini, Oracle VM, and Docker as first-step deployment choices for OpenClaw, highlighting operational complexity, recoverability, and suitability for a first install. English labels only.
-
----
-
-See `./resource/references.md` for the source pack.

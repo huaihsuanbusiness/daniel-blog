@@ -418,20 +418,3 @@ Part 2 我們才會把能力真正往外擴：
 
 ---
 
-## Image Asset Plan
-
-1. filename: openclaw-02-part1-install-flow.svg  
-   purpose: 呈現 macOS / Mac mini 的第一輪安裝與驗證流程  
-   placement: 放在「Step 1 到 Step 5」之後  
-   alt: OpenClaw 在 macOS 上的安裝與驗證流程圖  
-   prompt: A blog-friendly SVG showing the installation flow of OpenClaw on macOS / Mac mini: Node check, install, onboard, daemon install, gateway status, dashboard auth. Clean layout, English labels, soft colours, rounded boxes.
-
-2. filename: openclaw-02-part1-deployment-choice.svg  
-   purpose: 呈現 Mac mini、Oracle VM、Docker 三條起手路的取捨  
-   placement: 放在「為什麼這篇主線放在 Mac mini」段落後  
-   alt: OpenClaw 第一輪安裝的部署選擇比較圖  
-   prompt: A clean SVG comparing Mac mini, Oracle VM, and Docker as first-step deployment choices for OpenClaw. Highlight operational complexity, recoverability, and suitability for a first install. English labels only.
-
----
-
-資料來源請見 `./resource/references.md`。

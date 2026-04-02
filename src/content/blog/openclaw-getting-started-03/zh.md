@@ -365,26 +365,3 @@ sandbox 才比較接近真正的隔離執行思維。
 
 ---
 
-## Image Asset Plan
-
-1. filename: openclaw-02-part2-discord-security-map.svg  
-   purpose: 說明 Discord pairing、allowlist、mention gating、guild / channel policy 的關係  
-   placement: 放在 Discord access control 段落後  
-   alt: OpenClaw Discord 權限與配對機制示意圖  
-   prompt: A blog-friendly SVG diagram showing the relationship between Discord pairing, allowlist, guild policy, channel policy, and mention gating in OpenClaw. Use English labels, clear arrows, minimal clutter, soft colours.
-
-2. filename: openclaw-02-part2-memory-remote-access.svg  
-   purpose: 說明 Memory 分層與遠端連線路線  
-   placement: 放在 Memory 與遠端連線段落之間  
-   alt: OpenClaw 的記憶分層與遠端連線基線圖  
-   prompt: A clean SVG showing OpenClaw memory layers (MEMORY.md and daily notes) plus remote access paths (localhost, SSH tunnel, Tailscale Serve). Modern technical blog style, English labels, rounded boxes.
-
-3. filename: openclaw-02-part2-sandbox-policy.svg  
-   purpose: 說明 coding、full、sandbox、exec approvals 的責任邊界  
-   placement: 放在安全基線段落後  
-   alt: OpenClaw 工具權限、sandbox 與 exec approvals 的責任邊界圖  
-   prompt: A blog-friendly SVG clarifying the boundaries between coding profile, full profile, sandboxing, and exec approvals in OpenClaw. English labels, modern clean layout, one concept per block.
-
----
-
-資料來源請見 `./resource/references.md`。

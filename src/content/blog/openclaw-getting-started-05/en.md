@@ -395,10 +395,3 @@ It is what makes OpenClaw feel like a runtime you can actually live with.
 
 ---
 
-## Image Asset Plan
-
-1. filename: openclaw-getting-started-05-task-fit-map.svg  
-   purpose: Help readers decide whether a task belongs in OpenClaw, Codex CLI, or a normal chat UI.  
-   placement: After the section that introduces the three decision questions.  
-   alt: Task fit map for OpenClaw  
-   prompt: A clean SVG decision map for whether a task belongs in OpenClaw. Start with the task, ask whether it needs persistence, then whether it needs your own host boundary or messaging surface, then whether the operational overhead is worth it. Route to ChatGPT or a normal chat UI, to Codex CLI for pure local coding loops, or to OpenClaw for persistent personal assistant work, browser plus memory research, and narrow private background tasks. Add a risk fence note: one gateway maps to one trust boundary. Modern product-doc visual style, rounded cards, soft colours, English labels.

@@ -276,20 +276,3 @@ That means:
 
 ---
 
-## Image Asset Plan
-
-1. filename: openclaw-01-architecture-boundary.svg  
-   purpose: explain the boundaries between Gateway, Agent, Channel, Tools, Skills, Memory, and optional Node  
-   placement: after the “minimum mental model” section  
-   alt: OpenClaw architecture and responsibility boundaries  
-   prompt: A clean blog-friendly SVG architecture diagram showing OpenClaw Gateway at the centre, with Agent, Channels, Tools, Skills, Memory, and optional macOS Node around it. Use modern rounded rectangles, soft colours, clear arrows, English labels, and minimal clutter.
-
-2. filename: openclaw-01-deployment-map.svg  
-   purpose: compare Mac mini, Docker, VM, and VPS deployment shapes  
-   placement: after the deployment comparison section  
-   alt: Common OpenClaw deployment options and tradeoffs  
-   prompt: A minimalist SVG comparing Mac mini, Docker, VM, and VPS as OpenClaw deployment options, highlighting isolation, convenience, and operational complexity. English labels only.
-
----
-
-See `./resource/references.md` for the research sources.

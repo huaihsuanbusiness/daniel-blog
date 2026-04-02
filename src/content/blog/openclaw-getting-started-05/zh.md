@@ -428,10 +428,3 @@ OpenClaw 不是只有能力包，它也是一包維運責任。
 
 ---
 
-## Image Asset Plan
-
-1. filename: openclaw-getting-started-05-task-fit-map.svg  
-   purpose: 幫讀者快速判斷某個任務更適合 OpenClaw、Codex CLI，還是普通聊天工具。  
-   placement: 放在「我現在怎麼判斷一件事該不該交給 OpenClaw」段落後。  
-   alt: 哪些任務該交給 OpenClaw 的決策圖  
-   prompt: A clean blog-friendly SVG decision map for whether a task belongs in OpenClaw. Start with the task, then ask whether it needs persistence, then whether it needs your own host boundary or messaging channel, then whether the operational overhead is worth it. Route to ChatGPT or a normal chat UI, to Codex CLI for pure local coding loops, or to OpenClaw for persistent personal assistant, browser plus memory research, and narrow private background tasks. Include a risk fence note that one gateway maps to one trust boundary. Modern product-documentation style, rounded cards, soft colours, English labels.

@@ -327,10 +327,3 @@ Build the first week like a slope, not an explosion. The skills, remote access, 
 
 ---
 
-## Image Asset Plan
-
-1. filename: openclaw-getting-started-04-first-week-ramp.svg  
-   purpose: Show the staged first-week rollout for OpenClaw so readers do not open browser, channels, and automation all at once.  
-   placement: After the section introducing the rollout order.  
-   alt: OpenClaw first-week capability ramp  
-   prompt: A clean blog-friendly SVG showing a staged OpenClaw first-week rollout: day 1 gateway validation, day 2 one daily front end, day 3-4 workspace and memory, day 5 browser with isolated profile, day 6-7 one private channel. Add a separate “wait until later” area for automation, public groups, full tools, and public remote exposure. Modern product-documentation style, soft colours, rounded boxes, English labels.

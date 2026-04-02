@@ -361,10 +361,3 @@ Skills 很有用，但它們會進 prompt，也有供應鏈風險。
 
 ---
 
-## Image Asset Plan
-
-1. filename: openclaw-getting-started-04-first-week-ramp.svg  
-   purpose: 視覺化呈現 OpenClaw 第一週的能力開啟順序，避免讀者把 Browser、Channel、Automation 全部一起打開。  
-   placement: 放在「先本機、再習慣、再能力、最後才是自動化」段落後。  
-   alt: OpenClaw 第一週能力開啟順序圖  
-   prompt: A clean blog-friendly SVG roadmap for an OpenClaw first-week rollout. Show a staged progression from Day 1 gateway validation to Day 2 daily front end, Day 3-4 workspace and memory, Day 5 browser with isolated profile, Day 6-7 one private channel. Add a separate “wait until later” area for full tools, public groups, automation, and public remote exposure. Modern product-doc style, rounded boxes, soft colours, English labels, no clutter.
