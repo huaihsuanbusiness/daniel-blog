@@ -1,0 +1,172 @@
+# References — OpenClaw Getting Started 06
+
+Last verified: 2026-04-02
+
+## Official OpenClaw documentation
+
+1. OpenClaw Model Providers  
+   https://docs.openclaw.ai/concepts/model-providers
+
+2. OpenClaw Usage Tracking  
+   https://docs.openclaw.ai/concepts/usage-tracking
+
+3. OpenClaw Models and selection order  
+   https://docs.openclaw.ai/concepts/models
+
+## OpenAI
+
+4. Introducing the Codex app  
+   https://openai.com/index/introducing-the-codex-app/
+
+5. Using Codex with your ChatGPT plan  
+   https://help.openai.com/en/articles/11369540-using-codex-with-your-chatgpt-plan
+
+6. Codex rate card  
+   https://help.openai.com/en/articles/20001106-codex-rate-card
+
+7. Codex models  
+   https://developers.openai.com/codex/models/
+
+8. GPT-5.4 guide  
+   https://developers.openai.com/api/docs/guides/latest-model/
+
+9. GPT-5.4 model page  
+   https://developers.openai.com/api/docs/models/gpt-5.4
+
+10. GPT-5.4 Pro model page  
+    https://developers.openai.com/api/docs/models/gpt-5.4-pro
+
+11. GPT-5.3-Codex model page  
+    https://developers.openai.com/api/docs/models/gpt-5.3-codex
+
+12. OpenAI API pricing  
+    https://developers.openai.com/api/docs/pricing/
+
+13. What is ChatGPT Plus?  
+    https://help.openai.com/en/articles/6950777-what-is-chatgpt-plus
+
+14. What is ChatGPT Pro?  
+    https://help.openai.com/en/articles/9793128-what-is-chatgpt-pro
+
+15. ChatGPT pricing overview  
+    https://openai.com/pricing
+
+## Anthropic
+
+16. Claude pricing  
+    https://claude.com/pricing
+
+17. Claude Max plan  
+    https://claude.com/pricing/max
+
+18. Using Claude Code with your Pro or Max plan  
+    https://support.claude.com/en/articles/11145838-using-claude-code-with-your-pro-or-max-plan
+
+19. Understanding usage and length limits  
+    https://support.anthropic.com/en/articles/11647753-understanding-usage-and-length-limits
+
+20. Anthropic API pricing  
+    https://docs.anthropic.com/en/docs/about-claude/pricing
+
+21. Anthropic models overview  
+    https://docs.anthropic.com/en/docs/about-claude/models
+
+22. Anthropic Agent SDK overview  
+    https://docs.anthropic.com/en/docs/claude-code/sdk
+
+## Google / Gemini
+
+23. Gemini API pricing  
+    https://ai.google.dev/gemini-api/docs/pricing
+
+24. Gemini API billing  
+    https://ai.google.dev/gemini-api/docs/billing
+
+25. Gemini API rate limits  
+    https://ai.google.dev/gemini-api/docs/rate-limits
+
+## xAI / Grok
+
+26. xAI API overview  
+    https://docs.x.ai/developers/introduction
+
+27. xAI models and pricing  
+    https://docs.x.ai/developers/models
+
+28. xAI rate limits and billing basics  
+    https://docs.x.ai/developers/rate-limits
+
+29. xAI structured outputs with tools  
+    https://docs.x.ai/developers/model-capabilities/text/structured-outputs
+
+30. xAI code editor usage guide  
+    https://docs.x.ai/developers/advanced-api-usage/use-with-code-editors
+
+## MiniMax
+
+31. MiniMax pricing overview  
+    https://platform.minimax.io/docs/pricing/overview
+
+32. MiniMax pay-as-you-go pricing  
+    https://platform.minimax.io/docs/guides/pricing-paygo
+
+33. MiniMax Token Plan pricing  
+    https://platform.minimax.io/docs/guides/pricing-token-plan
+
+34. MiniMax Token Plan overview  
+    https://platform.minimax.io/docs/token-plan/intro
+
+35. MiniMax Token Plan FAQ  
+    https://platform.minimax.io/docs/token-plan/faq
+
+36. MiniMax homepage / model overview  
+    https://www.minimax.io/
+
+## z.ai / GLM
+
+37. Z.AI developer overview  
+    https://docs.z.ai/devpack/overview
+
+38. Z.AI pricing  
+    https://docs.z.ai/guides/overview/pricing
+
+39. Z.AI coding plan FAQ  
+    https://docs.z.ai/devpack/faq
+
+40. Z.AI using GLM-5.1 in coding agents (includes OpenClaw path)  
+    https://docs.z.ai/devpack/using5.1
+
+41. Z.AI international site  
+    https://z.ai/
+
+42. Z.AI international docs  
+    https://docs.z.ai/
+
+43. Zhipu / China-side site  
+    https://bigmodel.cn/
+
+44. Zhipu / China-side open platform  
+    https://open.bigmodel.cn/
+
+## February 2026 provider-policy events and community context
+
+45. Anthropic clarifies ban on third-party tool access to Claude — The Register  
+    https://www.theregister.com/2026/02/20/anthropic_clarifies_ban_third_party_claude_access/
+
+46. Google clamps down on Antigravity “malicious usage,” cutting off OpenClaw users — VentureBeat  
+    https://venturebeat.com/orchestration/google-clamps-down-on-antigravity-malicious-usage-cutting-off-openclaw-users
+
+47. Peter Steinberger on Antigravity restrictions  
+    https://x.com/steipete/status/2025743825126273066
+
+48. OpenClaw creator Peter Steinberger: OpenClaw, OpenAI and the future  
+    https://steipete.me/posts/2026/openclaw
+
+49. OpenClaw GitHub issue: Google banning accounts for using OpenClaw with Antigravity / Gemini CLI  
+    https://github.com/openclaw/openclaw/issues/14203
+
+## Notes on source weighting
+
+- Official provider docs and official pricing pages were treated as the primary source of truth for pricing, access paths, and plan limitations.
+- News coverage and GitHub issues were used for February 2026 enforcement events, policy shifts, and community fallout.
+- Daniel’s remarks about OpenAI, MiniMax, z.ai, and Grok were treated as first-hand operational judgement rather than universal benchmark truth.
