@@ -129,12 +129,13 @@ const seriesLabel = seriesUi[lang];
       const el = /** @type {HTMLElement} */ (card);
       const key = el.dataset.seriesKey || '';
       const label = el.dataset.seriesLabel || '';
+      const order = Number(el.dataset.seriesOrder || '999');
       const categories = (el.dataset.category || '').split(' ');
       if (!key || !label) return;
       if (category === 'all' || !categories.includes(category)) return;
-      if (!map.has(key)) map.set(key, label);
+      if (!map.has(key)) map.set(key, { key, label, order });
     });
-    return Array.from(map.entries()).map(([key, label]) => ({ key, label }));
+    return Array.from(map.values()).sort((a, b) => a.order - b.order);
   }
 
   function updateCountPill(count) {
@@ -267,6 +268,7 @@ const seriesLabel = seriesUi[lang];
       return sort === 'old' ? keyA.localeCompare(keyB) : keyB.localeCompare(keyA);
     });
     cards.forEach(card => postsGrid.appendChild(card));
+    applySeriesFilter();
   }
 
   sortSelect?.addEventListener('change', () => {
@@ -519,20 +521,28 @@ const seriesLabel = seriesUi[lang];
       justify-content: flex-end;
       align-items: center;
       padding-top: 0;
+      margin-top: 0;
+      margin-bottom: 0;
       order: 3;
       margin-left: auto;
+      align-self: center;
     }
 
     .series-wrap,
     .controls-right .sort-wrap {
       height: 34px;
+      min-height: 34px;
       align-items: center;
+      margin: 0;
     }
 
     .series-select,
     .controls-right .sort-select {
       height: 34px;
+      min-height: 34px;
       box-sizing: border-box;
+      margin: 0;
+      line-height: 1.2;
     }
 
     .series-select {

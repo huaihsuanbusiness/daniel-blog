@@ -69,16 +69,16 @@ const selectedCategoryLabel = selectedCategory && selectedCategory in CATEGORY_L
 
 function getSeriesMeta(slug: string, lang: string) {
   if (/^ai-agentic-workflow-series-\d+$/.test(slug)) {
-    return { key: 'ai-agentic-workflow', label: lang === 'zh' ? 'AI 代理工作流系列' : 'AI Agentic Workflow Series' };
-  }
-  if (/^build-mcp-server-part-\d+$/.test(slug)) {
-    return { key: 'build-mcp-server', label: lang === 'zh' ? '自主建造 MCP Server 系列' : 'Build Your Own MCP Server' };
+    return { key: 'ai-agentic-workflow', order: 1, label: lang === 'zh' ? '1. AI 代理工作流系列' : '1. AI Agentic Workflow Series' };
   }
   if (/^building-ai-skills-series-part-\d+$/.test(slug)) {
-    return { key: 'building-ai-skills', label: lang === 'zh' ? '打造 AI Skill 系列' : 'Building AI Skills Series' };
+    return { key: 'building-ai-skills', order: 2, label: lang === 'zh' ? '2. 打造 AI Skill 系列' : '2. Building AI Skills Series' };
+  }
+  if (/^build-mcp-server-part-\d+$/.test(slug)) {
+    return { key: 'build-mcp-server', order: 3, label: lang === 'zh' ? '3. 自主建造 MCP Server 系列' : '3. Build Your Own MCP Server' };
   }
   if (/^mcp-engineering-deep-dive-\d+$/.test(slug)) {
-    return { key: 'mcp-engineering-deep-dive', label: lang === 'zh' ? 'MCP 工程深化系列' : 'MCP Engineering Deep Dive' };
+    return { key: 'mcp-engineering-deep-dive', order: 4, label: lang === 'zh' ? '4. MCP 工程深化系列' : '4. MCP Engineering Deep Dive' };
   }
   return null;
 }
@@ -120,6 +120,7 @@ function getSeriesMeta(slug: string, lang: string) {
               data-categories={JSON.stringify(post.data.categories.map(cat => normalizeCategory(cat)).filter(Boolean))}
               data-series-key={getSeriesMeta(post.slug, lang as 'en' | 'zh')?.key || ''}
               data-series-label={getSeriesMeta(post.slug, lang as 'en' | 'zh')?.label || ''}
+              data-series-order={String(getSeriesMeta(post.slug, lang as 'en' | 'zh')?.order || '')}
             >
               <PostCard
                 slug={post.slug}
