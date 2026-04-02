@@ -506,18 +506,33 @@ const seriesLabel = seriesUi[lang];
       display: none;
     }
 
-    .controls-right {
-      width: auto;
-      justify-content: flex-end;
-      padding-top: 0;
-      order: 2;
-      margin-left: auto;
-    }
-
     .series-row {
       flex-basis: auto;
       margin: 0 0 var(--space-3);
       order: 2;
+      margin-right: auto;
+      align-self: center;
+    }
+
+    .controls-right {
+      width: auto;
+      justify-content: flex-end;
+      align-items: center;
+      padding-top: 0;
+      order: 3;
+      margin-left: auto;
+    }
+
+    .series-wrap,
+    .controls-right .sort-wrap {
+      height: 34px;
+      align-items: center;
+    }
+
+    .series-select,
+    .controls-right .sort-select {
+      height: 34px;
+      box-sizing: border-box;
     }
 
     .series-select {
