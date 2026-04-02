@@ -93,9 +93,6 @@ const currentSeriesIndex = seriesPosts.findIndex(p => p.id === post.id);
           <span class="post-readtime muted">{readTime} min read</span>
         </div>
 
-        <h1 class="post-title">{post.data.title}</h1>
-        <p class="post-description">{post.data.description}</p>
-
         {seriesMeta && seriesPosts.length > 1 && (
           <details class="series-nav">
             <summary class="series-nav-trigger">
@@ -113,6 +110,9 @@ const currentSeriesIndex = seriesPosts.findIndex(p => p.id === post.id);
             </div>
           </details>
         )}
+
+        <h1 class="post-title">{post.data.title}</h1>
+        <p class="post-description">{post.data.description}</p>
 
         {otherVersionHref && (
           <div class="lang-switch">
@@ -245,11 +245,12 @@ const currentSeriesIndex = seriesPosts.findIndex(p => p.id === post.id);
     grid-template-columns: 1fr auto;
     gap: 4px 12px;
     align-items: center;
-    padding: 14px 16px;
-    border: 1px solid var(--color-border);
+    padding: 16px 18px;
+    border: 1px solid color-mix(in srgb, var(--color-accent) 22%, var(--color-border));
     border-radius: 18px;
-    background: color-mix(in srgb, var(--color-surface) 92%, transparent);
+    background: linear-gradient(180deg, color-mix(in srgb, var(--color-accent) 8%, var(--color-surface)), color-mix(in srgb, var(--color-surface) 94%, transparent));
     cursor: pointer;
+    box-shadow: 0 10px 28px color-mix(in srgb, var(--color-accent) 10%, transparent);
   }
 
   .series-nav-trigger::-webkit-details-marker {
@@ -261,12 +262,13 @@ const currentSeriesIndex = seriesPosts.findIndex(p => p.id === post.id);
     font-size: 0.68rem;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: var(--color-muted);
+    color: var(--color-accent);
   }
 
   .series-nav-title {
     font-family: var(--font-display);
-    font-size: 1rem;
+    font-size: 1.02rem;
+    font-weight: 600;
     color: var(--color-text);
   }
 
