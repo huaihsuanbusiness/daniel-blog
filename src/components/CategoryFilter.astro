@@ -37,7 +37,7 @@ const seriesUi = {
       <button class="tag tag-temp" id="series-temp-tab" type="button" hidden>
         <span class="tag-icon" id="series-temp-icon" aria-hidden="true">◌</span>
         <span class="tag-label" id="series-temp-label"></span>
-        <span class="tag-close" aria-label={seriesUi.close}>×</span>
+        <button class="tag-close" id="series-temp-close" type="button" aria-label={seriesUi.close}>×</button>
         <span class="tag-underline" aria-hidden="true"></span>
       </button>
 
@@ -93,7 +93,12 @@ const seriesUi = {
 </div>
 
 <div class="series-filter-row" id="series-filter-row" hidden>
-  <button class="series-filter-button" id="series-filter-button" type="button">{seriesUi.button}</button>
+  <div class="sort-wrap series-sort-wrap">
+    <button class="sort-select series-filter-button" id="series-filter-button" type="button">{seriesUi.button}</button>
+    <svg class="sort-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+      <path d="m6 15 6-6 6-6"/>
+    </svg>
+  </div>
   <div class="series-filter-dropdown" id="series-filter-dropdown" hidden></div>
 </div>
 
@@ -101,6 +106,7 @@ const seriesUi = {
   const postsGrid = document.getElementById('posts-grid');
   const tempTab = document.getElementById('series-temp-tab');
   const tempLabel = document.getElementById('series-temp-label');
+  const tempClose = document.getElementById('series-temp-close');
   const seriesRow = document.getElementById('series-filter-row');
   const seriesButton = document.getElementById('series-filter-button');
   const seriesDropdown = document.getElementById('series-filter-dropdown');
@@ -179,7 +185,8 @@ const seriesUi = {
     });
   });
 
-  tempTab?.addEventListener('click', () => {
+  tempClose?.addEventListener('click', (event) => {
+    event.stopPropagation();
     clearSeriesFilter();
     renderSeriesButton();
   });
@@ -239,11 +246,12 @@ const seriesUi = {
   .tag { position:relative; display:inline-flex; align-items:center; gap:8px; flex-shrink:0; font-family:var(--font-mono); padding:8px 14px; border-radius:999px; text-decoration:none; color:var(--color-text); border:1px solid var(--color-border); background:color-mix(in srgb,var(--color-surface) 88%,transparent); }
   .tag-icon { display:inline-flex; align-items:center; justify-content:center; color:var(--tag-color, var(--color-accent)); }
   .tag.active,.tag[aria-current='page'],.tag-temp { box-shadow:0 0 0 1px color-mix(in srgb,var(--tag-color, var(--color-accent)) 28%,transparent),0 0 20px color-mix(in srgb,var(--tag-color, var(--color-accent)) 18%,transparent),inset 0 0 18px color-mix(in srgb,var(--tag-color, var(--color-accent)) 10%,transparent); border-color:color-mix(in srgb,var(--tag-color, var(--color-accent)) 40%,transparent); }
-  .tag-close { font-size:1rem; line-height:1; }
+  .tag-close { display:inline-flex; align-items:center; justify-content:center; width:22px; height:22px; border:none; background:transparent; color:inherit; font-size:1rem; line-height:1; cursor:pointer; padding:0; }
   .tag-underline { display:none; }
   .series-filter-row { display:flex; align-items:flex-start; gap:10px; margin:0 0 var(--space-5); position:relative; }
-  .series-filter-button { display:inline-flex; align-items:center; min-height:38px; padding:0 14px; border-radius:999px; border:1px solid var(--color-border); background:color-mix(in srgb,var(--color-surface) 92%,transparent); color:var(--color-text); font-family:var(--font-mono); font-size:.75rem; cursor:pointer; }
-  .series-filter-dropdown { width:min(100%,520px); padding:8px; border-radius:16px; border:1px solid var(--color-border); background:color-mix(in srgb,var(--color-surface) 98%,transparent); box-shadow:0 12px 30px rgba(0,0,0,.08); display:grid; gap:8px; position:absolute; top:46px; left:0; z-index:5; }
+  .series-sort-wrap { min-width: 170px; }
+  .series-filter-button { width:100%; text-align:left; }
+  .series-filter-dropdown { width:min(100%,320px); padding:8px; border-radius:12px; border:1px solid var(--color-border); background:color-mix(in srgb,var(--color-surface) 98%,transparent); box-shadow:0 12px 30px rgba(0,0,0,.08); display:grid; gap:8px; position:absolute; top:46px; left:0; z-index:5; }
   .series-filter-option { text-align:left; padding:10px 12px; border-radius:12px; border:1px solid transparent; background:transparent; color:var(--color-text); cursor:pointer; }
   .series-filter-option:hover { background:color-mix(in srgb,var(--color-accent) 8%,var(--color-surface)); border-color:color-mix(in srgb,var(--color-accent) 20%,var(--color-border)); }
   @media (max-width:720px){ .filter-scroll-wrap{flex:1 1 100%; width:100%;} .controls-right{width:100%; justify-content:flex-end; padding-top:4px;} }
