@@ -146,14 +146,16 @@ const seriesLabel = seriesUi[lang];
 
   function applySeriesFilter() {
     const cards = Array.from(document.querySelectorAll('[data-post-card]'));
+    const effectiveSeries = (tempTab instanceof HTMLElement && !tempTab.hidden ? tempTab.dataset.seriesKey || activeSeries : activeSeries) || '';
+    activeSeries = effectiveSeries;
     let visibleCount = 0;
     cards.forEach((card) => {
       const el = /** @type {HTMLElement} */ (card);
       const categories = (el.dataset.category || '').split(' ');
       const categoryMatch = activeCategory === 'all' || categories.includes(activeCategory);
-      const seriesMatch = !activeSeries || el.dataset.seriesKey === activeSeries;
+      const seriesMatch = !effectiveSeries || el.dataset.seriesKey === effectiveSeries;
       const show = categoryMatch && seriesMatch;
-      el.style.display = show ? '' : 'none';
+      el.hidden = !show;
       if (show) visibleCount += 1;
     });
     updateCountPill(activeCategory === 'all' ? Number(blogCountPill?.getAttribute('data-total-count') || visibleCount) : visibleCount);
@@ -163,7 +165,10 @@ const seriesLabel = seriesUi[lang];
     activeSeries = '';
     if (seriesSelect) seriesSelect.value = '';
     if (tempLabel) tempLabel.textContent = '';
-    if (tempTab) tempTab.hidden = true;
+    if (tempTab instanceof HTMLElement) {
+      tempTab.hidden = true;
+      delete tempTab.dataset.seriesKey;
+    }
     applySeriesFilter();
   }
 
@@ -227,8 +232,9 @@ const seriesLabel = seriesUi[lang];
       return;
     }
 
-    if (tempTab && tempLabel) {
+    if (tempTab instanceof HTMLElement && tempLabel) {
       tempTab.hidden = false;
+      tempTab.dataset.seriesKey = activeSeries;
       tempLabel.textContent = selectedOption?.textContent || '';
     }
 
@@ -261,7 +267,7 @@ const seriesLabel = seriesUi[lang];
 
   function applySort(sort) {
     if (!postsGrid) return;
-    const preservedSeries = activeSeries;
+    const preservedSeries = activeSeries || (tempTab instanceof HTMLElement ? tempTab.dataset.seriesKey || '' : '');
     const preservedLabel = tempLabel?.textContent || '';
     const cards = Array.from(postsGrid.querySelectorAll('[data-post-card]'));
     cards.sort((a, b) => {
@@ -271,9 +277,11 @@ const seriesLabel = seriesUi[lang];
     });
     cards.forEach(card => postsGrid.appendChild(card));
     activeSeries = preservedSeries;
-    if (preservedSeries && tempTab && tempLabel) {
+    if (preservedSeries && tempTab instanceof HTMLElement && tempLabel) {
       tempTab.hidden = false;
+      tempTab.dataset.seriesKey = preservedSeries;
       tempLabel.textContent = preservedLabel;
+      if (seriesSelect) seriesSelect.value = preservedSeries;
     }
     applySeriesFilter();
   }
@@ -461,7 +469,8 @@ const seriesLabel = seriesUi[lang];
     transform: scaleX(1);
   }
 
-  #series-temp-tab[hidden] {
+  #series-temp-tab[hidden],
+  [data-post-card][hidden] {
     display: none !important;
   }
 

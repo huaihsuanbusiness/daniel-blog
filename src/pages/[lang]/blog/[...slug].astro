@@ -60,6 +60,9 @@ function getSeriesMeta(slug: string, lang: string) {
   if (/^openclaw-getting-started-\d+$/.test(slug)) {
     return { key: 'openclaw-getting-started', label: lang === 'zh' ? 'OpenClaw 快速上手系列' : 'OpenClaw Getting Started' };
   }
+  if (/^comfyui-series-\d+$/.test(slug)) {
+    return { key: 'comfyui-series', label: lang === 'zh' ? 'ComfyUI 系列' : 'ComfyUI Series' };
+  }
   if (/^ai-agentic-workflow-series-\d+$/.test(slug)) {
     return { key: 'ai-agentic-workflow', label: lang === 'zh' ? 'AI 代理工作流系列' : 'AI Agentic Workflow Series' };
   }
