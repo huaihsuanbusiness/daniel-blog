@@ -117,6 +117,7 @@ const seriesLabel = seriesUi[lang];
   const sortSelect = document.getElementById('sort-select');
   const gridBtn = document.getElementById('view-grid');
   const listBtn = document.getElementById('view-list');
+  const blogCountPill = document.getElementById('blog-count-pill');
 
   let activeCategory = new URL(window.location.href).searchParams.get('category') || 'all';
   let activeSeries = '';
@@ -136,13 +137,25 @@ const seriesLabel = seriesUi[lang];
     return Array.from(map.entries()).map(([key, label]) => ({ key, label }));
   }
 
+  function updateCountPill(count) {
+    if (!blogCountPill) return;
+    const label = blogCountPill.getAttribute('data-total-label') || '';
+    blogCountPill.textContent = `${count} ${label}`;
+  }
+
   function applySeriesFilter() {
     const cards = Array.from(document.querySelectorAll('[data-post-card]'));
+    let visibleCount = 0;
     cards.forEach((card) => {
       const el = /** @type {HTMLElement} */ (card);
-      const show = !activeSeries || el.dataset.seriesKey === activeSeries;
+      const categories = (el.dataset.category || '').split(' ');
+      const categoryMatch = activeCategory === 'all' || categories.includes(activeCategory);
+      const seriesMatch = !activeSeries || el.dataset.seriesKey === activeSeries;
+      const show = categoryMatch && seriesMatch;
       el.style.display = show ? '' : 'none';
+      if (show) visibleCount += 1;
     });
+    updateCountPill(activeCategory === 'all' ? Number(blogCountPill?.getAttribute('data-total-count') || visibleCount) : visibleCount);
   }
 
   function clearSeriesFilter() {
@@ -458,7 +471,7 @@ const seriesLabel = seriesUi[lang];
 
   .series-row {
     flex-basis: 100%;
-    margin: -4px 0 var(--space-3);
+    margin: 0 0 var(--space-2);
   }
 
   .series-row[hidden] {
@@ -493,7 +506,7 @@ const seriesLabel = seriesUi[lang];
 
     .series-row {
       flex-basis: auto;
-      margin: 4px 0 var(--space-5);
+      margin: 0 0 var(--space-2);
       order: 2;
     }
   }

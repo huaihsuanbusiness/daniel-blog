@@ -93,7 +93,7 @@ function getSeriesMeta(slug: string, lang: string) {
         <div class="blog-header-top">
           <h1 class="blog-title">{label.title}</h1>
           <div class="blog-stats">
-            <span class:list={['stat-pill', { 'stat-pill-active': !!selectedCategoryLabel }]}>{posts.length} {label.total}</span>
+            <span id="blog-count-pill" class:list={['stat-pill', { 'stat-pill-active': !!selectedCategoryLabel }]} data-total-label={label.total} data-total-count={totalPosts}>{posts.length} {label.total}</span>
             {selectedCategoryLabel && <span class="stat-pill stat-pill-active">{selectedCategoryLabel}</span>}
           </div>
         </div>
