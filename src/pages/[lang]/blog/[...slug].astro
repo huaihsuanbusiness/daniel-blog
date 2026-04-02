@@ -48,6 +48,28 @@ const formattedDate = new Intl.DateTimeFormat(lang === 'zh' ? 'zh-TW' : 'en-US',
 
 const otherLangLabel = lang === 'zh' ? 'English' : '中文';
 const primaryCategory = normalizeCategory(post.data.categories[0] || '') ?? null;
+
+function getSeriesMeta(slug: string, lang: string) {
+  if (/^ai-agentic-workflow-series-\d+$/.test(slug)) {
+    return { key: 'ai-agentic-workflow', label: lang === 'zh' ? 'AI 代理工作流系列' : 'AI Agentic Workflow Series' };
+  }
+  if (/^build-mcp-server-part-\d+$/.test(slug)) {
+    return { key: 'build-mcp-server', label: lang === 'zh' ? '自主建造 MCP Server 系列' : 'Build Your Own MCP Server' };
+  }
+  if (/^building-ai-skills-series-part-\d+$/.test(slug)) {
+    return { key: 'building-ai-skills', label: lang === 'zh' ? '打造 AI Skill 系列' : 'Building AI Skills Series' };
+  }
+  if (/^mcp-engineering-deep-dive-\d+$/.test(slug)) {
+    return { key: 'mcp-engineering-deep-dive', label: lang === 'zh' ? 'MCP 工程深化系列' : 'MCP Engineering Deep Dive' };
+  }
+  return null;
+}
+
+const seriesMeta = getSeriesMeta(slug!, lang!);
+const seriesPosts = seriesMeta
+  ? sameLangPosts.filter(p => getSeriesMeta(p.slug, lang!)?.key === seriesMeta.key)
+  : [];
+const currentSeriesIndex = seriesPosts.findIndex(p => p.id === post.id);
 ---
 
 <Base title={`${post.data.title} — danielcanfly`} description={post.data.description} lang={lang!}>
@@ -73,6 +95,24 @@ const primaryCategory = normalizeCategory(post.data.categories[0] || '') ?? null
 
         <h1 class="post-title">{post.data.title}</h1>
         <p class="post-description">{post.data.description}</p>
+
+        {seriesMeta && seriesPosts.length > 1 && (
+          <details class="series-nav">
+            <summary class="series-nav-trigger">
+              <span class="series-nav-kicker">{lang === 'zh' ? '系列導覽' : 'Series guide'}</span>
+              <span class="series-nav-title">{seriesMeta.label}</span>
+              <span class="series-nav-count">{currentSeriesIndex + 1}/{seriesPosts.length}</span>
+            </summary>
+            <div class="series-nav-panel">
+              {seriesPosts.map((item, index) => (
+                <a href={`/${lang}/blog/${item.slug}`} class:list={['series-nav-item', { active: item.id === post.id }] }>
+                  <span class="series-nav-index">{index + 1}</span>
+                  <span class="series-nav-item-title">{item.data.title}</span>
+                </a>
+              ))}
+            </div>
+          </details>
+        )}
 
         {otherVersionHref && (
           <div class="lang-switch">
@@ -193,6 +233,103 @@ const primaryCategory = normalizeCategory(post.data.categories[0] || '') ?? null
     line-height: 1.6;
     margin-bottom: var(--space-4);
     max-width: 100%;
+  }
+
+  .series-nav {
+    margin-bottom: var(--space-4);
+  }
+
+  .series-nav-trigger {
+    list-style: none;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 4px 12px;
+    align-items: center;
+    padding: 14px 16px;
+    border: 1px solid var(--color-border);
+    border-radius: 18px;
+    background: color-mix(in srgb, var(--color-surface) 92%, transparent);
+    cursor: pointer;
+  }
+
+  .series-nav-trigger::-webkit-details-marker {
+    display: none;
+  }
+
+  .series-nav-kicker {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+
+  .series-nav-title {
+    font-family: var(--font-display);
+    font-size: 1rem;
+    color: var(--color-text);
+  }
+
+  .series-nav-count {
+    grid-row: span 2;
+    align-self: center;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--color-muted);
+  }
+
+  .series-nav-panel {
+    margin-top: 10px;
+    max-height: 320px;
+    overflow: auto;
+    padding: 8px;
+    border: 1px solid var(--color-border);
+    border-radius: 18px;
+    background: color-mix(in srgb, var(--color-surface) 96%, transparent);
+    display: grid;
+    gap: 8px;
+  }
+
+  .series-nav-item {
+    display: grid;
+    grid-template-columns: 28px 1fr;
+    gap: 12px;
+    align-items: start;
+    padding: 10px 12px;
+    border-radius: 14px;
+    color: var(--color-muted);
+    text-decoration: none;
+    border: 1px solid transparent;
+    transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast), transform var(--transition-fast);
+  }
+
+  .series-nav-item:hover {
+    color: var(--color-text);
+    background: color-mix(in srgb, var(--color-accent) 8%, var(--color-surface));
+    border-color: color-mix(in srgb, var(--color-accent) 20%, var(--color-border));
+    transform: translateY(-1px);
+  }
+
+  .series-nav-item.active {
+    color: var(--color-text);
+    background: color-mix(in srgb, var(--color-accent) 10%, var(--color-surface));
+    border-color: color-mix(in srgb, var(--color-accent) 25%, var(--color-border));
+  }
+
+  .series-nav-index {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 999px;
+    border: 1px solid var(--color-border);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+  }
+
+  .series-nav-item-title {
+    line-height: 1.45;
   }
 
   .lang-switch {

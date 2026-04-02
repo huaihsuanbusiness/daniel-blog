@@ -33,6 +33,12 @@
     "subtitle": {
       "type": "string"
     },
+    "series": {
+      "type": "string"
+    },
+    "seriesOrder": {
+      "type": "number"
+    },
     "coverImage": {
       "type": "string"
     },
