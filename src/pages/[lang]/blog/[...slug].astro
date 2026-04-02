@@ -94,12 +94,12 @@ const currentSeriesIndex = seriesPosts.findIndex(p => p.id === post.id);
         </div>
 
         {seriesMeta && seriesPosts.length > 1 && (
-          <details class="series-nav">
-            <summary class="series-nav-trigger">
+          <div class="series-nav">
+            <div class="series-nav-trigger">
               <span class="series-nav-kicker">{lang === 'zh' ? '系列導覽' : 'Series guide'}</span>
               <span class="series-nav-title">{seriesMeta.label}</span>
               <span class="series-nav-count">{currentSeriesIndex + 1}/{seriesPosts.length}</span>
-            </summary>
+            </div>
             <div class="series-nav-panel">
               {seriesPosts.map((item, index) => (
                 <a href={`/${lang}/blog/${item.slug}`} class:list={['series-nav-item', { active: item.id === post.id }] }>
@@ -108,7 +108,7 @@ const currentSeriesIndex = seriesPosts.findIndex(p => p.id === post.id);
                 </a>
               ))}
             </div>
-          </details>
+          </div>
         )}
 
         <h1 class="post-title">{post.data.title}</h1>

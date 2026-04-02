@@ -162,6 +162,7 @@ const sortLabel = sortLabels[lang];
     justify-content: space-between;
     gap: var(--space-3);
     margin-bottom: var(--space-6);
+    flex-wrap: wrap;
   }
 
   .filter-scroll-wrap {
@@ -186,6 +187,19 @@ const sortLabel = sortLabels[lang];
     align-items: center;
     gap: var(--space-2);
     flex-shrink: 0;
+  }
+
+  @media (max-width: 720px) {
+    .filter-scroll-wrap {
+      flex: 1 1 100%;
+      width: 100%;
+    }
+
+    .controls-right {
+      width: 100%;
+      justify-content: flex-end;
+      padding-top: 4px;
+    }
   }
 
   /* ── Sort ──────────────────────────────── */
