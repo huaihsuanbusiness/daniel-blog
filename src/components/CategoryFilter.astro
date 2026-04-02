@@ -34,12 +34,12 @@ const seriesUi = {
 <div class="blog-controls">
   <div class="filter-scroll-wrap">
     <div class="filter-scroll" id="filter-scroll">
-      <button class="tag tag-temp" id="series-temp-tab" type="button" hidden>
+      <div class="tag tag-temp" id="series-temp-tab" hidden>
         <span class="tag-icon" id="series-temp-icon" aria-hidden="true">◌</span>
         <span class="tag-label" id="series-temp-label"></span>
         <button class="tag-close" id="series-temp-close" type="button" aria-label={seriesUi.close}>×</button>
         <span class="tag-underline" aria-hidden="true"></span>
-      </button>
+      </div>
 
       {filters.map(filter => {
         const isActive = (filter.id === 'all' && !category) || filter.id === category;
@@ -139,7 +139,7 @@ const seriesUi = {
     });
   }
 
-  function closeDropdown() { seriesDropdown?.setAttribute('hidden', 'true'); }
+  function closeDropdown() { if (seriesDropdown) seriesDropdown.hidden = true; }
 
   function clearSeriesFilter() {
     selectedSeriesKey = '';
@@ -186,15 +186,24 @@ const seriesUi = {
   });
 
   tempClose?.addEventListener('click', (event) => {
+    event.preventDefault();
     event.stopPropagation();
     clearSeriesFilter();
+    if (tempTab) tempTab.hidden = true;
     renderSeriesButton();
   });
 
-  seriesButton?.addEventListener('click', () => {
-    if (seriesDropdown?.hasAttribute('hidden')) seriesDropdown.removeAttribute('hidden');
+  seriesButton?.addEventListener('click', (event) => {
+    event.stopPropagation();
+    if (seriesDropdown?.hidden) seriesDropdown.hidden = false;
     else closeDropdown();
   });
+  document.addEventListener('click', (event) => {
+    const target = event.target;
+    if (!(target instanceof Node)) return;
+    if (seriesRow && !seriesRow.contains(target)) closeDropdown();
+  });
+
 
   function applyView(view) {
     postsGrid?.classList.toggle('view-list', view === 'list');
@@ -246,7 +255,7 @@ const seriesUi = {
   .tag { position:relative; display:inline-flex; align-items:center; gap:8px; flex-shrink:0; font-family:var(--font-mono); padding:8px 14px; border-radius:999px; text-decoration:none; color:var(--color-text); border:1px solid var(--color-border); background:color-mix(in srgb,var(--color-surface) 88%,transparent); }
   .tag-icon { display:inline-flex; align-items:center; justify-content:center; color:var(--tag-color, var(--color-accent)); }
   .tag.active,.tag[aria-current='page'],.tag-temp { box-shadow:0 0 0 1px color-mix(in srgb,var(--tag-color, var(--color-accent)) 28%,transparent),0 0 20px color-mix(in srgb,var(--tag-color, var(--color-accent)) 18%,transparent),inset 0 0 18px color-mix(in srgb,var(--tag-color, var(--color-accent)) 10%,transparent); border-color:color-mix(in srgb,var(--tag-color, var(--color-accent)) 40%,transparent); }
-  .tag-close { display:inline-flex; align-items:center; justify-content:center; width:22px; height:22px; border:none; background:transparent; color:inherit; font-size:1rem; line-height:1; cursor:pointer; padding:0; }
+  .tag-close { display:inline-flex; align-items:center; justify-content:center; width:22px; height:22px; border:none; background:transparent; color:inherit; font-size:1rem; line-height:1; cursor:pointer; padding:0; margin-left:2px; flex:0 0 auto; }
   .tag-underline { display:none; }
   .series-filter-row { display:flex; align-items:flex-start; gap:10px; margin:0 0 var(--space-5); position:relative; }
   .series-sort-wrap { min-width: 170px; }
