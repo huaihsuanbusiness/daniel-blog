@@ -27,13 +27,20 @@ const { Content } = await render(post);
 
 const allPosts = await getCollection('blog');
 const otherLang = lang === 'zh' ? 'en' : 'zh';
+const currentCategory = Astro.url.searchParams.get('category');
+const currentSort = Astro.url.searchParams.get('sort');
+const sharedQuery = new URLSearchParams();
+if (currentCategory) sharedQuery.set('category', currentCategory);
+if (currentSort) sharedQuery.set('sort', currentSort);
+const sharedQueryString = sharedQuery.toString() ? `?${sharedQuery.toString()}` : '';
 const otherPost = allPosts.find(p => p.id === `${slug}/${otherLang}`);
-const otherVersionHref = otherPost ? `/${otherLang}/blog/${otherPost.id.split('/')[0]}` : null;
+const otherVersionHref = otherPost ? `/${otherLang}/blog/${otherPost.id.split('/')[0]}${sharedQueryString}` : null;
 
 const sameLangPosts = allPosts
   .filter(p => p.id.endsWith(`/${lang}`))
-  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
-  .map(p => ({ ...p, slug: p.id.split('/')[0] }));
+  .map(p => ({ ...p, slug: p.id.split('/')[0] }))
+  .filter(p => !currentCategory || p.data.categories.some(cat => normalizeCategory(cat) === currentCategory))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 const currentIndex = sameLangPosts.findIndex(p => p.id === post.id);
 const prevPost = currentIndex < sameLangPosts.length - 1 ? sameLangPosts[currentIndex + 1] : null;
 const nextPost = currentIndex > 0 ? sameLangPosts[currentIndex - 1] : null;
@@ -78,7 +85,7 @@ const currentSeriesIndex = seriesPosts.findIndex(p => p.id === post.id);
   <article class="post-article">
     <div class="container">
       <header class="post-header animate-in">
-        <a href={`/${lang}/blog`} class="back-link">
+        <a href={`/${lang}/blog${sharedQueryString}`} class="back-link">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M19 12H5M12 19l-7-7 7-7"/>
           </svg>
@@ -105,7 +112,7 @@ const currentSeriesIndex = seriesPosts.findIndex(p => p.id === post.id);
       </header>
 
       {prevPost && (
-        <a href={`/${lang}/blog/${prevPost.slug}`} class="side-nav side-nav-left" aria-label={lang === 'zh' ? '上一篇' : 'Previous post'}>
+        <a href={`/${lang}/blog/${prevPost.slug}${sharedQueryString}`} class="side-nav side-nav-left" aria-label={lang === 'zh' ? '上一篇' : 'Previous post'}>
           <span class="side-nav-chip">
             <span class="side-nav-arrow">←</span>
             <span class="side-nav-label">{lang === 'zh' ? '上一篇' : 'Previous'}</span>
@@ -113,7 +120,7 @@ const currentSeriesIndex = seriesPosts.findIndex(p => p.id === post.id);
         </a>
       )}
       {nextPost && (
-        <a href={`/${lang}/blog/${nextPost.slug}`} class="side-nav side-nav-right" aria-label={lang === 'zh' ? '下一篇' : 'Next post'}>
+        <a href={`/${lang}/blog/${nextPost.slug}${sharedQueryString}`} class="side-nav side-nav-right" aria-label={lang === 'zh' ? '下一篇' : 'Next post'}>
           <span class="side-nav-chip">
             <span class="side-nav-label">{lang === 'zh' ? '下一篇' : 'Next'}</span>
             <span class="side-nav-arrow">→</span>
