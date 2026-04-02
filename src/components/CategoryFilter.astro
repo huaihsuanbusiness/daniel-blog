@@ -184,6 +184,17 @@ const seriesLabel = seriesUi[lang];
     }
   }
 
+  function syncCategoryTabs() {
+    activeCategory = new URL(window.location.href).searchParams.get('category') || 'all';
+    document.querySelectorAll('[data-filter-category]').forEach((tab) => {
+      const cat = tab.getAttribute('data-filter-category') || 'all';
+      const isActive = cat === activeCategory;
+      tab.classList.toggle('active', isActive);
+      if (isActive) tab.setAttribute('aria-current', 'page');
+      else tab.removeAttribute('aria-current');
+    });
+  }
+
   document.querySelectorAll('[data-filter-category]').forEach((tab) => {
     tab.addEventListener('click', () => {
       activeCategory = tab.getAttribute('data-filter-category') || 'all';
@@ -254,6 +265,7 @@ const seriesLabel = seriesUi[lang];
   const initialSort = new URL(window.location.href).searchParams.get('sort') || 'new';
   if (sortSelect) sortSelect.value = initialSort;
   applySort(initialSort);
+  syncCategoryTabs();
   syncSeriesControl();
 </script>
 
@@ -446,7 +458,11 @@ const seriesLabel = seriesUi[lang];
 
   .series-row {
     flex-basis: 100%;
-    margin: -10px 0 var(--space-5);
+    margin: -4px 0 var(--space-3);
+  }
+
+  .series-row[hidden] {
+    display: none !important;
   }
 
   .series-wrap {

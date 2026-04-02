@@ -95,6 +95,13 @@ const logoHref = currentLang === 'en' ? '/en/' : '/zh/';
   const header = document.getElementById('site-header');
   const mobileNav = document.getElementById('mobile-nav');
   const mobileBtn = document.getElementById('mobile-menu-trigger');
+  const langToggle = document.querySelector('.lang-toggle');
+
+  if (langToggle instanceof HTMLAnchorElement) {
+    const url = new URL(langToggle.href, window.location.origin);
+    url.search = window.location.search;
+    langToggle.href = url.toString();
+  }
 
   // Scroll effect
   window.addEventListener('scroll', () => {
