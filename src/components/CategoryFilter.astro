@@ -280,6 +280,7 @@ const seriesLabel = seriesUi[lang];
   applySort(initialSort);
   syncCategoryTabs();
   syncSeriesControl();
+  applySeriesFilter();
 </script>
 
 <style>
@@ -288,7 +289,7 @@ const seriesLabel = seriesUi[lang];
     align-items: center;
     justify-content: space-between;
     gap: var(--space-3);
-    margin-bottom: var(--space-6);
+    margin-bottom: 0;
     flex-wrap: wrap;
   }
 
@@ -471,7 +472,7 @@ const seriesLabel = seriesUi[lang];
 
   .series-row {
     flex-basis: 100%;
-    margin: 0 0 var(--space-2);
+    margin: 0 0 var(--space-4);
   }
 
   .series-row[hidden] {
@@ -506,7 +507,7 @@ const seriesLabel = seriesUi[lang];
 
     .series-row {
       flex-basis: auto;
-      margin: 0 0 var(--space-2);
+      margin: 0 0 var(--space-3);
       order: 2;
     }
   }
