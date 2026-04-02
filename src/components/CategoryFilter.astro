@@ -25,6 +25,10 @@ const sortLabels = {
   zh: { new: '最新優先', old: '最早優先' },
 };
 const sortLabel = sortLabels[lang];
+const seriesUi = {
+  en: { button: 'Browse series', close: 'Close series filter' },
+  zh: { button: '查看系列', close: '關閉系列篩選' },
+}[lang];
 ---
 
 <div class="blog-controls">
@@ -83,8 +87,98 @@ const sortLabel = sortLabels[lang];
   </div>
 </div>
 
+<div class="series-filter-row" id="series-filter-row" hidden>
+  <button class="series-filter-button" id="series-filter-button" type="button" hidden>{seriesUi.button}</button>
+  <div class="series-filter-dropdown" id="series-filter-dropdown" hidden></div>
+  <button class="series-filter-chip" id="series-filter-chip" type="button" hidden>
+    <span class="series-filter-chip-icon tag-icon" aria-hidden="true"></span>
+    <span class="series-filter-chip-label"></span>
+    <span class="series-filter-chip-close" aria-label={seriesUi.close}>×</span>
+  </button>
+</div>
+
 <script>
   // ── Category tab sync ──────────────────────────────────────
+  const seriesRow = document.getElementById('series-filter-row');
+  const seriesButton = document.getElementById('series-filter-button');
+  const seriesDropdown = document.getElementById('series-filter-dropdown');
+  const seriesChip = document.getElementById('series-filter-chip');
+  const seriesChipLabel = seriesChip?.querySelector('.series-filter-chip-label');
+  const seriesChipIcon = seriesChip?.querySelector('.series-filter-chip-icon');
+  let selectedSeriesKey = '';
+  let baseCategory = new URL(window.location.href).searchParams.get('category') || 'all';
+
+  function collectSeries(category) {
+    const cards = Array.from(document.querySelectorAll('[data-post-card]'));
+    const map = new Map();
+    cards.forEach((card) => {
+      const el = card as HTMLElement;
+      const cardCategory = (el.dataset.category || '').split(' ');
+      const key = el.dataset.seriesKey || '';
+      const label = el.dataset.seriesLabel || '';
+      if (!key || !label) return;
+      if (category !== 'all' && !cardCategory.includes(category)) return;
+      if (!map.has(key)) map.set(key, label);
+    });
+    return Array.from(map.entries()).map(([key, label]) => ({ key, label }));
+  }
+
+  function applySeriesFilter() {
+    const cards = Array.from(document.querySelectorAll('[data-post-card]'));
+    cards.forEach((card) => {
+      const el = card as HTMLElement;
+      const match = !selectedSeriesKey || el.dataset.seriesKey === selectedSeriesKey;
+      el.style.display = match ? '' : 'none';
+    });
+  }
+
+  function closeSeriesDropdown() {
+    seriesDropdown?.setAttribute('hidden', 'true');
+  }
+
+  function clearSeriesFilter() {
+    selectedSeriesKey = '';
+    if (seriesChip) seriesChip.hidden = true;
+    applySeriesFilter();
+    closeSeriesDropdown();
+  }
+
+  function renderSeriesUi(category) {
+    baseCategory = category;
+    const isAll = category === 'all';
+    const options = collectSeries(category);
+    if (!seriesRow || !seriesButton || !seriesDropdown) return;
+
+    if (isAll || options.length === 0) {
+      seriesRow.hidden = true;
+      clearSeriesFilter();
+      return;
+    }
+
+    seriesRow.hidden = false;
+    seriesButton.hidden = false;
+    seriesDropdown.hidden = true;
+    seriesDropdown.innerHTML = '';
+
+    options.forEach((option) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'series-filter-option';
+      btn.textContent = option.label;
+      btn.addEventListener('click', () => {
+        selectedSeriesKey = option.key;
+        if (seriesChip && seriesChipLabel && seriesChipIcon) {
+          seriesChip.hidden = false;
+          seriesChipLabel.textContent = option.label;
+          seriesChipIcon.textContent = '◌';
+        }
+        applySeriesFilter();
+        closeSeriesDropdown();
+      });
+      seriesDropdown.appendChild(btn);
+    });
+  }
+
   function syncCategoryTabs() {
     const url = window.location.href;
     const activeCategory = new URL(url).searchParams.get('category') || 'all';
@@ -98,10 +192,28 @@ const sortLabel = sortLabels[lang];
       } else {
         tab.removeAttribute('aria-current');
       }
+      tab.addEventListener('click', () => {
+        clearSeriesFilter();
+      });
     });
+    renderSeriesUi(activeCategory);
   }
 
   syncCategoryTabs();
+
+  seriesButton?.addEventListener('click', () => {
+    const hidden = seriesDropdown?.hasAttribute('hidden');
+    if (hidden) {
+      seriesDropdown?.removeAttribute('hidden');
+    } else {
+      closeSeriesDropdown();
+    }
+  });
+
+  seriesChip?.addEventListener('click', () => {
+    clearSeriesFilter();
+    renderSeriesUi(baseCategory);
+  });
 
   // ── View toggle ──────────────────────────────────────────────
   const gridBtn = document.getElementById('view-grid');
@@ -352,6 +464,62 @@ const sortLabel = sortLabels[lang];
   }
 
   /* ── Responsive ────────────────────────── */
+  .series-filter-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin: -10px 0 var(--space-5);
+    position: relative;
+    flex-wrap: wrap;
+  }
+
+  .series-filter-button,
+  .series-filter-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 38px;
+    padding: 0 14px;
+    border-radius: 999px;
+    border: 1px solid var(--color-border);
+    background: color-mix(in srgb, var(--color-surface) 92%, transparent);
+    color: var(--color-text);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    cursor: pointer;
+  }
+
+  .series-filter-dropdown {
+    width: min(100%, 520px);
+    padding: 8px;
+    border-radius: 16px;
+    border: 1px solid var(--color-border);
+    background: color-mix(in srgb, var(--color-surface) 96%, transparent);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+    display: grid;
+    gap: 8px;
+  }
+
+  .series-filter-option {
+    text-align: left;
+    padding: 10px 12px;
+    border-radius: 12px;
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--color-text);
+    cursor: pointer;
+  }
+
+  .series-filter-option:hover {
+    background: color-mix(in srgb, var(--color-accent) 8%, var(--color-surface));
+    border-color: color-mix(in srgb, var(--color-accent) 20%, var(--color-border));
+  }
+
+  .series-filter-chip-close {
+    font-size: 1rem;
+    line-height: 1;
+  }
+
   @media (max-width: 640px) {
     .blog-controls {
       flex-wrap: wrap;
@@ -364,6 +532,14 @@ const sortLabel = sortLabels[lang];
 
     .controls-right {
       order: 2;
+    }
+
+    .series-filter-row {
+      margin-top: -4px;
+    }
+
+    .series-filter-dropdown {
+      width: 100%;
     }
   }
 </style>

@@ -93,24 +93,6 @@ const currentSeriesIndex = seriesPosts.findIndex(p => p.id === post.id);
           <span class="post-readtime muted">{readTime} min read</span>
         </div>
 
-        {seriesMeta && seriesPosts.length > 1 && (
-          <div class="series-nav">
-            <div class="series-nav-trigger">
-              <span class="series-nav-kicker">{lang === 'zh' ? '系列導覽' : 'Series guide'}</span>
-              <span class="series-nav-title">{seriesMeta.label}</span>
-              <span class="series-nav-count">{currentSeriesIndex + 1}/{seriesPosts.length}</span>
-            </div>
-            <div class="series-nav-panel">
-              {seriesPosts.map((item, index) => (
-                <a href={`/${lang}/blog/${item.slug}`} class:list={['series-nav-item', { active: item.id === post.id }] }>
-                  <span class="series-nav-index">{index + 1}</span>
-                  <span class="series-nav-item-title">{item.data.title}</span>
-                </a>
-              ))}
-            </div>
-          </div>
-        )}
-
         <h1 class="post-title">{post.data.title}</h1>
         <p class="post-description">{post.data.description}</p>
 
@@ -142,6 +124,26 @@ const currentSeriesIndex = seriesPosts.findIndex(p => p.id === post.id);
       <div class="post-content animate-in animate-delay-1">
         <Content />
       </div>
+
+      {seriesMeta && seriesPosts.length > 1 && (
+        <div class="post-series-footer animate-in animate-delay-2">
+          <div class="series-nav">
+            <div class="series-nav-trigger">
+              <span class="series-nav-kicker">{lang === 'zh' ? '系列導覽' : 'Series guide'}</span>
+              <span class="series-nav-title">{seriesMeta.label}</span>
+              <span class="series-nav-count">{currentSeriesIndex + 1}/{seriesPosts.length}</span>
+            </div>
+            <div class="series-nav-panel">
+              {seriesPosts.map((item, index) => (
+                <a href={`/${lang}/blog/${item.slug}`} class:list={['series-nav-item', { active: item.id === post.id }] }>
+                  <span class="series-nav-index">{index + 1}</span>
+                  <span class="series-nav-item-title">{item.data.title}</span>
+                </a>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
 
       <footer class="post-footer animate-in animate-delay-2">
         <div class="post-tags">
@@ -360,6 +362,11 @@ const currentSeriesIndex = seriesPosts.findIndex(p => p.id === post.id);
   .post-content {
     max-width: 680px;
     margin: 0 auto;
+  }
+
+  .post-series-footer {
+    max-width: 680px;
+    margin: var(--space-8) auto 0;
   }
 
   .side-nav {

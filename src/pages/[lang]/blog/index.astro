@@ -66,6 +66,22 @@ const allCategories = getOrderedCategories(languagePosts.flatMap(p => p.data.cat
 const selectedCategoryLabel = selectedCategory && selectedCategory in CATEGORY_LABELS
   ? CATEGORY_LABELS[selectedCategory as keyof typeof CATEGORY_LABELS][lang as 'en' | 'zh']
   : undefined;
+
+function getSeriesMeta(slug: string, lang: string) {
+  if (/^ai-agentic-workflow-series-\d+$/.test(slug)) {
+    return { key: 'ai-agentic-workflow', label: lang === 'zh' ? 'AI 代理工作流系列' : 'AI Agentic Workflow Series' };
+  }
+  if (/^build-mcp-server-part-\d+$/.test(slug)) {
+    return { key: 'build-mcp-server', label: lang === 'zh' ? '自主建造 MCP Server 系列' : 'Build Your Own MCP Server' };
+  }
+  if (/^building-ai-skills-series-part-\d+$/.test(slug)) {
+    return { key: 'building-ai-skills', label: lang === 'zh' ? '打造 AI Skill 系列' : 'Building AI Skills Series' };
+  }
+  if (/^mcp-engineering-deep-dive-\d+$/.test(slug)) {
+    return { key: 'mcp-engineering-deep-dive', label: lang === 'zh' ? 'MCP 工程深化系列' : 'MCP Engineering Deep Dive' };
+  }
+  return null;
+}
 ---
 
 <Base title="Blog — danielcanfly" description="Thoughts on AI, product, startup, business, Web3, and travel." lang={lang!}>
@@ -102,6 +118,8 @@ const selectedCategoryLabel = selectedCategory && selectedCategory in CATEGORY_L
               data-sort-key={post.data.date.toISOString().slice(0,16)}
               data-category={post.data.categories.map(cat => normalizeCategory(cat)).filter(Boolean).join(' ')}
               data-categories={JSON.stringify(post.data.categories.map(cat => normalizeCategory(cat)).filter(Boolean))}
+              data-series-key={getSeriesMeta(post.slug, lang as 'en' | 'zh')?.key || ''}
+              data-series-label={getSeriesMeta(post.slug, lang as 'en' | 'zh')?.label || ''}
             >
               <PostCard
                 slug={post.slug}
