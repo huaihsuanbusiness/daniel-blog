@@ -71,7 +71,7 @@ const seriesLabel = seriesUi[lang];
         <option value="old">{sortLabel.old}</option>
       </select>
       <svg class="sort-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-        <path d="m6 15 6-6 6-6"/>
+        <path d="m6 9 6 6 6-6"/>
       </svg>
     </div>
 
@@ -148,6 +148,7 @@ const seriesLabel = seriesUi[lang];
   function clearSeriesFilter() {
     activeSeries = '';
     if (seriesSelect) seriesSelect.value = '';
+    if (tempLabel) tempLabel.textContent = '';
     if (tempTab) tempTab.hidden = true;
     applySeriesFilter();
   }
@@ -422,12 +423,16 @@ const seriesLabel = seriesUi[lang];
     transform: scaleX(1);
   }
 
+  #series-temp-tab[hidden] {
+    display: none !important;
+  }
+
   .tag-close {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 22px;
-    height: 22px;
+    width: 24px;
+    height: 24px;
     border: none;
     background: transparent;
     color: inherit;
@@ -440,11 +445,19 @@ const seriesLabel = seriesUi[lang];
   }
 
   .series-row {
+    flex-basis: 100%;
     margin: -10px 0 var(--space-5);
   }
 
   .series-wrap {
-    min-width: 170px;
+    width: fit-content;
+    min-width: 0;
+  }
+
+  .series-wrap .sort-select {
+    width: auto;
+    min-width: 0;
+    padding-right: 30px;
   }
 
   @media (max-width: 720px) {
@@ -454,9 +467,16 @@ const seriesLabel = seriesUi[lang];
     }
 
     .controls-right {
-      width: 100%;
+      width: auto;
       justify-content: flex-end;
       padding-top: 4px;
+      order: 2;
+    }
+
+    .series-row {
+      flex-basis: auto;
+      margin: 4px 0 var(--space-5);
+      order: 2;
     }
   }
 </style>
