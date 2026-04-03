@@ -6,9 +6,6 @@ tags: ["openclaw", "deployment", "configuration", "gateway", "ops", "self-hosted
 date: 2026-04-03T20:06:00
 featured: false
 ---
-
-# OpenClaw 部署與配置 Part3
-
 *權限、更新、備份與搬家，怎麼做才不會把一台已經開始長住的 OpenClaw 主機玩壞*
 
 很多人以為 OpenClaw 真正難的地方是模型。  

@@ -6,9 +6,6 @@ tags: ["openclaw", "deployment", "configuration", "gateway", "ops", "self-hosted
 date: 2026-04-03T20:05:00
 featured: false
 ---
-
-# OpenClaw 部署與配置 Part2
-
 *安裝完成之後，第一輪到底該先改哪些設定，哪些反而先不要碰*
 
 我先講一個我很想吐槽的現象。

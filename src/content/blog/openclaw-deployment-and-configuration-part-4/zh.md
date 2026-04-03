@@ -6,9 +6,6 @@ tags: ["openclaw", "deployment", "configuration", "gateway", "ops", "self-hosted
 date: 2026-04-03T20:07:00
 featured: false
 ---
-
-# OpenClaw 部署與配置 Part4
-
 *OpenClaw 壞掉時，怎麼先把問題分到正確的故障線，而不是一開始就猜錯方向*
 
 我現在對 OpenClaw troubleshooting 的看法，跟一開始很不一樣。

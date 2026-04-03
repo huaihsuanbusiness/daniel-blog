@@ -6,9 +6,6 @@ tags: ["openclaw", "deployment", "configuration", "gateway", "ops", "self-hosted
 date: 2026-04-03T20:04:00
 featured: false
 ---
-
-# OpenClaw 部署與配置 Part1
-
 *為什麼我通常會建議先從 macOS / Mac mini 起手，而不是第一台就上 VPS 或低 RAM Linux 主機*
 
 我先把話講在前面。這篇不是要證明「macOS 比 Linux 高級」，也不是要否定 VPS。  
