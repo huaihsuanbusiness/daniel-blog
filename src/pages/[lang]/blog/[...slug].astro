@@ -60,6 +60,9 @@ function getSeriesMeta(slug: string, lang: string) {
   if (/^openclaw-getting-started-\d+$/.test(slug)) {
     return { key: 'openclaw-getting-started', label: lang === 'zh' ? 'OpenClaw 快速上手系列' : 'OpenClaw Getting Started' };
   }
+  if (/^openclaw-deployment-and-configuration-part-\d+$/.test(slug)) {
+    return { key: 'openclaw-deployment-and-configuration', label: lang === 'zh' ? 'OpenClaw 部署與配置系列' : 'OpenClaw Deployment and Configuration' };
+  }
   if (/^comfyui-series-\d+$/.test(slug)) {
     return { key: 'comfyui-series', label: lang === 'zh' ? 'ComfyUI 系列' : 'ComfyUI Series' };
   }
