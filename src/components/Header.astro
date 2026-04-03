@@ -260,14 +260,14 @@ const logoHref = currentLang === 'en' ? '/en/' : '/zh/';
     transition: opacity var(--transition-fast), transform var(--transition-fast);
   }
 
-  :global(html[data-theme='dark']) .theme-icon-sun,
-  :global(html[data-theme='light']) .theme-icon-moon {
+  :global(html[data-theme='dark']) .theme-icon-moon,
+  :global(html[data-theme='light']) .theme-icon-sun {
     opacity: 0;
     transform: scale(0.8) rotate(-12deg);
   }
 
-  :global(html[data-theme='dark']) .theme-icon-moon,
-  :global(html[data-theme='light']) .theme-icon-sun {
+  :global(html[data-theme='dark']) .theme-icon-sun,
+  :global(html[data-theme='light']) .theme-icon-moon {
     opacity: 1;
     transform: scale(1) rotate(0deg);
   }
