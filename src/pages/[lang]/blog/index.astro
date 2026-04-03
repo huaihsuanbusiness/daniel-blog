@@ -89,6 +89,9 @@ function getSeriesMeta(slug: string, lang: string) {
   if (/^comfyui-series-\d+$/.test(slug)) {
     return { key: 'comfyui-series', order: 5, label: lang === 'zh' ? '5. ComfyUI 系列' : '5. ComfyUI Series' };
   }
+  if (/^rag-engineering-in-practice-\d+$/.test(slug)) {
+    return { key: 'rag-engineering-in-practice', order: 6, label: lang === 'zh' ? '6. RAG 工程實戰系列' : '6. RAG Engineering in Practice' };
+  }
   return null;
 }
 ---
