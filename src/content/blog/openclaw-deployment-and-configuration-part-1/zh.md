@@ -219,6 +219,3 @@ macOS / Mac mini 不是唯一正解。
 
 第一台主機如果選得太硬，OpenClaw 很容易還沒開始幫你做事，你就先開始幫它做 SRE 了。
 
-## 參考說明
-
-完整來源整理在 `./resource/references.md`。

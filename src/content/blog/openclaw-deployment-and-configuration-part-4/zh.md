@@ -257,6 +257,3 @@ openclaw backup create --verify
 分類能力比手速重要。  
 對這套系統來說，這句話真的很值錢。
 
-## 參考說明
-
-完整來源整理在 `./resource/references.md`。

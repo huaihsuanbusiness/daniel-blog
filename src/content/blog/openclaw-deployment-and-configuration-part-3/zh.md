@@ -248,6 +248,3 @@ openclaw backup create --verify
 
 如果你把這幾條守住，後面很多「OpenClaw 很不穩」的抱怨，至少有一半會先縮小成比較可管理的工程問題。
 
-## 參考說明
-
-完整來源整理在 `./resource/references.md`。

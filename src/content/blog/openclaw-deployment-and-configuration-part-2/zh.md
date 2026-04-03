@@ -240,6 +240,3 @@ openclaw browser --browser-profile openclaw start
 
 那就是下一篇要處理的事。
 
-## 參考說明
-
-完整來源整理在 `./resource/references.md`。
