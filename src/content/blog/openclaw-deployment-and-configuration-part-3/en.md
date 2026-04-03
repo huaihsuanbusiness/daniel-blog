@@ -237,6 +237,3 @@ A long-lived OpenClaw host usually does not fail because it lacked one more feat
 
 If you keep those under control, a surprising amount of “OpenClaw is unstable” shrinks back into ordinary engineering.
 
-## References note
-
-Full sources are listed in `./resource/references.md`.

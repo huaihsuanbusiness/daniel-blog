@@ -251,6 +251,3 @@ Because the hard part is often not the bug itself. It is the way the symptom tem
 
 In this system, fault classification is worth more than speed.
 
-## References note
-
-Full sources are listed in `./resource/references.md`.

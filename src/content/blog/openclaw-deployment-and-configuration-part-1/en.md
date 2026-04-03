@@ -211,6 +211,3 @@ The cloud route is not wrong. It simply makes more sense once you already know w
 If you choose a host that is too “hard” too early, there is a decent chance OpenClaw will not be doing your ops for you.  
 You will be doing SRE for OpenClaw.
 
-## References note
-
-Full sources are listed in `./resource/references.md`.

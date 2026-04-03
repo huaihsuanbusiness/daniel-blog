@@ -228,6 +228,3 @@ Once the first config is “working enough”, the next class of problems is usu
 
 That is the next article.
 
-## References note
-
-Full sources are listed in `./resource/references.md`.
