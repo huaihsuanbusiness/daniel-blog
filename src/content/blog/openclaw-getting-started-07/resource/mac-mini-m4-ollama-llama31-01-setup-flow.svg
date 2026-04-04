@@ -1,19 +1,62 @@
 <svg width="1200" height="720" viewBox="0 0 1200 720" fill="none" xmlns="http://www.w3.org/2000/svg">
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1200" y2="720" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#0B1220"/><stop offset="1" stop-color="#101A2F"/>
+      <stop stop-color="#0B1220"/>
+      <stop offset="1" stop-color="#101A2F"/>
     </linearGradient>
-    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="14" stdDeviation="16" flood-color="#000" flood-opacity="0.22"/></filter>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="14" stdDeviation="16" flood-color="#000" flood-opacity="0.22"/>
+    </filter>
   </defs>
   <rect width="1200" height="720" rx="28" fill="url(#bg)"/>
-  <text x="70" y="86" fill="#F8FAFC" font-family="Inter, Arial, sans-serif" font-size="34" font-weight="700">Ollama + Llama 3.1 8B setup flow on a Mac mini M4</text>
+  <text x="70" y="78" fill="#F8FAFC" font-family="Inter, Arial, sans-serif" font-size="30" font-weight="700">Ollama + Llama 3.1 8B setup flow on a Mac mini M4</text>
+
   <g filter="url(#shadow)">
-    <rect x="70" y="180" width="160" height="86" rx="22" fill="#0F172A" stroke="#38BDF8" stroke-width="1.5"/><text x="94" y="218" fill="#38BDF8" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="700">STEP 1</text><text x="94" y="248" fill="#F8FAFC" font-family="Inter, Arial, sans-serif" font-size="23" font-weight="700">Download Ollama.dmg</text>
-    <rect x="278" y="180" width="170" height="86" rx="22" fill="#0F172A" stroke="#34D399" stroke-width="1.5"/><text x="302" y="218" fill="#34D399" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="700">STEP 2</text><text x="302" y="248" fill="#F8FAFC" font-family="Inter, Arial, sans-serif" font-size="23" font-weight="700">Move to Applications</text>
-    <rect x="496" y="180" width="192" height="86" rx="22" fill="#0F172A" stroke="#F59E0B" stroke-width="1.5"/><text x="520" y="218" fill="#F59E0B" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="700">STEP 3</text><text x="520" y="248" fill="#F8FAFC" font-family="Inter, Arial, sans-serif" font-size="23" font-weight="700">Grant CLI symlink permission</text>
-    <rect x="736" y="180" width="160" height="86" rx="22" fill="#0F172A" stroke="#818CF8" stroke-width="1.5"/><text x="760" y="218" fill="#818CF8" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="700">STEP 4</text><text x="760" y="248" fill="#F8FAFC" font-family="Inter, Arial, sans-serif" font-size="23" font-weight="700">Open Terminal</text>
-    <rect x="944" y="180" width="186" height="86" rx="22" fill="#0F172A" stroke="#A78BFA" stroke-width="1.5"/><text x="968" y="218" fill="#A78BFA" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="700">STEP 5</text><text x="968" y="248" fill="#F8FAFC" font-family="Inter, Arial, sans-serif" font-size="23" font-weight="700">ollama run llama3.1:8b</text>
+    <rect x="60" y="170" width="170" height="110" rx="22" fill="#0F172A" stroke="#38BDF8" stroke-width="1.5"/>
+    <text x="86" y="205" fill="#38BDF8" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="700">STEP 1</text>
+    <text x="86" y="236" fill="#F8FAFC" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="700">
+      <tspan x="86" dy="0">Download</tspan>
+      <tspan x="86" dy="24">Ollama.dmg</tspan>
+    </text>
+
+    <rect x="260" y="170" width="180" height="110" rx="22" fill="#0F172A" stroke="#34D399" stroke-width="1.5"/>
+    <text x="286" y="205" fill="#34D399" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="700">STEP 2</text>
+    <text x="286" y="236" fill="#F8FAFC" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="700">
+      <tspan x="286" dy="0">Move app to</tspan>
+      <tspan x="286" dy="24">Applications</tspan>
+    </text>
+
+    <rect x="470" y="170" width="220" height="110" rx="22" fill="#0F172A" stroke="#F59E0B" stroke-width="1.5"/>
+    <text x="496" y="205" fill="#F59E0B" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="700">STEP 3</text>
+    <text x="496" y="236" fill="#F8FAFC" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="700">
+      <tspan x="496" dy="0">Grant CLI symlink</tspan>
+      <tspan x="496" dy="24">permission</tspan>
+    </text>
+
+    <rect x="720" y="170" width="160" height="110" rx="22" fill="#0F172A" stroke="#818CF8" stroke-width="1.5"/>
+    <text x="746" y="205" fill="#818CF8" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="700">STEP 4</text>
+    <text x="746" y="236" fill="#F8FAFC" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="700">
+      <tspan x="746" dy="0">Open</tspan>
+      <tspan x="746" dy="24">Terminal</tspan>
+    </text>
+
+    <rect x="910" y="170" width="230" height="110" rx="22" fill="#0F172A" stroke="#A78BFA" stroke-width="1.5"/>
+    <text x="936" y="205" fill="#A78BFA" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="700">STEP 5</text>
+    <text x="936" y="236" fill="#F8FAFC" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="700">
+      <tspan x="936" dy="0">Run</tspan>
+      <tspan x="936" dy="24">ollama run llama3.1:8b</tspan>
+    </text>
   </g>
-  <path d="M230 223H278M448 223H496M688 223H736M896 223H944" stroke="#64748B" stroke-width="4" stroke-linecap="round"/>
-  <g filter="url(#shadow)"><rect x="392" y="384" width="416" height="164" rx="24" fill="#111827" stroke="#22C55E" stroke-width="1.5"/><text x="432" y="430" fill="#22C55E" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="700">RESULT</text><text x="432" y="474" fill="#F8FAFC" font-family="Inter, Arial, sans-serif" font-size="28" font-weight="700">Start chatting locally</text><text x="432" y="514" fill="#CBD5E1" font-family="Inter, Arial, sans-serif" font-size="18">Use one simple runtime and one sane model first.</text><text x="432" y="544" fill="#CBD5E1" font-family="Inter, Arial, sans-serif" font-size="18">Expand only after local use becomes routine.</text></g>
+
+  <path d="M230 225H260M440 225H470M690 225H720M880 225H910" stroke="#64748B" stroke-width="4" stroke-linecap="round"/>
+
+  <g filter="url(#shadow)">
+    <rect x="350" y="400" width="500" height="170" rx="24" fill="#111827" stroke="#22C55E" stroke-width="1.5"/>
+    <text x="390" y="438" fill="#22C55E" font-family="Inter, Arial, sans-serif" font-size="15" font-weight="700">RESULT</text>
+    <text x="390" y="478" fill="#F8FAFC" font-family="Inter, Arial, sans-serif" font-size="28" font-weight="700">Start chatting locally</text>
+    <text x="390" y="516" fill="#CBD5E1" font-family="Inter, Arial, sans-serif" font-size="18">
+      <tspan x="390" dy="0">Use one simple runtime and one sane model first.</tspan>
+      <tspan x="390" dy="28">Expand only after local use becomes routine.</tspan>
+    </text>
+  </g>
 </svg>
