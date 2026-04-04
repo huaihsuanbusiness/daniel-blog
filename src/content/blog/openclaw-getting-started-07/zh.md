@@ -1,5 +1,5 @@
 ---
-title: "Mac mini M4 16GB 也能跑本地模型嗎？我最後選了 Ollama + Llama 3.1 8B"
+title: "OpenClaw 快速上手 07｜Mac mini M4 16GB 也能跑本地模型嗎？我最後選了 Ollama + Llama 3.1 8B"
 description: "如果你手上是 **Mac mini M4 / 16GB RAM / 256GB SSD**，又剛好對本地模型有興趣，第一個卡住的點通常不是安裝，而是選型。"
 categories: ["openclaw"]
 tags: ["openclaw", "local-llm", "ollama", "llama", "mac-mini", "models"]
