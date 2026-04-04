@@ -354,6 +354,29 @@ function getSeriesMeta(slug: string, lang: string) {
 </style>
 
 <script>
+  function syncPostCardLinks() {
+    const currentUrl = new URL(window.location.href);
+    const currentSearch = currentUrl.search;
+
+    document.querySelectorAll('[data-post-link]').forEach(link => {
+      if (!(link instanceof HTMLAnchorElement)) return;
+      const href = link.getAttribute('href');
+      if (!href) return;
+      const url = new URL(href, window.location.origin);
+      url.search = currentSearch;
+      link.href = `${url.pathname}${url.search}`;
+    });
+
+    const clearLink = document.querySelector('.empty-category-link');
+    if (clearLink instanceof HTMLAnchorElement) {
+      const url = new URL(clearLink.href, window.location.origin);
+      const params = new URLSearchParams(currentUrl.search);
+      params.delete('category');
+      url.search = params.toString();
+      clearLink.href = `${url.pathname}${url.search}`;
+    }
+  }
+
   function applyCategoryFilter() {
     const params = new URL(window.location.href).searchParams;
     const activeCat = params.get('category') || 'all';
@@ -371,17 +394,22 @@ function getSeriesMeta(slug: string, lang: string) {
     if (empty) (empty as HTMLElement).style.display = visible === 0 ? '' : 'none';
   }
 
-  // Run on load and whenever tabs change
-  applyCategoryFilter();
+  function syncListRuntimeState() {
+    applyCategoryFilter();
+    syncPostCardLinks();
+  }
+
+  // Run on load and whenever controls change
+  syncListRuntimeState();
 
   // Also run when category tabs are clicked (listen on filter container)
   document.querySelector('.category-filter')?.addEventListener('click', () => {
-    setTimeout(applyCategoryFilter, 0);
+    setTimeout(syncListRuntimeState, 0);
   });
 
   // Re-apply when sort changes (it updates URL)
   const sortSelect = document.getElementById('sort-select');
   sortSelect?.addEventListener('change', () => {
-    setTimeout(applyCategoryFilter, 0);
+    setTimeout(syncListRuntimeState, 0);
   });
 </script>

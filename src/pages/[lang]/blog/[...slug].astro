@@ -39,8 +39,13 @@ const otherVersionHref = otherPost ? `/${otherLang}/blog/${otherPost.id.split('/
 const sameLangPosts = allPosts
   .filter(p => p.id.endsWith(`/${lang}`))
   .map(p => ({ ...p, slug: p.id.split('/')[0] }))
-  .filter(p => !currentCategory || p.data.categories.some(cat => normalizeCategory(cat) === currentCategory))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const runtimeNavPosts = sameLangPosts.map(p => ({
+  slug: p.slug,
+  date: p.data.date.valueOf(),
+  categories: p.data.categories.map(cat => normalizeCategory(cat)).filter(Boolean),
+}));
+const otherPostSlug = otherPost ? otherPost.id.split('/')[0] : null;
 const currentIndex = sameLangPosts.findIndex(p => p.id === post.id);
 const prevPost = currentIndex < sameLangPosts.length - 1 ? sameLangPosts[currentIndex + 1] : null;
 const nextPost = currentIndex > 0 ? sameLangPosts[currentIndex - 1] : null;
@@ -97,7 +102,7 @@ const currentSeriesIndex = seriesPosts.findIndex(p => p.id === post.id);
   <article class="post-article">
     <div class="container">
       <header class="post-header animate-in">
-        <a href={`/${lang}/blog${sharedQueryString}`} class="back-link">
+        <a id="back-to-blog-link" href={`/${lang}/blog${sharedQueryString}`} class="back-link">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M19 12H5M12 19l-7-7 7-7"/>
           </svg>
@@ -118,27 +123,23 @@ const currentSeriesIndex = seriesPosts.findIndex(p => p.id === post.id);
         {otherVersionHref && (
           <div class="lang-switch">
             <span class="muted">{lang === 'zh' ? '閱讀版本：' : 'Read in:'}</span>
-            <a href={otherVersionHref} class="lang-btn">{otherLangLabel}</a>
+            <a id="other-version-link" href={otherVersionHref} class="lang-btn">{otherLangLabel}</a>
           </div>
         )}
       </header>
 
-      {prevPost && (
-        <a href={`/${lang}/blog/${prevPost.slug}${sharedQueryString}`} class="side-nav side-nav-left" aria-label={lang === 'zh' ? '上一篇' : 'Previous post'}>
-          <span class="side-nav-chip">
-            <span class="side-nav-arrow">←</span>
-            <span class="side-nav-label">{lang === 'zh' ? '上一篇' : 'Previous'}</span>
-          </span>
-        </a>
-      )}
-      {nextPost && (
-        <a href={`/${lang}/blog/${nextPost.slug}${sharedQueryString}`} class="side-nav side-nav-right" aria-label={lang === 'zh' ? '下一篇' : 'Next post'}>
-          <span class="side-nav-chip">
-            <span class="side-nav-label">{lang === 'zh' ? '下一篇' : 'Next'}</span>
-            <span class="side-nav-arrow">→</span>
-          </span>
-        </a>
-      )}
+      <a id="prev-post-link" href={prevPost ? `/${lang}/blog/${prevPost.slug}${sharedQueryString}` : '#'} class="side-nav side-nav-left" aria-label={lang === 'zh' ? '上一篇' : 'Previous post'} hidden={!prevPost}>
+        <span class="side-nav-chip">
+          <span class="side-nav-arrow">←</span>
+          <span class="side-nav-label">{lang === 'zh' ? '上一篇' : 'Previous'}</span>
+        </span>
+      </a>
+      <a id="next-post-link" href={nextPost ? `/${lang}/blog/${nextPost.slug}${sharedQueryString}` : '#'} class="side-nav side-nav-right" aria-label={lang === 'zh' ? '下一篇' : 'Next post'} hidden={!nextPost}>
+        <span class="side-nav-chip">
+          <span class="side-nav-label">{lang === 'zh' ? '下一篇' : 'Next'}</span>
+          <span class="side-nav-arrow">→</span>
+        </span>
+      </a>
 
       <div class="post-content animate-in animate-delay-1">
         <Content />
@@ -154,7 +155,7 @@ const currentSeriesIndex = seriesPosts.findIndex(p => p.id === post.id);
             </div>
             <div class="series-nav-panel">
               {seriesPosts.map((item, index) => (
-                <a href={`/${lang}/blog/${item.slug}`} class:list={['series-nav-item', { active: item.id === post.id }] }>
+                <a href={`/${lang}/blog/${item.slug}${sharedQueryString}`} data-series-nav-link class:list={['series-nav-item', { active: item.id === post.id }] }>
                   <span class="series-nav-index">{index + 1}</span>
                   <span class="series-nav-item-title">{item.data.title}</span>
                 </a>
@@ -191,6 +192,66 @@ const currentSeriesIndex = seriesPosts.findIndex(p => p.id === post.id);
 
   <Footer />
 </Base>
+
+<script define:vars={{ lang, slug, otherLang, otherPostSlug, runtimeNavPosts }}>
+  const runtimeParams = new URL(window.location.href).searchParams;
+  const runtimeCategory = runtimeParams.get('category');
+  const runtimeSort = runtimeParams.get('sort');
+  const sharedParams = new URLSearchParams();
+
+  if (runtimeCategory && runtimeCategory !== 'all') sharedParams.set('category', runtimeCategory);
+  if (runtimeSort) sharedParams.set('sort', runtimeSort);
+
+  const sharedQuery = sharedParams.toString() ? `?${sharedParams.toString()}` : '';
+  const withQuery = (path) => `${path}${sharedQuery}`;
+
+  const backToBlogLink = document.getElementById('back-to-blog-link');
+  if (backToBlogLink instanceof HTMLAnchorElement) {
+    backToBlogLink.href = withQuery(`/${lang}/blog`);
+  }
+
+  const otherVersionLink = document.getElementById('other-version-link');
+  if (otherVersionLink instanceof HTMLAnchorElement && otherPostSlug) {
+    otherVersionLink.href = withQuery(`/${otherLang}/blog/${otherPostSlug}`);
+  }
+
+  document.querySelectorAll('[data-series-nav-link]').forEach((link) => {
+    if (!(link instanceof HTMLAnchorElement)) return;
+    const url = new URL(link.href, window.location.origin);
+    link.href = withQuery(url.pathname);
+  });
+
+  const orderedPosts = [...runtimeNavPosts].sort((a, b) => (
+    runtimeSort === 'old' ? a.date - b.date : b.date - a.date
+  ));
+  const scopedPosts = runtimeCategory && runtimeCategory !== 'all'
+    ? orderedPosts.filter((item) => item.categories.includes(runtimeCategory))
+    : orderedPosts;
+  const currentIndex = scopedPosts.findIndex((item) => item.slug === slug);
+  const prevPostRuntime = currentIndex >= 0 && currentIndex < scopedPosts.length - 1 ? scopedPosts[currentIndex + 1] : null;
+  const nextPostRuntime = currentIndex > 0 ? scopedPosts[currentIndex - 1] : null;
+
+  const prevLink = document.getElementById('prev-post-link');
+  if (prevLink instanceof HTMLAnchorElement) {
+    if (prevPostRuntime) {
+      prevLink.href = withQuery(`/${lang}/blog/${prevPostRuntime.slug}`);
+      prevLink.hidden = false;
+    } else {
+      prevLink.hidden = true;
+    }
+  }
+
+  const nextLink = document.getElementById('next-post-link');
+  if (nextLink instanceof HTMLAnchorElement) {
+    if (nextPostRuntime) {
+      nextLink.href = withQuery(`/${lang}/blog/${nextPostRuntime.slug}`);
+      nextLink.hidden = false;
+    } else {
+      nextLink.hidden = true;
+    }
+  }
+</script>
+
 
 <style>
   .post-article {
