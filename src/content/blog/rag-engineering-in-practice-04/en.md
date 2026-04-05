@@ -19,7 +19,7 @@ What this error is really telling you is something much more important:
 
 **once you start using metadata such as `source_type`, `memory_set`, or `job_id` to control retrieval, you are no longer just storing vectors. You are designing a schema.**
 
-This article is not only about fixing the 400. It is about understanding payload indexes, field schema, filter design, and why they matter in a retrieval system at all. fileciteturn13file2turn13file13
+This article is not only about fixing the 400. It is about understanding payload indexes, field schema, filter design, and why they matter in a retrieval system at all.
 
 ## The core claim
 
@@ -70,7 +70,7 @@ The moment you start storing fields like:
 - `version`
 - `tenant_id`
 
-you are no longer just attaching random metadata. You are declaring structure that you expect the retrieval system to respect. fileciteturn13file13
+you are no longer just attaching random metadata. You are declaring structure that you expect the retrieval system to respect.
 
 Seen that way, a payload index is effectively saying:
 
@@ -93,7 +93,7 @@ In RAG memory or knowledge-retrieval setups, the most common metadata fields are
 - `profile_id`
 - `tenant_id`
 
-These are not fuzzy semantic values. They are boundaries. They define data sources, tenants, versions, and retrieval lanes. fileciteturn13file2
+These are not fuzzy semantic values. They are boundaries. They define data sources, tenants, versions, and retrieval lanes.
 
 ## Which fields are actually worth indexing first
 
@@ -119,7 +119,7 @@ Without that boundary, retrieval tends to mix evidence roles together.
 ### `memory_set`
 If you plan to keep more than one memory space in the same collection, this becomes close to essential. It can behave like a tenant boundary or a knowledge-space boundary.
 
-Both of these usually belong under `keyword`. fileciteturn13file14
+Both of these usually belong under `keyword`.
 
 ## What the API looks like
 
@@ -170,7 +170,7 @@ A query in this setup might look something like:
 }
 ```
 
-This pattern is perfectly normal in RAG. The same query vector may need to travel down several evidence lanes, with different `source_type` filters, before the results are assembled into one evidence pack. The issue is not the design. The issue is pretending those lanes do not need proper schema support. fileciteturn13file15
+This pattern is perfectly normal in RAG. The same query vector may need to travel down several evidence lanes, with different `source_type` filters, before the results are assembled into one evidence pack. The issue is not the design. The issue is pretending those lanes do not need proper schema support.
 
 ## How to verify the index is really there
 
@@ -178,7 +178,7 @@ This pattern is perfectly normal in RAG. The same query vector may need to trave
 If your deployment makes the payload schema visible, confirm that `source_type` is registered with the intended schema type.
 
 ### Method 2: rerun the original filtered query
-This is the most direct test. If the previous response was `Index required`, the difference after index creation tends to be obvious. fileciteturn13file15
+This is the most direct test. If the previous response was `Index required`, the difference after index creation tends to be obvious.
 
 ## Which fields are not worth indexing indiscriminately
 
@@ -189,7 +189,7 @@ The rule of thumb I trust is roughly this:
 1. **high-frequency filter fields**  
 2. **high-selectivity fields**
 
-Fields such as `source_type`, `memory_set`, and `tenant_id` often pass both tests. But a field that is barely ever filtered, or one that only carries a tiny number of low-value categories, may not justify the extra overhead. Qdrant’s guidance is clear that payload indexes are not free. fileciteturn13file13turn13file15turn803663search15
+Fields such as `source_type`, `memory_set`, and `tenant_id` often pass both tests. But a field that is barely ever filtered, or one that only carries a tiny number of low-value categories, may not justify the extra overhead. Qdrant’s guidance is clear that payload indexes are not free.
 
 ## Three common misunderstandings
 
@@ -201,12 +201,12 @@ If you stored `source_type` but your filter uses `type`, Qdrant is not going to 
 ### Misunderstanding 2: `match.value` is fuzzy
 Not for `keyword`.
 
-`cv` and `cv_bullet` are different values. fileciteturn13file13turn13file15
+`cv` and `cv_bullet` are different values.
 
 ### Misunderstanding 3: indexes make vector similarity more accurate
 They do not.
 
-Payload indexes exist primarily to make filtering reliable and efficient. Whether similarity itself is good still depends far more on embeddings, chunking, and query construction. fileciteturn13file13
+Payload indexes exist primarily to make filtering reliable and efficient. Whether similarity itself is good still depends far more on embeddings, chunking, and query construction.
 
 ## Why this matters for RAG specifically
 

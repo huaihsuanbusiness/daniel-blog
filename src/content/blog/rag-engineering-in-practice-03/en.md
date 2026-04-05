@@ -17,7 +17,7 @@ I’ve ended up thinking about chunking in a more grounded way:
 
 **you are not splitting text, you are designing evidence units for future retrieval and generation.**
 
-This piece unpacks that idea with a concrete case: a job agent that takes a JD, retrieves CV and rubric chunks, then scores or writes from those results. It is a good setting for chunking because the task is not generic Q&A. It is much more about mapping requirements to evidence and doing so in a way the model can actually cite and use. Once you look at it that way, CVs and rubrics clearly should not be cut with the same knife. fileciteturn13file6turn13file16
+This piece unpacks that idea with a concrete case: a job agent that takes a JD, retrieves CV and rubric chunks, then scores or writes from those results. It is a good setting for chunking because the task is not generic Q&A. It is much more about mapping requirements to evidence and doing so in a way the model can actually cite and use. Once you look at it that way, CVs and rubrics clearly should not be cut with the same knife.
 
 ## The core claim
 
@@ -32,7 +32,7 @@ In a RAG pipeline, a chunk usually plays at least two roles at once:
 1. a **retrieval unit**  
 2. a **citation unit**
 
-If a chunk works for one of those jobs and fails at the other, it is not a very good chunk. fileciteturn13file6
+If a chunk works for one of those jobs and fails at the other, it is not a very good chunk.
 
 ## Why chunk size on its own is the wrong conversation
 
@@ -62,7 +62,7 @@ In the job-agent case, CV chunks are where this often goes wrong. Imagine one ch
 - an AI prototype
 - PM cadence
 
-Now a JD mentions AI. That whole chunk may come back. But perhaps the model only needed two lines about the prototype. The rest just muddies the waters and encourages the model to write a broader, noisier relevance story than the prompt actually called for. fileciteturn13file18
+Now a JD mentions AI. That whole chunk may come back. But perhaps the model only needed two lines about the prototype. The rest just muddies the waters and encourages the model to write a broader, noisier relevance story than the prompt actually called for.
 
 ### 2. Chunks that are too small
 
@@ -70,7 +70,7 @@ The opposite problem is just as real. Chunks can become so tiny that each one lo
 
 Then the retriever does not bring back evidence. It brings back fragments. The model is forced to reconstruct the missing links itself, which is precisely where hallucination and unstable reasoning creep in. Teams often respond by pulling more chunks, which raises cost and makes context management worse.
 
-So no, “smaller is better” is not a safe rule. It only works when the smaller unit still preserves meaning. fileciteturn13file6
+So no, “smaller is better” is not a safe rule. It only works when the smaller unit still preserves meaning.
 
 ## Why CVs are worth cutting more finely
 
@@ -85,7 +85,7 @@ In a scoring or cover-letter workflow, the CV is rarely being used to answer “
 - what angle should I use for the cover letter?
 - which non-negotiables fail immediately?
 
-Those are not document-summary questions. They are **mapping questions**. And mapping questions hate chunks that mix several unrelated signals into one large block. fileciteturn13file18
+Those are not document-summary questions. They are **mapping questions**. And mapping questions hate chunks that mix several unrelated signals into one large block.
 
 That is why I tend to prefer topic-based or evidence-based slicing for CVs rather than rigid token windows. For example:
 
@@ -96,7 +96,7 @@ That is why I tend to prefer topic-based or evidence-based slicing for CVs rathe
 - PM cadence
 - partnerships or external demos
 
-When retrieval returns chunks like these, the top-k looks more like an evidence list and less like a chapter from someone’s autobiography. fileciteturn13file16turn13file18
+When retrieval returns chunks like these, the top-k looks more like an evidence list and less like a chapter from someone’s autobiography.
 
 ## Why rubrics should not be chopped too aggressively
 
@@ -110,11 +110,11 @@ When retrieving CV evidence, it often makes sense to bring back several chunks. 
 1. the model retrieves criteria but misses hard gates  
 2. top-1 or top-2 retrieval becomes unstable, so scoring drifts between runs
 
-That kind of drift is annoying because it rarely presents as a dramatic failure. It just slowly makes the system less trustworthy. fileciteturn13file16
+That kind of drift is annoying because it rarely presents as a dramatic failure. It just slowly makes the system less trustworthy.
 
 So the better move for rubrics is not “smaller”. It is **self-contained rule groups**. A chunk should be usable on its own.
 
-Your change from 9 rubric chunks to 11 was a nice example of this. It was not about fragmentation for its own sake. It was about making each rule group more self-sufficient and easier to retrieve cleanly. fileciteturn13file4turn13file16
+Your change from 9 rubric chunks to 11 was a nice example of this. It was not about fragmentation for its own sake. It was about making each rule group more self-sufficient and easier to retrieve cleanly.
 
 ## Chunking and evidence-pack design are the same conversation
 
@@ -127,7 +127,7 @@ In your scoring setup, a practical recipe looks something like this:
 - CV: topK = 2 to 3
 - JD: start by passing the full text, then revisit JD chunk retrieval later if needed
 
-There is nothing magical about those numbers. What matters is that they keep the evidence pack within a range the model can actually handle, without turning the whole prompt into a landfill site. fileciteturn13file4turn13file7turn13file16
+There is nothing magical about those numbers. What matters is that they keep the evidence pack within a range the model can actually handle, without turning the whole prompt into a landfill site.
 
 ## A very practical smoke test
 

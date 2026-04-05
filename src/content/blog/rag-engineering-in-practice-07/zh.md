@@ -18,7 +18,7 @@ featured: false
 - 為什麼 evidence pack 要刻意控瘦？
 - 為什麼系統有時候看起來是模型亂講，實際上其實是 retrieval 在偷出事？
 
-如果你前面幾篇都有看，這篇應該會有一種「原來那些規則不是在講道理，是在收拾真實問題」的感覺。fileciteturn15file0turn15file3turn15file4
+如果你前面幾篇都有看，這篇應該會有一種「原來那些規則不是在講道理，是在收拾真實問題」的感覺。
 
 ## 先講核心主張
 
@@ -29,7 +29,7 @@ featured: false
 這句話裡，最重要的不是「agent」，而是 **evidence pipeline**。
 
 因為你真的把系統跑起來之後，很快就會發現：  
-多數錯誤不是因為模型突然笨了，而是因為 evidence 的形狀不對、進來的順序不對、角色混在一起，或者整包 evidence 太胖，模型最後只能一邊喘一邊亂抓重點。fileciteturn15file0turn15file4
+多數錯誤不是因為模型突然笨了，而是因為 evidence 的形狀不對、進來的順序不對、角色混在一起，或者整包 evidence 太胖，模型最後只能一邊喘一邊亂抓重點。
 
 ## 一開始如果只把它當「把 CV 跟 JD 丟給模型」的問題，很快就會撞牆
 
@@ -49,7 +49,7 @@ featured: false
 - rubric 某條 hard gate 沒被讀到
 - 同一份 JD 今天打這個分，明天又漂掉
 - relevant reason 開始摻進不在 JD 的敘事
-- evidence pack 越來越胖，最後撞到 token 或 MAX_TOKENS 的天花板fileciteturn15file0turn15file4
+- evidence pack 越來越胖，最後撞到 token 或 MAX_TOKENS 的天花板
 
 我後來比較確定，這不是 prompt 再修兩輪就會自然變好的問題。  
 它其實是在跟你說：**這條工作流的證據單位、資料角色、檢索邊界，還沒有被設計好。**
@@ -67,21 +67,21 @@ JD 的角色比較像任務上下文。
 - 哪些 requirements 是明講的
 - 哪些限制是 non-negotiable
 
-在很多流程裡，JD 甚至不一定要先切 chunk。第一版直接帶全文，常常比較穩。因為模型需要的是整體工作輪廓，而不是只看其中一段條列。fileciteturn15file4
+在很多流程裡，JD 甚至不一定要先切 chunk。第一版直接帶全文，常常比較穩。因為模型需要的是整體工作輪廓，而不是只看其中一段條列。
 
 ### CV：證據池
 CV 不是規則，也不是主問題。  
 它比較像一個 evidence pool，你要從裡面抓出最能映射到 JD 的那幾段經歷。
 
 所以 CV 最怕太肥。  
-如果一段 chunk 裡混了太多訊號，只因為命中一個 AI prototype 或 growth keyword 就整塊撈回來，後面模型很容易把別的無關成分也一起講進 relevant reason 裡。fileciteturn15file0
+如果一段 chunk 裡混了太多訊號，只因為命中一個 AI prototype 或 growth keyword 就整塊撈回來，後面模型很容易把別的無關成分也一起講進 relevant reason 裡。
 
 ### rubric：規則與框架
 rubric 更像規則本身。  
 它不是讓模型去找靈感的，它是用來限制格式、定義 criteria、補 hard gate、控制輸出 shape 的。
 
 所以 rubric 不能像 CV 那樣切得太散。  
-你希望每一塊規則群是自足的，不然 top1 / top2 只撈到半套，整個評分就可能漂掉。fileciteturn15file0
+你希望每一塊規則群是自足的，不然 top1 / top2 只撈到半套，整個評分就可能漂掉。
 
 ## chunking 真正改變的，不只是 retrieval，而是整個下游輸出穩定度
 
@@ -93,13 +93,13 @@ rubric 更像規則本身。
 - 這份履歷有哪些 evidence 能映射到某條 requirement
 
 這是一種 evidence mapping 問題，不是全文摘要問題。  
-所以 CV 更適合按主題或可映射證據點切。fileciteturn15file0turn15file4
+所以 CV 更適合按主題或可映射證據點切。
 
 ### 為什麼 rubric 不能太碎
 rubric 太碎時，模型很容易只撈到 criteria，卻漏掉 gate 或 output constraints。結果不是系統壞掉，而是它開始偷偷變得不穩。
 
 這種不穩最麻煩，因為它不像 crash 那樣明顯。  
-它只是讓今天跟明天的 scoring 漂一點、理由多一點、格式歪一點，然後整套東西慢慢失去可信度。fileciteturn15file0
+它只是讓今天跟明天的 scoring 漂一點、理由多一點、格式歪一點，然後整套東西慢慢失去可信度。
 
 ## evidence pack 要刻意控瘦，不然你只是在做一包很貴的噪音
 
@@ -111,7 +111,7 @@ rubric 太碎時，模型很容易只撈到 criteria，卻漏掉 gate 或 output
 - 再塞一點 rules
 
 但 evidence pack 不是越大越好。  
-如果你讓模型一次吞太多半相關內容，它不一定變得更 grounded，反而更容易抓錯支點。更別說 token 成本跟輸出穩定度都會開始變差。fileciteturn15file0turn15file4
+如果你讓模型一次吞太多半相關內容，它不一定變得更 grounded，反而更容易抓錯支點。更別說 token 成本跟輸出穩定度都會開始變差。
 
 在這個求職 scoring 流程裡，一個比較務實的配方反而是：
 
@@ -122,7 +122,7 @@ rubric 太碎時，模型很容易只撈到 criteria，卻漏掉 gate 或 output
 
 這個配方好用，不是因為它是什麼黃金數字，而是因為它強迫你承認：
 
-> evidence pack 也是設計出來的，不是撈越多越厲害。fileciteturn15file0turn15file4
+> evidence pack 也是設計出來的，不是撈越多越厲害。
 
 ## 為什麼 `source_type`、`memory_set` 這些欄位不能只是順手放進 payload
 
@@ -137,7 +137,7 @@ rubric 太碎時，模型很容易只撈到 criteria，卻漏掉 gate 或 output
 - `job_id`
 
 看起來很 boring，但它們其實在定義檢索邊界。  
-你如果沒有把這些欄位正式拉進 query plan，retrieval 就很容易變成「好像相關，但角色混在一起」的狀態。fileciteturn15file1turn15file2
+你如果沒有把這些欄位正式拉進 query plan，retrieval 就很容易變成「好像相關，但角色混在一起」的狀態。
 
 這也是為什麼我後來會把 payload index 想成 schema migration。  
 不是因為 Qdrant 有奇怪規定，而是因為你真的在做一套混合了：
@@ -148,7 +148,7 @@ rubric 太碎時，模型很容易只撈到 criteria，卻漏掉 gate 或 output
 - evidence lanes
 
 的 retrieval system。  
-這時候 schema 就不是可有可無的小細節了。fileciteturn15file1
+這時候 schema 就不是可有可無的小細節了。
 
 ## 很多看起來像模型亂講的問題，最後都回到 retrieval 邊界沒切乾淨
 
@@ -164,7 +164,7 @@ rubric 太碎時，模型很容易只撈到 criteria，卻漏掉 gate 或 output
 - 抓進來的是太肥的 chunk
 - rubric 只撈到半套規則
 - `source_type` 沒切乾淨，profile 或別的東西混進來
-- topK 太大，噪音蓋過真正該講的 evidencefileciteturn15file0turn15file4
+- topK 太大，噪音蓋過真正該講的 evidence
 
 這時候問題其實不是模型亂講，而是你餵給它的證據邊界本來就不乾淨。  
 它只是很流暢地把不乾淨的 context 講順而已。

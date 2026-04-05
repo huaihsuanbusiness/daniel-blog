@@ -49,7 +49,7 @@ In production, success looks more like this:
 - when it fails, can we tell whether retrieval failed or generation failed?
 - are data access, versions, and latency under control?
 
-If you cannot answer those questions, the system may still answer some queries well. It is just very hard to trust. fileciteturn14file2turn14file6
+If you cannot answer those questions, the system may still answer some queries well. It is just very hard to trust.
 
 ## The first production problem is usually not model size. It is evidence quality.
 
@@ -63,7 +63,7 @@ Because the model is really only doing three things:
 2. reasoning within that boundary  
 3. expressing the result fluently
 
-If the evidence is messy, duplicated, bloated, stale, or mutually inconsistent, then a larger model will mostly just explain that mess with greater confidence. fileciteturn14file6
+If the evidence is messy, duplicated, bloated, stale, or mutually inconsistent, then a larger model will mostly just explain that mess with greater confidence.
 
 So the framing I trust more now is:
 
@@ -98,7 +98,7 @@ Common causes include:
 - weak citation alignment
 - overly fat contexts, so the model grabs the wrong thread
 - a tendency to merge across chunks too aggressively
-- answer templates with no graceful “I don’t know” path fileciteturn14file2turn14file6
+- answer templates with no graceful “I don’t know” path
 
 My own habit now is very simple:
 
@@ -118,7 +118,7 @@ In production RAG, citation does at least three jobs:
 
 If the system says “according to the SOP, refunds require manager approval”, then it should be able to show the SOP passage that supports that claim.
 
-Otherwise, in legal, support, compliance, or internal knowledge workflows, it becomes difficult to trust the answer even when it sounds plausible. fileciteturn14file6
+Otherwise, in legal, support, compliance, or internal knowledge workflows, it becomes difficult to trust the answer even when it sounds plausible.
 
 Citation is not about making the interface look academic. It is about tying answers back to evidence so that errors can be located.
 
@@ -166,7 +166,7 @@ A practical minimum could look like this:
 - latency
 - cost per query
 - follow-up rate
-- source-click rate fileciteturn14file6turn851418search1turn851418search19
+- source-click rate
 
 That will not answer every question for you, but it will at least tell you which layer you are trying to improve.
 
@@ -180,7 +180,7 @@ The healthier approach is usually:
 
 - documents or chunks carry ACL metadata
 - retrieval applies those constraints
-- generation never sees material the user should not access fileciteturn14file6
+- generation never sees material the user should not access
 
 Because the risk is not only leaking an answer. Sometimes it is leaking the existence of a document.
 
@@ -195,7 +195,7 @@ Without version information, it becomes hard to answer questions like:
 - did the chunk change after ingestion?
 - was the difference caused by document updates or retrieval logic changes?
 
-This is why source metadata, document versioning, and chunk provenance all feel dull but turn out to be indispensable. fileciteturn14file6
+This is why source metadata, document versioning, and chunk provenance all feel dull but turn out to be indispensable.
 
 ## Observability determines whether you can actually debug the system
 
@@ -211,7 +211,7 @@ At a minimum, it helps to be able to inspect:
 - the citation alignment
 - user follow-up behaviour
 
-That is not just useful for dashboards. It is what lets you work out whether the fix belongs in retrieval, generation, schema design, chunking, or the source material itself. fileciteturn14file6
+That is not just useful for dashboards. It is what lets you work out whether the fix belongs in retrieval, generation, schema design, chunking, or the source material itself.
 
 ## When production-grade RAG is not worth it
 
@@ -227,7 +227,7 @@ If your setting has:
 
 then plain search plus summarisation plus clear source links may be a far saner choice.
 
-This is why I increasingly see RAG not as a system you should max out by default, but as an engineering trade-off shaped by risk, data characteristics, and workload. fileciteturn14file2turn14file6
+This is why I increasingly see RAG not as a system you should max out by default, but as an engineering trade-off shaped by risk, data characteristics, and workload.
 
 ## The production rules I trust now
 

@@ -18,7 +18,7 @@ It is better thought of as a case study that answers questions like:
 - why does the evidence pack need to be kept deliberately lean?
 - why do some issues that look like model failures turn out to be retrieval-boundary problems instead?
 
-If you have read the earlier pieces, this is the point where those rules stop sounding theoretical and start looking like practical ways of preventing very ordinary system failures. fileciteturn15file0turn15file3turn15file4
+If you have read the earlier pieces, this is the point where those rules stop sounding theoretical and start looking like practical ways of preventing very ordinary system failures.
 
 ## The core claim
 
@@ -28,7 +28,7 @@ If I had to start with one line, it would be this:
 
 The most important phrase there is not “agent”. It is **evidence pipeline**.
 
-Because once the system actually runs for a while, many of the problems that appear to be model problems turn out to be something else entirely: the evidence is shaped wrongly, assembled in the wrong order, mixed across roles, or simply too bloated for the model to use cleanly. fileciteturn15file0turn15file4
+Because once the system actually runs for a while, many of the problems that appear to be model problems turn out to be something else entirely: the evidence is shaped wrongly, assembled in the wrong order, mixed across roles, or simply too bloated for the model to use cleanly.
 
 ## If you treat it as “just give the JD and CV to the model”, you hit a wall quite quickly
 
@@ -48,7 +48,7 @@ But once you try to turn it into a repeatable workflow, the weaknesses start sur
 - a hard gate in the rubric gets overlooked
 - the same JD gets a slightly different score on different days
 - the relevance rationale begins smuggling in narrative that was not really grounded in the JD
-- the evidence pack gets fatter and fatter until you hit token ceilings or `MAX_TOKENS` trouble fileciteturn15file0turn15file4
+- the evidence pack gets fatter and fatter until you hit token ceilings or `MAX_TOKENS` trouble
 
 At that point, this no longer feels like a prompt-tuning issue. It starts to look like what it really is:
 
@@ -67,14 +67,14 @@ The JD acts as the task frame. It tells the system:
 - which requirements are explicit
 - which constraints are non-negotiable
 
-In many cases, the JD does not even need to be chunked immediately. Passing the full text first is often the steadier move, because the model needs the overall shape of the role rather than one isolated bullet point. fileciteturn15file4
+In many cases, the JD does not even need to be chunked immediately. Passing the full text first is often the steadier move, because the model needs the overall shape of the role rather than one isolated bullet point.
 
 ### The CV: an evidence pool
 The CV is not the rulebook, and it is not the task definition.  
 It is an evidence pool from which the system needs to pull the most relevant experience for the JD at hand.
 
 That is why fat CV chunks are so dangerous.  
-If one chunk contains too many unrelated signals, then a single match on AI or growth language may bring back an oversized block, and the model may start dragging unrelated material into the reasoning. fileciteturn15file0
+If one chunk contains too many unrelated signals, then a single match on AI or growth language may bring back an oversized block, and the model may start dragging unrelated material into the reasoning.
 
 ### The rubric: a rule system
 The rubric is closer to a rulebook.
@@ -82,7 +82,7 @@ The rubric is closer to a rulebook.
 Its job is not to inspire the model. Its job is to constrain the scoring logic, preserve output shape, and keep important gates from drifting out of view.
 
 That is why it should not be sliced like a CV.  
-You want rule groups that are self-contained. Otherwise top-1 or top-2 retrieval may bring back half a rule and leave the rest behind. fileciteturn15file0
+You want rule groups that are self-contained. Otherwise top-1 or top-2 retrieval may bring back half a rule and leave the rest behind.
 
 ## Chunking did not just change retrieval. It changed downstream output stability.
 
@@ -95,12 +95,12 @@ It is more like:
 - which bullets are the best evidence for a given requirement?
 - which angle is strongest for the final writing step?
 
-That is an evidence-mapping problem, not a document-summary problem. So the CV benefits from being split by evidence-bearing themes or retrievable signals. fileciteturn15file0turn15file4
+That is an evidence-mapping problem, not a document-summary problem. So the CV benefits from being split by evidence-bearing themes or retrievable signals.
 
 ### Why the rubric should not be too fragmented
 If the rubric becomes too fragmented, retrieval may pull criteria without gates, format without constraints, or only half the scoring frame.
 
-The resulting instability is especially annoying because it often does not look like a dramatic failure. The system simply becomes a little more inconsistent over time, which is far harder to spot and far more corrosive. fileciteturn15file0
+The resulting instability is especially annoying because it often does not look like a dramatic failure. The system simply becomes a little more inconsistent over time, which is far harder to spot and far more corrosive.
 
 ## The evidence pack has to be kept deliberately lean
 
@@ -112,7 +112,7 @@ Many people react to unstable outputs by adding more evidence:
 - more rules
 
 But the evidence pack is not better simply because it is bigger.  
-A bloated pack does not necessarily make the answer more grounded. Often it just makes the model noisier and more expensive. fileciteturn15file0turn15file4
+A bloated pack does not necessarily make the answer more grounded. Often it just makes the model noisier and more expensive.
 
 In this workflow, a more practical recipe looked roughly like:
 
@@ -123,7 +123,7 @@ In this workflow, a more practical recipe looked roughly like:
 
 That is useful not because those numbers are sacred, but because they force one important discipline:
 
-> evidence-pack design is part of retrieval design, not an afterthought. fileciteturn15file0turn15file4
+> evidence-pack design is part of retrieval design, not an afterthought.
 
 ## Why `source_type` and `memory_set` cannot remain decorative payload fields
 
@@ -138,9 +138,9 @@ Fields such as:
 - `job_id`
 
 may look boring, but they define the retrieval boundaries.  
-If those fields are not treated as proper query dimensions, retrieval starts to become semantically plausible but structurally muddy. fileciteturn15file1turn15file2
+If those fields are not treated as proper query dimensions, retrieval starts to become semantically plausible but structurally muddy.
 
-This is why I ended up thinking about payload indexes as schema migration rather than as some annoying Qdrant requirement. The system is not just doing vector similarity. It is doing vector similarity plus structured boundaries plus role-aware evidence lanes. That means schema has entered the picture whether you like it or not. fileciteturn15file1
+This is why I ended up thinking about payload indexes as schema migration rather than as some annoying Qdrant requirement. The system is not just doing vector similarity. It is doing vector similarity plus structured boundaries plus role-aware evidence lanes. That means schema has entered the picture whether you like it or not.
 
 ## Many things that look like model hallucination are really retrieval-boundary failures
 
@@ -153,7 +153,7 @@ But once you inspect the evidence pack, you often find something else:
 - the chunk that came back was too fat
 - the rubric came back only partially
 - `source_type` boundaries leaked
-- top-k was high enough for noise to drown the evidence that actually mattered fileciteturn15file0turn15file4
+- top-k was high enough for noise to drown the evidence that actually mattered
 
 At that point, the model is not really improvising from nowhere. It is often just explaining a messy context with alarming fluency.
 

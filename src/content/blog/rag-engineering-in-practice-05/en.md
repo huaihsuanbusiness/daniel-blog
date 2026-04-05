@@ -25,7 +25,7 @@ The core idea in this article is very simple:
 
 Once that clicks, the debugging path becomes much cleaner. You stop asking “why is Qdrant rejecting my request?” and start asking:
 
-> did I actually send the object shape it expects, or did I merely send something that looks a bit like JSON? fileciteturn14file1
+> did I actually send the object shape it expects, or did I merely send something that looks a bit like JSON?
 
 ## The core claim
 
@@ -36,7 +36,7 @@ If I had to reduce the whole piece to one line, it would be this:
 By client truth, I mean the raw bytes the server receives.  
 Not the template you see in Make. Not the thing you pasted into a validator. Not the shape you imagine the body must have.
 
-Qdrant is actually rather honest here. It parses what it receives. If you think you sent an object but it really received a string, it will reject it. There is no mystery in that. fileciteturn14file1turn851418search2
+Qdrant is actually rather honest here. It parses what it receives. If you think you sent an object but it really received a string, it will reject it. There is no mystery in that.
 
 ## Fix the endpoint picture first
 
@@ -84,7 +84,7 @@ Qdrant expects:
 }
 ```
 
-If you send the batch body to the single-query endpoint, the error you get may not politely say “wrong endpoint”. It may just throw a rather grumpy 400. fileciteturn14file1turn851418search2
+If you send the batch body to the single-query endpoint, the error you get may not politely say “wrong endpoint”. It may just throw a rather grumpy 400.
 
 ## Three common ways to send something that looks like JSON but is not what Qdrant needs
 
@@ -107,7 +107,7 @@ But what actually went over the wire was:
 "{"query":[0.1,0.2],"limit":3}"
 ```
 
-A validator may still say this is valid JSON, because it is. It is a valid JSON string. It is just not the object Qdrant expects. fileciteturn14file1
+A validator may still say this is valid JSON, because it is. It is a valid JSON string. It is just not the object Qdrant expects.
 
 This usually comes from **double-stringify**. You stringify the object once, and then the HTTP module effectively wraps it again.
 
@@ -132,7 +132,7 @@ But some low-code templating setups end up producing:
 That is no longer valid JSON.  
 And this is exactly the sort of thing that leads to those irritating `line 2 column 32` messages. In many cases, what the parser is really saying is:
 
-**your vector is not a JSON array at all.** fileciteturn14file1
+**your vector is not a JSON array at all.**
 
 ### 3. The endpoint and the body shape do not match
 
@@ -148,7 +148,7 @@ but the URL is `/points/query`.
 
 Or you hit `/points/query/batch` while sending only a single `query` object.
 
-That may look like a JSON problem when it lands, but what is actually wrong is the contract between the endpoint and the payload shape. fileciteturn14file1turn851418search2
+That may look like a JSON problem when it lands, but what is actually wrong is the contract between the endpoint and the payload shape.
 
 ## The most reliable debugging order: get the smallest viable request working first
 
@@ -175,7 +175,7 @@ Once the single-query body works, add `filter.must`.
 ### Step 4: only then move to batch
 Switch the URL to `/points/query/batch`, and switch the body to `searches: [...]`
 
-This order is useful because it tells you exactly which layer broke. fileciteturn14file1
+This order is useful because it tells you exactly which layer broke.
 
 ## Why the validator passes but the server still rejects you
 
@@ -188,7 +188,7 @@ They do not tell you:
 - whether your array got flattened during interpolation
 - whether the HTTP client actually sent the body you think it sent
 
-In other words, the validator checks **your text**, not **the request body the server received**. Those are often not the same thing. fileciteturn14file1
+In other words, the validator checks **your text**, not **the request body the server received**. Those are often not the same thing.
 
 ## What I trust more in Make and similar tools
 
@@ -202,7 +202,7 @@ Once you turn the embedding into a string, you are asking for trouble.
 
 ### 3. Avoid double-stringify
 This point deserves repetition.  
-If the body is meant to be an object, let the HTTP module send an object. Do not stringify it yourself and then hand it over to be wrapped again. fileciteturn14file1
+If the body is meant to be an object, let the HTTP module send an object. Do not stringify it yourself and then hand it over to be wrapped again.
 
 ## This is not really about Qdrant as much as it is about client behaviour
 

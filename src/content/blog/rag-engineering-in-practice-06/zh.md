@@ -46,7 +46,7 @@ production 的成功標準則更像：
 - 它犯錯時，我們能不能知道是 R 壞了還是 G 壞了？
 - 它的資料、權限、版本與 latency 能不能被管理？
 
-如果這些問題沒有答案，系統就算偶爾答對，也很難被真正信任。fileciteturn14file2turn14file6
+如果這些問題沒有答案，系統就算偶爾答對，也很難被真正信任。
 
 ## RAG 上線後，第一個問題不是模型大小，而是 evidence 乾不乾淨
 
@@ -59,7 +59,7 @@ production 的成功標準則更像：
 2. 在這個 context 邊界內做推理  
 3. 用一種看起來很流暢的方式把結果講出來
 
-如果 evidence 本身就髒、亂、重複、過胖、彼此衝突，那你換再大的模型，它也只是比較有氣勢地把混亂講順而已。fileciteturn14file6
+如果 evidence 本身就髒、亂、重複、過胖、彼此衝突，那你換再大的模型，它也只是比較有氣勢地把混亂講順而已。
 
 所以我現在比較把 production RAG 想成這樣：
 
@@ -92,7 +92,7 @@ production 的成功標準則更像：
 - citation 對齊做得很弱
 - context 太胖，模型抓錯重點
 - 模型習慣跨段補完，導致 hallucination
-- answer template 沒有留「不知道」的出口fileciteturn14file2turn14file6
+- answer template 沒有留「不知道」的出口
 
 我自己現在的習慣是：  
 **先看 evidence，再看回答。**  
@@ -110,7 +110,7 @@ production 的成功標準則更像：
 3. **讓系統能被 audit**
 
 如果系統說「依據某份 SOP，退款流程需要主管核准」，那你最好真的能把那份 SOP 的段落指出來。  
-不然在客服、法務、內部知識檢索這些場景，它很難被真正信任。fileciteturn14file6
+不然在客服、法務、內部知識檢索這些場景，它很難被真正信任。
 
 citation 的價值不是讓畫面看起來很像研究論文，而是把回答綁回 evidence，讓錯誤能被定位。
 
@@ -156,7 +156,7 @@ RAG 很容易掉進一種假穩定：
 - latency
 - 每問成本
 - 使用者追問率
-- 點 citation 的比例fileciteturn14file6turn851418search1turn851418search19
+- 點 citation 的比例
 
 這些指標不會替你解答所有問題，但至少可以讓你知道自己到底在修哪一層。
 
@@ -169,7 +169,7 @@ RAG 很容易掉進一種假穩定：
 
 - document 或 chunk 本身就帶 ACL metadata
 - retrieval 階段就做過濾
-- 不是等答案產出後才想辦法把敏感資訊遮掉fileciteturn14file6
+- 不是等答案產出後才想辦法把敏感資訊遮掉
 
 因為很多時候，風險不只是「洩漏答案」，還包含「洩漏某份文件存在」這件事。  
 如果 retrieval 階段不管權限，後面很容易補救不完。
@@ -186,7 +186,7 @@ production RAG 最煩的一件事是：
 - 這個 chunk 在 ingestion 後有沒有被改過？
 - 是文件變了，還是 retrieval 邏輯變了？
 
-這也是為什麼我覺得 source metadata、document version、chunk provenance 這些東西很 boring，但真的不能省。fileciteturn14file6
+這也是為什麼我覺得 source metadata、document version、chunk provenance 這些東西很 boring，但真的不能省。
 
 ## observability 決定你能不能真的 debug
 
@@ -203,7 +203,7 @@ production RAG 最煩的一件事是：
 - 使用者後續有沒有追問、有沒有點來源
 
 這些資訊的價值，不只是做 dashboard。  
-它是讓你在系統出錯時，知道到底該修 retrieval、generation、schema、chunking，還是 documents 本身。fileciteturn14file6
+它是讓你在系統出錯時，知道到底該修 retrieval、generation、schema、chunking，還是 documents 本身。
 
 ## 什麼時候 production RAG 其實不划算
 
@@ -219,7 +219,7 @@ production RAG 最煩的一件事是：
 
 那有時候直接做搜尋 + 摘要 + 清楚的 source linking，可能比完整的 production RAG 更省力。
 
-這也是為什麼我會一直覺得，RAG 不是一個「有用就堆滿」的系統，而是一套要看風險、資料性質與工作負載的工程取捨。fileciteturn14file2turn14file6
+這也是為什麼我會一直覺得，RAG 不是一個「有用就堆滿」的系統，而是一套要看風險、資料性質與工作負載的工程取捨。
 
 ## 我現在比較信的 production 判準
 
