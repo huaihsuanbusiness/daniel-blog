@@ -95,6 +95,9 @@ function getSeriesMeta(slug: string, lang: string) {
   if (/^pm-product-data-and-experimentation-\d+$/.test(slug)) {
     return { key: 'pm-product-data-and-experimentation', order: 1, label: lang === 'zh' ? '1. PM 產品數據與實驗系列' : '1. PM Product Data and Experimentation Series' };
   }
+  if (/^pm-growth-levers-monetisation-\d+$/.test(slug)) {
+    return { key: 'pm-growth-levers-monetisation', order: 2, label: lang === 'zh' ? '2. PM 成長槓桿與變現系列' : '2. PM Growth Levers and Monetisation Series' };
+  }
   return null;
 }
 ---
