@@ -32,7 +32,7 @@ The simplest way to separate them is this.
 - the model needs to trigger an external action,
 - a calculation or workflow cannot safely be left to the model’s own reasoning.
 
-OpenAI’s function calling guide is quite explicit here: the model can be given access to tools that query data or take actions, but the actual execution sits in your application. Anthropic describes tool use in much the same way: Claude returns a structured tool call, your application executes it, and the result is sent back to the model. In other words, the model is not “doing the work” by itself. It is producing a structured request for work to be done. ([developers.openai.com](https://developers.openai.com/api/docs/guides/function-calling/))
+OpenAI’s function calling guide is quite explicit here: the model can be given access to tools that query data or take actions, but the actual execution sits in your application. Anthropic describes tool use in much the same way: Claude returns a structured tool call, your application executes it, and the result is sent back to the model. In other words, the model is not “doing the work” by itself. It is producing a structured request for work to be done.
 
 **RAG / retrieval** is for cases where:
 
@@ -40,7 +40,7 @@ OpenAI’s function calling guide is quite explicit here: the model can be given
 - the response should be grounded in documents rather than free-form recall,
 - you want citations or evidence trails attached to the answer.
 
-OpenAI’s retrieval documentation frames this as semantic search over vector stores, especially useful when results are relevant in meaning rather than by exact keywords. That is not the same problem as calling a function. It is a knowledge access problem. ([developers.openai.com](https://developers.openai.com/api/docs/guides/retrieval/))
+OpenAI’s retrieval documentation frames this as semantic search over vector stores, especially useful when results are relevant in meaning rather than by exact keywords. That is not the same problem as calling a function. It is a knowledge access problem.
 
 So the clean distinction is:
 
@@ -89,7 +89,7 @@ RAG is often described in a strangely mystical way, as though dumping documents 
 
 It does not.
 
-What it actually does is far more mundane and far more useful. You chunk documents, compute embeddings, store them in a vector index, and later retrieve relevant chunks when a user asks a question. Those chunks are then passed to the model, which synthesises a response from the retrieved evidence. ([developers.openai.com](https://developers.openai.com/api/docs/guides/retrieval/))
+What it actually does is far more mundane and far more useful. You chunk documents, compute embeddings, store them in a vector index, and later retrieve relevant chunks when a user asks a question. Those chunks are then passed to the model, which synthesises a response from the retrieved evidence.
 
 So RAG is not “chat with your documents”. It is closer to this:
 
@@ -168,7 +168,7 @@ The most useful part of this conversation is not the terminology. It is the fail
 
 ### Failure mode 1: too many tools, too much overlap
 
-OpenAI’s agent guide makes a practical point that is easy to miss: the issue is not simply the number of tools. It is the similarity and overlap between them. Some systems perform well with more than fifteen distinct tools; others struggle with fewer than ten when the responsibilities blur together. ([openai.com](https://openai.com/business/guides-and-resources/a-practical-guide-to-building-ai-agents/))
+OpenAI’s agent guide makes a practical point that is easy to miss: the issue is not simply the number of tools. It is the similarity and overlap between them. Some systems perform well with more than fifteen distinct tools; others struggle with fewer than ten when the responsibilities blur together.
 
 For PMs, this means:
 

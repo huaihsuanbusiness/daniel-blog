@@ -24,7 +24,7 @@ That is why this piece starts from a less glamorous but more useful position:
 
 ## First correction: an agent is not an AI personality that “figures everything out”
 
-OpenAI’s agent guide is refreshingly pragmatic on this point. Agents are not described as mystical autonomous entities. They are workflows in which a model reasons through a task, calls tools, and may continue in a loop until an exit condition is reached. Anthropic’s guidance lands in a similar place: the most successful agent implementations are often built from simple, composable patterns rather than elaborate frameworks. ([openai.com](https://openai.com/business/guides-and-resources/a-practical-guide-to-building-ai-agents/))
+OpenAI’s agent guide is refreshingly pragmatic on this point. Agents are not described as mystical autonomous entities. They are workflows in which a model reasons through a task, calls tools, and may continue in a loop until an exit condition is reached. Anthropic’s guidance lands in a similar place: the most successful agent implementations are often built from simple, composable patterns rather than elaborate frameworks.
 
 That framing matters because it keeps the discussion grounded.
 
@@ -67,7 +67,7 @@ Agents become useful when the task requires judgement across steps, not just mor
 
 ### 3. The business value is high enough to justify the added operational burden
 
-OpenAI’s guide puts it plainly: first meet your accuracy target, then optimise for cost and latency. In PM language, that means you should only buy more complexity for use cases where the value warrants it. ([openai.com](https://openai.com/business/guides-and-resources/a-practical-guide-to-building-ai-agents/))
+OpenAI’s guide puts it plainly: first meet your accuracy target, then optimise for cost and latency. In PM language, that means you should only buy more complexity for use cases where the value warrants it.
 
 So the question is not whether you can build an agent. It is whether the use case deserves the cost, delay, and governance overhead that comes with one.
 
@@ -100,7 +100,7 @@ A large number of pilots do not fail because the model is weak. They fail becaus
 - how it will be monitored,
 - how incidents will be replayed and investigated.
 
-OpenAI’s 2026 governed agents cookbook captures this tension extremely well. It argues that organisations are no longer stuck on whether to experiment with AI, but on whether they can deploy it safely and prove that it is controlled. Its most useful line is arguably the simplest one: **governance drives delivery**. ([developers.openai.com](https://developers.openai.com/cookbook/examples/partners/agentic_governance_guide/agentic_governance_cookbook/))
+OpenAI’s 2026 governed agents cookbook captures this tension extremely well. It argues that organisations are no longer stuck on whether to experiment with AI, but on whether they can deploy it safely and prove that it is controlled. Its most useful line is arguably the simplest one: **governance drives delivery**.
 
 That point is worth dwelling on. Governance is often treated as a brake. In enterprise settings it is frequently the opposite. Clear guardrails and explicit accountability are what allow systems to move from pilot to production at all.
 
@@ -112,7 +112,7 @@ Those capabilities matter, of course. But in production they are rarely the thin
 
 The thing that decides that is usually guardrails.
 
-OpenAI’s cookbook puts this simply: guardrails exist to ensure agents behave safely, consistently, and within intended boundaries. ([developers.openai.com](https://developers.openai.com/cookbook/topic/guardrails))
+OpenAI’s cookbook puts this simply: guardrails exist to ensure agents behave safely, consistently, and within intended boundaries.
 
 The guardrails I care about most are these five.
 
@@ -140,7 +140,7 @@ If an agent fails and you cannot replay the path it took, you do not have a prod
 
 One of the more persistent myths in agent discourse is that multi-agent systems are somehow more advanced by default.
 
-OpenAI’s guidance is much more sober: maximise a single agent’s capabilities first. Multiple agents can give you cleaner separation, but they also introduce more complexity and overhead. ([openai.com](https://openai.com/business/guides-and-resources/a-practical-guide-to-building-ai-agents/))
+OpenAI’s guidance is much more sober: maximise a single agent’s capabilities first. Multiple agents can give you cleaner separation, but they also introduce more complexity and overhead.
 
 I think that is the right default.
 
@@ -156,7 +156,7 @@ Otherwise, one well-bounded agent with clear prompt templates and policy variabl
 
 When teams talk about governance, they often jump straight to legal review, policy documentation, or risk registers. Those matter, but governance is flimsy without evaluation.
 
-OpenAI’s evaluation guidance makes the key point plainly: generative AI is variable and non-deterministic, so traditional software testing methods are insufficient. Evals are how you measure accuracy, performance, and reliability in the face of that variability. ([developers.openai.com](https://developers.openai.com/api/docs/guides/evaluation-best-practices/))
+OpenAI’s evaluation guidance makes the key point plainly: generative AI is variable and non-deterministic, so traditional software testing methods are insufficient. Evals are how you measure accuracy, performance, and reliability in the face of that variability.
 
 That is especially important for PMs.
 
@@ -235,7 +235,7 @@ That matters because governance is not just a policy document or a safety slide.
 - which incidents trigger escalation,
 - who is accountable and who merely needs visibility.
 
-That is also why NIST’s AI RMF and its generative AI profile are worth reading. Not because they tell you how to prompt, but because they frame trustworthiness and risk management at the organisational level rather than at the model-call level. ([nist.gov](https://www.nist.gov/itl/ai-risk-management-framework))
+That is also why NIST’s AI RMF and its generative AI profile are worth reading. Not because they tell you how to prompt, but because they frame trustworthiness and risk management at the organisational level rather than at the model-call level.
 
 I think of this as a different kind of scaffolding.
 
