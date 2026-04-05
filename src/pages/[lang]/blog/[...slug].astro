@@ -100,7 +100,12 @@ function getSeriesMeta(slug: string, lang: string) {
 
 const seriesMeta = getSeriesMeta(slug!, lang!);
 const seriesPosts = seriesMeta
-  ? sameLangPosts.filter(p => getSeriesMeta(p.slug, lang!)?.key === seriesMeta.key)
+  ? sameLangPosts
+      .filter(p => getSeriesMeta(p.slug, lang!)?.key === seriesMeta.key)
+      .sort((a, b) =>
+        ((a.data.seriesOrder ?? 0) - (b.data.seriesOrder ?? 0)) ||
+        (a.data.date.valueOf() - b.data.date.valueOf())
+      )
   : [];
 const currentSeriesIndex = seriesPosts.findIndex(p => p.id === post.id);
 ---
