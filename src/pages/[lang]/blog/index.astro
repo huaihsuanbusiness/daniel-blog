@@ -92,6 +92,9 @@ function getSeriesMeta(slug: string, lang: string) {
   if (/^rag-engineering-in-practice-\d+$/.test(slug)) {
     return { key: 'rag-engineering-in-practice', order: 6, label: lang === 'zh' ? '6. RAG 工程實戰系列' : '6. RAG Engineering in Practice' };
   }
+  if (/^pm-llm-application-engineering-\d+$/.test(slug)) {
+    return { key: 'pm-llm-application-engineering', order: 7, label: lang === 'zh' ? '7. PM LLM 應用工程與治理系列' : '7. LLM Application Engineering and Governance for PMs Series' };
+  }
   if (/^pm-product-data-and-experimentation-\d+$/.test(slug)) {
     return { key: 'pm-product-data-and-experimentation', order: 1, label: lang === 'zh' ? '1. PM 產品數據與實驗系列' : '1. PM Product Data and Experimentation Series' };
   }

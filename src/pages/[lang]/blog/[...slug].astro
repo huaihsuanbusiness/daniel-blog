@@ -74,6 +74,9 @@ function getSeriesMeta(slug: string, lang: string) {
   if (/^rag-engineering-in-practice-\d+$/.test(slug)) {
     return { key: 'rag-engineering-in-practice', label: lang === 'zh' ? 'RAG 工程實戰系列' : 'RAG Engineering in Practice' };
   }
+  if (/^pm-llm-application-engineering-\d+$/.test(slug)) {
+    return { key: 'pm-llm-application-engineering', label: lang === 'zh' ? 'PM LLM 應用工程與治理系列' : 'LLM Application Engineering and Governance for PMs Series' };
+  }
   if (/^ai-agentic-workflow-series-\d+$/.test(slug)) {
     return { key: 'ai-agentic-workflow', label: lang === 'zh' ? 'AI 代理工作流系列' : 'AI Agentic Workflow Series' };
   }
