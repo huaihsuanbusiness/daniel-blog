@@ -370,31 +370,49 @@ function getSeriesMeta(slug: string, lang: string) {
 
 <script>
   function syncPostCardLinks() {
-    const currentUrl = new URL(window.location.href);
-    const currentSearch = currentUrl.search;
+    // Read category from sessionStorage first (set by this session's interactions),
+    // then fall back to URL params for direct-link visitors.
+    const savedCategory = sessionStorage.getItem('blog-category') || '';
+    const savedSort = sessionStorage.getItem('blog-sort') || '';
+    const urlParams = new URL(window.location.href).searchParams;
+    const urlCategory = urlParams.get('category') || '';
+    const urlSort = urlParams.get('sort') || '';
 
+    // sessionStorage wins if set in this session, otherwise use URL
+    const activeCat = savedCategory || urlCategory || 'all';
+    const activeSort = savedSort || urlSort || 'new';
+
+    const params = new URLSearchParams();
+    if (activeCat && activeCat !== 'all') params.set('category', activeCat);
+    if (activeSort) params.set('sort', activeSort);
+    const searchStr = params.toString() ? `?${params.toString()}` : '';
+
+    // Update every article card link to carry current category + sort
     document.querySelectorAll('[data-post-link]').forEach(link => {
       if (!(link instanceof HTMLAnchorElement)) return;
       const href = link.getAttribute('href');
       if (!href) return;
       const url = new URL(href, window.location.origin);
-      url.search = currentSearch;
-      link.href = `${url.pathname}${url.search}`;
+      url.search = searchStr.replace('?', '');
+      link.href = `${url.pathname}${url.search ? '?' + url.search : ''}`;
     });
 
+    // Clear-link removes category but keeps sort
     const clearLink = document.querySelector('.empty-category-link');
     if (clearLink instanceof HTMLAnchorElement) {
-      const url = new URL(clearLink.href, window.location.origin);
-      const params = new URLSearchParams(currentUrl.search);
-      params.delete('category');
-      url.search = params.toString();
-      clearLink.href = `${url.pathname}${url.search}`;
+      const clearParams = new URLSearchParams();
+      if (activeSort && activeSort !== 'new') clearParams.set('sort', activeSort);
+      const clearSearch = clearParams.toString() ? `?${clearParams.toString()}` : '';
+      clearLink.href = `/${lang}/blog${clearSearch}`;
     }
   }
 
   function applyCategoryFilter() {
-    const params = new URL(window.location.href).searchParams;
-    const activeCat = params.get('category') || 'all';
+    // sessionStorage wins (set by this session's tab clicks), URL is fallback
+    const sessionCat = sessionStorage.getItem('blog-category') || '';
+    const urlParams = new URL(window.location.href).searchParams;
+    const urlCat = urlParams.get('category') || '';
+    const activeCat = sessionCat || urlCat || 'all';
     const cards = document.querySelectorAll('[data-post-card]');
     let visible = 0;
 
@@ -414,17 +432,24 @@ function getSeriesMeta(slug: string, lang: string) {
     syncPostCardLinks();
   }
 
+  // Persist category + sort to sessionStorage so article pages can pick them up
+  function persistFilterState() {
+    const params = new URL(window.location.href).searchParams;
+    sessionStorage.setItem('blog-category', params.get('category') || '');
+    sessionStorage.setItem('blog-sort', params.get('sort') || '');
+  }
+
   // Run on load and whenever controls change
   syncListRuntimeState();
 
   // Also run when category tabs are clicked (listen on filter container)
   document.querySelector('.category-filter')?.addEventListener('click', () => {
-    setTimeout(syncListRuntimeState, 0);
+    setTimeout(() => { syncListRuntimeState(); persistFilterState(); }, 0);
   });
 
   // Re-apply when sort changes (it updates URL)
   const sortSelect = document.getElementById('sort-select');
   sortSelect?.addEventListener('change', () => {
-    setTimeout(syncListRuntimeState, 0);
+    setTimeout(() => { syncListRuntimeState(); persistFilterState(); }, 0);
   });
 </script>

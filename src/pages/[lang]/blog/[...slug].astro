@@ -214,13 +214,19 @@ const currentSeriesIndex = seriesPosts.findIndex(p => p.id === post.id);
 </Base>
 
 <script define:vars={{ lang, slug, otherLang, otherPostSlug, runtimeNavPosts }}>
-  const runtimeParams = new URL(window.location.href).searchParams;
-  const runtimeCategory = runtimeParams.get('category');
-  const runtimeSort = runtimeParams.get('sort');
-  const sharedParams = new URLSearchParams();
+  // sessionStorage wins (set by blog list in this session); URL is fallback for direct links
+  const sessionCategory = sessionStorage.getItem('blog-category') || '';
+  const sessionSort = sessionStorage.getItem('blog-sort') || '';
+  const urlParams = new URL(window.location.href).searchParams;
+  const urlCategory = urlParams.get('category') || '';
+  const urlSort = urlParams.get('sort') || '';
 
+  const runtimeCategory = sessionCategory || urlCategory || null;
+  const runtimeSort = sessionSort || urlSort || 'new';
+
+  const sharedParams = new URLSearchParams();
   if (runtimeCategory && runtimeCategory !== 'all') sharedParams.set('category', runtimeCategory);
-  if (runtimeSort) sharedParams.set('sort', runtimeSort);
+  if (runtimeSort && runtimeSort !== 'new') sharedParams.set('sort', runtimeSort);
 
   const sharedQuery = sharedParams.toString() ? `?${sharedParams.toString()}` : '';
   const withQuery = (path) => `${path}${sharedQuery}`;
