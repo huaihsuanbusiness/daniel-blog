@@ -98,6 +98,9 @@ function getSeriesMeta(slug: string, lang: string) {
   if (/^pm-growth-levers-monetisation-\d+$/.test(slug)) {
     return { key: 'pm-growth-levers-monetisation', order: 2, label: lang === 'zh' ? '2. PM 成長槓桿與變現系列' : '2. PM Growth Levers and Monetisation Series' };
   }
+  if (/^pm-user-research-fieldwork-\d+$/.test(slug)) {
+    return { key: 'pm-user-research-fieldwork', order: 3, label: lang === 'zh' ? '3. PM 用戶研究與田野訪查系列' : '3. PM User Research and Fieldwork Series' };
+  }
   return null;
 }
 ---
