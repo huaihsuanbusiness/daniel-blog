@@ -86,6 +86,9 @@ function getSeriesMeta(slug: string, lang: string) {
   if (/^mcp-engineering-deep-dive-\d+$/.test(slug)) {
     return { key: 'mcp-engineering-deep-dive', label: lang === 'zh' ? 'MCP 工程深化系列' : 'MCP Engineering Deep Dive' };
   }
+  if (/^pm-product-data-and-experimentation-\d+$/.test(slug)) {
+    return { key: 'pm-product-data-and-experimentation', label: lang === 'zh' ? 'PM 產品數據與實驗系列' : 'PM Product Data and Experimentation Series' };
+  }
   return null;
 }
 
