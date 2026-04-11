@@ -115,34 +115,35 @@ const logoHref = currentLang === 'en' ? '/en/' : '/zh/';
   }
 
   // Hide-on-scroll-up / show-on-scroll-down
-  let lastScrollY = window.scrollY;
-  let headerOffset = 0; // pixels hidden above viewport (0 = fully visible)
-  const headerHeight = header?.offsetHeight || 60;
+  // Only apply hide/show on mobile
+  if (window.matchMedia('(max-width: 767px)').matches) {
+    let lastScrollY = window.scrollY;
+    let headerOffset = 0;
+    const headerHeight = header?.offsetHeight || 60;
 
-  function updateHeader() {
-    const currentScrollY = window.scrollY;
-    const delta = currentScrollY - lastScrollY;
+    function updateHeader() {
+      const currentScrollY = window.scrollY;
+      const delta = currentScrollY - lastScrollY;
 
-    if (currentScrollY <= 0) {
-      headerOffset = 0;
-      header.style.transform = '';
-    } else if (Math.abs(delta) < 4) {
-      // ignore micro-jitter
-    } else if (delta > 0) {
-      // scrolling down — collapse
-      headerOffset = Math.min(headerOffset + delta, headerHeight);
-    } else {
-      // scrolling up — expand
-      headerOffset = Math.max(headerOffset + delta, 0);
+      if (currentScrollY <= 0) {
+        headerOffset = 0;
+        header.style.transform = '';
+      } else if (Math.abs(delta) < 4) {
+        // ignore micro-jitter
+      } else if (delta > 0) {
+        headerOffset = Math.min(headerOffset + delta, headerHeight);
+      } else {
+        headerOffset = Math.max(headerOffset + delta, 0);
+      }
+
+      header.style.transform = `translateY(-${headerOffset}px)`;
+      lastScrollY = currentScrollY;
     }
 
-    header.style.transform = `translateY(-${headerOffset}px)`;
-    lastScrollY = currentScrollY;
+    window.addEventListener('scroll', () => {
+      requestAnimationFrame(updateHeader);
+    }, { passive: true });
   }
-
-  window.addEventListener('scroll', () => {
-    requestAnimationFrame(updateHeader);
-  }, { passive: true });
 
   const applyTheme = (theme) => {
     document.documentElement.dataset.theme = theme;

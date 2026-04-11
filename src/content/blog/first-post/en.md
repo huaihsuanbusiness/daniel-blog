@@ -7,7 +7,6 @@ date: 2026-03-27T21:07:00
 featured: true
 ---
 
-# Welcome to danielcanfly
 
 Some thoughts are not meant to live as a story that disappears after twenty-four hours.
 
