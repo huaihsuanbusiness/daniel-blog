@@ -114,11 +114,38 @@ const logoHref = currentLang === 'en' ? '/en/' : '/zh/';
     langToggle.href = url.toString();
   }
 
-  window.addEventListener('scroll', () => {
-    if (window.scrollY > 20) {
-      header?.classList.add('scrolled');
+  // Hide-on-scroll-up / show-on-scroll-down
+  let lastScrollY = window.scrollY;
+  let ticking = false;
+
+  function updateHeader() {
+    const currentScrollY = window.scrollY;
+    const delta = currentScrollY - lastScrollY;
+
+    if (currentScrollY <= 0) {
+      // At very top — always show
+      header?.classList.remove('is-hidden', 'is-visible');
+    } else if (Math.abs(delta) < 4) {
+      // Ignore micro-jitter
+    } else if (delta > 0) {
+      // Scrolling down — hide
+      header?.classList.remove('is-visible');
+      header?.classList.add('is-hidden');
     } else {
-      header?.classList.remove('scrolled');
+      // Scrolling up — show
+      header?.classList.remove('is-hidden');
+      header?.classList.add('is-visible');
+    }
+
+    lastScrollY = currentScrollY;
+    ticking = false;
+  }
+
+
+  window.addEventListener('scroll', () => {
+    if (!ticking) {
+      requestAnimationFrame(updateHeader);
+      ticking = true;
     }
   });
 
@@ -132,6 +159,7 @@ const logoHref = currentLang === 'en' ? '/en/' : '/zh/';
     applyTheme(current === 'light' ? 'dark' : 'light');
   });
 
+
   mobileBtn?.addEventListener('click', () => {
     mobileNav?.classList.toggle('open');
   });
@@ -144,7 +172,7 @@ const logoHref = currentLang === 'en' ? '/en/' : '/zh/';
     z-index: 100;
     padding: var(--space-2) 0;
     background: transparent;
-    transition: all var(--transition-fast);
+    transition: transform 280ms ease;
   }
 
   .site-header.scrolled {
@@ -291,6 +319,14 @@ const logoHref = currentLang === 'en' ? '/en/' : '/zh/';
   @media (max-width: 768px) {
     .site-header {
       padding: var(--space-1) 0;
+    }
+
+    .site-header.is-hidden {
+      transform: translateY(-100%);
+    }
+
+    .site-header.is-visible {
+      transform: translateY(0);
     }
 
     .site-header.scrolled {
