@@ -291,12 +291,13 @@ const logoHref = currentLang === 'en' ? '/en/' : '/zh/';
   @media (max-width: 768px) {
     .site-header {
       padding: var(--space-1) 0;
+      background: var(--color-bg);
     }
 
     .header-inner {
       flex-wrap: wrap;
       gap: var(--space-2);
-      background: color-mix(in srgb, var(--color-surface) 96%, transparent);
+      background: var(--color-surface);
       border-radius: 12px;
       padding: var(--space-2);
       border: 1px solid var(--color-border);
