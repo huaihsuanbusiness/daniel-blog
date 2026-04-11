@@ -3,7 +3,7 @@ title: "創業家的類別創造 Part 2 － 創業家怎麼真的做 category de
 description: "Part 1 先處理了一件事：類別創造不是命名遊戲，也不是所有新創都該硬玩的品牌豪賭。它真正要解的，是市場一直用錯鏡頭看你。"
 categories: ["startup"]
 tags: []
-date: 2026-04-05T16:24:00
+date: 2026-04-07T23:35:00
 series: "創業家的類別創造系列"
 seriesOrder: 2
 ---
