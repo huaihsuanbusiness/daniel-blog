@@ -114,8 +114,9 @@ const logoHref = currentLang === 'en' ? '/en/' : '/zh/';
     langToggle.href = url.toString();
   }
 
-  // Hide-on-scroll-up / show-on-scroll-down
-  if (window.matchMedia('(max-width: 767px)').matches) {
+  // Mobile: touch-based header tracking
+  (function() {
+    if (!window.matchMedia('(max-width: 767px)').matches) return;
     let headerOffset = 0;
     const headerHeight = header?.offsetHeight || 60;
     let touching = false;
@@ -136,52 +137,32 @@ const logoHref = currentLang === 'en' ? '/en/' : '/zh/';
       if (!touching) return;
       const delta = lastTouchY - e.touches[0].clientY;
       lastTouchY = e.touches[0].clientY;
-
-      // delta > 0: finger moving up → reveal header (negative offset to show it)
-      // delta < 0: finger moving down → hide header
       if (delta > 0.5) {
-        // up: expand header
         headerOffset = Math.min(headerOffset + delta, headerHeight);
       } else if (delta < -0.5) {
-        // down: collapse header
         headerOffset = Math.max(headerOffset + delta, 0);
       }
-
       applyOffset();
     }, { passive: true });
 
     document.addEventListener('touchend', () => {
       touching = false;
     }, { passive: true });
-  }
+  })();
 
-  // Desktop scroll tracking — just show/hide based on direction
-  } else {
+  // Desktop: simple scroll-based hide/show
+  (function() {
+    if (window.matchMedia('(max-width: 767px)').matches) return;
     let lastScrollY = window.scrollY;
-    let ticking = false;
-
-    function onScroll() {
-      const currentScrollY = window.scrollY;
-      const delta = currentScrollY - lastScrollY;
-
-      if (Math.abs(delta) < 4) { ticking = false; return; }
-
-      if (delta > 0) {
-        header.style.transform = 'translateY(-100%)';
-      } else {
-        header.style.transform = '';
-      }
-      lastScrollY = currentScrollY;
-      ticking = false;
-    }
 
     window.addEventListener('scroll', () => {
-      if (!ticking) {
-        requestAnimationFrame(onScroll);
-        ticking = true;
-      }
+      const currentScrollY = window.scrollY;
+      const delta = currentScrollY - lastScrollY;
+      if (Math.abs(delta) < 4) return;
+      header.style.transform = delta > 0 ? 'translateY(-100%)' : '';
+      lastScrollY = currentScrollY;
     }, { passive: true });
-  }
+  })();
 
   const applyTheme = (theme) => {
     document.documentElement.dataset.theme = theme;
@@ -192,7 +173,6 @@ const logoHref = currentLang === 'en' ? '/en/' : '/zh/';
     const current = document.documentElement.dataset.theme === 'light' ? 'light' : 'dark';
     applyTheme(current === 'light' ? 'dark' : 'light');
   });
-
 
   mobileBtn?.addEventListener('click', () => {
     mobileNav?.classList.toggle('open');
