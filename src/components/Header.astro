@@ -115,7 +115,6 @@ const logoHref = currentLang === 'en' ? '/en/' : '/zh/';
   }
 
   // Hide-on-scroll-up / show-on-scroll-down
-  // Only apply hide/show on mobile
   if (window.matchMedia('(max-width: 767px)').matches) {
     let lastScrollY = window.scrollY;
     let headerOffset = 0;
@@ -128,15 +127,14 @@ const logoHref = currentLang === 'en' ? '/en/' : '/zh/';
       if (currentScrollY <= 0) {
         headerOffset = 0;
         header.style.transform = '';
-      } else if (Math.abs(delta) < 4) {
-        // ignore micro-jitter
       } else if (delta > 0) {
         headerOffset = Math.min(headerOffset + delta, headerHeight);
-      } else {
+      } else if (delta < 0) {
         headerOffset = Math.max(headerOffset + delta, 0);
       }
 
-      header.style.transform = `translateY(-${headerOffset}px)`;
+      // Snap to whole pixels for smoother compositing
+      header.style.transform = `translateY(-${Math.round(headerOffset)}px)`;
       lastScrollY = currentScrollY;
     }
 
@@ -315,10 +313,13 @@ const logoHref = currentLang === 'en' ? '/en/' : '/zh/';
     .site-header {
       padding: var(--space-1) 0;
       background: var(--color-bg);
+      transition: none;
+      backdrop-filter: none;
+      border: none;
     }
 
-    .site-header {
-      transition: none;
+    .site-header.scrolled {
+      background: var(--color-bg);
     }
 
     .site-header.is-hidden {
@@ -327,12 +328,6 @@ const logoHref = currentLang === 'en' ? '/en/' : '/zh/';
 
     .site-header.is-visible {
       transform: translateY(0);
-    }
-
-    .site-header.scrolled {
-      background: transparent;
-      border-bottom: none;
-      backdrop-filter: none;
     }
 
     .header-inner {
