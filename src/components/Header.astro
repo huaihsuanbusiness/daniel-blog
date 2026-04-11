@@ -114,39 +114,36 @@ const logoHref = currentLang === 'en' ? '/en/' : '/zh/';
     langToggle.href = url.toString();
   }
 
-  // Mobile: touch-based header tracking
+  // Mobile: pull-down to expand header
   (function() {
     if (!window.matchMedia('(max-width: 767px)').matches) return;
-    let headerOffset = 0;
-    const headerHeight = header?.offsetHeight || 60;
-    let touching = false;
-    let lastTouchY = 0;
+    const headerHeight = header?.offsetHeight || 56;
+    let lastY = null;
+    let expanded = 0; // how many px the header is expanded (pulled down)
 
-    function applyOffset() {
-      header.style.transform = `translateY(-${Math.round(headerOffset)}px)`;
+    function applyTransform(offset) {
+      header.style.transform = `translateY(${offset}px)`;
     }
 
     document.addEventListener('touchstart', (e) => {
-      touching = true;
-      lastTouchY = e.touches[0].clientY;
-      headerOffset = 0;
-      header.style.transform = '';
+      lastY = e.touches[0].clientY;
+      expanded = 0;
+      applyTransform(0);
     }, { passive: true });
 
     document.addEventListener('touchmove', (e) => {
-      if (!touching) return;
-      const delta = lastTouchY - e.touches[0].clientY;
-      lastTouchY = e.touches[0].clientY;
-      if (delta > 0.5) {
-        headerOffset = Math.min(headerOffset + delta, headerHeight);
-      } else if (delta < -0.5) {
-        headerOffset = Math.max(headerOffset + delta, 0);
-      }
-      applyOffset();
+      if (lastY === null) return;
+      const delta = e.touches[0].clientY - lastY;
+      lastY = e.touches[0].clientY;
+
+      // delta > 0: finger moved down → expand header (push it down)
+      // delta < 0: finger moved up → collapse header
+      expanded = Math.min(Math.max(expanded + delta, 0), headerHeight);
+      applyTransform(expanded);
     }, { passive: true });
 
     document.addEventListener('touchend', () => {
-      touching = false;
+      lastY = null;
     }, { passive: true });
   })();
 
@@ -354,35 +351,35 @@ const logoHref = currentLang === 'en' ? '/en/' : '/zh/';
       gap: var(--space-2);
       background: var(--color-surface);
       border-radius: 12px;
-      padding: var(--space-2);
+      padding: var(--space-1) var(--space-2);
       border: 1px solid var(--color-border);
     }
 
-    .logo { font-size: 1rem; }
+    .logo { font-size: 0.875rem; }
 
     .header-actions {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 4px;
       order: 2;
     }
 
     .lang-toggle,
     .theme-toggle,
     .search-btn {
-      padding: 5px 8px;
-      font-size: 0.7rem;
+      padding: 4px 6px;
+      font-size: 0.65rem;
     }
 
     .nav-desktop {
       display: flex;
-      gap: var(--space-3);
+      gap: var(--space-2);
       order: 3;
       width: 100%;
       justify-content: center;
     }
 
-    .nav-link { font-size: 0.8rem; }
+    .nav-link { font-size: 0.75rem; }
 
     .mobile-menu-btn { display: none; }
   }
