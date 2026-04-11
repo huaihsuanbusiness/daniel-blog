@@ -303,6 +303,31 @@ const logoHref = currentLang === 'en' ? '/en/' : '/zh/';
   }
 
   @media (max-width: 768px) {
+    .site-header {
+      padding: var(--space-1) 0;
+    }
+
+    .header-inner {
+      flex-wrap: wrap;
+      gap: var(--space-2);
+    }
+
+    .header-actions {
+      flex-wrap: wrap;
+      width: 100%;
+      justify-content: flex-end;
+      gap: 6px;
+    }
+
+    .lang-toggle, .theme-toggle, .search-btn {
+      padding: 5px 8px;
+      font-size: 0.7rem;
+    }
+
+    .logo {
+      font-size: 1rem;
+    }
+
     .nav-desktop {
       display: none;
     }
