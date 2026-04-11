@@ -98,6 +98,9 @@ function getSeriesMeta(slug: string, lang: string) {
   if (/^pm-user-research-fieldwork-\d+$/.test(slug)) {
     return { key: 'pm-user-research-fieldwork', label: lang === 'zh' ? 'PM 用戶研究與田野訪查系列' : 'PM User Research and Fieldwork Series' };
   }
+  if (/^after-the-pause-\d+$/.test(slug)) {
+    return { key: 'after-the-pause', label: lang === 'zh' ? '暫停之後系列' : 'After the Pause Series' };
+  }
   if (/^category-design-for-founders-\d+$/.test(slug)) {
     return { key: 'category-design-for-founders', label: lang === 'zh' ? '創業家的類別創造系列' : 'Category Design for Founders Series' };
   }
