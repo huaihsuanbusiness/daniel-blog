@@ -116,30 +116,70 @@ const logoHref = currentLang === 'en' ? '/en/' : '/zh/';
 
   // Hide-on-scroll-up / show-on-scroll-down
   if (window.matchMedia('(max-width: 767px)').matches) {
-    let lastScrollY = window.scrollY;
     let headerOffset = 0;
     const headerHeight = header?.offsetHeight || 60;
+    let touching = false;
+    let lastTouchY = 0;
 
-    function updateHeader() {
-      const currentScrollY = window.scrollY;
-      const delta = currentScrollY - lastScrollY;
+    function applyOffset() {
+      header.style.transform = `translateY(-${Math.round(headerOffset)}px)`;
+    }
 
-      if (currentScrollY <= 0) {
-        headerOffset = 0;
-        header.style.transform = '';
-      } else if (delta > 0) {
+    document.addEventListener('touchstart', (e) => {
+      touching = true;
+      lastTouchY = e.touches[0].clientY;
+      headerOffset = 0;
+      header.style.transform = '';
+    }, { passive: true });
+
+    document.addEventListener('touchmove', (e) => {
+      if (!touching) return;
+      const delta = lastTouchY - e.touches[0].clientY;
+      lastTouchY = e.touches[0].clientY;
+
+      // delta > 0: finger moving up → reveal header (negative offset to show it)
+      // delta < 0: finger moving down → hide header
+      if (delta > 0.5) {
+        // up: expand header
         headerOffset = Math.min(headerOffset + delta, headerHeight);
-      } else if (delta < 0) {
+      } else if (delta < -0.5) {
+        // down: collapse header
         headerOffset = Math.max(headerOffset + delta, 0);
       }
 
-      // Snap to whole pixels for smoother compositing
-      header.style.transform = `translateY(-${Math.round(headerOffset)}px)`;
+      applyOffset();
+    }, { passive: true });
+
+    document.addEventListener('touchend', () => {
+      touching = false;
+    }, { passive: true });
+  }
+
+  // Desktop scroll tracking — just show/hide based on direction
+  } else {
+    let lastScrollY = window.scrollY;
+    let ticking = false;
+
+    function onScroll() {
+      const currentScrollY = window.scrollY;
+      const delta = currentScrollY - lastScrollY;
+
+      if (Math.abs(delta) < 4) { ticking = false; return; }
+
+      if (delta > 0) {
+        header.style.transform = 'translateY(-100%)';
+      } else {
+        header.style.transform = '';
+      }
       lastScrollY = currentScrollY;
+      ticking = false;
     }
 
     window.addEventListener('scroll', () => {
-      requestAnimationFrame(updateHeader);
+      if (!ticking) {
+        requestAnimationFrame(onScroll);
+        ticking = true;
+      }
     }, { passive: true });
   }
 
@@ -165,13 +205,12 @@ const logoHref = currentLang === 'en' ? '/en/' : '/zh/';
     top: 0;
     z-index: 100;
     padding: var(--space-2) 0;
-    background: transparent;
+    background: var(--color-bg);
+    border-bottom: 1px solid var(--color-border);
   }
 
   .site-header.scrolled {
-    background: var(--color-header-scrolled);
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--color-border);
+    background: var(--color-bg);
   }
 
   .header-inner {
