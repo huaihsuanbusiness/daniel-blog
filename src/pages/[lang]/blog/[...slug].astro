@@ -180,7 +180,9 @@ const currentSeriesIndex = seriesPosts.findIndex(p => p.id === post.id);
               {seriesPosts.map((item, index) => (
                 <a href={`/${lang}/blog/${item.slug}${sharedQueryString}`} data-series-nav-link class:list={['series-nav-item', { active: item.id === post.id }] }>
                   <span class="series-nav-index">{index + 1}</span>
-                  <span class="series-nav-item-title">{item.data.title}</span>
+                  <span class="series-nav-item-title">
+                    <span class="series-nav-item-title-link">{item.data.title}</span>
+                  </span>
                 </a>
               ))}
             </div>
@@ -356,7 +358,7 @@ const currentSeriesIndex = seriesPosts.findIndex(p => p.id === post.id);
     grid-template-columns: 1fr auto;
     gap: 4px 12px;
     align-items: center;
-    padding: 16px 18px;
+    padding: 10px 14px;
     border: 1px solid color-mix(in srgb, var(--color-accent) 22%, var(--color-border));
     border-radius: 18px;
     background: linear-gradient(180deg, color-mix(in srgb, var(--color-accent) 8%, var(--color-surface)), color-mix(in srgb, var(--color-surface) 94%, transparent));
@@ -392,7 +394,7 @@ const currentSeriesIndex = seriesPosts.findIndex(p => p.id === post.id);
   }
 
   .series-nav-panel {
-    margin-top: 10px;
+    margin-top: 8px;
     max-height: 320px;
     overflow: auto;
     padding: 8px;
@@ -443,6 +445,16 @@ const currentSeriesIndex = seriesPosts.findIndex(p => p.id === post.id);
 
   .series-nav-item-title {
     line-height: 1.45;
+  }
+
+  .series-nav-item-title-link {
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    text-decoration-color: color-mix(in srgb, var(--color-accent) 50%, transparent);
+  }
+
+  .series-nav-item:hover .series-nav-item-title-link {
+    text-decoration-color: var(--color-accent);
   }
 
   .lang-switch {
