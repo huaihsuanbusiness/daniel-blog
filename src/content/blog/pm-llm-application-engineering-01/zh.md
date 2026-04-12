@@ -6,7 +6,7 @@ description: "- 你已經會用 ChatGPT，但開始想把 LLM 接進產品、內
 categories: ["ai"]
 tags: []
 date: 2026-04-05T16:25:00
-series: "PM LLM 應用工程與治理系列"
+series: "PM LLM 應用工程與治理"
 seriesOrder: 1
 ---
 

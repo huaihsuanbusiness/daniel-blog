@@ -4,7 +4,7 @@ description: "很多團隊一講 activation，腦中浮現的其實是 onboardin
 categories: ["pm"]
 tags: []
 date: 2026-04-05T16:08:00
-series: "PM 成長槓桿與變現系列"
+series: "PM 成長槓桿與變現"
 seriesOrder: 1
 ---
 

@@ -4,7 +4,7 @@ description: "When PMs start building real data fluency, one of the first “adv
 categories: ["pm"]
 tags: []
 date: 2026-04-05T16:01:00
-series: "PM Product Data and Experimentation Series"
+series: "PM Product Data and Experimentation"
 seriesOrder: 2
 ---
 

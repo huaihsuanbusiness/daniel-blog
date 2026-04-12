@@ -4,7 +4,7 @@ description: "One of the most common reactions I get, once people learn I went o
 categories: ["startup"]
 tags: []
 date: 2026-04-05T16:20:00
-series: "After the Pause Series"
+series: "After the Pause"
 seriesOrder: 1
 ---
 

@@ -7,7 +7,7 @@ description: "歡迎信幾封。
 categories: ["pm"]
 tags: []
 date: 2026-04-05T16:10:00
-series: "PM 成長槓桿與變現系列"
+series: "PM 成長槓桿與變現"
 seriesOrder: 3
 ---
 

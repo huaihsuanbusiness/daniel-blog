@@ -4,7 +4,7 @@ description: "到最後，我決定停下來，不是因為我突然不相信這
 categories: ["startup"]
 tags: []
 date: 2026-04-06T09:00:00
-series: "暫停之後系列"
+series: "暫停之後"
 seriesOrder: 6
 ---
 

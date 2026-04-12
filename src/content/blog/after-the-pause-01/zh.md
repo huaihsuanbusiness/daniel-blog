@@ -4,7 +4,7 @@ description: "我每次聽到「突然」兩個字，心裡都會頓一下。不
 categories: ["startup"]
 tags: []
 date: 2026-04-03T04:32:00
-series: "暫停之後系列"
+series: "暫停之後"
 seriesOrder: 1
 ---
 

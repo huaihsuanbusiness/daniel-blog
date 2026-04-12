@@ -4,7 +4,7 @@ description: "A product can look healthier than it really is simply because aver
 categories: ["pm"]
 tags: []
 date: 2026-04-05T16:05:00
-series: "PM Product Data and Experimentation Series"
+series: "PM Product Data and Experimentation"
 seriesOrder: 6
 ---
 

@@ -4,7 +4,7 @@ description: "When PMs talk about acquisition, the conversation often collapses 
 categories: ["pm"]
 tags: []
 date: 2026-04-05T16:12:00
-series: "PM Growth Levers and Monetisation Series"
+series: "PM Growth Levers and Monetisation"
 seriesOrder: 5
 ---
 

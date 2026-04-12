@@ -7,7 +7,7 @@ description: "- 你問了根本沒有相關經驗的人
 categories: ["pm"]
 tags: []
 date: 2026-04-05T16:22:00
-series: "PM 用戶研究與田野訪查系列"
+series: "PM 用戶研究與田野訪查"
 seriesOrder: 9
 ---
 

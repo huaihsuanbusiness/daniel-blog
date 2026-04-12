@@ -4,7 +4,7 @@ description: "I assumed one thing would at least become simpler once I came back
 categories: ["startup"]
 tags: []
 date: 2026-04-05T16:26:00
-series: "After the Pause Series"
+series: "After the Pause"
 seriesOrder: 7
 ---
 

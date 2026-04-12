@@ -6,7 +6,7 @@ Dashboard 甚至還有些指標在往上。"
 categories: ["pm"]
 tags: []
 date: 2026-04-05T16:05:00
-series: "PM 產品數據與實驗系列"
+series: "PM 產品數據與實驗"
 seriesOrder: 6
 ---
 

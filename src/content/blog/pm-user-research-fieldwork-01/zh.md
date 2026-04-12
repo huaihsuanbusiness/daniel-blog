@@ -4,7 +4,7 @@ description: "dashboard 很會告訴你哪裡掉了、哪裡變慢了、哪個 c
 categories: ["pm"]
 tags: []
 date: 2026-04-05T16:14:00
-series: "PM 用戶研究與田野訪查系列"
+series: "PM 用戶研究與田野訪查"
 seriesOrder: 1
 ---
 

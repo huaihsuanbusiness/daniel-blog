@@ -4,7 +4,7 @@ description: "At the beginning of my second venture, I placed most of my attenti
 categories: ["startup"]
 tags: []
 date: 2026-04-05T16:23:00
-series: "After the Pause Series"
+series: "After the Pause"
 seriesOrder: 4
 ---
 

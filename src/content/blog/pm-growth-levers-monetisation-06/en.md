@@ -5,7 +5,7 @@ What they are short of is rhythm."
 categories: ["pm"]
 tags: []
 date: 2026-04-05T16:13:00
-series: "PM Growth Levers and Monetisation Series"
+series: "PM Growth Levers and Monetisation"
 seriesOrder: 6
 ---
 

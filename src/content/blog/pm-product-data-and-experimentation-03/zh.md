@@ -4,7 +4,7 @@ description: "很多團隊談 tracking plan 時，語氣都很像在處理一份
 categories: ["pm"]
 tags: []
 date: 2026-04-05T16:02:00
-series: "PM 產品數據與實驗系列"
+series: "PM 產品數據與實驗"
 seriesOrder: 3
 ---
 

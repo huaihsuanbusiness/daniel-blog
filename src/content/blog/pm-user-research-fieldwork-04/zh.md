@@ -9,7 +9,7 @@ description: "- 不知道該去哪裡找人
 categories: ["pm"]
 tags: []
 date: 2026-04-05T16:17:00
-series: "PM 用戶研究與田野訪查系列"
+series: "PM 用戶研究與田野訪查"
 seriesOrder: 4
 ---
 

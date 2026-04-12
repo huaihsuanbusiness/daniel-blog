@@ -4,7 +4,7 @@ description: "A great many research rounds do not fail at the discussion guide. 
 categories: ["pm"]
 tags: []
 date: 2026-04-05T16:22:00
-series: "PM User Research and Fieldwork Series"
+series: "PM User Research and Fieldwork"
 seriesOrder: 9
 ---
 

@@ -4,7 +4,7 @@ description: "我第一個真的想做成公司的題目，不是一個小工具
 categories: ["startup"]
 tags: []
 date: 2026-04-04T20:06:00
-series: "暫停之後系列"
+series: "暫停之後"
 seriesOrder: 2
 ---
 

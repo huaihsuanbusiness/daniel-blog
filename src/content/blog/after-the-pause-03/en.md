@@ -4,7 +4,7 @@ description: "There was a stretch when my pitch deck changed every few weeks."
 categories: ["startup"]
 tags: []
 date: 2026-04-05T16:22:00
-series: "After the Pause Series"
+series: "After the Pause"
 seriesOrder: 3
 ---
 

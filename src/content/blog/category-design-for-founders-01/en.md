@@ -4,7 +4,7 @@ description: "When founders first hear “category design”, the reaction is of
 categories: ["startup"]
 tags: []
 date: 2026-04-05T16:23:00
-series: "Category Design for Founders Series"
+series: "Category Design for Founders"
 seriesOrder: 1
 ---
 

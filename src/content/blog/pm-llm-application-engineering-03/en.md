@@ -4,7 +4,7 @@ description: "The first instinct many teams have when they start building with L
 categories: ["ai"]
 tags: []
 date: 2026-04-05T16:27:00
-series: "LLM Application Engineering and Governance for PMs Series"
+series: "LLM Application Engineering and Governance for PMs"
 seriesOrder: 3
 ---
 

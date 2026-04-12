@@ -5,7 +5,7 @@ description: "- You already use ChatGPT, but you’re now trying to wire LLMs in
 categories: ["ai"]
 tags: []
 date: 2026-04-05T16:25:00
-series: "LLM Application Engineering and Governance for PMs Series"
+series: "LLM Application Engineering and Governance for PMs"
 seriesOrder: 1
 ---
 

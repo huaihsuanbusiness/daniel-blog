@@ -6,7 +6,7 @@ description: "`count(*)`
 categories: ["pm"]
 tags: []
 date: 2026-04-05T16:04:00
-series: "PM 產品數據與實驗系列"
+series: "PM 產品數據與實驗"
 seriesOrder: 5
 ---
 

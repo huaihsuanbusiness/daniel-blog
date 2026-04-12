@@ -4,7 +4,7 @@ description: "Concept calibration / series opener"
 categories: ["pm"]
 tags: []
 date: 2026-04-05T16:14:00
-series: "PM User Research and Fieldwork Series"
+series: "PM User Research and Fieldwork"
 seriesOrder: 1
 ---
 

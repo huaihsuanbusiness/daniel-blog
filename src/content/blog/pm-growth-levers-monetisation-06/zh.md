@@ -5,7 +5,7 @@ description: "很多團隊不是沒有想法。
 categories: ["pm"]
 tags: []
 date: 2026-04-05T16:13:00
-series: "PM 成長槓桿與變現系列"
+series: "PM 成長槓桿與變現"
 seriesOrder: 6
 ---
 

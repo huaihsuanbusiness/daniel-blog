@@ -4,7 +4,7 @@ description: "A lot of PMs learn SQL by learning how to count."
 categories: ["pm"]
 tags: []
 date: 2026-04-05T16:04:00
-series: "PM Product Data and Experimentation Series"
+series: "PM Product Data and Experimentation"
 seriesOrder: 5
 ---
 

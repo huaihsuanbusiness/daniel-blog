@@ -4,7 +4,7 @@ description: "When teams say they want to improve lifecycle, what they often mea
 categories: ["pm"]
 tags: []
 date: 2026-04-05T16:10:00
-series: "PM Growth Levers and Monetisation Series"
+series: "PM Growth Levers and Monetisation"
 seriesOrder: 3
 ---
 

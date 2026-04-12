@@ -4,7 +4,7 @@ description: "When PMs see strange numbers, the first instinct is often somethin
 categories: ["pm"]
 tags: []
 date: 2026-04-05T16:07:00
-series: "PM Product Data and Experimentation Series"
+series: "PM Product Data and Experimentation"
 seriesOrder: 8
 ---
 

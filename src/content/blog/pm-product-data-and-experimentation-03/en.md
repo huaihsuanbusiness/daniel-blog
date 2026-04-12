@@ -4,7 +4,7 @@ description: "When teams talk about a tracking plan, they often sound as if they
 categories: ["pm"]
 tags: []
 date: 2026-04-05T16:02:00
-series: "PM Product Data and Experimentation Series"
+series: "PM Product Data and Experimentation"
 seriesOrder: 3
 ---
 

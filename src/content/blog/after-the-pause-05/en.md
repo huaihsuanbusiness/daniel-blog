@@ -4,7 +4,7 @@ description: "The response I heard most often during BD was not confusion."
 categories: ["startup"]
 tags: []
 date: 2026-04-05T16:24:00
-series: "After the Pause Series"
+series: "After the Pause"
 seriesOrder: 5
 ---
 

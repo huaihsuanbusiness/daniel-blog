@@ -4,7 +4,7 @@ description: "Method piece / Interview craft guide"
 categories: ["pm"]
 tags: []
 date: 2026-04-05T16:18:00
-series: "PM User Research and Fieldwork Series"
+series: "PM User Research and Fieldwork"
 seriesOrder: 5
 ---
 

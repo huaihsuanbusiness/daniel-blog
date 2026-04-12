@@ -4,7 +4,7 @@ description: "When PMs say they want to become more data-driven, the first insti
 categories: ["pm"]
 tags: []
 date: 2026-04-05T16:03:00
-series: "PM Product Data and Experimentation Series"
+series: "PM Product Data and Experimentation"
 seriesOrder: 4
 ---
 

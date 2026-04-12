@@ -4,7 +4,7 @@ description: "Analysis methods piece / Research synthesis guide"
 categories: ["pm"]
 tags: []
 date: 2026-04-05T16:20:00
-series: "PM User Research and Fieldwork Series"
+series: "PM User Research and Fieldwork"
 seriesOrder: 7
 ---
 

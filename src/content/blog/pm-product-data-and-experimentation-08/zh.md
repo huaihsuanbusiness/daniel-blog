@@ -6,7 +6,7 @@ description: "- query 寫錯了嗎
 categories: ["pm"]
 tags: []
 date: 2026-04-05T16:07:00
-series: "PM 產品數據與實驗系列"
+series: "PM 產品數據與實驗"
 seriesOrder: 8
 ---
 

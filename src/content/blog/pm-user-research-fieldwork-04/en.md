@@ -4,7 +4,7 @@ description: "Practical method piece / Research ops primer"
 categories: ["pm"]
 tags: []
 date: 2026-04-05T16:17:00
-series: "PM User Research and Fieldwork Series"
+series: "PM User Research and Fieldwork"
 seriesOrder: 4
 ---
 

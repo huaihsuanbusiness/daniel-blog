@@ -4,7 +4,7 @@ description: "A lot of teams say they want to improve activation, but what they 
 categories: ["pm"]
 tags: []
 date: 2026-04-05T16:08:00
-series: "PM Growth Levers and Monetisation Series"
+series: "PM Growth Levers and Monetisation"
 seriesOrder: 1
 ---
 

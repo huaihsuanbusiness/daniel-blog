@@ -4,7 +4,7 @@ description: "很多 PM 一碰到獲客，反應都很像：先看 CAC、先看 
 categories: ["pm"]
 tags: []
 date: 2026-04-05T16:12:00
-series: "PM 成長槓桿與變現系列"
+series: "PM 成長槓桿與變現"
 seriesOrder: 5
 ---
 

@@ -4,7 +4,7 @@ description: "我原本以為，創業做了一輪之後，回到求職市場，
 categories: ["startup"]
 tags: []
 date: 2026-04-06T11:52:00
-series: "暫停之後系列"
+series: "暫停之後"
 seriesOrder: 7
 ---
 

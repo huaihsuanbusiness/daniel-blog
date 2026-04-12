@@ -4,7 +4,7 @@ description: "A surprising number of experiments do not fail because the idea wa
 categories: ["pm"]
 tags: []
 date: 2026-04-05T16:06:00
-series: "PM Product Data and Experimentation Series"
+series: "PM Product Data and Experimentation"
 seriesOrder: 7
 ---
 

@@ -4,7 +4,7 @@ description: "When teams start talking about monetisation, the conversation ofte
 categories: ["pm"]
 tags: []
 date: 2026-04-05T16:11:00
-series: "PM Growth Levers and Monetisation Series"
+series: "PM Growth Levers and Monetisation"
 seriesOrder: 4
 ---
 

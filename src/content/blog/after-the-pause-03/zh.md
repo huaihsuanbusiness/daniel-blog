@@ -4,7 +4,7 @@ description: "有一段時間，我的 pitch deck 幾乎每隔幾週就會改一
 categories: ["startup"]
 tags: []
 date: 2026-04-05T13:24:00
-series: "暫停之後系列"
+series: "暫停之後"
 seriesOrder: 3
 ---
 

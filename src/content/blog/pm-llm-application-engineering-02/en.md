@@ -5,7 +5,7 @@ description: "- You have already written prompts and started to notice that “l
 categories: ["ai"]
 tags: []
 date: 2026-04-05T16:26:00
-series: "LLM Application Engineering and Governance for PMs Series"
+series: "LLM Application Engineering and Governance for PMs"
 seriesOrder: 2
 ---
 

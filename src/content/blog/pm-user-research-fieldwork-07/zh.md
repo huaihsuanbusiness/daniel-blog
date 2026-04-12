@@ -4,7 +4,7 @@ description: "很多團隊其實不是沒做研究，而是研究做完之後，
 categories: ["pm"]
 tags: []
 date: 2026-04-05T16:20:00
-series: "PM 用戶研究與田野訪查系列"
+series: "PM 用戶研究與田野訪查"
 seriesOrder: 7
 ---
 

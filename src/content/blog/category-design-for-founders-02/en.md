@@ -4,7 +4,7 @@ description: "Part 1 dealt with one thing first: category design is not a naming
 categories: ["startup"]
 tags: []
 date: 2026-04-05T16:24:00
-series: "Category Design for Founders Series"
+series: "Category Design for Founders"
 seriesOrder: 2
 ---
 

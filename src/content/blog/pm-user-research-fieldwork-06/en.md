@@ -4,7 +4,7 @@ description: "Practical methods piece / Session facilitation guide"
 categories: ["pm"]
 tags: []
 date: 2026-04-05T16:19:00
-series: "PM User Research and Fieldwork Series"
+series: "PM User Research and Fieldwork"
 seriesOrder: 6
 ---
 

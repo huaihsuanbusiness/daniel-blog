@@ -4,7 +4,7 @@ description: "In the end, I did not pause the venture because I stopped believin
 categories: ["startup"]
 tags: []
 date: 2026-04-05T16:25:00
-series: "After the Pause Series"
+series: "After the Pause"
 seriesOrder: 6
 ---
 

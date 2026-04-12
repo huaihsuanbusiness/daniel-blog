@@ -4,7 +4,7 @@ description: "很多產品一談 monetisation，第一個反應就是 paywall。
 categories: ["pm"]
 tags: []
 date: 2026-04-05T16:11:00
-series: "PM 成長槓桿與變現系列"
+series: "PM 成長槓桿與變現"
 seriesOrder: 4
 ---
 

@@ -4,7 +4,7 @@ description: "Once tool calling and RAG begin to work, nearly every team develop
 categories: ["ai"]
 tags: []
 date: 2026-04-05T16:28:00
-series: "LLM Application Engineering and Governance for PMs Series"
+series: "LLM Application Engineering and Governance for PMs"
 seriesOrder: 4
 ---
 

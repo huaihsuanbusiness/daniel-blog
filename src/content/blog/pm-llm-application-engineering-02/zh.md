@@ -6,7 +6,7 @@ description: "- 你已經做過 prompt，開始發現「看起來對」和「系
 categories: ["ai"]
 tags: []
 date: 2026-04-05T16:26:00
-series: "PM LLM 應用工程與治理系列"
+series: "PM LLM 應用工程與治理"
 seriesOrder: 2
 ---
 

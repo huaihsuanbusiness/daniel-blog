@@ -6,7 +6,7 @@ description: "產品明明不是不能用。
 categories: ["pm"]
 tags: []
 date: 2026-04-05T16:09:00
-series: "PM 成長槓桿與變現系列"
+series: "PM 成長槓桿與變現"
 seriesOrder: 2
 ---
 

@@ -5,7 +5,7 @@ description: "大家聊得很順，筆記也很多，錄音聽起來很熱鬧。
 categories: ["pm"]
 tags: []
 date: 2026-04-05T16:18:00
-series: "PM 用戶研究與田野訪查系列"
+series: "PM 用戶研究與田野訪查"
 seriesOrder: 5
 ---
 

@@ -4,7 +4,7 @@ description: "第二次創業一開始，我其實很自然地把注意力放在
 categories: ["startup"]
 tags: []
 date: 2026-04-05T22:22:00
-series: "暫停之後系列"
+series: "暫停之後"
 seriesOrder: 4
 ---
 
