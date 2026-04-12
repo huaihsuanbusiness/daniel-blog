@@ -3,7 +3,7 @@ title: "被現實修正之後 07｜早期員工最值錢的，不是 title，是
 description: "我在 Draper U 聽 Cristina Cordova 那場 fireside 時，腦中其實先浮出一個很俗的問題。 如果不是 founder，一個人在 startup 最早期到底怎麼變得重要？"
 categories: ["startup"]
 tags: []
-date: 2026-04-18T05:00:00
+date: 2026-04-10T05:00:00
 series: "被現實修正之後"
 seriesOrder: 07
 ---

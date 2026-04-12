@@ -3,7 +3,7 @@ title: "被現實修正之後 02｜不是你不會 networking，是多數 networ
 description: "我對這件事真正改觀，不是在課堂上。 是在舊金山自己把一場 founder × investor mixer 辦出來之後。"
 categories: ["startup"]
 tags: []
-date: 2026-04-13T05:00:00
+date: 2026-04-08T05:00:00
 series: "被現實修正之後"
 seriesOrder: 02
 ---

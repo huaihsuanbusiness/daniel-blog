@@ -3,7 +3,7 @@ title: "被現實修正之後 01｜在別人願意回你以前，他得先知道
 description: "Draper U 那兩堂由 Rachel Konrad 主講的課，我最後帶走的不是某一個寫作技巧。 是另外一件更不體面的事。"
 categories: ["startup"]
 tags: []
-date: 2026-04-12T05:00:00
+date: 2026-04-08T05:00:00
 series: "被現實修正之後"
 seriesOrder: 01
 ---

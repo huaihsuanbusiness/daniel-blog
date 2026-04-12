@@ -3,7 +3,7 @@ title: "被現實修正之後 05｜客戶說有興趣，跟他真的往前站，
 description: "那堂 first customer success 的 workshop 到最後，講者把白板畫成一個很粗的梯子。 最下面是 discovery call。"
 categories: ["startup"]
 tags: []
-date: 2026-04-16T05:00:00
+date: 2026-04-10T05:00:00
 series: "被現實修正之後"
 seriesOrder: 05
 ---

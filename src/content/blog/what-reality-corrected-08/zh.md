@@ -3,7 +3,7 @@ title: "被現實修正之後 08｜文化不是你寫在牆上的字，是你一
 description: "在 Draper U 那場 fireside 開始前，我其實對這類題目有一點防備。 只要主題是 team、people、culture，我通常會先預設它很容易變空。講到最後，大家都會同意文化很重要、招人要慎選、要重視 feedback…"
 categories: ["startup"]
 tags: []
-date: 2026-04-19T05:00:00
+date: 2026-04-10T05:00:00
 series: "被現實修正之後"
 seriesOrder: 08
 ---

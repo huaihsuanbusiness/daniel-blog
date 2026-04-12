@@ -3,7 +3,7 @@ title: "被現實修正之後 04｜市場不是越大越好，你先問自己現
 description: "在 Draper U 那堂 GTM session 裡，講者在白板上先寫了三句很簡單的話： - Who you sell"
 categories: ["startup"]
 tags: []
-date: 2026-04-15T05:00:00
+date: 2026-04-09T05:00:00
 series: "被現實修正之後"
 seriesOrder: 04
 ---
