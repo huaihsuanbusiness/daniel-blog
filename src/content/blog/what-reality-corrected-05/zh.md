@@ -167,6 +167,3 @@ Enterprise sales 本來就重，有時候你先拿到的是 access，不是 reve
 真正要看的，是他有沒有移動。  
 哪怕只是一小步，也比一堆漂亮的口頭善意更值錢。
 
----
-系列｜被現實修正之後  
-英文系列名｜What Reality Corrected

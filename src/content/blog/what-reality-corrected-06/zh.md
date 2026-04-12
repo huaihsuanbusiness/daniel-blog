@@ -218,6 +218,3 @@ OpenView 寫 Attio 那篇，裡面有一段我很喜歡。Attio 早期 onboardin
 你不一定能全部拿掉。  
 但你至少要知道，痛到底藏在哪裡。
 
----
-系列｜被現實修正之後  
-英文系列名｜What Reality Corrected

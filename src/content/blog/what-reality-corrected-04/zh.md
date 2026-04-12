@@ -158,6 +158,3 @@ seriesOrder: 04
 
 前到你第一天選錯，後面很多努力都只是在替錯的 segment 做深度服務。
 
----
-系列｜被現實修正之後  
-英文系列名｜What Reality Corrected
