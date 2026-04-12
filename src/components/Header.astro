@@ -115,12 +115,12 @@ const logoHref = currentLang === 'en' ? '/en/' : '/zh/';
   }
 
   // Header tracking: works on BOTH mobile and desktop
-  // Header expands (translateY increases) when finger/mouse pulls DOWN
-  // Header collapses (translateY decreases) when finger/mouse pulls UP
+  // Page scrolls DOWN  -> header hides UP   (translateY becomes more negative)
+  // Page scrolls UP    -> header reveals DOWN (translateY moves toward 0)
   (function() {
     const headerHeight = header?.offsetHeight || 56;
     let lastY = null;
-    let headerOffset = 0; // how many px the header is shifted down
+    let headerOffset = 0; // 0 = visible (normal pos), negative = hidden above viewport
 
     function applyTransform() {
       header.style.transform = `translateY(${Math.round(headerOffset)}px)`;
@@ -129,16 +129,14 @@ const logoHref = currentLang === 'en' ? '/en/' : '/zh/';
     // Touch events (mobile)
     document.addEventListener('touchstart', (e) => {
       lastY = e.touches[0].clientY;
-      headerOffset = 0;
-      applyTransform();
     }, { passive: true });
 
     document.addEventListener('touchmove', (e) => {
       if (lastY === null) return;
-      const delta = e.touches[0].clientY - lastY;
+      const delta = e.touches[0].clientY - lastY; // positive = finger moving DOWN
       lastY = e.touches[0].clientY;
-      // delta > 0: finger moving down -> expand header (shift it down)
-      headerOffset = Math.min(Math.max(headerOffset + delta, 0), headerHeight);
+      // delta > 0: page scrolling down -> header hides UP (offset becomes more negative)
+      headerOffset = Math.min(Math.max(headerOffset + delta, -headerHeight), 0);
       applyTransform();
     }, { passive: true });
 
@@ -146,12 +144,12 @@ const logoHref = currentLang === 'en' ? '/en/' : '/zh/';
       lastY = null;
     }, { passive: true });
 
-    // Wheel events (desktop) - deltaY > 0 = scrolling down = collapse header
+    // Wheel events (desktop)
     document.addEventListener('wheel', (e) => {
-      // Only track when page is scrollable
       if (document.documentElement.scrollHeight <= window.innerHeight) return;
-      const delta = -e.deltaY; // invert: positive = pulling down
-      headerOffset = Math.min(Math.max(headerOffset + delta * 0.15, 0), headerHeight);
+      const delta = e.deltaY;
+      // deltaY > 0: scrolling down -> header hides up
+      headerOffset = Math.min(Math.max(headerOffset + delta * 0.12, -headerHeight), 0);
       applyTransform();
     }, { passive: true });
   })();
