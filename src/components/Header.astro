@@ -115,12 +115,12 @@ const logoHref = currentLang === 'en' ? '/en/' : '/zh/';
   }
 
   // Header tracking: works on BOTH mobile and desktop
-  // Page scrolls DOWN  -> header hides UP   (translateY becomes more negative)
-  // Page scrolls UP    -> header reveals DOWN (translateY moves toward 0)
+  // Page scrolls DOWN -> header hides UP  (offset goes more negative)
+  // Page scrolls UP   -> header reveals DOWN (offset returns to 0)
   (function() {
     const headerHeight = header?.offsetHeight || 56;
     let lastY = null;
-    let headerOffset = 0; // 0 = visible (normal pos), negative = hidden above viewport
+    let headerOffset = 0; // 0 = visible, negative = hidden above
 
     function applyTransform() {
       header.style.transform = `translateY(${Math.round(headerOffset)}px)`;
@@ -133,9 +133,9 @@ const logoHref = currentLang === 'en' ? '/en/' : '/zh/';
 
     document.addEventListener('touchmove', (e) => {
       if (lastY === null) return;
-      const delta = e.touches[0].clientY - lastY; // positive = finger moving DOWN
+      const delta = lastY - e.touches[0].clientY; // + = finger pulled DOWN on page
       lastY = e.touches[0].clientY;
-      // delta > 0: page scrolling down -> header hides UP (offset becomes more negative)
+      // delta > 0: finger pulled down = page scrolling down -> hide header
       headerOffset = Math.min(Math.max(headerOffset + delta, -headerHeight), 0);
       applyTransform();
     }, { passive: true });
@@ -147,8 +147,7 @@ const logoHref = currentLang === 'en' ? '/en/' : '/zh/';
     // Wheel events (desktop)
     document.addEventListener('wheel', (e) => {
       if (document.documentElement.scrollHeight <= window.innerHeight) return;
-      const delta = e.deltaY;
-      // deltaY > 0: scrolling down -> header hides up
+      const delta = -e.deltaY; // + = scrolling down
       headerOffset = Math.min(Math.max(headerOffset + delta * 0.12, -headerHeight), 0);
       applyTransform();
     }, { passive: true });
