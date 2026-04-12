@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 920" role="img" aria-labelledby="title desc">
+  <title id="title">AI memory types and where different mechanisms fit</title>
+  <desc id="desc">A blog-friendly SVG showing four kinds of memory in local LLM systems: context memory, external memory, behaviour or preference memory, and parametric memory, with examples such as system prompt, Modelfile, RAG, LoRA and base weights.</desc>
+  <defs>
+    <style>
+      .bg { fill: #fbfbfd; }
+      .title { font: 700 30px Arial, Inter, sans-serif; fill: #1f2937; }
+      .subtitle { font: 400 15px Arial, Inter, sans-serif; fill: #475569; }
+      .boxTitle { font: 700 20px Arial, Inter, sans-serif; fill: #1f2937; }
+      .body { font: 400 15px Arial, Inter, sans-serif; fill: #334155; }
+      .small { font: 400 14px Arial, Inter, sans-serif; fill: #475569; }
+      .chip { font: 600 13px Arial, Inter, sans-serif; fill: #334155; }
+      .stroke { stroke: #cbd5e1; stroke-width: 1.5; }
+      .arrow { stroke: #64748b; stroke-width: 2.2; fill: none; marker-end: url(#m); }
+      .line { stroke: #94a3b8; stroke-width: 2; fill: none; stroke-dasharray: 5 6; }
+    </style>
+    <marker id="m" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M1,1 L11,6 L1,11 Z" fill="#64748b"/>
+    </marker>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="1200" height="920"/>
+
+  <text class="title" x="60" y="60">AI memory is not one box</text>
+  <text class="subtitle" x="60" y="88">A practical map for local LLM work: what belongs in context, what belongs outside, and what should not be pushed into weights too early.</text>
+
+  <!-- Top row -->
+  <rect x="60" y="140" width="500" height="220" rx="24" fill="#ecfeff" class="stroke"/>
+  <text class="boxTitle" x="92" y="182">1. Context memory</text>
+  <text class="body" x="92" y="214">What the model can see in the current window.</text>
+  <text class="small" x="92" y="248">Good for:</text>
+  <text class="body" x="92" y="274">• current task goal</text>
+  <text class="body" x="92" y="298">• temporary format requests</text>
+  <text class="body" x="92" y="322">• short-lived examples and local definitions</text>
+  <rect x="340" y="208" width="170" height="34" rx="17" fill="#ffffff" class="stroke"/>
+  <text class="chip" x="355" y="230">single prompt</text>
+  <rect x="340" y="252" width="170" height="34" rx="17" fill="#ffffff" class="stroke"/>
+  <text class="chip" x="355" y="274">system prompt</text>
+  <rect x="340" y="296" width="170" height="34" rx="17" fill="#ffffff" class="stroke"/>
+  <text class="chip" x="355" y="318">few-shot message</text>
+
+  <rect x="640" y="140" width="500" height="220" rx="24" fill="#eff6ff" class="stroke"/>
+  <text class="boxTitle" x="672" y="182">2. External memory</text>
+  <text class="body" x="672" y="214">Knowledge stored outside the model and fetched when needed.</text>
+  <text class="small" x="672" y="248">Good for:</text>
+  <text class="body" x="672" y="274">• changing facts</text>
+  <text class="body" x="672" y="298">• documents, FAQs, internal knowledge</text>
+  <text class="body" x="672" y="322">• user profiles and task records</text>
+  <rect x="920" y="208" width="170" height="34" rx="17" fill="#ffffff" class="stroke"/>
+  <text class="chip" x="950" y="230">RAG</text>
+  <rect x="920" y="252" width="170" height="34" rx="17" fill="#ffffff" class="stroke"/>
+  <text class="chip" x="946" y="274">vector DB</text>
+  <rect x="920" y="296" width="170" height="34" rx="17" fill="#ffffff" class="stroke"/>
+  <text class="chip" x="944" y="318">doc store</text>
+
+  <!-- Bottom row -->
+  <rect x="60" y="430" width="500" height="260" rx="24" fill="#fdf2f8" class="stroke"/>
+  <text class="boxTitle" x="92" y="472">3. Behaviour / preference memory</text>
+  <text class="body" x="92" y="504">How the model tends to answer, not just what it knows.</text>
+  <text class="small" x="92" y="538">Good for:</text>
+  <text class="body" x="92" y="564">• lead with the conclusion</text>
+  <text class="body" x="92" y="588">• answer in Traditional Chinese</text>
+  <text class="body" x="92" y="612">• avoid unsolicited code and lesson-plan mode</text>
+  <rect x="340" y="500" width="170" height="34" rx="17" fill="#ffffff" class="stroke"/>
+  <text class="chip" x="383" y="522">Modelfile</text>
+  <rect x="340" y="544" width="170" height="34" rx="17" fill="#ffffff" class="stroke"/>
+  <text class="chip" x="399" y="566">LoRA</text>
+  <rect x="340" y="588" width="170" height="34" rx="17" fill="#ffffff" class="stroke"/>
+  <text class="chip" x="404" y="610">DPO</text>
+  <rect x="340" y="632" width="170" height="34" rx="17" fill="#ffffff" class="stroke"/>
+  <text class="chip" x="392" y="654">adapter</text>
+
+  <rect x="640" y="430" width="500" height="260" rx="24" fill="#fff7ed" class="stroke"/>
+  <text class="boxTitle" x="672" y="472">4. Parametric memory</text>
+  <text class="body" x="672" y="504">What has been compressed into the model’s parameters.</text>
+  <text class="small" x="672" y="538">Good for:</text>
+  <text class="body" x="672" y="564">• language ability</text>
+  <text class="body" x="672" y="588">• broad world knowledge distributions</text>
+  <text class="body" x="672" y="612">• durable model competence</text>
+  <rect x="920" y="510" width="170" height="34" rx="17" fill="#ffffff" class="stroke"/>
+  <text class="chip" x="955" y="532">base weights</text>
+  <rect x="920" y="554" width="170" height="34" rx="17" fill="#ffffff" class="stroke"/>
+  <text class="chip" x="945" y="576">full FT</text>
+
+  <!-- Center notes -->
+  <path class="arrow" d="M560 250 C600 250, 600 250, 640 250"/>
+  <path class="arrow" d="M560 560 C600 560, 600 560, 640 560"/>
+  <path class="line" d="M310 360 L310 430"/>
+  <path class="line" d="M890 360 L890 430"/>
+  <text class="small" x="474" y="236">retrieved into context</text>
+  <text class="small" x="448" y="546">deeper than prompts</text>
+
+  <rect x="190" y="748" width="820" height="112" rx="24" fill="#ffffff" class="stroke"/>
+  <text class="boxTitle" x="220" y="786">Working rule</text>
+  <text class="body" x="220" y="818">If the information changes often, needs deletion, or needs provenance, external memory is usually the safer first home.</text>
+  <text class="body" x="220" y="844">If what you want is stable answering style, preference memory becomes relevant. Go deeper only when the outer layers stop holding.</text>
+</svg>
