@@ -52,20 +52,20 @@
   <rect x="90" y="394" width="250" height="44" rx="22" fill="url(#headerGrad)"/>
   <text x="215" y="422" text-anchor="middle" font-family="Arial, Inter, sans-serif" font-size="22" font-weight="700" fill="#ffffff">2. Market shifts</text>
 
-  <rect x="110" y="458" width="300" height="76" rx="20" fill="#ffffff" stroke="#ead3dc"/>
-  <text x="260" y="485" text-anchor="middle" font-family="Arial, Inter, sans-serif" font-size="21" font-weight="700" fill="#8f304c">Adoption infrastructure</text>
-  <text x="260" y="510" text-anchor="middle" font-family="Arial, Inter, sans-serif" font-size="17" fill="#5d6275">SME upgrade paths, DEB,</text>
-  <text x="260" y="532" text-anchor="middle" font-family="Arial, Inter, sans-serif" font-size="17" fill="#5d6275">capability-building support</text>
+  <rect x="110" y="468" width="300" height="76" rx="20" fill="#ffffff" stroke="#ead3dc"/>
+  <text x="260" y="495" text-anchor="middle" font-family="Arial, Inter, sans-serif" font-size="21" font-weight="700" fill="#8f304c">Adoption infrastructure</text>
+  <text x="260" y="520" text-anchor="middle" font-family="Arial, Inter, sans-serif" font-size="17" fill="#5d6275">SME upgrade paths, DEB,</text>
+  <text x="260" y="542" text-anchor="middle" font-family="Arial, Inter, sans-serif" font-size="17" fill="#5d6275">capability-building support</text>
 
-  <rect x="450" y="458" width="300" height="76" rx="20" fill="#ffffff" stroke="#ead3dc"/>
-  <text x="600" y="485" text-anchor="middle" font-family="Arial, Inter, sans-serif" font-size="21" font-weight="700" fill="#8f304c">Trust as product logic</text>
-  <text x="600" y="510" text-anchor="middle" font-family="Arial, Inter, sans-serif" font-size="17" fill="#5d6275">Governance, AI Verify, PETs,</text>
-  <text x="600" y="532" text-anchor="middle" font-family="Arial, Inter, sans-serif" font-size="17" fill="#5d6275">resilience and auditability</text>
+  <rect x="450" y="468" width="300" height="76" rx="20" fill="#ffffff" stroke="#ead3dc"/>
+  <text x="600" y="495" text-anchor="middle" font-family="Arial, Inter, sans-serif" font-size="21" font-weight="700" fill="#8f304c">Trust as product logic</text>
+  <text x="600" y="520" text-anchor="middle" font-family="Arial, Inter, sans-serif" font-size="17" fill="#5d6275">Governance, AI Verify, PETs,</text>
+  <text x="600" y="542" text-anchor="middle" font-family="Arial, Inter, sans-serif" font-size="17" fill="#5d6275">resilience and auditability</text>
 
-  <rect x="790" y="458" width="300" height="76" rx="20" fill="#ffffff" stroke="#ead3dc"/>
-  <text x="940" y="485" text-anchor="middle" font-family="Arial, Inter, sans-serif" font-size="21" font-weight="700" fill="#8f304c">Cross-border leverage</text>
-  <text x="940" y="510" text-anchor="middle" font-family="Arial, Inter, sans-serif" font-size="17" fill="#5d6275">DEAs, DEPA, interoperability,</text>
-  <text x="940" y="532" text-anchor="middle" font-family="Arial, Inter, sans-serif" font-size="17" fill="#5d6275">regional expansion logic</text>
+  <rect x="790" y="468" width="300" height="76" rx="20" fill="#ffffff" stroke="#ead3dc"/>
+  <text x="940" y="495" text-anchor="middle" font-family="Arial, Inter, sans-serif" font-size="21" font-weight="700" fill="#8f304c">Cross-border leverage</text>
+  <text x="940" y="520" text-anchor="middle" font-family="Arial, Inter, sans-serif" font-size="17" fill="#5d6275">DEAs, DEPA, interoperability,</text>
+  <text x="940" y="542" text-anchor="middle" font-family="Arial, Inter, sans-serif" font-size="17" fill="#5d6275">regional expansion logic</text>
 
   <rect x="70" y="600" width="1060" height="170" rx="28" fill="url(#bizGrad)" stroke="#d8e8e0" filter="url(#shadow)"/>
   <rect x="90" y="624" width="320" height="44" rx="22" fill="url(#headerGrad)"/>
@@ -83,11 +83,11 @@
   <text x="940" y="709" text-anchor="middle" font-family="Arial, Inter, sans-serif" font-size="20" font-weight="700" fill="#1f5d4d">Regional operators</text>
   <text x="940" y="730" text-anchor="middle" font-family="Arial, Inter, sans-serif" font-size="16" fill="#5d6275">Built for interoperable cross-border scale</text>
 
-  <line x1="260" y1="304" x2="260" y2="448" stroke="#7082a8" stroke-width="4" marker-end="url(#arrow)"/>
-  <line x1="600" y1="304" x2="600" y2="448" stroke="#7082a8" stroke-width="4" marker-end="url(#arrow)"/>
-  <line x1="940" y1="314" x2="940" y2="448" stroke="#7082a8" stroke-width="4" marker-end="url(#arrow)"/>
+  <line x1="260" y1="314" x2="260" y2="458" stroke="#7082a8" stroke-width="4" marker-end="url(#arrow)"/>
+  <line x1="600" y1="314" x2="600" y2="458" stroke="#7082a8" stroke-width="4" marker-end="url(#arrow)"/>
+  <line x1="940" y1="314" x2="940" y2="458" stroke="#7082a8" stroke-width="4" marker-end="url(#arrow)"/>
 
-  <line x1="260" y1="534" x2="260" y2="674" stroke="#7082a8" stroke-width="4" marker-end="url(#arrow)"/>
-  <line x1="600" y1="534" x2="600" y2="674" stroke="#7082a8" stroke-width="4" marker-end="url(#arrow)"/>
-  <line x1="940" y1="534" x2="940" y2="674" stroke="#7082a8" stroke-width="4" marker-end="url(#arrow)"/>
+  <line x1="260" y1="554" x2="260" y2="684" stroke="#7082a8" stroke-width="4" marker-end="url(#arrow)"/>
+  <line x1="600" y1="554" x2="600" y2="684" stroke="#7082a8" stroke-width="4" marker-end="url(#arrow)"/>
+  <line x1="940" y1="554" x2="940" y2="684" stroke="#7082a8" stroke-width="4" marker-end="url(#arrow)"/>
 </svg>
