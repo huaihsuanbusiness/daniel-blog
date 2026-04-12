@@ -69,46 +69,52 @@ const selectedCategoryLabel = selectedCategory && selectedCategory in CATEGORY_L
 
 function getSeriesMeta(slug: string, lang: string) {
   if (/^openclaw-getting-started-\d+$/.test(slug)) {
-    return { key: 'openclaw-getting-started', order: 1, label: lang === 'zh' ? '1. OpenClaw 快速上手系列' : '1. OpenClaw Getting Started' };
+    return { key: 'openclaw-getting-started', order: 1, label: lang === 'zh' ? '1. OpenClaw 快速上手' : '1. OpenClaw Getting Started' };
   }
   if (/^openclaw-deployment-and-configuration-part-\d+$/.test(slug)) {
-    return { key: 'openclaw-deployment-and-configuration', order: 2, label: lang === 'zh' ? '2. OpenClaw 部署與配置系列' : '2. OpenClaw Deployment and Configuration' };
+    return { key: 'openclaw-deployment-and-configuration', order: 2, label: lang === 'zh' ? '2. OpenClaw 部署與配置' : '2. OpenClaw Deployment and Configuration' };
   }
   if (/^ai-agentic-workflow-series-\d+$/.test(slug)) {
-    return { key: 'ai-agentic-workflow', order: 1, label: lang === 'zh' ? '1. AI 代理工作流系列' : '1. AI Agentic Workflow Series' };
+    return { key: 'ai-agentic-workflow', order: 1, label: lang === 'zh' ? '1. AI 代理工作流' : '1. AI Agentic Workflow' };
   }
   if (/^building-ai-skills-series-part-\d+$/.test(slug)) {
-    return { key: 'building-ai-skills', order: 2, label: lang === 'zh' ? '2. 打造 AI Skill 系列' : '2. Building AI Skills Series' };
+    return { key: 'building-ai-skills', order: 2, label: lang === 'zh' ? '2. 打造 AI Skill' : '2. Building AI Skills' };
   }
   if (/^build-mcp-server-part-\d+$/.test(slug)) {
-    return { key: 'build-mcp-server', order: 3, label: lang === 'zh' ? '3. 自主建造 MCP Server 系列' : '3. Build Your Own MCP Server' };
+    return { key: 'build-mcp-server', order: 3, label: lang === 'zh' ? '3. 自主建造 MCP Server' : '3. Build Your Own MCP Server' };
   }
   if (/^mcp-engineering-deep-dive-\d+$/.test(slug)) {
-    return { key: 'mcp-engineering-deep-dive', order: 4, label: lang === 'zh' ? '4. MCP 工程深化系列' : '4. MCP Engineering Deep Dive' };
+    return { key: 'mcp-engineering-deep-dive', order: 4, label: lang === 'zh' ? '4. MCP 工程深化' : '4. MCP Engineering Deep Dive' };
   }
   if (/^comfyui-series-\d+$/.test(slug)) {
-    return { key: 'comfyui-series', order: 5, label: lang === 'zh' ? '5. ComfyUI 系列' : '5. ComfyUI Series' };
+    return { key: 'comfyui-series', order: 5, label: lang === 'zh' ? '5. ComfyUI' : '5. ComfyUI' };
   }
   if (/^rag-engineering-in-practice-\d+$/.test(slug)) {
-    return { key: 'rag-engineering-in-practice', order: 6, label: lang === 'zh' ? '6. RAG 工程實戰系列' : '6. RAG Engineering in Practice' };
+    return { key: 'rag-engineering-in-practice', order: 6, label: lang === 'zh' ? '6. RAG 工程實戰' : '6. RAG Engineering in Practice' };
   }
   if (/^pm-llm-application-engineering-\d+$/.test(slug)) {
-    return { key: 'pm-llm-application-engineering', order: 7, label: lang === 'zh' ? '7. PM LLM 應用工程與治理系列' : '7. LLM Application Engineering and Governance for PMs Series' };
+    return { key: 'pm-llm-application-engineering', order: 7, label: lang === 'zh' ? '7. PM LLM 應用工程與治理' : '7. LLM Application Engineering and Governance for PMs' };
   }
   if (/^pm-product-data-and-experimentation-\d+$/.test(slug)) {
-    return { key: 'pm-product-data-and-experimentation', order: 1, label: lang === 'zh' ? '1. PM 產品數據與實驗系列' : '1. PM Product Data and Experimentation Series' };
+    return { key: 'pm-product-data-and-experimentation', order: 1, label: lang === 'zh' ? '1. PM 產品數據與實驗' : '1. PM Product Data and Experimentation' };
   }
   if (/^pm-growth-levers-monetisation-\d+$/.test(slug)) {
-    return { key: 'pm-growth-levers-monetisation', order: 2, label: lang === 'zh' ? '2. PM 成長槓桿與變現系列' : '2. PM Growth Levers and Monetisation Series' };
+    return { key: 'pm-growth-levers-monetisation', order: 2, label: lang === 'zh' ? '2. PM 成長槓桿與變現' : '2. PM Growth Levers and Monetisation' };
   }
   if (/^pm-user-research-fieldwork-\d+$/.test(slug)) {
-    return { key: 'pm-user-research-fieldwork', order: 3, label: lang === 'zh' ? '3. PM 用戶研究與田野訪查系列' : '3. PM User Research and Fieldwork Series' };
+    return { key: 'pm-user-research-fieldwork', order: 3, label: lang === 'zh' ? '3. PM 用戶研究與田野訪查' : '3. PM User Research and Fieldwork' };
   }
   if (/^after-the-pause-\d+$/.test(slug)) {
-    return { key: 'after-the-pause', order: 1, label: lang === 'zh' ? '1. 暫停之後系列' : '1. After the Pause Series' };
+    return { key: 'after-the-pause', order: 1, label: lang === 'zh' ? '1. 暫停之後' : '1. After the Pause' };
   }
   if (/^category-design-for-founders-\d+$/.test(slug)) {
-    return { key: 'category-design-for-founders', order: 2, label: lang === 'zh' ? '2. 創業家的類別創造系列' : '2. Category Design for Founders Series' };
+    return { key: 'category-design-for-founders', order: 2, label: lang === 'zh' ? '2. 創業家的類別創造' : '2. Category Design for Founders' };
+  }
+  if (/^what-reality-corrected-\d+$/.test(slug)) {
+    return { key: 'what-reality-corrected', order: 3, label: lang === 'zh' ? '3. 被現實修正之後' : '3. What Reality Corrected' };
+  }
+  if (/^local-llm-fine-tuning-\d+$/.test(slug)) {
+    return { key: 'local-llm-fine-tuning', order: 8, label: lang === 'zh' ? '8. 本地 LLM 微調拆解：從 Modelfile、LoRA 到 DPO 的實戰' : '8. Local LLM Fine-Tuning Breakdown: From Modelfiles and LoRA to DPO' };
   }
   return null;
 }
