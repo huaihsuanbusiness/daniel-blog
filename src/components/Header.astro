@@ -114,43 +114,46 @@ const logoHref = currentLang === 'en' ? '/en/' : '/zh/';
     langToggle.href = url.toString();
   }
 
-  // Header tracking: works on BOTH mobile and desktop
-  // Page scrolls DOWN -> header hides UP  (offset goes more negative)
-  // Page scrolls UP   -> header reveals DOWN (offset returns to 0)
+  // Unified header tracking on all screen sizes
+  // Wheel (desktop) + Touch scroll (mobile) both use the same direction logic
+  // Page scrolls down -> header hides up  |  Page scrolls up -> header reveals down
   (function() {
     const headerHeight = header?.offsetHeight || 56;
-    let lastY = null;
-    let headerOffset = 0; // 0 = visible, negative = hidden above
+    let headerOffset = 0;
+    let lastScrollY = 0;
+    let ticking = false;
 
     function applyTransform() {
       header.style.transform = `translateY(${Math.round(headerOffset)}px)`;
     }
 
-    // Touch events (mobile)
-    document.addEventListener('touchstart', (e) => {
-      lastY = e.touches[0].clientY;
-    }, { passive: true });
-
-    document.addEventListener('touchmove', (e) => {
-      if (lastY === null) return;
-      const delta = lastY - e.touches[0].clientY; // + = finger pulled DOWN on page
-      lastY = e.touches[0].clientY;
-      // delta > 0: finger pulled down = page scrolling down -> hide header
-      headerOffset = Math.min(Math.max(headerOffset + delta, -headerHeight), 0);
+    function update(newOffset) {
+      headerOffset = Math.min(Math.max(newOffset, -headerHeight), 0);
       applyTransform();
-    }, { passive: true });
+    }
 
-    document.addEventListener('touchend', () => {
-      lastY = null;
-    }, { passive: true });
+    function onScroll() {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          const currentScrollY = window.scrollY;
+          const delta = currentScrollY - lastScrollY;
 
-    // Wheel events (desktop)
-    document.addEventListener('wheel', (e) => {
-      if (document.documentElement.scrollHeight <= window.innerHeight) return;
-      const delta = -e.deltaY; // + = scrolling down
-      headerOffset = Math.min(Math.max(headerOffset + delta * 0.12, -headerHeight), 0);
-      applyTransform();
-    }, { passive: true });
+          if (delta > 0) {
+            // Scrolling down -> hide header
+            update(headerOffset - Math.abs(delta) * 0.6);
+          } else if (delta < 0) {
+            // Scrolling up -> reveal header
+            update(headerOffset + Math.abs(delta) * 0.6);
+          }
+
+          lastScrollY = currentScrollY;
+          ticking = false;
+        });
+        ticking = true;
+      }
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
   })();
 
   const applyTheme = (theme) => {
