@@ -104,6 +104,9 @@ function getSeriesMeta(slug: string, lang: string) {
   if (/^what-reality-corrected-\d+$/.test(slug)) {
     return { key: 'what-reality-corrected', label: lang === 'zh' ? '被現實修正之後系列' : 'What Reality Corrected Series' };
   }
+  if (/^local-llm-fine-tuning-\d+$/.test(slug)) {
+    return { key: 'local-llm-fine-tuning', label: lang === 'zh' ? '本地 LLM 微調拆解系列' : 'Local LLM Fine-Tuning Breakdown Series' };
+  }
   if (/^category-design-for-founders-\d+$/.test(slug)) {
     return { key: 'category-design-for-founders', label: lang === 'zh' ? '創業家的類別創造系列' : 'Category Design for Founders Series' };
   }
