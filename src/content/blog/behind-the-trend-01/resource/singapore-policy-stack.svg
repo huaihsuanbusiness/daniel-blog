@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="820" viewBox="0 0 1200 820" role="img" aria-labelledby="title desc">
+  <title id="title">Singapore Policy Stack to Market Opportunity Map</title>
+  <desc id="desc">A three-layer diagram showing policy foundations, market shifts, and business opportunity types emerging from Singapore's Smart Nation 2.0 and NAIS 2.0.</desc>
+  <defs>
+    <linearGradient id="headerGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#243b6b"/>
+      <stop offset="100%" stop-color="#d73f61"/>
+    </linearGradient>
+    <linearGradient id="policyGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f5f7ff"/>
+      <stop offset="100%" stop-color="#eef3ff"/>
+    </linearGradient>
+    <linearGradient id="marketGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#fff6f8"/>
+      <stop offset="100%" stop-color="#fff0f4"/>
+    </linearGradient>
+    <linearGradient id="bizGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f7fbff"/>
+      <stop offset="100%" stop-color="#eef9f6"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#000000" flood-opacity="0.08"/>
+    </filter>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="9" refY="6" orient="auto">
+      <path d="M0,0 L12,6 L0,12 z" fill="#7082a8"/>
+    </marker>
+  </defs>
+
+  <rect x="0" y="0" width="1200" height="820" fill="#f7f8fc"/>
+
+  <text x="80" y="78" font-family="Arial, Inter, sans-serif" font-size="36" font-weight="700" fill="#1f2a44">Singapore policy stack -> market shifts -> business opportunities</text>
+  <text x="80" y="112" font-family="Arial, Inter, sans-serif" font-size="18" fill="#5d6b86">A reading of Smart Nation 2.0 and NAIS 2.0 as market-shaping infrastructure</text>
+
+  <rect x="70" y="150" width="1060" height="180" rx="28" fill="url(#policyGrad)" stroke="#d9e2f2" filter="url(#shadow)"/>
+  <rect x="90" y="174" width="250" height="44" rx="22" fill="url(#headerGrad)"/>
+  <text x="215" y="202" text-anchor="middle" font-family="Arial, Inter, sans-serif" font-size="22" font-weight="700" fill="#ffffff">1. Policy foundations</text>
+
+  <rect x="110" y="238" width="300" height="66" rx="20" fill="#ffffff" stroke="#d5dff0"/>
+  <text x="260" y="264" text-anchor="middle" font-family="Arial, Inter, sans-serif" font-size="22" font-weight="700" fill="#243b6b">Smart Nation 2.0</text>
+  <text x="260" y="290" text-anchor="middle" font-family="Arial, Inter, sans-serif" font-size="17" fill="#56627a">Trust • Growth • Community</text>
+
+  <rect x="450" y="238" width="300" height="66" rx="20" fill="#ffffff" stroke="#d5dff0"/>
+  <text x="600" y="264" text-anchor="middle" font-family="Arial, Inter, sans-serif" font-size="22" font-weight="700" fill="#243b6b">NAIS 2.0</text>
+  <text x="600" y="290" text-anchor="middle" font-family="Arial, Inter, sans-serif" font-size="17" fill="#56627a">AI capability, talent, data, trust</text>
+
+  <rect x="790" y="228" width="300" height="86" rx="20" fill="#ffffff" stroke="#d5dff0"/>
+  <text x="940" y="254" text-anchor="middle" font-family="Arial, Inter, sans-serif" font-size="22" font-weight="700" fill="#243b6b">Companion blueprints</text>
+  <text x="940" y="280" text-anchor="middle" font-family="Arial, Inter, sans-serif" font-size="17" fill="#56627a">Digital Enterprise • Cybersecurity</text>
+  <text x="940" y="302" text-anchor="middle" font-family="Arial, Inter, sans-serif" font-size="17" fill="#56627a">Readiness • Connectivity • Government</text>
+
+  <rect x="70" y="370" width="1060" height="190" rx="28" fill="url(#marketGrad)" stroke="#f0d6df" filter="url(#shadow)"/>
+  <rect x="90" y="394" width="250" height="44" rx="22" fill="url(#headerGrad)"/>
+  <text x="215" y="422" text-anchor="middle" font-family="Arial, Inter, sans-serif" font-size="22" font-weight="700" fill="#ffffff">2. Market shifts</text>
+
+  <rect x="110" y="458" width="300" height="76" rx="20" fill="#ffffff" stroke="#ead3dc"/>
+  <text x="260" y="485" text-anchor="middle" font-family="Arial, Inter, sans-serif" font-size="21" font-weight="700" fill="#8f304c">Adoption infrastructure</text>
+  <text x="260" y="510" text-anchor="middle" font-family="Arial, Inter, sans-serif" font-size="17" fill="#5d6275">SME upgrade paths, DEB,</text>
+  <text x="260" y="532" text-anchor="middle" font-family="Arial, Inter, sans-serif" font-size="17" fill="#5d6275">capability-building support</text>
+
+  <rect x="450" y="458" width="300" height="76" rx="20" fill="#ffffff" stroke="#ead3dc"/>
+  <text x="600" y="485" text-anchor="middle" font-family="Arial, Inter, sans-serif" font-size="21" font-weight="700" fill="#8f304c">Trust as product logic</text>
+  <text x="600" y="510" text-anchor="middle" font-family="Arial, Inter, sans-serif" font-size="17" fill="#5d6275">Governance, AI Verify, PETs,</text>
+  <text x="600" y="532" text-anchor="middle" font-family="Arial, Inter, sans-serif" font-size="17" fill="#5d6275">resilience and auditability</text>
+
+  <rect x="790" y="458" width="300" height="76" rx="20" fill="#ffffff" stroke="#ead3dc"/>
+  <text x="940" y="485" text-anchor="middle" font-family="Arial, Inter, sans-serif" font-size="21" font-weight="700" fill="#8f304c">Cross-border leverage</text>
+  <text x="940" y="510" text-anchor="middle" font-family="Arial, Inter, sans-serif" font-size="17" fill="#5d6275">DEAs, DEPA, interoperability,</text>
+  <text x="940" y="532" text-anchor="middle" font-family="Arial, Inter, sans-serif" font-size="17" fill="#5d6275">regional expansion logic</text>
+
+  <rect x="70" y="600" width="1060" height="170" rx="28" fill="url(#bizGrad)" stroke="#d8e8e0" filter="url(#shadow)"/>
+  <rect x="90" y="624" width="320" height="44" rx="22" fill="url(#headerGrad)"/>
+  <text x="250" y="652" text-anchor="middle" font-family="Arial, Inter, sans-serif" font-size="22" font-weight="700" fill="#ffffff">3. Business opportunity types</text>
+
+  <rect x="110" y="684" width="300" height="58" rx="18" fill="#ffffff" stroke="#d6e6df"/>
+  <text x="260" y="709" text-anchor="middle" font-family="Arial, Inter, sans-serif" font-size="20" font-weight="700" fill="#1f5d4d">Vertical AI operators</text>
+  <text x="260" y="730" text-anchor="middle" font-family="Arial, Inter, sans-serif" font-size="16" fill="#5d6275">Workflow-native, sector-specific value</text>
+
+  <rect x="450" y="684" width="300" height="58" rx="18" fill="#ffffff" stroke="#d6e6df"/>
+  <text x="600" y="709" text-anchor="middle" font-family="Arial, Inter, sans-serif" font-size="20" font-weight="700" fill="#1f5d4d">Trust infrastructure</text>
+  <text x="600" y="730" text-anchor="middle" font-family="Arial, Inter, sans-serif" font-size="16" fill="#5d6275">Governance, security, data collaboration</text>
+
+  <rect x="790" y="684" width="300" height="58" rx="18" fill="#ffffff" stroke="#d6e6df"/>
+  <text x="940" y="709" text-anchor="middle" font-family="Arial, Inter, sans-serif" font-size="20" font-weight="700" fill="#1f5d4d">Regional operators</text>
+  <text x="940" y="730" text-anchor="middle" font-family="Arial, Inter, sans-serif" font-size="16" fill="#5d6275">Built for interoperable cross-border scale</text>
+
+  <line x1="260" y1="304" x2="260" y2="448" stroke="#7082a8" stroke-width="4" marker-end="url(#arrow)"/>
+  <line x1="600" y1="304" x2="600" y2="448" stroke="#7082a8" stroke-width="4" marker-end="url(#arrow)"/>
+  <line x1="940" y1="314" x2="940" y2="448" stroke="#7082a8" stroke-width="4" marker-end="url(#arrow)"/>
+
+  <line x1="260" y1="534" x2="260" y2="674" stroke="#7082a8" stroke-width="4" marker-end="url(#arrow)"/>
+  <line x1="600" y1="534" x2="600" y2="674" stroke="#7082a8" stroke-width="4" marker-end="url(#arrow)"/>
+  <line x1="940" y1="534" x2="940" y2="674" stroke="#7082a8" stroke-width="4" marker-end="url(#arrow)"/>
+</svg>
