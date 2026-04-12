@@ -7,7 +7,7 @@ date: 2026-04-13T05:00:00
 series: "Behind the Trend"
 seriesOrder: 01
 ---
-A few days ago, I was trying to do something fairly practical.
+Some time ago, I was trying to do something fairly practical.
 
 I wanted a handful of lines from Singapore’s policy documents that I could drop into a deck. The sort of lines that make the alignment obvious at a glance. Something neat, something usable, something that would save time when speaking to investors or potential partners.
 
