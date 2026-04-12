@@ -3,7 +3,7 @@ title: "What Reality Corrected 02 | It wasn't that you were bad at networking. M
 description: "The first time this really clicked for me was not in class. It was after I hosted a founder × investor mixer in the B…"
 categories: ["startup"]
 tags: []
-date: 2026-04-13T05:00:00
+date: 2026-04-08T05:00:00
 series: "What Reality Corrected"
 seriesOrder: 02
 ---

@@ -3,7 +3,7 @@ title: "Local LLM Fine-Tuning Breakdown: From Modelfiles and LoRA to DPO — Par
 description: "一開始有人跟我講那句話的時候，我其實有被打到。"
 categories: ["ai"]
 tags: []
-date: 2026-04-13T05:00:00
+date: 2026-04-12T09:00:00
 series: "Local LLM Fine-Tuning Breakdown: From Modelfiles and LoRA to DPO"
 seriesOrder: 02
 ---

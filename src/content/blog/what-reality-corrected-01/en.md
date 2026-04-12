@@ -3,7 +3,7 @@ title: "What Reality Corrected 01 | Before anyone replies, they need to know whe
 description: "The thing I kept from Rachel Konrad's two Draper U sessions was not a writing trick. It was something more awkward th…"
 categories: ["startup"]
 tags: []
-date: 2026-04-12T05:00:00
+date: 2026-04-08T05:00:00
 series: "What Reality Corrected"
 seriesOrder: 01
 ---

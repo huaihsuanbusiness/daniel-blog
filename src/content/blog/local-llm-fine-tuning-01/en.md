@@ -3,7 +3,7 @@ title: "Local LLM Fine-Tuning Breakdown: From Modelfiles and LoRA to DPO — Par
 description: "我一開始只是想抄一條看起來比較省力的路。"
 categories: ["ai"]
 tags: []
-date: 2026-04-12T05:00:00
+date: 2026-04-11T05:00:00
 series: "Local LLM Fine-Tuning Breakdown: From Modelfiles and LoRA to DPO"
 seriesOrder: 01
 ---

@@ -3,7 +3,7 @@ title: "What Reality Corrected 07 | Early startup value is not your title. It is
 description: "At Draper U, when Cristina Cordova started talking about her path through Stripe, Notion, First Round and now Linear…"
 categories: ["startup"]
 tags: []
-date: 2026-04-18T05:00:00
+date: 2026-04-10T05:00:00
 series: "What Reality Corrected"
 seriesOrder: 07
 ---

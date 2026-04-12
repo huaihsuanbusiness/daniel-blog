@@ -3,7 +3,7 @@ title: "What Reality Corrected 04 | The market is not too small. You may simply 
 description: "In one of the go-to-market sessions at Draper U, the speaker wrote three short lines on the board: - Who you sell"
 categories: ["startup"]
 tags: []
-date: 2026-04-15T05:00:00
+date: 2026-04-09T05:00:00
 series: "What Reality Corrected"
 seriesOrder: 04
 ---

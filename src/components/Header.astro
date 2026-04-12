@@ -114,50 +114,45 @@ const logoHref = currentLang === 'en' ? '/en/' : '/zh/';
     langToggle.href = url.toString();
   }
 
-  // Mobile: pull-down to expand header
+  // Header tracking: works on BOTH mobile and desktop
+  // Header expands (translateY increases) when finger/mouse pulls DOWN
+  // Header collapses (translateY decreases) when finger/mouse pulls UP
   (function() {
-    if (!window.matchMedia('(max-width: 767px)').matches) return;
     const headerHeight = header?.offsetHeight || 56;
     let lastY = null;
-    let expanded = 0; // how many px the header is expanded (pulled down)
+    let headerOffset = 0; // how many px the header is shifted down
 
-    function applyTransform(offset) {
-      header.style.transform = `translateY(${offset}px)`;
+    function applyTransform() {
+      header.style.transform = `translateY(${Math.round(headerOffset)}px)`;
     }
 
+    // Touch events (mobile)
     document.addEventListener('touchstart', (e) => {
       lastY = e.touches[0].clientY;
-      expanded = 0;
-      applyTransform(0);
+      headerOffset = 0;
+      applyTransform();
     }, { passive: true });
 
     document.addEventListener('touchmove', (e) => {
       if (lastY === null) return;
       const delta = e.touches[0].clientY - lastY;
       lastY = e.touches[0].clientY;
-
-      // delta > 0: finger moved down → expand header (push it down)
-      // delta < 0: finger moved up → collapse header
-      expanded = Math.min(Math.max(expanded + delta, 0), headerHeight);
-      applyTransform(expanded);
+      // delta > 0: finger moving down -> expand header (shift it down)
+      headerOffset = Math.min(Math.max(headerOffset + delta, 0), headerHeight);
+      applyTransform();
     }, { passive: true });
 
     document.addEventListener('touchend', () => {
       lastY = null;
     }, { passive: true });
-  })();
 
-  // Desktop: simple scroll-based hide/show
-  (function() {
-    if (window.matchMedia('(max-width: 767px)').matches) return;
-    let lastScrollY = window.scrollY;
-
-    window.addEventListener('scroll', () => {
-      const currentScrollY = window.scrollY;
-      const delta = currentScrollY - lastScrollY;
-      if (Math.abs(delta) < 4) return;
-      header.style.transform = delta > 0 ? 'translateY(-100%)' : '';
-      lastScrollY = currentScrollY;
+    // Wheel events (desktop) - deltaY > 0 = scrolling down = collapse header
+    document.addEventListener('wheel', (e) => {
+      // Only track when page is scrollable
+      if (document.documentElement.scrollHeight <= window.innerHeight) return;
+      const delta = -e.deltaY; // invert: positive = pulling down
+      headerOffset = Math.min(Math.max(headerOffset + delta * 0.15, 0), headerHeight);
+      applyTransform();
     }, { passive: true });
   })();
 

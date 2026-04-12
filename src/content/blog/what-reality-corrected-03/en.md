@@ -3,7 +3,7 @@ title: "What Reality Corrected 03 | A pitch deck is not your company story. It i
 description: "At Draper U, Melanie opened her pitch workshop with a line that was more useful than any deck template. Imagine your …"
 categories: ["startup"]
 tags: []
-date: 2026-04-14T05:00:00
+date: 2026-04-09T05:00:00
 series: "What Reality Corrected"
 seriesOrder: 03
 ---

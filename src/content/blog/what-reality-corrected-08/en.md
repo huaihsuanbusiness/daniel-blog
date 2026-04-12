@@ -3,7 +3,7 @@ title: "What Reality Corrected 08 | Culture is not what you write on the wall. I
 description: "Before Jevan Soo Lenox’s fireside at Draper U started, I had a fairly defensive posture towards the topic. Anything l…"
 categories: ["startup"]
 tags: []
-date: 2026-04-19T05:00:00
+date: 2026-04-10T05:00:00
 series: "What Reality Corrected"
 seriesOrder: 08
 ---

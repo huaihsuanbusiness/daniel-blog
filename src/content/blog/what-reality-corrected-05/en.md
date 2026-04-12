@@ -3,7 +3,7 @@ title: "What Reality Corrected 05 | Interest is not movement"
 description: "Near the end of a first-customer-success workshop at Draper U, the speaker drew a ladder on the whiteboard. At the bo…"
 categories: ["startup"]
 tags: []
-date: 2026-04-16T05:00:00
+date: 2026-04-10T05:00:00
 series: "What Reality Corrected"
 seriesOrder: 05
 ---

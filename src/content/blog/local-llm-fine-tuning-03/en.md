@@ -3,7 +3,7 @@ title: "Local LLM Fine-Tuning Breakdown: From Modelfiles and LoRA to DPO — Par
 description: "我第一次真的跑到 `python train_lora.py`，不是死在顯卡，也不是死在程式碼。"
 categories: ["ai"]
 tags: []
-date: 2026-04-14T05:00:00
+date: 2026-04-12T10:30:00
 series: "Local LLM Fine-Tuning Breakdown: From Modelfiles and LoRA to DPO"
 seriesOrder: 03
 ---

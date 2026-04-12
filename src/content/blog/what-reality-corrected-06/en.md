@@ -3,7 +3,7 @@ title: "What Reality Corrected 06 | A better product is not enough if switching 
 description: "In another Draper U session, the speaker asked a nastier question than “why would a customer buy?” **If the customer …"
 categories: ["startup"]
 tags: []
-date: 2026-04-17T05:00:00
+date: 2026-04-10T05:00:00
 series: "What Reality Corrected"
 seriesOrder: 06
 ---
