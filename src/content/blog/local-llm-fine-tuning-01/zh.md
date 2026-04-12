@@ -4,7 +4,7 @@ description: "我一開始只是想抄近路。"
 categories: ["ai"]
 tags: []
 date: 2026-04-12T05:00:00
-series: "本地 LLM 微調拆解：從 Modelfile、LoRA 到 DPO 的實戰系列"
+series: "本地 LLM 微調拆解：從 Modelfile、LoRA 到 DPO 的實戰"
 seriesOrder: 01
 ---
 

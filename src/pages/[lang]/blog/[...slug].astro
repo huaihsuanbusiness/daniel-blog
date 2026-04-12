@@ -63,52 +63,52 @@ const primaryCategory = normalizeCategory(post.data.categories[0] || '') ?? null
 
 function getSeriesMeta(slug: string, lang: string) {
   if (/^openclaw-getting-started-\d+$/.test(slug)) {
-    return { key: 'openclaw-getting-started', label: lang === 'zh' ? 'OpenClaw 快速上手系列' : 'OpenClaw Getting Started' };
+    return { key: 'openclaw-getting-started', label: lang === 'zh' ? 'OpenClaw 快速上手' : 'OpenClaw Getting Started' };
   }
   if (/^openclaw-deployment-and-configuration-part-\d+$/.test(slug)) {
-    return { key: 'openclaw-deployment-and-configuration', label: lang === 'zh' ? 'OpenClaw 部署與配置系列' : 'OpenClaw Deployment and Configuration' };
+    return { key: 'openclaw-deployment-and-configuration', label: lang === 'zh' ? 'OpenClaw 部署與配置' : 'OpenClaw Deployment and Configuration' };
   }
   if (/^comfyui-series-\d+$/.test(slug)) {
-    return { key: 'comfyui-series', label: lang === 'zh' ? 'ComfyUI 系列' : 'ComfyUI Series' };
+    return { key: 'comfyui-series', label: lang === 'zh' ? 'ComfyUI' : 'ComfyUI' };
   }
   if (/^rag-engineering-in-practice-\d+$/.test(slug)) {
-    return { key: 'rag-engineering-in-practice', label: lang === 'zh' ? 'RAG 工程實戰系列' : 'RAG Engineering in Practice' };
+    return { key: 'rag-engineering-in-practice', label: lang === 'zh' ? 'RAG 工程實戰' : 'RAG Engineering in Practice' };
   }
   if (/^pm-llm-application-engineering-\d+$/.test(slug)) {
-    return { key: 'pm-llm-application-engineering', label: lang === 'zh' ? 'PM LLM 應用工程與治理系列' : 'LLM Application Engineering and Governance for PMs Series' };
+    return { key: 'pm-llm-application-engineering', label: lang === 'zh' ? 'PM LLM 應用工程與治理' : 'LLM Application Engineering and Governance for PMs' };
   }
   if (/^ai-agentic-workflow-series-\d+$/.test(slug)) {
-    return { key: 'ai-agentic-workflow', label: lang === 'zh' ? 'AI 代理工作流系列' : 'AI Agentic Workflow Series' };
+    return { key: 'ai-agentic-workflow', label: lang === 'zh' ? 'AI 代理工作流' : 'AI Agentic Workflow' };
   }
   if (/^build-mcp-server-part-\d+$/.test(slug)) {
-    return { key: 'build-mcp-server', label: lang === 'zh' ? '自主建造 MCP Server 系列' : 'Build Your Own MCP Server' };
+    return { key: 'build-mcp-server', label: lang === 'zh' ? '自主建造 MCP Server' : 'Build Your Own MCP Server' };
   }
   if (/^building-ai-skills-series-part-\d+$/.test(slug)) {
-    return { key: 'building-ai-skills', label: lang === 'zh' ? '打造 AI Skill 系列' : 'Building AI Skills Series' };
+    return { key: 'building-ai-skills', label: lang === 'zh' ? '打造 AI Skill' : 'Building AI Skills' };
   }
   if (/^mcp-engineering-deep-dive-\d+$/.test(slug)) {
-    return { key: 'mcp-engineering-deep-dive', label: lang === 'zh' ? 'MCP 工程深化系列' : 'MCP Engineering Deep Dive' };
+    return { key: 'mcp-engineering-deep-dive', label: lang === 'zh' ? 'MCP 工程深化' : 'MCP Engineering Deep Dive' };
   }
   if (/^pm-product-data-and-experimentation-\d+$/.test(slug)) {
-    return { key: 'pm-product-data-and-experimentation', label: lang === 'zh' ? 'PM 產品數據與實驗系列' : 'PM Product Data and Experimentation Series' };
+    return { key: 'pm-product-data-and-experimentation', label: lang === 'zh' ? 'PM 產品數據與實驗' : 'PM Product Data and Experimentation' };
   }
   if (/^pm-growth-levers-monetisation-\d+$/.test(slug)) {
-    return { key: 'pm-growth-levers-monetisation', label: lang === 'zh' ? 'PM 成長槓桿與變現系列' : 'PM Growth Levers and Monetisation Series' };
+    return { key: 'pm-growth-levers-monetisation', label: lang === 'zh' ? 'PM 成長槓桿與變現' : 'PM Growth Levers and Monetisation' };
   }
   if (/^pm-user-research-fieldwork-\d+$/.test(slug)) {
-    return { key: 'pm-user-research-fieldwork', label: lang === 'zh' ? 'PM 用戶研究與田野訪查系列' : 'PM User Research and Fieldwork Series' };
+    return { key: 'pm-user-research-fieldwork', label: lang === 'zh' ? 'PM 用戶研究與田野訪查' : 'PM User Research and Fieldwork' };
   }
   if (/^after-the-pause-\d+$/.test(slug)) {
-    return { key: 'after-the-pause', label: lang === 'zh' ? '暫停之後系列' : 'After the Pause Series' };
+    return { key: 'after-the-pause', label: lang === 'zh' ? '暫停之後' : 'After the Pause' };
   }
   if (/^what-reality-corrected-\d+$/.test(slug)) {
-    return { key: 'what-reality-corrected', label: lang === 'zh' ? '被現實修正之後系列' : 'What Reality Corrected Series' };
+    return { key: 'what-reality-corrected', label: lang === 'zh' ? '被現實修正之後' : 'What Reality Corrected' };
   }
   if (/^local-llm-fine-tuning-\d+$/.test(slug)) {
-    return { key: 'local-llm-fine-tuning', label: lang === 'zh' ? '本地 LLM 微調拆解系列' : 'Local LLM Fine-Tuning Breakdown Series' };
+    return { key: 'local-llm-fine-tuning', label: lang === 'zh' ? '本地 LLM 微調拆解：從 Modelfile、LoRA 到 DPO 的實戰' : 'Local LLM Fine-Tuning Breakdown: From Modelfiles and LoRA to DPO' };
   }
   if (/^category-design-for-founders-\d+$/.test(slug)) {
-    return { key: 'category-design-for-founders', label: lang === 'zh' ? '創業家的類別創造系列' : 'Category Design for Founders Series' };
+    return { key: 'category-design-for-founders', label: lang === 'zh' ? '創業家的類別創造' : 'Category Design for Founders' };
   }
   return null;
 }
@@ -454,13 +454,11 @@ const currentSeriesIndex = seriesPosts.findIndex(p => p.id === post.id);
   }
 
   .series-nav-item-title-link {
-    text-decoration: underline;
-    text-underline-offset: 2px;
-    text-decoration-color: color-mix(in srgb, var(--color-accent) 50%, transparent);
+    text-decoration: none;
   }
 
   .series-nav-item:hover .series-nav-item-title-link {
-    text-decoration-color: var(--color-accent);
+    text-decoration: none;
   }
 
   .lang-switch {
