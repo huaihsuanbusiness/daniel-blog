@@ -349,9 +349,15 @@ const seriesLabel = seriesUi[lang];
   }
 
   document.querySelectorAll('[data-filter-category]').forEach((tab) => {
-    tab.addEventListener('click', () => {
-      activeCategory = tab.getAttribute('data-filter-category') || 'all';
+    tab.addEventListener('click', (e) => {
+      e.preventDefault();
+      const cat = tab.getAttribute('data-filter-category') || 'all';
+      const href = tab.getAttribute('href') || '';
+      // Update URL synchronously so downstream syncListRuntimeState reads the new value
+      history.pushState({}, '', href);
+      activeCategory = cat;
       clearSeriesFilter();
+      syncCategoryTabs();
       syncSeriesControl();
     });
   });

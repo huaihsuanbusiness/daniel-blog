@@ -94,9 +94,7 @@ but the skeletal objective does.
 
 A rough version looks like this:
 
-\[
-\max_{\pi} \; \mathbb{E}_{x \sim D,\; y \sim \pi(\cdot|x)} \left[r(x,y)\right] - \beta \, D_{KL}\big(\pi(\cdot|x)\;||\;\pi_{ref}(\cdot|x)\big)
-\]
+$$\max_{\pi} \; \mathbb{E}_{x \sim D,\; y \sim \pi(\cdot|x)} \left[r(x,y)\right] - \beta \, D_{KL}\big(\pi(\cdot|x)\;||\;\pi_{ref}(\cdot|x)\big)$$
 
 This looks more frightening than it is.
 
@@ -128,16 +126,14 @@ At a high level, if each candidate answer has some reward score, then the probab
 
 A minimal form is:
 
-\[
-P(y^+ \succ y^- \mid x) = \sigma\big(r(x,y^+) - r(x,y^-)\big)
-\]
+$$P(y^+ \succ y^- \mid x) = \sigma\big(r(x,y^+) - r(x,y^-)\big)$$
 
 where:
-- \(x\) is the prompt
-- \(y^+\) is the chosen answer
-- \(y^-\) is the rejected answer
-- \(r(x,y)\) is a reward-like score
-- \(\sigma\) is the sigmoid
+- $x$ is the prompt
+- $y^+$ is the chosen answer
+- $y^-$ is the rejected answer
+- $r(x,y)$ is a reward-like score
+- $\sigma$ is the sigmoid
 
 That expression matters because it turns “human preference” into something trainable rather than something purely intuitive.
 
@@ -157,7 +153,7 @@ In the classic RLHF pipeline, the usual move is:
 - then optimise the language model against those scores
 
 So in the Bradley–Terry framing,
-the \(r(x,y)\) term is often supplied by an explicit reward model.
+the $r(x,y)$ term is often supplied by an explicit reward model.
 
 This is where DPO makes its key move.
 
@@ -180,11 +176,9 @@ One key part of the derivation begins from the closed-form optimal policy under 
 
 The conceptual version to hold onto is:
 
-\[
-r(x,y) \propto \log \pi_\theta(y|x) - \log \pi_{ref}(y|x)
-\]
+$$r(x,y) \propto \log \pi_\theta(y|x) - \log \pi_{ref}(y|x)$$
 
-More precisely, there are also \(\beta\)-dependent terms and prompt-only terms that later cancel out in the pairwise comparison. But for the main body, the important idea is:
+More precisely, there are also $\beta$-dependent terms and prompt-only terms that later cancel out in the pairwise comparison. But for the main body, the important idea is:
 
 **DPO rewrites the reward signal as the relative log-probability of a completion under the current policy versus the reference policy.**
 
@@ -199,8 +193,7 @@ This is the structural core the revised part 05 has to keep.
 
 TRL states the DPO loss as:
 
-\[
-\mathcal{L}_{DPO}(\theta)
+$$\mathcal{L}_{DPO}(\theta)
 =
 - \mathbb{E}_{(x,y^+,y^-)}
 \left[
@@ -213,18 +206,17 @@ TRL states the DPO loss as:
 \log \frac{\pi_\theta(y^-|x)}{\pi_{ref}(y^-|x)}
 \right]
 \right)
-\right]
-\]
+\right]$$
 
 Let us unpack the symbols.
 
-- \(x\): prompt
-- \(y^+\): chosen completion
-- \(y^-\): rejected completion
-- \(\pi_\theta\): the policy model you are training
-- \(\pi_{ref}\): the reference model
-- \(\sigma\): sigmoid
-- \(\beta\): the strength of the preference signal
+- $x$: prompt
+- $y^+$: chosen completion
+- $y^-$: rejected completion
+- $\pi_\theta$: the policy model you are training
+- $\pi_{ref}$: the reference model
+- $\sigma$: sigmoid
+- $\beta$: the strength of the preference signal
 
 On paper this looks dense.
 In practice it is doing something very plain:
@@ -291,9 +283,7 @@ You are asking how much more it likes it relative to the reference model.
 ### Second consequence
 It is what allows the implicit reward expression to exist in the first place:
 
-\[
-\log \pi_\theta(y|x) - \log \pi_{ref}(y|x)
-\]
+$$\log \pi_\theta(y|x) - \log \pi_{ref}(y|x)$$
 
 That relative structure is not decorative.
 It is one of the actual load-bearing beams of DPO.
@@ -313,10 +303,10 @@ Saying “β controls preference strength” is true, but still a little soft.
 
 A more operational way to hold it is:
 
-- larger \(\beta\): stronger pressure on the chosen-vs-rejected difference
-- smaller \(\beta\): more conservative preference pressure
+- larger $\beta$: stronger pressure on the chosen-vs-rejected difference
+- smaller $\beta$: more conservative preference pressure
 
-So \(\beta\) is not about step size the way the learning rate is.
+So $\beta$ is not about step size the way the learning rate is.
 It is more like a dial for:
 
 **how seriously the pairwise preference margin is being taken inside the loss**
