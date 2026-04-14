@@ -193,20 +193,7 @@ This is the structural core the revised part 05 has to keep.
 
 TRL states the DPO loss as:
 
-$$\mathcal{L}_{DPO}(\theta)
-=
-- \mathbb{E}_{(x,y^+,y^-)}
-\left[
-\log \sigma
-\left(
-\beta
-\left[
-\log \frac{\pi_\theta(y^+|x)}{\pi_{ref}(y^+|x)}
--
-\log \frac{\pi_\theta(y^-|x)}{\pi_{ref}(y^-|x)}
-\right]
-\right)
-\right]$$
+$$\mathcal{L}_{DPO}(\theta) = - \mathbb{E}_{(x,y^+,y^-)}\left[\log \sigma\left(\beta\left[\log \frac{\pi_\theta(y^+|x)}{\pi_{ref}(y^+|x)}-\log \frac{\pi_\theta(y^-|x)}{\pi_{ref}(y^-|x)}\right]\right)\right]$$
 
 Let us unpack the symbols.
 
