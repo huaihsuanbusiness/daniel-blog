@@ -113,7 +113,7 @@ function getSeriesMeta(slug: string, lang: string) {
   if (/^what-reality-corrected-\d+$/.test(slug)) {
     return { key: 'what-reality-corrected', order: 3, label: lang === 'zh' ? '3. 被現實修正之後' : '3. What Reality Corrected' };
   }
-  if (/^local-llm-fine-tuning-\d+$/.test(slug)) {
+  if (/^local-llm-fine-tuning-(?:\d+|appendix-[ab])$/.test(slug)) {
     return { key: 'local-llm-fine-tuning', order: 8, label: lang === 'zh' ? '8. 本地 LLM 微調拆解：從 Modelfile、LoRA 到 DPO 的實戰' : '8. Local LLM Fine-Tuning Breakdown: From Modelfiles and LoRA to DPO' };
   }
   return null;
@@ -391,8 +391,8 @@ function getSeriesMeta(slug: string, lang: string) {
     const urlCategory = urlParams.get('category') || '';
     const urlSort = urlParams.get('sort') || '';
 
-    // sessionStorage wins if set in this session, otherwise use URL
-    const activeCat = savedCategory || urlCategory || 'all';
+    // URL wins (for shareable links); sessionStorage only as fallback for tab persistence
+    const activeCat = urlCategory || savedCategory || 'all';
     const activeSort = savedSort || urlSort || 'new';
 
     const params = new URLSearchParams();
@@ -421,11 +421,11 @@ function getSeriesMeta(slug: string, lang: string) {
   }
 
   function applyCategoryFilter() {
-    // sessionStorage wins (set by this session's tab clicks), URL is fallback
-    const sessionCat = sessionStorage.getItem('blog-category') || '';
+    // URL wins; sessionStorage is only for this session's tab-click persistence
     const urlParams = new URL(window.location.href).searchParams;
     const urlCat = urlParams.get('category') || '';
-    const activeCat = sessionCat || urlCat || 'all';
+    const sessionCat = sessionStorage.getItem('blog-category') || '';
+    const activeCat = urlCat || sessionCat || 'all';
     const cards = document.querySelectorAll('[data-post-card]');
     let visible = 0;
 

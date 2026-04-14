@@ -253,7 +253,7 @@ const seriesLabel = seriesUi[lang];
   const listBtn = document.getElementById('view-list');
   const blogCountPill = document.getElementById('blog-count-pill');
 
-  let activeCategory = new URL(window.location.href).searchParams.get('category') || 'all';
+  let activeCategory = new URL(window.location.href).searchParams.get('category') || sessionStorage.getItem('blog-category') || 'all';
   let activeSeries = '';
 
   function collectSeries(category) {

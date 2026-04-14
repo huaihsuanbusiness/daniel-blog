@@ -1,4 +1,6 @@
 import { defineConfig, passthroughImageService } from 'astro/config';
+import remarkMath from 'remark-math';
+import rehypeKatex from 'rehype-katex';
 
 export default defineConfig({
   image: {
@@ -20,5 +22,9 @@ export default defineConfig({
     build: {
       cssMinify: true,
     },
+  },
+  markdown: {
+    remarkPlugins: [remarkMath],
+    rehypePlugins: [rehypeKatex],
   },
 });
