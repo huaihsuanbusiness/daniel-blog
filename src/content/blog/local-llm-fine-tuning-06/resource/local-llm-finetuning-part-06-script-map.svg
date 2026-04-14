@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1360" height="840" viewBox="0 0 1360 840">
+  <defs>
+    <style>
+      .t{font-family:Arial,Inter,sans-serif;fill:#1f2937}
+      .h{font-size:28px;font-weight:700}
+      .s{font-size:16px}
+      .b{font-size:18px;font-weight:700}
+      .n{font-size:14px}
+      .box{stroke:#cbd5e1;stroke-width:2;rx:18;ry:18}
+      .a{fill:#e0f2fe}.b1{fill:#ffedd5}.c{fill:#ede9fe}.d{fill:#dcfce7}
+      .arrow{stroke:#64748b;stroke-width:2.5;fill:none;marker-end:url(#m)}
+    </style>
+    <marker id="m" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#64748b"/></marker>
+  </defs>
+  <text x="60" y="60" class="t h">Training script map</text>
+  <text x="60" y="90" class="t s">A training script binds the model, the data, the tokenizer, the method and the trainable scope into one experiment definition.</text>
+  <rect x="70" y="150" width="250" height="120" class="box a"/>
+  <text x="95" y="190" class="t b">Base model</text><text x="95" y="220" class="t n">MODEL_ID</text>
+  <rect x="390" y="150" width="250" height="120" class="box a"/>
+  <text x="415" y="190" class="t b">Dataset</text><text x="415" y="220" class="t n">DATA_PATH</text>
+  <rect x="710" y="150" width="250" height="120" class="box a"/>
+  <text x="735" y="190" class="t b">Tokenizer</text><text x="735" y="220" class="t n">tokenizer + chat template</text>
+  <rect x="1030" y="150" width="250" height="120" class="box a"/>
+  <text x="1055" y="190" class="t b">Training arguments</text><text x="1055" y="220" class="t n">lr / epochs / max length / output</text>
+  <rect x="180" y="420" width="280" height="170" class="box b1"/>
+  <text x="210" y="460" class="t b">train_lora.py</text>
+  <text x="210" y="495" class="t n">Method: SFTTrainer</text>
+  <text x="210" y="520" class="t n">Scope: LoRA on selected modules</text>
+  <text x="210" y="545" class="t n">Typical outputs: adapter files</text>
+  <rect x="540" y="420" width="280" height="170" class="box c"/>
+  <text x="570" y="460" class="t b">train_partial_ft.py</text>
+  <text x="570" y="495" class="t n">Method: supervised training</text>
+  <text x="570" y="520" class="t n">Scope: open selected original weights</text>
+  <text x="570" y="545" class="t n">Typical outputs: heavier checkpoints</text>
+  <rect x="900" y="420" width="280" height="170" class="box d"/>
+  <text x="930" y="460" class="t b">train_dpo.py</text>
+  <text x="930" y="495" class="t n">Method: DPOTrainer</text>
+  <text x="930" y="520" class="t n">Scope: preference training through LoRA</text>
+  <text x="930" y="545" class="t n">Typical outputs: preference-tuned adapter</text>
+  <path d="M195 270 V420" class="arrow"/><path d="M515 270 V420" class="arrow"/><path d="M835 270 V420" class="arrow"/><path d="M1155 270 V420" class="arrow"/>
+</svg>

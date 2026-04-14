@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1480" height="860" viewBox="0 0 1480 860">
+  <defs>
+    <style>
+      .t{font-family:Arial,Inter,sans-serif;fill:#1f2937}
+      .h{font-size:30px;font-weight:700}
+      .s{font-size:16px}
+      .b{font-size:18px;font-weight:700}
+      .n{font-size:14px}
+      .box{stroke:#cbd5e1;stroke-width:2;rx:18;ry:18}
+      .a{fill:#e0f2fe}.b1{fill:#ede9fe}.c{fill:#ffedd5}.d{fill:#dcfce7}.e{fill:#fee2e2}
+      .arrow{stroke:#64748b;stroke-width:2.5;fill:none;marker-end:url(#m)}
+    </style>
+    <marker id="m" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0 0 L10 5 L0 10 z" fill="#64748b"/>
+    </marker>
+  </defs>
+  <text x="60" y="60" class="t h">Three alignment routes</text>
+  <text x="60" y="92" class="t s">SFT teaches target answers. RLHF uses reward modelling and RL. DPO learns preferences directly with a reference-anchored loss.</text>
+
+  <rect x="70" y="170" width="390" height="420" class="box a"/>
+  <text x="100" y="215" class="t b">SFT</text>
+  <text x="100" y="255" class="t n">Data shape:</text>
+  <text x="100" y="280" class="t n">prompt → answer</text>
+  <text x="100" y="325" class="t n">Core move:</text>
+  <text x="100" y="350" class="t n">imitate the target response</text>
+  <text x="100" y="395" class="t n">Best for:</text>
+  <text x="100" y="420" class="t n">structure, tone, response format</text>
+
+  <rect x="545" y="170" width="390" height="420" class="box c"/>
+  <text x="575" y="215" class="t b">Classic RLHF</text>
+  <text x="575" y="255" class="t n">Preference data</text>
+  <path d="M690 280 H820" class="arrow"/>
+  <text x="610" y="320" class="t n">Reward model</text>
+  <path d="M690 345 H820" class="arrow"/>
+  <text x="610" y="385" class="t n">RL optimisation</text>
+  <text x="575" y="455" class="t n">KL constraint to reference policy</text>
+  <text x="575" y="500" class="t n">Heavy but expressive alignment route</text>
+
+  <rect x="1020" y="170" width="390" height="420" class="box d"/>
+  <text x="1050" y="215" class="t b">DPO</text>
+  <text x="1050" y="255" class="t n">Data shape:</text>
+  <text x="1050" y="280" class="t n">prompt + chosen + rejected</text>
+  <text x="1050" y="325" class="t n">Core move:</text>
+  <text x="1050" y="350" class="t n">direct preference loss on relative log-probs</text>
+  <text x="1050" y="395" class="t n">Reference model:</text>
+  <text x="1050" y="420" class="t n">anchor for policy-relative scoring</text>
+  <text x="1050" y="465" class="t n">Implicit reward:</text>
+  <text x="1050" y="490" class="t n">log πθ(y|x) − log πref(y|x)</text>
+
+  <path d="M935 380 H1020" class="arrow"/>
+
+  <rect x="370" y="670" width="760" height="120" class="box b1"/>
+  <text x="405" y="715" class="t b">Key judgement</text>
+  <text x="405" y="750" class="t n">DPO is not just a data format. It is a direct optimisation route that replaces explicit reward modelling and RL loops with a preference loss on relative policy-vs-reference log-probability.</text>
+</svg>

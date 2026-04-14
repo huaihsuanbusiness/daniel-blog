@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1420" height="840" viewBox="0 0 1420 840">
+  <defs>
+    <style>
+      .t{font-family:Arial,Inter,sans-serif;fill:#1f2937}
+      .h{font-size:28px;font-weight:700}
+      .s{font-size:16px}
+      .b{font-size:18px;font-weight:700}
+      .n{font-size:14px}
+      .box{stroke:#cbd5e1;stroke-width:2;rx:18;ry:18}
+      .a{fill:#e0f2fe}.b1{fill:#ede9fe}.c{fill:#ffedd5}.d{fill:#fee2e2}
+      .arrow{stroke:#64748b;stroke-width:2.5;fill:none;marker-end:url(#m)}
+    </style>
+    <marker id="m" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#64748b"/></marker>
+  </defs>
+  <text x="60" y="60" class="t h">Troubleshooting flow</text>
+  <text x="60" y="92" class="t s">Most failures become easier once you identify the layer first.</text>
+
+  <rect x="100" y="180" width="260" height="130" class="box a"/>
+  <text x="130" y="225" class="t b">Environment layer</text>
+  <text x="130" y="255" class="t n">venv, path, imports, access</text>
+
+  <rect x="420" y="180" width="260" height="130" class="box b1"/>
+  <text x="450" y="225" class="t b">Syntax / shell layer</text>
+  <text x="450" y="255" class="t n">SyntaxError, heredoc leftovers, wrong shell</text>
+
+  <rect x="740" y="180" width="260" height="130" class="box c"/>
+  <text x="770" y="225" class="t b">API / version layer</text>
+  <text x="770" y="255" class="t n">unexpected args, trainer mismatch</text>
+
+  <rect x="1060" y="180" width="260" height="130" class="box d"/>
+  <text x="1090" y="225" class="t b">Resource / runtime layer</text>
+  <text x="1090" y="255" class="t n">OOM, slow generate, optimizer.step crash</text>
+
+  <path d="M360 245 H420" class="arrow"/>
+  <path d="M680 245 H740" class="arrow"/>
+  <path d="M1000 245 H1060" class="arrow"/>
+
+  <rect x="360" y="470" width="700" height="180" class="box a"/>
+  <text x="400" y="520" class="t b">Recommended debugging order</text>
+  <text x="400" y="555" class="t n">1. Identify the failure layer</text>
+  <text x="400" y="585" class="t n">2. Run the smallest smoke test</text>
+  <text x="400" y="615" class="t n">3. Only then inspect the recipe</text>
+</svg>

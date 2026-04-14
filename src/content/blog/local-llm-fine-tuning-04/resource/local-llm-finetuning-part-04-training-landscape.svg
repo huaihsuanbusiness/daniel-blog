@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="760" viewBox="0 0 1280 760">
+  <defs>
+    <style>
+      .t{font-family:Arial,Inter,sans-serif;fill:#1f2937}
+      .h{font-size:28px;font-weight:700}
+      .s{font-size:16px}
+      .b{font-size:18px;font-weight:700}
+      .n{font-size:14px}
+      .box{stroke:#cbd5e1;stroke-width:2;rx:20;ry:20}
+      .a{fill:#e0f2fe}.b1{fill:#ede9fe}.c{fill:#ffedd5}.d{fill:#fee2e2}
+      .arrow{stroke:#64748b;stroke-width:2.5;fill:none;marker-end:url(#m)}
+    </style>
+    <marker id="m" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#64748b"/></marker>
+  </defs>
+  <text x="60" y="60" class="t h">Training landscape</text>
+  <text x="60" y="92" class="t s">Different methods answer different questions. They are not one ladder.</text>
+  <rect x="70" y="150" width="500" height="170" class="box a"/>
+  <text x="100" y="190" class="t b">SFT</text>
+  <text x="100" y="220" class="t n">Question answered:</text>
+  <text x="100" y="245" class="t n">How do you teach the model?</text>
+  <text x="100" y="280" class="t n">Signal: prompt → desired answer</text>
+  <text x="100" y="305" class="t n">Use when: you want the model to imitate a target response pattern</text>
+  <rect x="700" y="150" width="500" height="170" class="box b1"/>
+  <text x="730" y="190" class="t b">LoRA / Adapter</text>
+  <text x="730" y="220" class="t n">Question answered:</text>
+  <text x="730" y="245" class="t n">How do you update parameters efficiently?</text>
+  <text x="730" y="280" class="t n">Signal carrier: extra trainable weights beside the base model</text>
+  <text x="730" y="305" class="t n">Use when: you want cheaper, lighter fine-tuning</text>
+  <rect x="70" y="400" width="500" height="170" class="box c"/>
+  <text x="100" y="440" class="t b">Partial FT</text>
+  <text x="100" y="470" class="t n">Question answered:</text>
+  <text x="100" y="495" class="t n">Which original weights do you open?</text>
+  <text x="100" y="530" class="t n">Depth: deeper than LoRA, but not the whole model</text>
+  <text x="100" y="555" class="t n">Use when: LoRA is not enough but full FT is too heavy</text>
+  <rect x="700" y="400" width="500" height="170" class="box d"/>
+  <text x="730" y="440" class="t b">Full fine-tune</text>
+  <text x="730" y="470" class="t n">Question answered:</text>
+  <text x="730" y="495" class="t n">How deep are you willing to cut?</text>
+  <text x="730" y="530" class="t n">Depth: update the original model weights directly</text>
+  <text x="730" y="555" class="t n">Use when: you can afford the cost and need broad behavioural change</text>
+  <path d="M570 235 H700" class="arrow"/><path d="M570 485 H700" class="arrow"/><path d="M320 320 V400" class="arrow"/><path d="M950 320 V400" class="arrow"/>
+</svg>

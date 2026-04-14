@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1360" height="820" viewBox="0 0 1360 820">
+  <defs>
+    <style>
+      .t{font-family:Arial,Inter,sans-serif;fill:#1f2937}.h{font-size:28px;font-weight:700}.s{font-size:16px}.b{font-size:18px;font-weight:700}.n{font-size:14px}
+      .box{stroke:#cbd5e1;stroke-width:2;rx:18;ry:18}.a{fill:#e0f2fe}.b1{fill:#ede9fe}.c{fill:#fee2e2}
+      .arrow{stroke:#64748b;stroke-width:2.5;fill:none;marker-end:url(#m)}
+    </style>
+    <marker id="m" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#64748b"/></marker>
+  </defs>
+  <text x="60" y="60" class="t h">Training cost on MPS</text>
+  <text x="60" y="92" class="t s">Inference, LoRA training and partial FT do not belong to the same cost class.</text>
+  <rect x="70" y="160" width="360" height="420" class="box a"/>
+  <text x="100" y="205" class="t b">Inference</text>
+  <text x="100" y="245" class="t n">Forward pass</text>
+  <text x="100" y="270" class="t n">Logits</text>
+  <text x="100" y="295" class="t n">Optional token generation</text>
+  <text x="100" y="350" class="t n">Memory pressure: lower</text>
+  <text x="100" y="375" class="t n">Risk of OOM: lower</text>
+
+  <rect x="500" y="160" width="360" height="420" class="box b1"/>
+  <text x="530" y="205" class="t b">LoRA training</text>
+  <text x="530" y="245" class="t n">Forward pass</text>
+  <text x="530" y="270" class="t n">Loss</text>
+  <text x="530" y="295" class="t n">Backward pass</text>
+  <text x="530" y="320" class="t n">Gradients</text>
+  <text x="530" y="345" class="t n">Optimizer states for adapter weights</text>
+  <text x="530" y="400" class="t n">Memory pressure: medium</text>
+  <text x="530" y="425" class="t n">Risk of OOM: medium</text>
+
+  <rect x="930" y="160" width="360" height="420" class="box c"/>
+  <text x="960" y="205" class="t b">Partial FT</text>
+  <text x="960" y="245" class="t n">Forward pass</text>
+  <text x="960" y="270" class="t n">Loss</text>
+  <text x="960" y="295" class="t n">Backward pass</text>
+  <text x="960" y="320" class="t n">Gradients on original weights</text>
+  <text x="960" y="345" class="t n">Optimizer states on original weights</text>
+  <text x="960" y="370" class="t n">Higher activation and update cost</text>
+  <text x="960" y="425" class="t n">Memory pressure: high</text>
+  <text x="960" y="450" class="t n">Risk of OOM: high</text>
+
+  <path d="M430 370 H500" class="arrow"/>
+  <path d="M860 370 H930" class="arrow"/>
+</svg>

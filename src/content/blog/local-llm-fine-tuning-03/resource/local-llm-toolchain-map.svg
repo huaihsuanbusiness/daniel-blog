@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 760" width="1200" height="760">
+  <defs><style>
+    text { font-family: Arial, Inter, sans-serif; fill:#233043; }
+    .title { font-size: 28px; font-weight: 700; }
+    .subtitle { font-size: 15px; fill:#5b6b7f; }
+    .box { stroke:#8393a7; stroke-width:2; rx:22; ry:22; }
+    .h { font-size:20px; font-weight:700; }
+    .p { font-size:15px; }
+    .arrow { stroke:#6c7ea0; stroke-width:3; fill:none; marker-end:url(#m); }
+  </style><marker id="m" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#6c7ea0"/></marker></defs>
+  <text x="60" y="56" class="title">Local fine-tuning toolchain</text>
+  <text x="60" y="84" class="subtitle">Permissions, model loading, post-training, and runtime packaging are not the same job</text>
+  <rect x="60" y="150" width="230" height="120" class="box" fill="#eef6ff"/>
+  <text x="90" y="190" class="h">Hugging Face</text><text x="90" y="220" class="p">Hosting, model cards, permissions, gated access.</text>
+  <rect x="340" y="150" width="230" height="120" class="box" fill="#f6f2ff"/>
+  <text x="370" y="190" class="h">Transformers</text><text x="370" y="220" class="p">Load model, tokenizer, forward pass, generate.</text>
+  <rect x="620" y="150" width="230" height="120" class="box" fill="#fdeff3"/>
+  <text x="650" y="190" class="h">PEFT</text><text x="650" y="220" class="p">LoRA and other parameter-efficient adaptation methods.</text>
+  <rect x="900" y="150" width="240" height="120" class="box" fill="#fff6ea"/>
+  <text x="930" y="190" class="h">TRL</text><text x="930" y="220" class="p">SFTTrainer, DPOTrainer, post-training workflows.</text>
+  <rect x="360" y="430" width="480" height="150" class="box" fill="#edf4ef"/>
+  <text x="390" y="475" class="h">Ollama</text><text x="390" y="505" class="p">Runtime, model management, Modelfile packaging, local deployment.</text>
+  <text x="390" y="532" class="p">Usually the place you bring the result back to, not the place you start training.</text>
+  <path d="M290 210 L340 210" class="arrow"/>
+  <path d="M570 210 L620 210" class="arrow"/>
+  <path d="M850 210 L900 210" class="arrow"/>
+  <path d="M1020 270 C1020 360, 760 360, 760 430" class="arrow"/>
+  <path d="M735 270 C735 340, 600 340, 600 430" class="arrow"/>
+</svg>

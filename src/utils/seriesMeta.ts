@@ -22,6 +22,7 @@ const SERIES: Array<{ slug: RegExp; key: string; order: number; labelZh: string;
   { slug: /^after-the-pause-\d+$/, key: 'after-the-pause', order: 1, labelZh: '1. 暫停之後', labelEn: '1. After the Pause' },
   { slug: /^category-design-for-founders-\d+$/, key: 'category-design-for-founders', order: 2, labelZh: '2. 創業家的類別創造', labelEn: '2. Category Design for Founders' },
   { slug: /^what-reality-corrected-\d+$/, key: 'what-reality-corrected', order: 3, labelZh: '3. 被現實修正之後', labelEn: '3. What Reality Corrected' },
+  { slug: /^local-llm-fine-tuning-(?:\d+|appendix-[ab])$/, key: 'local-llm-fine-tuning', order: 8, labelZh: '8. 本地 LLM 微調拆解：從 Modelfile、LoRA 到 DPO 的實戰', labelEn: '8. Local LLM Fine-Tuning Breakdown: From Modelfiles and LoRA to DPO' },
   { slug: /^behind-the-trend-\d+$/, key: 'behind-the-trend', order: 9, labelZh: '9. 趨勢的背後', labelEn: '9. Behind the Trend' },
 ];
 
