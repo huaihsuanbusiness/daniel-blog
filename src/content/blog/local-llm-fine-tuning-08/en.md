@@ -1,5 +1,5 @@
 ---
-title: "Local LLM Fine-Tuning Breakdown: From Modelfiles and LoRA to DPO — Part 08 | 從 adapter 到 Ollama：merge、quantization 與部署"
+title: "Local LLM Fine-Tuning Breakdown: From Modelfiles and LoRA to DPO — Part 08 | From Adapter to Ollama: Merge, Quantization and Deployment"
 description: "a finished training run is not the same thing as a finished model"
 categories: ["ai"]
 tags: []
@@ -41,7 +41,7 @@ Adapters are designed to be able to:
 
 That is part of why LoRA is so attractive in engineering terms. You do not need to duplicate a full base model every time you create a new variant. You only need to store the increment.
 
-So an adapter that is not merged is not incomplete.  
+So an adapter that is not merged is not incomplete.
 It simply means:
 
 **your deployment route still allows the base and the increment to exist separately**
@@ -61,7 +61,7 @@ This needs to stay very clean.
 - the adapter’s learned increment is folded back into the base model
 - the result becomes one new complete weight set
 
-So merge is not a training method.  
+So merge is not a training method.
 It is a packaging and deployment step.
 
 That matters because it affects:
@@ -105,14 +105,14 @@ That is why merged models become much larger. You are no longer storing a small 
 
 ## What Safetensors is
 
-Safetensors is not a model category.  
+Safetensors is not a model category.
 It is best understood as a weight-file format.
 
 So when you saw:
 - `adapter_model.safetensors`
 - `model.safetensors`
 
-the difference was not that one was somehow more “advanced”.  
+the difference was not that one was somehow more “advanced”.
 The difference was what they were storing:
 
 - adapter increment
@@ -127,7 +127,7 @@ Safetensors appears constantly in this workflow because it fits very naturally i
 
 ## Where GGUF sits
 
-GGUF is also not a different personality of model.  
+GGUF is also not a different personality of model.
 It is better understood as another container format, especially common in local quantised inference ecosystems.
 
 The most practical way to hold the distinction is:
@@ -135,7 +135,7 @@ The most practical way to hold the distinction is:
 - Safetensors: training / merge / interchange
 - GGUF: local quantised inference ecosystem
 
-Neither is the model itself.  
+Neither is the model itself.
 They are containers.
 
 ---
@@ -195,7 +195,7 @@ A common 4-bit quantised family form.
 ### q4_K_M
 Another common 4-bit local-inference format. This is the kind of route that eventually gave you a version that felt usable again.
 
-These names are not describing different personalities.  
+These names are not describing different personalities.
 They are describing different weight representations of essentially the same model.
 
 ---
@@ -215,7 +215,7 @@ They are describing different weight representations of essentially the same mod
 
 That is one of the most important conclusions from the whole path.
 
-Quantisation can solve “slow”.  
+Quantisation can solve “slow”.
 It cannot solve “this model was trained into the weeds”.
 
 ---
@@ -237,7 +237,7 @@ Usually means:
 - adapter distorted the model
 - evaluation happened too late
 
-Those two problems can absolutely appear in the same run.  
+Those two problems can absolutely appear in the same run.
 But they are not the same disease.
 
 ---
@@ -247,14 +247,14 @@ But they are not the same disease.
 You already felt this distinction earlier.
 
 ### System prompt
-More like a role note for the actor.  
+More like a role note for the actor.
 It tells the model:
 - who it is
 - how it should speak
 - what not to do
 
 ### Modelfile
-More like the full production brief.  
+More like the full production brief.
 It can define:
 - the base model source
 - system text
@@ -263,7 +263,7 @@ It can define:
 - messages
 - and sometimes the route by which the model or adapter is packaged
 
-So a Modelfile is not merely a longer system prompt.  
+So a Modelfile is not merely a longer system prompt.
 It sits one layer above that.
 
 ---
@@ -297,7 +297,7 @@ The difference is:
 
 ## Why `ollama create` sometimes failed to read your Modelfile properly
 
-This was not simply “Ollama being broken”.  
+This was not simply “Ollama being broken”.
 More often the cause was one of these:
 
 - wrong working directory

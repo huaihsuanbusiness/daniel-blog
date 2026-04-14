@@ -1,5 +1,5 @@
 ---
-title: "Local LLM Fine-Tuning Breakdown: From Modelfiles and LoRA to DPO — Part 09 | 如何挑主力版本：Lexi、主力 adapter 與最後留下的判準"
+title: "Local LLM Fine-Tuning Breakdown: From Modelfiles and LoRA to DPO — Part 09 | How to Choose the Main Version: Lexi, Main Adapter and the Final Decision Criteria"
 description: "what should I actually keep?"
 categories: ["ai"]
 tags: []
@@ -21,7 +21,7 @@ This whole path makes it very easy to keep adding things:
 - another Modelfile
 - another quantisation variant
 
-There is always more that could be done.  
+There is always more that could be done.
 The harder question is:
 
 **which versions deserve to survive as the mainline**
@@ -30,7 +30,7 @@ The harder question is:
 
 ## Why Lexi became a reference point
 
-You did not start chasing Lexi because the name was interesting.  
+You did not start chasing Lexi because the name was interesting.
 You started because it represented a very specific temptation:
 
 - still Llama 3.1 8B
@@ -66,7 +66,7 @@ But based on the path you investigated, the engineering feel it projects is some
 
 That forms a very useful contrast with your own earlier instinct to keep digging deeper into small-data LoRA variants.
 
-So Lexi’s real value was not that you should copy every step.  
+So Lexi’s real value was not that you should copy every step.
 Its value was that it forced a better question:
 
 **if you want to preserve intelligence, perhaps the right move is not to modify more deeply, but to modify more carefully**
@@ -96,7 +96,7 @@ From:
 - to partial FT
 - to a different teaching method such as DPO
 
-So the proliferation of variants was not random restlessness.  
+So the proliferation of variants was not random restlessness.
 It was a real exploration of:
 - stability
 - cost
@@ -114,7 +114,7 @@ It helps to keep a very plain reading of them.
 - `v_proj`
 - all layers
 
-This is the cautious opening move.  
+This is the cautious opening move.
 Its role is to let you feel LoRA in a minimal construction zone.
 
 ### qkvo-small
@@ -124,7 +124,7 @@ Its role is to let you feel LoRA in a minimal construction zone.
 - `o_proj`
 - all layers
 
-This opens the attention block more broadly.  
+This opens the attention block more broadly.
 More chance of noticeable change. More chance of trouble.
 
 ### all-linear-small
@@ -137,7 +137,7 @@ This is not a natural upgrade. It is a real increase in construction width.
 - wider linear scope
 - but only on the later half of the network
 
-Its value is not that it is “more advanced”.  
+Its value is not that it is “more advanced”.
 Its value is that it explores the interaction between:
 - module width
 - layer depth
@@ -178,7 +178,7 @@ A late-stage normalisation layer that helps shape output behaviour.
 ### `lm_head`
 The final projection into vocabulary logits.
 
-Opening them can produce more noticeable behavioural change.  
+Opening them can produce more noticeable behavioural change.
 It also raises the cost and the risk.
 
 That is why they showed up most meaningfully in the partial FT stage, not as your first move.
@@ -187,7 +187,7 @@ That is why they showed up most meaningfully in the partial FT stage, not as you
 
 ## Why `for block in model.model.layers[-4:]` ended up meaning four layers
 
-Not because four is sacred.  
+Not because four is sacred.
 Because it was a compromise that made sense under your hardware and cost constraints.
 
 ### Fewer
@@ -196,7 +196,7 @@ Could easily become too weak to notice.
 ### More
 Could easily push the machine into failure.
 
-So “the final four layers” was not a universal answer.  
+So “the final four layers” was not a universal answer.
 It was the most survivable and meaningful compromise in that local context.
 
 That sort of compromise is worth preserving. It sounds more like real work than like a sterilised best practice.
@@ -239,10 +239,10 @@ Usually points to training and recipe problems:
 - distorted adapter behaviour
 - poor or late evaluation
 
-Those two failures can absolutely coexist.  
+Those two failures can absolutely coexist.
 They are still not the same problem.
 
-So the most valuable skill you are left with is not “how to make more variants”.  
+So the most valuable skill you are left with is not “how to make more variants”.
 It is being able to tell:
 
 **is this a speed disease or a quality disease?**
@@ -287,15 +287,15 @@ that one is a much better candidate.
 
 ## What a mainline version actually is
 
-Not the flashiest one.  
-Not the deepest one.  
+Not the flashiest one.
+Not the deepest one.
 Not the one that sounds most impressive in a tweet.
 
 A mainline version is closer to this:
 
 **the version you would actually keep using, trust enough to iterate on, and not feel you are gambling with every time you open it**
 
-That definition is unglamorous.  
+That definition is unglamorous.
 It is also the right one.
 
 Engineering mainlines should be selected by stability, not spectacle.

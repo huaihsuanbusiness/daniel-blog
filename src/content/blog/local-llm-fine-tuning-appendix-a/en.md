@@ -1,5 +1,5 @@
 ---
-title: "Local LLM Fine-Tuning Breakdown: From Modelfiles and LoRA to DPO — Appendix A | 術語字典與層級對照表"
+title: "Local LLM Fine-Tuning Breakdown: From Modelfiles and LoRA to DPO — Appendix A | Term Dictionary and Level Mapping Table"
 description: "when you see a term and want to know what it is, which layer it belongs to, and where you would actually change it, this is where you should be able to find a usable answer quickly."
 categories: ["ai"]
 tags: []
@@ -12,7 +12,7 @@ This appendix is not meant to retell the whole series.
 Its job is simpler:
 
 
-The main series is the map.  
+The main series is the map.
 This appendix is the pocket index.
 
 ---
@@ -40,19 +40,19 @@ This appendix is the pocket index.
 ## 2. Core glossary
 
 ### base model
-The starting point for all later customisation.  
+The starting point for all later customisation.
 If it is a raw base, it is closer to pretrained foundation. If it is instruct, it has already gone through instruction tuning.
 
 ### instruct
-A version that has already been trained to follow instructions and interact more usefully.  
+A version that has already been trained to follow instructions and interact more usefully.
 Most of your own experiments sat on `Llama-3.1-8B-Instruct`.
 
 ### weights
-The model’s real parameters.  
+The model’s real parameters.
 If prompts are role notes and templates are script format, weights are the actor’s original brain and training.
 
 ### adapter
-A separate trainable weight block attached to the base model.  
+A separate trainable weight block attached to the base model.
 It can be stored separately and does not have to be merged.
 
 ### fine-tuned adapter
@@ -61,26 +61,26 @@ An adapter that has already been trained, such as:
 - `adapter_config.json`
 
 ### LoRA
-Low-Rank Adaptation.  
+Low-Rank Adaptation.
 A PEFT route that changes model behaviour through a relatively small number of trainable parameters. LoRA is not a training objective. It is an update strategy.
 
 ### PEFT
-Parameter-Efficient Fine-Tuning.  
+Parameter-Efficient Fine-Tuning.
 The broader family of methods that aim to avoid opening the whole model.
 
 ### SFT
-Supervised Fine-Tuning.  
+Supervised Fine-Tuning.
 Teaching the model how to answer through target demonstrations.
 
 ### LoRA SFT
 Doing SFT through a LoRA-based PEFT route.
 
 ### DPO
-Direct Preference Optimization.  
+Direct Preference Optimization.
 Teaching the model through `prompt + chosen + rejected` preference pairs.
 
 ### TRL
-Transformers Reinforcement Learning.  
+Transformers Reinforcement Learning.
 The Hugging Face-adjacent library that provides common trainers for SFT, DPO and other alignment-style workflows.
 
 ### SFTTrainer
@@ -106,7 +106,7 @@ A chat-style format:
 - assistant reply
 
 ### few-shot
-Putting a few demonstrations directly into the prompt context.  
+Putting a few demonstrations directly into the prompt context.
 This does not write into model weights. It writes into the current request.
 
 ### prefix tuning
@@ -116,7 +116,7 @@ A tuning route closer to parameter space than plain prompting, but usually still
 A route where a small learnable prompt representation is trained rather than opening large sections of the model.
 
 ### q_proj / k_proj / v_proj / o_proj
-Core projection layers inside transformer attention.  
+Core projection layers inside transformer attention.
 Your baseline and qkvo routes were mainly deciding how much of this region to touch.
 
 ### all-linear
@@ -132,15 +132,15 @@ Decides on which layers those target modules will be modified.
 Helps match the correct model-layer structure when doing selective layer targeting.
 
 ### model.model.norm
-A normalisation layer near the output end of the model.  
+A normalisation layer near the output end of the model.
 Opening it can have a strong effect and a high cost.
 
 ### lm_head
-The output head that maps hidden states to vocabulary logits.  
+The output head that maps hidden states to vocabulary logits.
 Also very sensitive because of how close it is to final outputs.
 
 ### partial FT
-Partial fine-tuning.  
+Partial fine-tuning.
 Opening only some original weights rather than the entire model.
 
 ### full fine-tune
@@ -150,7 +150,7 @@ Opening and training the original model weights much more broadly or completely.
 Folding the adapter’s learned increment back into the base model weights.
 
 ### Safetensors
-A weight-file format.  
+A weight-file format.
 Not a model category.
 
 ### GGUF
@@ -160,18 +160,18 @@ A weight-container format common in local quantised inference ecosystems.
 Replacing heavier high-precision weight representations with lighter ones so the model is easier to run locally.
 
 ### fp32 / fp16
-Higher-precision representation families.  
+Higher-precision representation families.
 Heavier than q-formats.
 
 ### q4 / q4_0 / q4_K_M
-Common 4-bit quantised families and variants.  
+Common 4-bit quantised families and variants.
 The main thing to remember is that they are much lighter than fp16.
 
 ### blob
 Usually not a separate model, but an internal stored object or layer artefact in a toolchain.
 
 ### Modelfile
-Ollama’s packaging blueprint.  
+Ollama’s packaging blueprint.
 It can define:
 - FROM
 - SYSTEM
@@ -181,7 +181,7 @@ It can define:
 - and some model-source paths
 
 ### Ollama
-A local model service and packaging tool.  
+A local model service and packaging tool.
 It turns model artefacts into something you can actually run locally.
 
 ---
@@ -189,33 +189,33 @@ It turns model artefacts into something you can actually run locally.
 ## 3. Common parameter map
 
 ### `r`
-One of the main LoRA capacity knobs.  
+One of the main LoRA capacity knobs.
 Not automatically better when larger.
 
 ### `lora_alpha`
-A scaling factor for LoRA influence.  
+A scaling factor for LoRA influence.
 Not the learning rate, but still important.
 
 ### `learning_rate`
-The size of each parameter update step.  
+The size of each parameter update step.
 Not something you should always maximise.
 
 ### `num_train_epochs`
 How many full passes through the dataset are performed.
 
 ### `max_length`
-How long each example is allowed to be.  
+How long each example is allowed to be.
 Longer is heavier.
 
 ### `gradient_accumulation_steps`
-Accumulate gradients over several smaller steps before updating.  
+Accumulate gradients over several smaller steps before updating.
 A way of trading time for memory.
 
 ### `dataloader_pin_memory`
 Often discussed in CUDA contexts; in your MPS experiments it was not especially helpful.
 
 ### `temperature`
-Controls sampling spread.  
+Controls sampling spread.
 Only meaningful when sampling is enabled.
 
 ### `top_p`
