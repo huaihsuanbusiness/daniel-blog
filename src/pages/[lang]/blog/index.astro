@@ -393,7 +393,7 @@ function getSeriesMeta(slug: string, lang: string) {
 
     // URL wins (for shareable links); sessionStorage only as fallback for tab persistence
     const activeCat = urlCategory || savedCategory || 'all';
-    const activeSort = savedSort || urlSort || 'new';
+    const activeSort = urlSort || savedSort || 'new';
 
     const params = new URLSearchParams();
     if (activeCat && activeCat !== 'all') params.set('category', activeCat);
