@@ -3,6 +3,7 @@ export const prerender = true;
 export function getStaticPaths() {
   return [{ params: { lang: 'en' } }, { params: { lang: 'zh' } }];
 }
+const { lang } = Astro.params;
 import SurveyLayout from '../../../../layouts/SurveyLayout.astro';
 
 // A1-A26 questions data
@@ -256,7 +257,7 @@ const refParam = '';
       <input type="text" name="contact_line" class="text-input" placeholder="LINE ID" style="margin-bottom:8px" />
       <input type="tel" name="contact_phone" class="text-input" placeholder="手機號碼" style="margin-bottom:16px" />
       <ul class="options-list">
-        <li><label class="option-label"><input type="checkbox" name="consent_trial" value="我已閱讀並同意隱私權聲明" /> <span>我已閱讀並同意隱私權聲明</span></label></li>
+        <li><label class="option-label"><input type="checkbox" name="consent_trial" value="我已閱讀並同意隱私權聲明" /> <span>我已閱讀並同意 <a href={`/${lang}/privacy/`} target="_blank" onclick="event.stopPropagation()" style="color:var(--accent);text-decoration:underline">隱私權聲明</a></span></label></li>
         <li><label class="option-label"><input type="checkbox" name="consent_followup" value="我願意接受與本研究相關的後續聯絡，包括免費試用邀請與產品優先測試通知" /> <span>我願意接受與本研究相關的後續聯絡，包括免費試用邀請與產品優先測試通知</span></label></li>
         <li><label class="option-label"><input type="checkbox" name="consent_interview" value="我願意接受後續深度訪談邀請（約 15–30 分鐘）" /> <span>我願意接受後續深度訪談邀請（約 15–30 分鐘）</span></label></li>
       </ul>
@@ -325,7 +326,7 @@ const refParam = '';
       'A1','A2','A3','A4','A5-1','A5-2','A5-3','A6','A7',
       'A8','A9','A10','A11','A12','A13','A14','A15',
       'A16','A17','A18','A19','A20','A21','A22','A23',
-      'A24','A25'
+      'A24','A25','contact_willing'
     ];
     const missing = requiredQuestions.filter(q => !answers[q]);
     if (missing.length > 0) {

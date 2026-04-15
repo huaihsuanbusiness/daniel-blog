@@ -1,0 +1,271 @@
+---
+export const prerender = true;
+export function getStaticPaths() {
+  return [{ params: { lang: 'en' } }, { params: { lang: 'zh' } }];
+}
+import SurveyLayout from '../../layouts/SurveyLayout.astro';
+
+const { lang } = Astro.params;
+const isZh = lang === 'zh';
+
+const title = isZh ? '隱私權聲明' : 'Privacy Policy';
+---
+
+<SurveyLayout title={title} description={isZh ? '說明如何蒐集、處理與保護您的個人資料' : 'How we collect, process, and protect your personal data'}>
+  <div class="privacy-content">
+    {isZh ? (
+      <article>
+        <p class="update-note">**最後更新日期：** 2026-04-16　**版本：** v1.0</p>
+
+        <p>歡迎您使用 <strong>Daniel Can Fly</strong> 網站、問卷與相關研究服務。本隱私權聲明用來說明 <strong>HuaiHsuan Huang（Daniel Can Fly）</strong> 如何蒐集、處理、利用及保護您的個人資料。</p>
+
+        <p>若您不同意本聲明的全部或部分內容，請停止使用本網站、問卷及相關服務。</p>
+
+        <h2>一、適用範圍</h2>
+        <p>本隱私權聲明適用於您使用下列服務時所涉及的個人資料蒐集、處理與利用：</p>
+        <ol>
+          <li><strong>Daniel Can Fly</strong> 網站及其相關頁面內容</li>
+          <li>線上問卷與配對連結機制</li>
+          <li>免費試用申請、候補名單與聯絡</li>
+          <li>深度訪談、研究回訪與產品測試</li>
+          <li>您透過 Email、LINE、電話、表單或其他方式與我們聯繫時</li>
+          <li>與前述服務相關之第三方工具、雲端服務、網站分析工具或通訊工具</li>
+        </ol>
+        <p>本聲明 <strong>不適用</strong> 於非由我們管理或控制之第三方網站、平台或服務。</p>
+
+        <h2>二、蒐集者資訊</h2>
+        <ul>
+          <li><strong>蒐集者／經營者名稱：</strong> HuaiHsuan Huang（Daniel Can Fly）</li>
+          <li><strong>聯絡 Email：</strong> daniel.huang.tw.409@gmail.com</li>
+          <li><strong>LINE ID：</strong> danielpieopieo</li>
+        </ul>
+
+        <h2>三、我們可能蒐集的資料類型</h2>
+        <h3>（一）您主動提供的資料</h3>
+        <ol>
+          <li><strong>基本識別資料：</strong>姓名、暱稱、身分別、與長輩或家屬之關係、年齡區間、居住關係、聯絡方式（Email、LINE ID、手機）。</li>
+          <li><strong>問卷填答資料：</strong>長輩或家屬的需求、偏好、照顧情境、互動頻率偏好、付費意願、隱私與分享邊界、使用習慣、對產品的看法，以及開放式回覆內容。</li>
+          <li><strong>配對與研究招募資料：</strong>問卷配對連結、配對識別碼、問卷填寫順序。</li>
+          <li><strong>後續參與意願資料：</strong>是否同意接受免費試用邀請、產品測試通知、深度訪談邀請。</li>
+        </ol>
+
+        <h3>（二）您使用網站或表單時自動產生的資料</h3>
+        <ol>
+          <li><strong>裝置與技術資訊：</strong>IP 位址、瀏覽器類型、裝置類型、作業系統、語言、參考來源網址、瀏覽時間、點擊行為、Cookie。</li>
+          <li><strong>服務操作紀錄：</strong>頁面瀏覽、按鈕點擊、問卷開始與完成時間、配對連結建立與使用狀況。</li>
+        </ol>
+
+        <h3>（三）敏感資料提醒</h3>
+        <p>本專案原則上 <strong>不以蒐集敏感個人資料為目的</strong>。若您在開放式欄位、訪談、測試或其他互動中主動提供與健康、情緒狀態、家庭關係、財務或其他較敏感資訊有關的內容，我們將僅在必要範圍內處理。</p>
+
+        <h2>四、蒐集資料的目的</h2>
+        <ol>
+          <li>進行市場研究、使用者研究、問卷分析與需求驗證</li>
+          <li>建立長輩與家屬問卷之配對與比較分析</li>
+          <li>聯絡您參與免費試用、產品測試、深度訪談或研究回訪</li>
+          <li>回應您的詢問、申請與其他聯絡需求</li>
+          <li>改善網站內容、問卷設計、產品功能、使用流程與研究方法</li>
+          <li>進行統計分析、研究報告、產品規劃與服務優化</li>
+          <li>維護網站與服務的安全性，避免濫用、垃圾訊息或異常使用</li>
+        </ol>
+
+        <h2>五、資料利用的方式、對象、地區與期間</h2>
+        <h3>（一）利用方式</h3>
+        <p>我們可能以自動化或非自動化方式，進行蒐集、記錄、整理、分析、比對、聯繫、統計、研究、回訪、產品測試與服務改進。</p>
+
+        <h3>（二）利用對象</h3>
+        <ol>
+          <li>HuaiHsuan Huang（Daniel Can Fly）本人及受其授權處理研究或產品測試資料之成員</li>
+          <li>受委託提供表單、網站、雲端儲存、網站分析、電子郵件、通訊、預約或資料整理服務之第三方服務供應商</li>
+          <li>依法令、法院、主管機關或有權機關要求時之相關機關</li>
+          <li>經您另行明確同意之其他對象</li>
+        </ol>
+
+        <h3>（三）利用地區</h3>
+        <p>您的資料可能於您所在國家／地區，以及第三方服務供應商之伺服器所在地被處理或儲存。</p>
+
+        <h3>（四）利用期間</h3>
+        <p>我們將於達成蒐集目的所必要期間內保留您的資料。若您撤回同意，而我們已無其他合法且必要的保留事由時，將於合理期間內刪除或停止處理您的資料。</p>
+
+        <h2>六、您是否一定要提供資料</h2>
+        <p>您可自由選擇是否提供個人資料。但若您拒絕提供某些必要資料，可能導致我們無法完成問卷配對、聯絡您參與試用或回覆您的詢問。</p>
+
+        <h2>七、Cookie 與類似技術</h2>
+        <p>為維持網站正常運作、分析流量、了解問卷來源與改善使用體驗，我們可能使用 Cookie 或類似技術。您可透過瀏覽器設定拒絕部分或全部 Cookie，但這可能影響某些功能正常運作。</p>
+
+        <h2>八、第三方工具與服務</h2>
+        <p>本網站或研究流程可能使用 Google Sheets API（問卷資料寫入）、雲端儲存服務（研究資料備份）。這些第三方服務依其自身隱私政策處理資料。</p>
+
+        <h2>九、資料安全措施</h2>
+        <p>我們會在合理技術與管理範圍內，採取適當措施保護您的資料，包括權限控管與最小必要存取、帳號密碼保護、盡量分開管理配對識別碼與聯絡資訊、避免不必要蒐集敏感資料。</p>
+
+        <h2>十、您的權利</h2>
+        <p>在適用法令範圍內，您可就您的個人資料向我們主張：查詢或請求閱覽、請求製給複製本、請求補充或更正、請求停止蒐集、處理或利用、請求刪除、撤回同意。如欲行使，請透過上述聯絡方式與我們聯繫。</p>
+
+        <h2>十一、未成年人或需代理情形</h2>
+        <p>若您不具完全行為能力，請由法定代理人、監護人或輔助人陪同閱讀並決定是否提供個人資料。</p>
+
+        <h2>十二、隱私權聲明之修訂</h2>
+        <p>我們可能不定期修訂本隱私權聲明。修訂後的版本將公布於本網站，並自公布時起生效。</p>
+
+        <h2>十三、聯絡我們</h2>
+        <ul>
+          <li><strong>Email：</strong> daniel.huang.tw.409@gmail.com</li>
+          <li><strong>LINE ID：</strong> danielpieopieo</li>
+        </ul>
+      </article>
+    ) : (
+      <article>
+        <p class="update-note"><strong>Last Updated:</strong> 2026-04-16　<strong>Version:</strong> v1.0</p>
+
+        <p>Welcome to the <strong>Daniel Can Fly</strong> website, surveys, and related research services. This Privacy Policy explains how <strong>HuaiHsuan Huang (Daniel Can Fly)</strong> collects, processes, uses, and protects your personal data.</p>
+
+        <p>If you do not agree with all or any part of this Policy, please stop using this website, the surveys, and related services.</p>
+
+        <h2>1. Scope</h2>
+        <p>This Privacy Policy applies to the collection, processing, and use of personal data involved when you use:</p>
+        <ol>
+          <li>The <strong>Daniel Can Fly</strong> website and its related pages</li>
+          <li>Online surveys and the pairing-link mechanism</li>
+          <li>Free trial applications, waitlists, and related contact</li>
+          <li>In-depth interviews, research follow-ups, and product testing</li>
+          <li>Contact made through email, LINE, phone, forms, or other channels</li>
+          <li>Third-party tools, cloud services, website analytics tools, or communication tools related to the services above</li>
+        </ol>
+        <p>This Policy does <strong>not</strong> apply to third-party websites, platforms, or services not managed or controlled by us.</p>
+
+        <h2>2. Data Collector Information</h2>
+        <ul>
+          <li><strong>Collector / Operator Name:</strong> HuaiHsuan Huang (Daniel Can Fly)</li>
+          <li><strong>Contact Email:</strong> daniel.huang.tw.409@gmail.com</li>
+          <li><strong>LINE ID:</strong> danielpieopieo</li>
+        </ul>
+
+        <h2>3. Types of Data We May Collect</h2>
+        <h3>(1) Data You Provide Directly</h3>
+        <ol>
+          <li><strong>Basic identifying information:</strong> name, nickname, preferred form of address, identity category, relationship to the older adult or family member, age range, living arrangement, and contact information (email, LINE ID, phone number).</li>
+          <li><strong>Survey response data:</strong> needs, preferences, caregiving context, preferred interaction frequency, willingness to pay, privacy and sharing boundaries, usage habits, opinions about the product, and open-ended responses.</li>
+          <li><strong>Pairing and research recruitment data:</strong> survey pairing links, pairing identifiers, order in which surveys are completed.</li>
+          <li><strong>Future participation preference data:</strong> whether you agree to receive free trial invitations, product testing notices, or in-depth interview invitations.</li>
+        </ol>
+
+        <h3>(2) Data Generated Automatically</h3>
+        <ol>
+          <li><strong>Device and technical information:</strong> IP address, browser type, device type, operating system, language, referring URL, browsing time, click behavior, cookies.</li>
+          <li><strong>Service interaction records:</strong> page views, button clicks, survey start and completion time, pairing link creation and usage.</li>
+        </ol>
+
+        <h3>(3) Sensitive Data Reminder</h3>
+        <p>As a general rule, this project is <strong>not intended to collect sensitive personal data</strong>. If you voluntarily provide information relating to health, emotional status, family relationships, finances, or other more sensitive matters, we will only process that information to the extent necessary.</p>
+
+        <h2>4. Purposes of Collection</h2>
+        <ol>
+          <li>To conduct market research, user research, survey analysis, and needs validation</li>
+          <li>To match and compare survey responses between older adults and family members</li>
+          <li>To contact you regarding free trials, product testing, in-depth interviews, or research follow-ups</li>
+          <li>To respond to your questions, requests, or other communications</li>
+          <li>To improve website content, survey design, product features, user flows, and research methods</li>
+          <li>To perform statistical analysis, prepare research reports, plan products, and optimize services</li>
+          <li>To maintain the security of the website and services, and to prevent misuse, spam, or abnormal use</li>
+        </ol>
+
+        <h2>5. How, With Whom, Where, and For How Long Data Is Used</h2>
+        <h3>(1) Methods of Use</h3>
+        <p>We may collect, record, organize, analyze, match, contact, statistically process, research, follow up, test products, and improve services using either automated or non-automated means.</p>
+
+        <h3>(2) Recipients of Data</h3>
+        <ol>
+          <li>HuaiHsuan Huang (Daniel Can Fly) and individuals authorized by him to handle research or product testing data</li>
+          <li>Third-party service providers entrusted to provide forms, website hosting, cloud storage, analytics, email, communication, scheduling, or data organization services</li>
+          <li>Relevant authorities where required by law, court order, or a competent government authority</li>
+          <li>Other parties for whom you have separately provided explicit consent</li>
+        </ol>
+
+        <h3>(3) Geographic Area of Use</h3>
+        <p>Your data may be processed or stored in your country/region and in the server locations of third-party service providers.</p>
+
+        <h3>(4) Retention Period</h3>
+        <p>We will retain your data only for the period necessary to achieve the purposes of collection. If you withdraw consent and we no longer have another lawful reason to retain the data, we will within a reasonable period delete or stop processing your data.</p>
+
+        <h2>6. Whether You Must Provide Data</h2>
+        <p>You are free to decide whether to provide personal data. However, refusing to provide certain necessary data may prevent us from completing survey pairing, contacting you about trials, or responding to your inquiries.</p>
+
+        <h2>7. Cookies and Similar Technologies</h2>
+        <p>To keep the website operating properly, analyze traffic, understand survey sources, and improve user experience, we may use cookies or similar technologies. You may reject some or all cookies through your browser settings, but doing so may affect the normal operation of certain functions.</p>
+
+        <h2>8. Third-Party Tools and Services</h2>
+        <p>This website or research process may use Google Sheets API (for survey data writing) and cloud storage services (for research data backup). These third-party services process data under their own privacy policies.</p>
+
+        <h2>9. Data Security Measures</h2>
+        <p>Within reasonable technical and organizational scope, we take appropriate measures to protect your data, including access control and minimum necessary access, password protection, keeping pairing identifiers and contact information separate where possible, and avoiding unnecessary collection of sensitive data.</p>
+
+        <h2>10. Your Rights</h2>
+        <p>To the extent permitted by applicable law, you may inquire about or request access to your data, request a copy, request supplementation or correction, request cessation of collection, processing or use, request deletion, or withdraw consent. To exercise these rights, please contact us using the details above.</p>
+
+        <h2>11. Minors or Situations Requiring a Representative</h2>
+        <p>If you do not have full legal capacity, please have a legal representative, guardian, or assistant review this Policy with you and decide whether to provide personal data.</p>
+
+        <h2>12. Revisions to This Privacy Policy</h2>
+        <p>We may revise this Privacy Policy from time to time. The revised version will be published on this website and will take effect upon publication.</p>
+
+        <h2>13. Contact Us</h2>
+        <ul>
+          <li><strong>Email:</strong> daniel.huang.tw.409@gmail.com</li>
+          <li><strong>LINE ID:</strong> danielpieopieo</li>
+        </ul>
+      </article>
+    )}
+  </div>
+</SurveyLayout>
+
+<style>
+  .privacy-content {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 8px 0 60px;
+    font-size: 1rem;
+    line-height: 1.8;
+    color: var(--text-primary);
+  }
+  .privacy-content h2 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin: 2em 0 0.6em;
+    color: var(--text-primary);
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 4px;
+  }
+  .privacy-content h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 1.4em 0 0.4em;
+    color: var(--text-primary);
+  }
+  .privacy-content p {
+    margin: 0 0 1em;
+    color: var(--text-secondary);
+  }
+  .privacy-content ol, .privacy-content ul {
+    margin: 0 0 1em;
+    padding-left: 1.4em;
+    color: var(--text-secondary);
+  }
+  .privacy-content li {
+    margin-bottom: 0.4em;
+  }
+  .privacy-content strong {
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+  .privacy-content article {
+    background: var(--bg-card);
+    border-radius: 12px;
+    padding: 28px 24px;
+  }
+  .update-note {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-bottom: 1.5em;
+  }
+</style>
