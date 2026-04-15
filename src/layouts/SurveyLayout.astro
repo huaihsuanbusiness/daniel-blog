@@ -6,13 +6,48 @@ export interface Props {
 const { title = '市場調查', description = 'AI 陪伴夥伴市場調查' } = Astro.props;
 ---
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="zh" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>{title}</title>
   <meta name="description" content={description} />
+  <script is:inline>
+    // Apply theme before render to avoid flash
+    const stored = localStorage.getItem('theme');
+    document.documentElement.dataset.theme = stored || 'dark';
+  </script>
   <style>
+    :root {
+      --bg-page: #f9f7f4;
+      --bg-card: #fff;
+      --text-primary: #1a1a1a;
+      --text-secondary: #666;
+      --text-muted: #888;
+      --border-color: #e0ddd8;
+      --hover-bg: #f0ede8;
+      --accent: #4a7c59;
+      --accent-hover: #3d6649;
+      --shadow: rgba(0,0,0,0.06);
+      --error-bg: #fff0f0;
+      --error-border: #fcc;
+      --error-text: #c44;
+      --header-bg: #fff;
+    }
+    html[data-theme='dark'] {
+      --bg-page: #111214;
+      --bg-card: #1c1e21;
+      --text-primary: #e8e6e3;
+      --text-secondary: #a0a0a0;
+      --text-muted: #707070;
+      --border-color: #2e3033;
+      --hover-bg: #262829;
+      --shadow: rgba(0,0,0,0.3);
+      --error-bg: #2a1a1a;
+      --error-border: #5c2020;
+      --error-text: #f07070;
+      --header-bg: #1c1e21;
+    }
     * {
       box-sizing: border-box;
     }
@@ -20,10 +55,38 @@ const { title = '市場調查', description = 'AI 陪伴夥伴市場調查' } = 
       margin: 0;
       padding: 0;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang TC', 'Microsoft JhengHei', sans-serif;
-      background: #f9f7f4;
-      color: #2a2a2a;
+      background: var(--bg-page);
+      color: var(--text-primary);
       line-height: 1.6;
       min-height: 100vh;
+      transition: background 0.2s, color 0.2s;
+    }
+    .survey-topbar {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding: 12px 16px;
+      background: var(--header-bg);
+      border-bottom: 1px solid var(--border-color);
+      transition: background 0.2s;
+    }
+    .theme-toggle {
+      background: none;
+      border: 1.5px solid var(--border-color);
+      border-radius: 8px;
+      padding: 6px 10px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      transition: border-color 0.15s, color 0.15s, background 0.15s;
+    }
+    .theme-toggle:hover {
+      border-color: var(--accent);
+      color: var(--text-primary);
+      background: var(--hover-bg);
     }
     .survey-container {
       max-width: 640px;
@@ -38,23 +101,24 @@ const { title = '市場調查', description = 'AI 陪伴夥伴市場調查' } = 
       font-size: 1.5rem;
       font-weight: 600;
       margin: 0 0 8px;
-      color: #1a1a1a;
+      color: var(--text-primary);
     }
     .survey-header p {
       font-size: 1rem;
-      color: #666;
+      color: var(--text-secondary);
       margin: 0;
     }
     .question-block {
-      background: #fff;
+      background: var(--bg-card);
       border-radius: 12px;
       padding: 20px;
       margin-bottom: 16px;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+      box-shadow: 0 1px 4px var(--shadow);
+      transition: background 0.2s, box-shadow 0.2s;
     }
     .question-code {
       font-size: 0.8rem;
-      color: #888;
+      color: var(--text-muted);
       margin-bottom: 6px;
       font-weight: 500;
       letter-spacing: 0.5px;
@@ -63,7 +127,7 @@ const { title = '市場調查', description = 'AI 陪伴夥伴市場調查' } = 
       font-size: 1.1rem;
       font-weight: 500;
       margin-bottom: 14px;
-      color: #1a1a1a;
+      color: var(--text-primary);
     }
     .options-list {
       list-style: none;
@@ -85,9 +149,10 @@ const { title = '市場調查', description = 'AI 陪伴夥伴市場調查' } = 
       cursor: pointer;
       transition: background 0.15s;
       font-size: 1rem;
+      color: var(--text-primary);
     }
     .option-label:hover {
-      background: #f0ede8;
+      background: var(--hover-bg);
     }
     .option-label input[type="radio"],
     .option-label input[type="checkbox"] {
@@ -95,13 +160,13 @@ const { title = '市場調查', description = 'AI 陪伴夥伴市場調查' } = 
       flex-shrink: 0;
       width: 18px;
       height: 18px;
-      accent-color: #4a7c59;
+      accent-color: var(--accent);
     }
     .submit-btn {
       display: block;
       width: 100%;
       padding: 16px;
-      background: #4a7c59;
+      background: var(--accent);
       color: #fff;
       border: none;
       border-radius: 12px;
@@ -113,34 +178,37 @@ const { title = '市場調查', description = 'AI 陪伴夥伴市場調查' } = 
       transition: background 0.15s, opacity 0.15s;
     }
     .submit-btn:hover {
-      background: #3d6649;
+      background: var(--accent-hover);
     }
     .submit-btn:disabled {
       opacity: 0.6;
       cursor: not-allowed;
     }
     .error-msg {
-      background: #fff0f0;
-      border: 1px solid #fcc;
+      background: var(--error-bg);
+      border: 1px solid var(--error-border);
       border-radius: 8px;
       padding: 12px 16px;
-      color: #c44;
+      color: var(--error-text);
       font-size: 0.95rem;
       margin-bottom: 16px;
     }
     .text-input {
       width: 100%;
       padding: 12px;
-      border: 1.5px solid #ddd;
+      border: 1.5px solid var(--border-color);
       border-radius: 8px;
       font-size: 1rem;
       font-family: inherit;
       resize: vertical;
       min-height: 100px;
+      background: var(--bg-page);
+      color: var(--text-primary);
+      transition: border-color 0.15s, background 0.2s, color 0.2s;
     }
     .text-input:focus {
       outline: none;
-      border-color: #4a7c59;
+      border-color: var(--accent);
     }
     .scale-input {
       display: flex;
@@ -153,20 +221,87 @@ const { title = '市場調查', description = 'AI 陪伴夥伴市場調查' } = 
       align-items: center;
       gap: 4px;
       font-size: 0.95rem;
+      color: var(--text-primary);
     }
     .scale-input input[type="radio"] {
-      accent-color: #4a7c59;
+      accent-color: var(--accent);
     }
     .scale-wrapper {
       display: flex;
       align-items: center;
       gap: 4px;
       font-size: 0.85rem;
-      color: #888;
+      color: var(--text-muted);
+    }
+    .link-box {
+      background: var(--bg-page);
+      border: 1.5px solid var(--accent);
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-size: 0.95rem;
+      color: var(--accent);
+      word-break: break-all;
+      cursor: pointer;
+      margin-bottom: 8px;
+      transition: background 0.15s;
+    }
+    .link-box:hover {
+      background: var(--hover-bg);
+    }
+    .share-block {
+      margin-top: 32px;
+      background: var(--bg-card);
+      border-radius: 12px;
+      padding: 24px 20px;
+    }
+    .share-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 12px;
+    }
+    .share-hint {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin: 0;
+    }
+    .thankyou-block {
+      text-align: center;
+      padding: 40px 0;
+    }
+    .big-check {
+      font-size: 4rem;
+      color: var(--accent);
+      margin-bottom: 16px;
+    }
+    .thankyou-block h2 {
+      font-size: 1.6rem;
+      font-weight: 600;
+      margin: 0 0 16px;
+      color: var(--text-primary);
+    }
+    .thankyou-block p {
+      font-size: 1.05rem;
+      color: var(--text-secondary);
+      line-height: 1.7;
+      margin: 0 0 12px;
     }
   </style>
 </head>
 <body>
+  <div class="survey-topbar">
+    <button class="theme-toggle" id="theme-toggle" type="button" aria-label="切換深淺模式">
+      <svg class="icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+        <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+      </svg>
+      <svg class="icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+      </svg>
+    </button>
+  </div>
   <div class="survey-container">
     <div class="survey-header">
       <h1>{title}</h1>
@@ -174,5 +309,14 @@ const { title = '市場調查', description = 'AI 陪伴夥伴市場調查' } = 
     </div>
     <slot />
   </div>
+  <script is:inline>
+    const toggle = document.getElementById('theme-toggle');
+    toggle.addEventListener('click', () => {
+      const current = document.documentElement.dataset.theme === 'light' ? 'light' : 'dark';
+      const next = current === 'light' ? 'dark' : 'light';
+      document.documentElement.dataset.theme = next;
+      localStorage.setItem('theme', next);
+    });
+  </script>
 </body>
 </html>

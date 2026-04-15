@@ -20,78 +20,28 @@ import SurveyLayout from '../../../../layouts/SurveyLayout.astro';
     </p>
 
     <div id="share-section" style="display:none" class="share-block">
-      <p class="share-title">請將以下連結分享給長輩：</p>
+      <p class="share-title" id="share-title"></p>
       <div class="link-box" id="invite-link-box"></div>
-      <p class="share-hint">長輩可點擊連結填寫長輩版問卷</p>
+      <p class="share-hint" id="share-hint"></p>
     </div>
   </div>
 </SurveyLayout>
-
-<style>
-  .thankyou-block {
-    text-align: center;
-    padding: 40px 0;
-  }
-  .big-check {
-    font-size: 4rem;
-    color: #4a7c59;
-    margin-bottom: 16px;
-  }
-  h2 {
-    font-size: 1.6rem;
-    font-weight: 600;
-    margin: 0 0 16px;
-    color: #1a1a1a;
-  }
-  p {
-    font-size: 1.05rem;
-    color: #555;
-    line-height: 1.7;
-    margin: 0 0 12px;
-  }
-  .share-block {
-    margin-top: 32px;
-    background: #f0ede8;
-    border-radius: 12px;
-    padding: 24px 20px;
-  }
-  .share-title {
-    font-size: 1rem;
-    font-weight: 600;
-    color: #333;
-    margin-bottom: 12px;
-  }
-  .link-box {
-    background: #fff;
-    border: 1.5px solid #4a7c59;
-    border-radius: 8px;
-    padding: 12px 16px;
-    font-size: 0.95rem;
-    color: #4a7c59;
-    word-break: break-all;
-    cursor: pointer;
-    margin-bottom: 8px;
-    transition: background 0.15s;
-  }
-  .link-box:hover {
-    background: #f0fff4;
-  }
-  .share-hint {
-    font-size: 0.85rem;
-    color: #888;
-    margin: 0;
-  }
-</style>
 
 <script>
   const role = sessionStorage.getItem('survey_role');
   const inviteLink = sessionStorage.getItem('survey_inviteLink') || '';
 
+  const shareSection = document.getElementById('share-section');
+  const shareTitle = document.getElementById('share-title');
+  const shareHint = document.getElementById('share-hint');
+  const linkBox = document.getElementById('invite-link-box');
+
   if (role === 'caregiver') {
     document.getElementById('caregiver-msg').style.display = 'block';
     if (inviteLink) {
-      document.getElementById('share-section').style.display = 'block';
-      const linkBox = document.getElementById('invite-link-box');
+      shareSection.style.display = 'block';
+      shareTitle.textContent = '請將以下連結分享給長輩：';
+      shareHint.textContent = '長輩可點擊連結填寫長輩版問卷';
       linkBox.textContent = inviteLink;
       linkBox.addEventListener('click', () => {
         navigator.clipboard.writeText(inviteLink).then(() => {
@@ -102,6 +52,18 @@ import SurveyLayout from '../../../../layouts/SurveyLayout.astro';
     }
   } else {
     document.getElementById('elder-msg').style.display = 'block';
+    if (inviteLink) {
+      shareSection.style.display = 'block';
+      shareTitle.textContent = '請將以下連結分享給家人或照顧者：';
+      shareHint.textContent = '他們可以點擊連結填寫家屬版問卷';
+      linkBox.textContent = inviteLink;
+      linkBox.addEventListener('click', () => {
+        navigator.clipboard.writeText(inviteLink).then(() => {
+          linkBox.textContent = '已複製！';
+          setTimeout(() => { linkBox.textContent = inviteLink; }, 2000);
+        });
+      });
+    }
   }
 
   // Clean up sessionStorage after reading

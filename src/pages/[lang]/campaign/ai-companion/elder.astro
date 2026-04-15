@@ -223,10 +223,7 @@ const refParam = '';
 ---
 
 <SurveyLayout title="市場調查｜長輩版" description="請根據您的實際情況填寫">
-  <div id="link-invalid" style="display:none" class="question-block">
-    <div class="question-text">此連結已失效，請向家人重新取得。</div>
-  </div>
-  <form id="survey-form" style="display:none">
+  <form id="survey-form">
     {questions.map((q, i) => (
       <Fragment set:html={renderQuestion(q, i)} />
     ))}
@@ -245,15 +242,14 @@ const refParam = '';
   }
 </style>
 
-<script define:vars={{ refParam }}>
+<script>
   const urlParams = new URLSearchParams(window.location.search);
   const ref = urlParams.get('ref');
 
-  if (!ref || !ref.startsWith('fam_')) {
-    document.getElementById('link-invalid').style.display = 'block';
-  } else {
-    document.getElementById('survey-form').style.display = 'block';
-  }
+  // familyId: use ref if present, otherwise generate one client-side
+  const familyId = ref && ref.startsWith('fam_')
+    ? ref
+    : 'fam_' + Math.random().toString(36).substring(2, 10) + Date.now().toString(36).substring(4);
 
   const form = document.getElementById('survey-form');
   const submitBtn = document.getElementById('submit-btn');
@@ -307,8 +303,13 @@ const refParam = '';
       if (!res.ok || !data.success) {
         throw new Error(data.error || '送出失敗');
       }
-      sessionStorage.setItem('survey_role', 'elder');
+      // Build invite link for caregiver
       const lang = window.location.pathname.split('/').filter(Boolean)[0] || 'zh';
+      const inviteLink = `/${lang}/campaign/ai-companion/caregiver?ref=${familyId}`;
+
+      sessionStorage.setItem('survey_familyId', familyId);
+      sessionStorage.setItem('survey_inviteLink', inviteLink);
+      sessionStorage.setItem('survey_role', 'elder');
       window.location.href = `/${lang}/campaign/ai-companion/thank-you`;
     } catch (err) {
       errorContainer.innerHTML = `<div class="error-msg">送出失敗：${err.message}</div>`;
