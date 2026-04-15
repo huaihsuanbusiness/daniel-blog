@@ -7,6 +7,8 @@ date: 2026-03-31T19:26:00
 featured: false
 ---
 
+**Subtitle: Skills are not MCP primitives. They are closer to a semantic exoskeleton that helps you organise capability boundaries, operating rules, and backend contracts for the model. The hard part is not writing a manifest. The hard part is making runtime behaviour actually respect it.**
+
 If Part 3 was about framework choice, Part 4 moves to something even easier to misunderstand and much closer to whether the system behaves well in practice:
 
 > **What are skills, really?**

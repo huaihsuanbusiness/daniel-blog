@@ -1,12 +1,11 @@
 ---
-title: "OpenClaw 快速上手 06｜模型怎麼選？從 OpenAI、Claude、Gemini、Grok、MiniMax、z.ai 到本地模型的實戰選型"
+title: "OpenClaw Getting Started 06｜模型怎麼選？從 OpenAI、Claude、Gemini、Grok、MiniMax、z.ai 到本地模型的實戰選型"
 description: "給想把 OpenClaw 真正用起來的新手。一篇把 API 供應商、可轉接的聊天訂閱方案、成本感、額度風險、agent 適配性與 Daniel 的真實配置一次講清楚的選型文。"
 categories: ["openclaw"]
 tags: ["openclaw", "models", "llm", "providers", "agent", "gateway"]
 date: 2026-04-02T22:31:00
 featured: false
 ---
-
 
 > 適合誰：已經裝好 OpenClaw，接下來想認真選模型與供應商的新手。  
 > 這篇不是要比誰 benchmark 排名第一，而是要回答一個更實際的問題：**如果你真的要把 OpenClaw 養起來，錢要花在哪裡、哪家穩、哪家聰明、哪家容易翻車、哪家比較適合拿來做什麼事？**
@@ -527,4 +526,3 @@ OpenClaw 有它的樂趣，但也真的有維護成本。
 因為當你真的想把 OpenClaw 的自由度再往上推一層，或者你根本不想把某些用途交給雲端，那又會是完全不同的選型問題。
 
 ---
-

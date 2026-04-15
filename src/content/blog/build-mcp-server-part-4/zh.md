@@ -7,6 +7,8 @@ date: 2026-03-31T19:26:00
 featured: false
 ---
 
+**副標：skills 不是 MCP 規格裡的 primitive。它比較像你替模型整理能力邊界、操作規則、與 backend 契約的一層語意外骨骼。真正的難點不是把 manifest 寫出來，而是讓 runtime 真的照這個邊界運作。**
+
 如果 Part 3 講的是「你該選哪個 framework」，那 Part 4 講的就是另一個更容易誤會、但更貼近實際成敗的主題：
 
 > **skills 到底是什麼？**

@@ -8,6 +8,8 @@ featured: false
 subtitle: "用 Oracle VM、Cloudflare、nginx 與 FastMCP，把一個本來只會在 terminal 裡跑的 MCP server，變成 ChatGPT 真能連上的公開 `/mcp` 端點。"
 ---
 
+**副標：用 Oracle VM、Cloudflare、nginx 與 FastMCP，把一個本來只會在 terminal 裡跑的 MCP server，變成 ChatGPT 真能連上的公開 `/mcp` 端點。**
+
 上一篇我談的是觀念邊界：MCP 真正改變的是責任分工，不只是工具接線方式。
 
 這一篇就不再停在觀念了。  

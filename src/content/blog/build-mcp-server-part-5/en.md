@@ -7,6 +7,8 @@ date: 2026-03-31T19:29:00
 featured: false
 ---
 
+**Subtitle: Not every pit deserves a second victim. Once Oracle VM, Cloudflare, nginx, and FastMCP are wired into a public `/mcp` endpoint, the real work becomes having a troubleshooting order that actually saves you.**
+
 The earlier parts of this series were about concepts, deployment, frameworks, and skills.  
 This one is about the much less glamorous part that usually costs more than people expect:
 

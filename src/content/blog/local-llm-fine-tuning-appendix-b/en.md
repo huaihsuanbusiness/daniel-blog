@@ -1,5 +1,5 @@
 ---
-title: "Local LLM Fine-Tuning Breakdown: From Modelfiles and LoRA to DPO — Appendix B | Commands, Warnings and Pitfall Quick Reference"
+title: "Local LLM Fine-Tuning, Explained Appendix B | Commands, warnings and troubleshooting quick reference"
 description: ""
 categories: ["ai"]
 tags: []
@@ -7,18 +7,19 @@ date: 2026-04-12T05:00:00
 series: "Local LLM Fine-Tuning Breakdown: From Modelfiles and LoRA to DPO"
 seriesOrder: 11
 ---
+
 This appendix is not another tutorial, and it is not a compressed rewrite of the main series.
 
 It is closer to a field card.
 
-If Appendix A is the terminology index,
+If Appendix A is the terminology index,  
 Appendix B is the thing you want when:
 - you are stuck and need to know where to look first
 - you want to identify which layer a failure belongs to
 - you need to distinguish annoying warnings from real blockers
 - you want the least self-destructive command path back to a working state
 
-The goal here is not elegance.
+The goal here is not elegance.  
 The goal is to help you wake up ten minutes earlier next time.
 
 ---
@@ -63,7 +64,7 @@ ollama run my-model
 
 ## 2. Four-layer failure diagnosis
 
-The most useful diagnostic framework from the whole journey was not memorising every error string.
+The most useful diagnostic framework from the whole journey was not memorising every error string.  
 It was learning to separate failures into layers.
 
 ### Type A: environment layer
@@ -188,7 +189,7 @@ Check first:
 ---
 
 ### Situation 2: `python compare_dpo.py` hangs at `Generating...`
-Do not immediately assume it is broken.
+Do not immediately assume it is broken.  
 Think:
 - 8B
 - MPS
@@ -299,5 +300,3 @@ Do not misdiagnose a training failure as a deployment problem, or the other way 
 - Pipeline success is not the same as model success.
 - Quantisation is not a quality repair tool.
 - The best mainline is not the flashiest version; it is the most stable one.
-
-#

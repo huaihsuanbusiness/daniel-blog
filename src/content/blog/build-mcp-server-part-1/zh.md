@@ -8,6 +8,8 @@ featured: false
 subtitle: "從 workflow 腦到 client / server / tool contract 的責任重切，MCP 真正改變的不是「可不可以呼叫工具」，而是「誰該負責思考，誰該負責執行」。"
 ---
 
+**副標：從 workflow 腦到 client / server / tool contract 的責任重切，MCP 真正改變的不是「可不可以呼叫工具」，而是「誰該負責思考，誰該負責執行」。**
+
 我前一版的 job agent，其實已經能跑了。
 
 Make 會抓職缺、寫入資料、做初步評分、做 RAG 型分析，最後再把結果回給 ChatGPT。從功能清單看，它幾乎已經有一個 agent 的外觀。真正讓我決定繼續往下重構的，不是「功能不夠多」，而是我慢慢發現了一件更根本的事：

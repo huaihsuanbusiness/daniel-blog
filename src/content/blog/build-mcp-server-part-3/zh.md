@@ -8,6 +8,8 @@ featured: false
 subtitle: "FastMCP、MCP Framework、xmcp、Spring AI MCP Server 四條路線，真正該比的不是誰功能表最長，而是你的語言棲地、部署模型、auth 壓力、以及團隊未來要怎麼維運。"
 ---
 
+**副標：FastMCP、MCP Framework、xmcp、Spring AI MCP Server 四條路線，真正該比的不是誰功能表最長，而是你的語言棲地、部署模型、auth 壓力、以及團隊未來要怎麼維運。**
+
 到這一篇，事情終於開始變得比較像工程選型，而不是概念導讀。
 
 如果 Part 1 講的是「MCP 到底改變了什麼」，Part 2 講的是「怎麼真的把一台 remote MCP server 架起來」，那 Part 3 要回答的，就是很多人卡最久、但又最容易被寫成整理文的一題：

@@ -1,5 +1,5 @@
 ---
-title: "Local LLM Fine-Tuning Breakdown: From Modelfiles and LoRA to DPO — Part 07 | Training Costs and MPS: Why It Gets Slow, Stuck, or OOM"
+title: "Local LLM Fine-Tuning, Explained part 07 | Training cost on MPS: why things become slow, stuck and out of memory"
 description: "training is not slow inference. Training is forward pass, loss, backward pass, gradients, optimiser state and parameter updates all competing inside the same space."
 categories: ["ai"]
 tags: []
@@ -7,10 +7,11 @@ date: 2026-04-10T05:00:00
 series: "Local LLM Fine-Tuning Breakdown: From Modelfiles and LoRA to DPO"
 seriesOrder: 7
 ---
+
 This is where the whole series starts to smell less like a framework and more like a real worksite.
 
-The earlier pieces could still rely on maps, layers and clean distinctions.
-This one cannot.
+The earlier pieces could still rely on maps, layers and clean distinctions.  
+This one cannot.  
 This one has to deal with the questions that start showing up the moment you actually train something:
 
 - why is this so slow
@@ -22,6 +23,7 @@ This one has to deal with the questions that start showing up the moment you act
 
 If I had to put the central point right at the top, it would be this:
 
+**training is not slow inference. Training is forward pass, loss, backward pass, gradients, optimiser state and parameter updates all competing inside the same space.**
 
 ![Training cost and MPS pressure map](./resource/local-llm-finetuning-part-07-mps-cost-map.svg)
 
@@ -29,7 +31,7 @@ If I had to put the central point right at the top, it would be this:
 
 Saying “because the model is big” is not wrong, but it is not enough.
 
-The pain you felt earlier did not come only from size.
+The pain you felt earlier did not come only from size.  
 It came from the fact that **training does much more than inference**.
 
 ### What inference is doing
@@ -48,7 +50,7 @@ Training has to carry extra work:
 - optimiser state
 - parameter updates
 
-So training is not “inference done many times”.
+So training is not “inference done many times”.  
 It is a different workload category.
 
 That is why the same 8B model can feel:
@@ -75,7 +77,7 @@ Loss is closer to:
 The shape is different, but the principle is similar:
 - how far the model’s current preferences are from the desired preference relation
 
-So loss is not dashboard decoration.
+So loss is not dashboard decoration.  
 It is part of the actual force that moves parameters.
 
 ---
@@ -97,7 +99,7 @@ and yet once deployed back into use, the model still:
 
 That is why I never want to turn loss into the protagonist.
 
-Loss matters.
+Loss matters.  
 But it only tells you:
 
 **how well the model fit this training signal**
@@ -116,24 +118,24 @@ So the stable workflow is always:
 
 ## Why LoRA training takes so long
 
-Your Mac runs were very honest about this.
+Your Mac runs were very honest about this.  
 The slowness was not imaginary.
 
 At least four things were stacked together.
 
 ### 1. You were not only doing forward passes
-This is the main one.
+This is the main one.  
 Backward pass and optimiser steps fundamentally change the cost.
 
 ### 2. You were using MPS
-MPS matters because it makes local Apple Silicon training possible at all.
-But it is not a drop-in substitute for a mature high-end CUDA training stack. PyTorch treats MPS as an official backend and documents its dedicated memory controls, which tells you it is real support, not a hack. It does not tell you that large-model training will be comfortable.
+MPS matters because it makes local Apple Silicon training possible at all.  
+But it is not a drop-in substitute for a mature high-end CUDA training stack. PyTorch treats MPS as an official backend and documents its dedicated memory controls, which tells you it is real support, not a hack. It does not tell you that large-model training will be comfortable. citeturn563578search7turn563578search11
 
 ### 3. Your settings were conservative but still non-trivial
 Small batch sizes, modest accumulation and non-trivial sequence lengths all make the cost feel very real.
 
 ### 4. Saving can itself be slow
-Not every apparent stall is training.
+Not every apparent stall is training.  
 Checkpoint writing, merged shard writing and large-file output can be painfully slow on their own.
 
 ---
@@ -179,7 +181,7 @@ It usually just means:
 - therefore sampling parameters such as `temperature` and `top_p` do not apply
 - transformers is warning you that they are being ignored
 
-Annoying, yes.
+Annoying, yes.  
 Fatal, no.
 
 ---
@@ -190,7 +192,7 @@ You also saw:
 
 > `torch_dtype` is deprecated! Use `dtype` instead!
 
-That is not a sign that the model cannot run.
+That is not a sign that the model cannot run.  
 It is an API-evolution warning.
 
 In plain terms:
@@ -212,7 +214,7 @@ For your purposes, that mattered because:
 - it made local training on a Mac worth attempting at all
 - but it also exposed the real limits of that path
 
-PyTorch documents MPS-specific backend and memory settings, which is a good reminder that this is a supported path, not a side alley.
+PyTorch documents MPS-specific backend and memory settings, which is a good reminder that this is a supported path, not a side alley. citeturn563578search7
 
 ---
 
@@ -220,7 +222,7 @@ PyTorch documents MPS-specific backend and memory settings, which is a good remi
 
 This is the piece you started touching when `PYTORCH_MPS_HIGH_WATERMARK_RATIO` showed up.
 
-In plain terms, it is a memory guardrail for the MPS allocator.
+In plain terms, it is a memory guardrail for the MPS allocator.  
 It is not a permission slip to consume memory infinitely.
 
 So when you see errors describing:
@@ -232,7 +234,7 @@ that usually means:
 **this configuration does not fit on this machine**
 
 ### What `PYTORCH_MPS_HIGH_WATERMARK_RATIO` is
-It is one of PyTorch’s MPS memory-control environment variables. The official docs expose it as part of allocator tuning. That matters because it helps you understand what it is not: it is not a magic model shrink ray.
+It is one of PyTorch’s MPS memory-control environment variables. The official docs expose it as part of allocator tuning. That matters because it helps you understand what it is not: it is not a magic model shrink ray. citeturn563578search7
 
 Loosening it can sometimes shift behaviour. It does not necessarily fix the underlying mismatch between workload and hardware.
 
@@ -263,7 +265,7 @@ Partial FT is closer to:
 - with gradients and optimiser states attached
 
 ### 3. `exp_avg` and `exp_avg_sq` are not free
-These are optimiser states associated with Adam-style methods.
+These are optimiser states associated with Adam-style methods.  
 That means you are not only paying for the trainable parameters themselves, but also for those extra running statistics.
 
 That is why many runs do not explode during forward pass. They explode when the optimiser step arrives.
@@ -284,11 +286,11 @@ So when you see:
 - 17.4%
 - or 2.7%
 
-the human instinct is to think “2.7% sounds small”.
+the human instinct is to think “2.7% sounds small”.  
 On an 8B model, it is not small in the way your intuition wants it to be.
 
 ### Is roughly 2.7% a lot?
-For local 8B training on MPS, yes.
+For local 8B training on MPS, yes.  
 Certainly large enough to push you out of LoRA territory and into something that genuinely feels like base-weight work.
 
 ---
@@ -297,7 +299,7 @@ Certainly large enough to push you out of LoRA territory and into something that
 
 The easiest way to think about it is:
 
-you are not opening a symbolic flag.
+you are not opening a symbolic flag.  
 You are opening **hundreds of millions of original parameters**.
 
 So “small percentage” does not mean “small bill”.
@@ -392,7 +394,7 @@ That is why you ended up trimming compare scripts into:
 - disable-adapter base comparisons
 - margin-based scoring instead of full long-form generation
 
-That was not cheating.
+That was not cheating.  
 It was respecting the machine.
 
 ---
@@ -409,5 +411,3 @@ Once that sentence really lands, a great deal of the rest becomes legible:
 - why MPS often feels abrasive
 - why generation looking stuck is not always a bug
 - why compare scripts can become unexpectedly painful too
-
-#

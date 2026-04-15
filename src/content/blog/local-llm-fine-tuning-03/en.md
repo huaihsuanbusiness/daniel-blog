@@ -1,5 +1,5 @@
 ---
-title: "Local LLM Fine-Tuning Breakdown: From Modelfiles and LoRA to DPO — Part 03 | How the Tool Chain Divides Work: Hugging Face, Transformers, PEFT, TRL and Ollama"
+title: "Local LLM Fine-Tuning, from Modelfile and LoRA to DPO part 03 | How the toolchain splits: Hugging Face, Transformers, PEFT, TRL, and Ollama"
 description: ""
 categories: ["ai"]
 tags: []
@@ -7,6 +7,7 @@ date: 2026-04-08T13:00:00
 series: "Local LLM Fine-Tuning Breakdown: From Modelfiles and LoRA to DPO"
 seriesOrder: 3
 ---
+
 The first time I reached `python train_lora.py`, I did not fail on the GPU, and I did not fail on the loss curve. I failed on the toolchain.
 
 It felt like arriving at a construction site only to realise I had not even picked up the helmet. The weights were not truly accessible yet. The package versions were not necessarily aligned. A logged-in Hugging Face account was not the same thing as actual gated access. That was the point at which I finally understood that local LLM fine-tuning is not a neat line of “get model, get data, write script, train”. First you negotiate with the toolchain. Only then do you earn the right to touch the model itself.
@@ -31,7 +32,7 @@ The first genuine wall I hit was a gated repository on Hugging Face.
 
 People often think of Hugging Face as a model download site. That is not wrong, but it is too thin. It is also a permissions layer, a hosting layer, a model-card layer, and a point of integration for a wider ecosystem.
 
-Once a model is gated, being logged in is not enough. Meta states this quite clearly on its Hugging Face Llama pages: access is tied to licence acceptance and approval, not merely to authentication.
+Once a model is gated, being logged in is not enough. Meta states this quite clearly on its Hugging Face Llama pages: access is tied to licence acceptance and approval, not merely to authentication. citeturn743259search16turn743259search4
 
 That is why `from_pretrained()` can still return a 403 even when you are convinced you have already “logged in correctly”. The issue may not be the code at all. It may simply be that you do not yet have the right to load the model.
 
@@ -49,7 +50,7 @@ It provides:
 - model cards and metadata;
 - integration with the wider stack, including `transformers`, `datasets`, `trl`, and `peft`.
 
-It is not the trainer. But in many open-source workflows, it is still the entry gate. That is particularly true if you begin with `meta-llama/Llama-3.1-8B-Instruct`. Meta’s model card matters here because it does not just give branding language; it tells you that the 8B Instruct variant is instruction-tuned and intended for dialogue-oriented use cases. That affects your assumptions about prompting, formatting, and how much of the conversational behaviour already lives in the base.
+It is not the trainer. But in many open-source workflows, it is still the entry gate. That is particularly true if you begin with `meta-llama/Llama-3.1-8B-Instruct`. Meta’s model card matters here because it does not just give branding language; it tells you that the 8B Instruct variant is instruction-tuned and intended for dialogue-oriented use cases. That affects your assumptions about prompting, formatting, and how much of the conversational behaviour already lives in the base. citeturn743259search0
 
 ## Transformers: the main toolkit for touching the model itself
 
@@ -71,7 +72,7 @@ That is why apparent TRL problems often turn out to be tokenizer, template, or m
 
 This is one of the most underestimated layers in practice.
 
-A tokenizer is not merely a string splitter. For chat models, it often works together with the chat template to define the input contract. Meta provides prompt format guidance for Llama 3.1, and many parts of the Hugging Face stack implicitly expect you to respect the base model’s input format.
+A tokenizer is not merely a string splitter. For chat models, it often works together with the chat template to define the input contract. Meta provides prompt format guidance for Llama 3.1, and many parts of the Hugging Face stack implicitly expect you to respect the base model’s input format. citeturn743259search8turn743259search0
 
 That means prompt-completion data and conversational data are not merely visual variants of the same thing. They are different representational choices. Both can be used for supervised training, but only if the trainer, tokenizer, and chat template agree on the shape of the input.
 
@@ -79,7 +80,7 @@ This is why a model can feel wrong without visibly failing. It may not be a LoRA
 
 ## PEFT: not another model, but a way of adapting one cheaply
 
-PEFT stands for Parameter-Efficient Fine-Tuning. The official documentation is very clear about the role of the library: it exists to adapt large pretrained models efficiently without updating all parameters. LoRA is one of the best-known techniques within that family.
+PEFT stands for Parameter-Efficient Fine-Tuning. The official documentation is very clear about the role of the library: it exists to adapt large pretrained models efficiently without updating all parameters. LoRA is one of the best-known techniques within that family. citeturn743259search10turn743259search2
 
 So PEFT is not a new model and not a trainer. It is better thought of as a toolkit for altering parameters without paying the cost of full fine-tuning.
 
@@ -89,7 +90,7 @@ That also helps keep the concepts separate. LoRA does not tell you what the mode
 
 Once you reach TRL, the question is no longer just “how do I load the model?” It becomes “what kind of post-training am I doing?”
 
-The TRL documentation positions it as a library for post-training foundation models, with support for methods including SFT and DPO. In other words, it is not merely an RL tool, and not only for preference optimisation. It is a broader toolkit for post-training workflows.
+The TRL documentation positions it as a library for post-training foundation models, with support for methods including SFT and DPO. In other words, it is not merely an RL tool, and not only for preference optimisation. It is a broader toolkit for post-training workflows. citeturn743259search9turn743259search13
 
 That is why both of these live there:
 
@@ -165,5 +166,3 @@ So the toolchain matters enormously. It just does not always need to be run to i
 Once the tooling is separated properly, the next question becomes much easier to ask cleanly: what exactly do SFT, LoRA, and full fine-tuning each change? Which are teaching methods, which are construction methods, and which actually reach the original base weights?
 
 That is the next piece.
-
-#

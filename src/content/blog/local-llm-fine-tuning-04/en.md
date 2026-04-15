@@ -1,5 +1,5 @@
 ---
-title: "Local LLM Fine-Tuning Breakdown: From Modelfiles and LoRA to DPO — Part 04 | SFT, LoRA and Full Fine-tune: What Each One Changes"
+title: "Local LLM Fine-Tuning, Explained part 04 | What SFT, LoRA and full fine-tuning each actually change"
 description: "SFT answers how you teach. LoRA answers how you change parameters. Full fine-tuning answers how deep you are willing to cut."
 categories: ["ai"]
 tags: []
@@ -7,6 +7,7 @@ date: 2026-04-09T05:00:00
 series: "Local LLM Fine-Tuning Breakdown: From Modelfiles and LoRA to DPO"
 seriesOrder: 4
 ---
+
 This is one of those places where terminology quietly makes everything worse.
 
 Once you start touching real models, a small cluster of words begins to blur into one thing:
@@ -17,13 +18,14 @@ Once you start touching real models, a small cluster of words begins to blur int
 - full fine-tuning
 - partial FT
 
-On the surface, they all look like variants of “fine-tuning”.
+On the surface, they all look like variants of “fine-tuning”.  
 In practice, they are answering different questions.
 
 That distinction matters more than it sounds. A lot of confusion does not come from knowing nothing. It comes from knowing just enough to compress different layers into one story. You start talking about LoRA as if it were a training objective, or about SFT as if it were a model type, or about full fine-tuning as if it were merely LoRA turned up a notch.
 
 A cleaner way to hold it is this:
 
+**SFT answers how you teach. LoRA answers how you change parameters. Full fine-tuning answers how deep you are willing to cut.**
 
 ![Relationship map of SFT, LoRA, partial FT and full fine-tuning](./resource/local-llm-finetuning-part-04-training-landscape.svg)
 
@@ -31,8 +33,8 @@ A cleaner way to hold it is this:
 
 I find it easier to separate the territory into three questions.
 
-The first is: **what signal are you using to teach the model?**
-The second is: **how are you introducing trainable parameters into the system?**
+The first is: **what signal are you using to teach the model?**  
+The second is: **how are you introducing trainable parameters into the system?**  
 The third is: **how much of the original model are you actually updating?**
 
 A great deal of muddle disappears the moment those three are no longer treated as one axis.
@@ -52,7 +54,7 @@ SFT stands for supervised fine-tuning.
 
 In plain language, it is about showing the model examples of what a good answer looks like, then nudging it to produce answers in that direction when it sees similar prompts again.
 
-That means the core of SFT is not a particular model form.
+That means the core of SFT is not a particular model form.  
 The core is that you have a supervised target.
 
 Most of the time, the data comes in one of two shapes.
@@ -140,7 +142,7 @@ That is exactly what the earlier baseline-small, qkvo-small and all-linear-small
 
 Full fine-tuning is more blunt.
 
-It is not about attaching a small trainable prosthetic next to the model.
+It is not about attaching a small trainable prosthetic next to the model.  
 It is about updating the original weights themselves.
 
 The upside is obvious:
@@ -161,7 +163,7 @@ It means opening selected parts of the original model, such as:
 - certain specific submodules
 - late-stage components like `model.model.norm` or `lm_head`
 
-That makes it deeper than LoRA, because it does genuinely modify original weights.
+That makes it deeper than LoRA, because it does genuinely modify original weights.  
 But it is still more conservative than full fine-tuning because you are not updating everything.
 
 ## What the base model is
@@ -170,7 +172,7 @@ The base model is simply:
 
 **the starting brain from which all your customisation departs**
 
-If what you have is a raw base model, it is closer to the pretrained foundation.
+If what you have is a raw base model, it is closer to the pretrained foundation.  
 If what you have is an instruct model, it is already a model that has been tuned to follow instructions and behave more naturally in dialogue.
 
 That is also why your whole workflow centred on `Llama-3.1-8B-Instruct`. The thing worth protecting was not just the weights in the abstract, but the behavioural balance that came with the instruction-tuned version.
@@ -256,5 +258,3 @@ then the first thing to adjust is often not LoRA at all. It is more likely to be
 **SFT answers how you teach, LoRA answers how you update, and full fine-tuning answers how deep you are willing to cut.**
 
 Once those three are no longer being used as one blob, the rest of the map becomes much easier to read.
-
-#

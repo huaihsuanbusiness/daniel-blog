@@ -8,6 +8,8 @@ featured: false
 subtitle: "If your MCP server is public, can write data, or touches real users, security cannot be the last middleware you add. It has to shape your tool surface, auth flow, authorization scope, and response discipline from the beginning."
 ---
 
+**Subtitle: If your MCP server is public, can write data, or touches real users, security cannot be the last middleware you add. It has to shape your tool surface, auth flow, authorization scope, and response discipline from the beginning.**
+
 When teams first expose an MCP server to the public internet, the security checklist in their heads often looks like this:
 
 - turn on HTTPS

@@ -8,6 +8,8 @@ featured: false
 subtitle: "If you treat transport as the last mile, MCP projects tend to fail in the ugliest places. Mature remote servers design transport, proxying, sessions, and client compatibility from day one."
 ---
 
+**Subtitle: If you treat transport as the last mile, MCP projects tend to fail in the ugliest places. Mature remote servers design transport, proxying, sessions, and client compatibility from day one.**
+
 When people first meet MCP, transport is often imagined like this:
 
 - get it working locally first

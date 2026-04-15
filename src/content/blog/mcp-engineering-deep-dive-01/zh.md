@@ -8,6 +8,8 @@ featured: false
 subtitle: "如果你把 transport 當成最後一哩，MCP 專案通常會在最醜的地方出問題。真正成熟的 remote server，從一開始就應該把 transport、proxy、session、client compatibility 一起想進去。"
 ---
 
+**副標：如果你把 transport 當成最後一哩，MCP 專案通常會在最醜的地方出問題。真正成熟的 remote server，從一開始就應該把 transport、proxy、session、client compatibility 一起想進去。**
+
 很多人第一次接觸 MCP 時，最容易把 transport 想成這樣：
 
 - 本地可以跑就好

@@ -1,5 +1,5 @@
 ---
-title: "Local LLM Fine-Tuning Breakdown: From Modelfiles and LoRA to DPO — Part 06 | How to Read Training Scripts: From train_lora.py to train_partial_ft.py"
+title: "Local LLM Fine-Tuning, Explained part 06 | How to read the training scripts: from `train_lora.py` to `train_partial_ft.py`"
 description: "an experiment design document that binds together the model, the data, the tokenizer, the training method, the trainable scope and the training rhythm"
 categories: ["ai"]
 tags: []
@@ -7,16 +7,18 @@ date: 2026-04-09T13:00:00
 series: "Local LLM Fine-Tuning Breakdown: From Modelfiles and LoRA to DPO"
 seriesOrder: 6
 ---
+
 The first time I opened `train_lora.py`, I did not think I was looking at anything especially important.
 
-At that point it felt more like a messy construction list.
+At that point it felt more like a messy construction list.  
 Load the model here, read the data there, set a few parameters, hand everything to a trainer and let Python do the rest. It looked like a pile of settings.
 
 It was only after walking through baseline, qkvo, all-linear, last-half, then `train_partial_ft.py`, and eventually `train_dpo.py`, that I started to correct that view.
 
-A training script is not a command memo.
+A training script is not a command memo.  
 It is much closer to this:
 
+**an experiment design document that binds together the model, the data, the tokenizer, the training method, the trainable scope and the training rhythm**
 
 ![Training script branching map](./resource/local-llm-finetuning-part-06-script-map.svg)
 
@@ -57,15 +59,15 @@ Once those choices are written down in Python, the libraries do the rest:
 ## What a minimal LoRA SFT script usually contains
 
 ### 1. `MODEL_ID`
-This is not just a string.
+This is not just a string.  
 It decides which brain you are starting from.
 
 ### 2. `DATA_PATH`
-Not just a path.
+Not just a path.  
 It decides what curriculum you are teaching from.
 
 ### 3. Tokenizer setup
-The tokenizer is not decorative.
+The tokenizer is not decorative.  
 It turns human language into tokens, and with chat models it often participates in applying the chat format itself.
 
 ### 4. Model loading
@@ -78,7 +80,7 @@ This section tells the runtime:
 This is where the script starts deciding how the adapter will be attached.
 
 ### 6. Trainer choice
-If you are doing SFT, this is often `SFTTrainer`.
+If you are doing SFT, this is often `SFTTrainer`.  
 If you are doing DPO, this becomes `DPOTrainer`.
 
 ### 7. Training arguments
@@ -183,7 +185,7 @@ From:
 
 ## What `train_partial_ft.py` is doing
 
-It is no longer only attaching an adapter.
+It is no longer only attaching an adapter.  
 It is starting to open original weights.
 
 It is deciding things like:
@@ -199,7 +201,7 @@ The normalisation layer near the output end of the model.
 ### `lm_head`
 The output head that maps hidden states to vocabulary logits.
 
-They sit close to final output behaviour.
+They sit close to final output behaviour.  
 That is why opening them can be behaviourally noticeable. It is also why they are expensive.
 
 ## Why `for block in model.model.layers[-4:]` uses four layers
@@ -250,7 +252,7 @@ It is a sanity-check tool:
 - same prompts
 - compare behavioural outputs
 
-Training logs do not tell you everything.
+Training logs do not tell you everything.  
 Loss alone will not tell you when a model starts hallucinating terminology, or when the intelligence feel drops.
 
 ## Is comparison necessary?
@@ -262,5 +264,3 @@ If your question is which version should actually survive, yes.
 ## The one thing this piece should leave behind
 
 **a training script is not just a pile of settings. It is the document that binds the model, the data, the tokenizer, the method, the trainable scope and the training rhythm into one experiment definition.**
-
-#

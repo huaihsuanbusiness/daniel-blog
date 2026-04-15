@@ -1,5 +1,5 @@
 ---
-title: "Local LLM Fine-Tuning Breakdown: From Modelfiles and LoRA to DPO — Part 01 | Local LLM Layer Map: From Prompt, Modelfile to Model Weights"
+title: "Local LLM Fine-Tuning, from Modelfile and LoRA to DPO part 01 | The layer map of a local LLM: from prompts and Modelfiles to model weights"
 description: ""
 categories: ["ai"]
 tags: []
@@ -7,6 +7,7 @@ date: 2026-04-08T05:00:00
 series: "Local LLM Fine-Tuning Breakdown: From Modelfiles and LoRA to DPO"
 seriesOrder: 1
 ---
+
 For a while, I translated almost everything into the same question: should I fine-tune the model?
 
 If the answer was too wordy, I thought about LoRA. If the tone was not quite close enough to a technical assistant, I thought about another layer of training. Only after I had actually gone through Modelfiles, LoRA, partial fine-tuning, merging, quantisation, and Ollama end to end did I accept something rather plain: most people are not confused about “the model”. They are confused because they keep calling different floors of the building by the same name.
@@ -54,7 +55,7 @@ Still, it remains an outer layer. It can be diluted by long context, disturbed b
 
 This layer gets underestimated far too often.
 
-A template looks like formatting, which makes it tempting to treat it as decoration. For instruct models, it is not decoration at all. It is part of the input contract. Meta provides prompt format guidance for Llama 3.1, and the Hugging Face model card positions the 8B Instruct variant explicitly as an instruction-tuned dialogue model. That matters because the model was trained to expect a certain style of structured input.
+A template looks like formatting, which makes it tempting to treat it as decoration. For instruct models, it is not decoration at all. It is part of the input contract. Meta provides prompt format guidance for Llama 3.1, and the Hugging Face model card positions the 8B Instruct variant explicitly as an instruction-tuned dialogue model. That matters because the model was trained to expect a certain style of structured input. citeturn743259search0turn743259search8
 
 In other words, the model does not “just know” it is in a chat. What it actually sees is a token sequence assembled by the tokenizer and the chat template. Role markers, turn boundaries, and generation prompts all matter.
 
@@ -82,7 +83,7 @@ Parameters are important. They simply answer a different question: how the model
 
 My view of the Modelfile changed quite dramatically once I had done enough damage in the lower layers.
 
-At first it is tempting to treat it as merely a longer system prompt. That is too shallow. In Ollama, a Modelfile can touch the base model, the template, the system message, example messages, runtime parameters, and in some cases an adapter as well. It is not a note. It is a packaging blueprint.
+At first it is tempting to treat it as merely a longer system prompt. That is too shallow. In Ollama, a Modelfile can touch the base model, the template, the system message, example messages, runtime parameters, and in some cases an adapter as well. It is not a note. It is a packaging blueprint. citeturn743259search8
 
 That becomes very important if your actual goal is to preserve the strength of an instruct model while pushing the feel towards something more specific. In that situation, the Modelfile often deserves attention before LoRA does.
 
@@ -92,7 +93,7 @@ That is not caution for its own sake. It is often a better match to the job.
 
 This is the point at which you begin touching something deeper than presentation.
 
-The PEFT documentation describes LoRA as a parameter-efficient fine-tuning method that inserts low-rank trainable matrices so that only a small fraction of the total parameters needs to be updated. The attraction is obvious: compared with full fine-tuning, the compute and storage burden is far lower.
+The PEFT documentation describes LoRA as a parameter-efficient fine-tuning method that inserts low-rank trainable matrices so that only a small fraction of the total parameters needs to be updated. The attraction is obvious: compared with full fine-tuning, the compute and storage burden is far lower. citeturn743259search2turn743259search10
 
 In the film-set metaphor, LoRA is closer to altering muscle memory than rewriting the screenplay. It lets you preserve the actor’s underlying brain while training a narrower behavioural adjustment.
 
@@ -106,7 +107,7 @@ At the bottom sit the base weights.
 
 That includes linguistic ability, knowledge distribution, reasoning tendencies, instruction-following behaviour, and a great deal of difficult-to-name balance that you only really notice once you disturb it.
 
-This matters particularly for models like Llama 3.1 8B Instruct. Meta explicitly distinguishes the pretrained and instruction-tuned variants, and the Hugging Face card describes the instruct models as optimised for multilingual dialogue use cases. You are not starting from raw material. You are modifying something that already has an intended operating balance.
+This matters particularly for models like Llama 3.1 8B Instruct. Meta explicitly distinguishes the pretrained and instruction-tuned variants, and the Hugging Face card describes the instruct models as optimised for multilingual dialogue use cases. You are not starting from raw material. You are modifying something that already has an intended operating balance. citeturn743259search0turn743259search16
 
 That is why one of the plainest lessons from this whole process stayed with me the longest: if you want to preserve the intelligence feel of a strong instruct model, the first instinct should usually be to leave the deepest layer alone for as long as possible.
 
@@ -141,5 +142,3 @@ LoRA is not wrong. It is just frequently asked to solve a problem that belongs o
 A layer map is only the beginning. The next question is harder and more useful: if these floors are different, what kind of memory does each one resemble? What belongs in context, what belongs outside the model, and what is actually worth writing into an adapter or into parameters at all?
 
 That is the next piece.
-
-#

@@ -8,6 +8,8 @@ featured: false
 subtitle: "This is not just about making tools callable. It is about redrawing the line between reasoning, capability exposure, and execution."
 ---
 
+**Subtitle: This is not just about making tools callable. It is about redrawing the line between reasoning, capability exposure, and execution.**
+
 My previous job-agent stack was already working.
 
 Make could fetch jobs, write rows, score them, run deeper analysis, and send the result back to ChatGPT. On paper, it looked almost agentic already. The reason I kept refactoring was not that it lacked features. It was that I slowly realised something more structural:

@@ -8,6 +8,8 @@ featured: false
 subtitle: "FastMCP, MCP Framework, xmcp, and Spring AI MCP Server are not four skins over the same idea. The real question is which one fits your language habitat, deployment model, auth pressure, and long-term operating style."
 ---
 
+**Subtitle: FastMCP, MCP Framework, xmcp, and Spring AI MCP Server are not four skins over the same idea. The real question is which one fits your language habitat, deployment model, auth pressure, and long-term operating style.**
+
 By this point, the story starts to look less like an MCP introduction and more like an engineering selection problem.
 
 If Part 1 was about what MCP actually changes, and Part 2 was about how to get a real remote MCP server online, Part 3 is about the question that tends to consume the most time and generate the most vague blog posts:

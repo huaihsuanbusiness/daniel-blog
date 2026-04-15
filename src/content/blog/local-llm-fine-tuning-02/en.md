@@ -1,5 +1,5 @@
 ---
-title: "Local LLM Fine-Tuning Breakdown: From Modelfiles and LoRA to DPO — Part 02 | How Model Memory is Divided: Context, External Memory, Parameter Memory, and Continual Learning"
+title: "Local LLM Fine-Tuning, from Modelfile and LoRA to DPO part 02 | How model memory actually splits: context, external memory, parameter memory, and continual learning"
 description: ""
 categories: ["ai"]
 tags: []
@@ -7,6 +7,7 @@ date: 2026-04-08T09:00:00
 series: "Local LLM Fine-Tuning Breakdown: From Modelfiles and LoRA to DPO"
 seriesOrder: 2
 ---
+
 The first time I genuinely sorted out “memory” in AI, it was not because I had just finished a paper. It was because I had already mixed several layers together and paid for it.
 
 At the time, my mental model was very flat. Either something was written into the model, or it lived outside the model. That split feels tidy. It is also not good enough. Once you actually work with local LLMs, the outer layers differ sharply from one another, and the inner layers do as well. Context windows, knowledge stores, system prompts, Modelfiles, LoRA, adapters: they can all look like ways of making a model “remember”, but they are not the same memory at all.
@@ -84,7 +85,7 @@ Continual learning is not difficult because researchers forgot that models may n
 
 That is the core of catastrophic forgetting: as a model absorbs new tasks, new preferences, or new data, its prior balance can erode.
 
-This is precisely why Google Research’s Nested Learning work is interesting in this context. Their framing treats models as systems of nested optimisation problems rather than flat learners. The argument is not merely that forgetting is bad. It is that our usual way of thinking about learning and memory may already be too flattened to reason well about continual learning in the first place.
+This is precisely why Google Research’s Nested Learning work is interesting in this context. Their framing treats models as systems of nested optimisation problems rather than flat learners. The argument is not merely that forgetting is bad. It is that our usual way of thinking about learning and memory may already be too flattened to reason well about continual learning in the first place. citeturn743259search3turn743259search19
 
 I do not bring Nested Learning in as the hero of this series. I bring it in because it is a useful lens. It reminds us that memory is not a single switch. It is bound up with multi-level update rules, multi-level contexts, and multi-level optimisation.
 
@@ -107,7 +108,7 @@ It belongs here because this piece is already about four related claims:
 - external memory and parameter memory are not interchangeable;
 - continual learning fails because new and old competence interfere with one another.
 
-Nested Learning gives those claims a broader theoretical frame. Google Research describes it as a way of viewing models as nested, multi-level optimisation processes, precisely to address catastrophic forgetting and continual learning limitations. That is useful here because it reinforces the idea that “memory” is not one thing.
+Nested Learning gives those claims a broader theoretical frame. Google Research describes it as a way of viewing models as nested, multi-level optimisation processes, precisely to address catastrophic forgetting and continual learning limitations. That is useful here because it reinforces the idea that “memory” is not one thing. citeturn743259search3turn743259search19
 
 ## What belongs in which memory?
 
@@ -153,5 +154,3 @@ In other words, not every desire for “more memory” is a call for deeper lear
 Once the memory question is cut more cleanly, the next practical question follows naturally: which tools actually touch which layers? Hugging Face, Transformers, PEFT, TRL, and Ollama all live somewhere in this landscape, but they are not the same kind of tool at all.
 
 That is the next piece.
-
-#

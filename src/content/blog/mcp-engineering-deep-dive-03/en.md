@@ -8,6 +8,8 @@ featured: false
 subtitle: "The hardest MCP servers to evolve are not the ones with too many tools. They are the ones with loose contracts. Once you have multiple clients, public tools, and helper tools, schema discipline becomes the real stability layer."
 ---
 
+**Subtitle: The hardest MCP servers to evolve are not the ones with too many tools. They are the ones with loose contracts. Once you have multiple clients, public tools, and helper tools, schema discipline becomes the real stability layer.**
+
 When teams first write MCP tools, most of the energy goes into one question:
 
 > Does the feature work?

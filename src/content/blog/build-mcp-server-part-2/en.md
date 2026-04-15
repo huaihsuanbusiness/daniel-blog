@@ -8,6 +8,8 @@ featured: false
 subtitle: "Using Oracle VM, Cloudflare, nginx, and FastMCP to turn an MCP server that merely runs in a terminal into a public `/mcp` endpoint that ChatGPT can actually reach."
 ---
 
+**Subtitle: Using Oracle VM, Cloudflare, nginx, and FastMCP to turn an MCP server that merely runs in a terminal into a public `/mcp` endpoint that ChatGPT can actually reach.**
+
 In Part 1, I focused on the conceptual boundary: MCP changes responsibility lines more than it changes wiring style.
 
 This piece is where the theory stops and the infrastructure starts.

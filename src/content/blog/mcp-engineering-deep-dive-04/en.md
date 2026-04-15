@@ -8,6 +8,8 @@ featured: false
 subtitle: "Having skills in your repo does not mean the runtime will actually route by them. In practice, the model is far more influenced by the tool surface you expose, the live inventory a session can see, and whether your descriptions, schemas, and instructions line up."
 ---
 
+**Subtitle: Having skills in your repo does not mean the runtime will actually route by them. In practice, the model is far more influenced by the tool surface you expose, the live inventory a session can see, and whether your descriptions, schemas, and instructions line up.**
+
 This is not another “skills are important” article.
 
 What I want to write down is something much more operational:

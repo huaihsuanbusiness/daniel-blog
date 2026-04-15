@@ -8,6 +8,8 @@ featured: false
 subtitle: "repo 裡有 skill，不等於 runtime 真的會照它選工具。真正決定模型怎麼選的，常常是你最後暴露出去的 tool surface、session 看到的 inventory，以及 server instructions 與 schema 是否彼此一致。"
 ---
 
+**副標：repo 裡有 skill，不等於 runtime 真的會照它選工具。真正決定模型怎麼選的，常常是你最後暴露出去的 tool surface、session 看到的 inventory，以及 server instructions 與 schema 是否彼此一致。**
+
 我這篇想寫的，不是「skills 很重要」這種誰都會點頭的句子。
 
 我想寫的是另一件更容易在實作裡踩爆的事：
