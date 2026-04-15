@@ -1,5 +1,11 @@
 import { nanoid } from 'nanoid';
 
+export type GoogleSheetEnv = {
+  GOOGLE_PRIVATE_KEY?: string;
+  GOOGLE_SHEET_ID?: string;
+  SITE?: string;
+};
+
 // ── JWT signing using Web Crypto API ──────────────────────────────────────
 
 function base64url(data: string): string {
@@ -28,10 +34,10 @@ async function signJwt(payload: Record<string, unknown>, privateKeyPem: string):
   return `${sigInput}.${sig}`;
 }
 
-async function getAccessToken(): Promise<string> {
-  const raw = import.meta.env.GOOGLE_PRIVATE_KEY as string;
+async function getAccessToken(env: GoogleSheetEnv): Promise<string> {
+  const raw = env.GOOGLE_PRIVATE_KEY;
   if (!raw) throw new Error('GOOGLE_PRIVATE_KEY is not set');
-  const creds = JSON.parse(raw);
+  const creds = JSON.parse(raw) as { client_email: string; private_key: string };
   const now = Math.floor(Date.now() / 1000);
   const jwt = await signJwt(
     {
@@ -46,9 +52,9 @@ async function getAccessToken(): Promise<string> {
   const res = await fetch('https://oauth2.googleapis.com/token', {
     method: 'POST',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body: new URLSearchParams({ grant_type: 'urn:ietf:params:oauth2:grant-type:jwt-bearer', assertion: jwt }),
+    body: new URLSearchParams({ grant_type: 'urn:ietf:params:oauth:grant-type:jwt-bearer', assertion: jwt }),
   });
-  const data = await res.json() as { access_token?: string; error?: string };
+  const data = (await res.json()) as { access_token?: string; error?: string };
   if (!res.ok || !data.access_token) throw new Error(`OAuth error: ${data.error || res.statusText}`);
   return data.access_token;
 }
@@ -72,15 +78,18 @@ function fmt(v: string | string[]): string {
 // ── GoogleSheet ───────────────────────────────────────────────────────────
 
 export class GoogleSheet {
-  private sheetId: string;
+  private readonly env: GoogleSheetEnv;
+  private readonly sheetId: string;
   private token: string | null = null;
 
-  constructor() {
-    this.sheetId = import.meta.env.GOOGLE_SHEET_ID as string;
+  constructor(env: GoogleSheetEnv) {
+    this.env = env;
+    this.sheetId = env.GOOGLE_SHEET_ID || '';
+    if (!this.sheetId) throw new Error('GOOGLE_SHEET_ID is not set');
   }
 
   private async token_(): Promise<string> {
-    if (!this.token) this.token = await getAccessToken();
+    if (!this.token) this.token = await getAccessToken(this.env);
     return this.token;
   }
 
@@ -95,7 +104,7 @@ export class GoogleSheet {
         ...(opts.headers as Record<string, string>),
       },
     });
-    const body = await res.json() as T & { error?: { message?: string } };
+    const body = (await res.json()) as T & { error?: { message?: string } };
     if (!res.ok) throw new Error(`Sheets API ${path}: ${body?.error?.message || res.statusText}`);
     return body;
   }
@@ -107,7 +116,7 @@ export class GoogleSheet {
     locale?: string;
   }): Promise<{ success: boolean; familyId: string; inviteLink?: string }> {
     const { role, familyId: fid, answers, locale } = params;
-    const site = (import.meta.env.SITE as string) || 'https://danielcanfly.com';
+    const site = this.env.SITE || 'https://danielcanfly.com';
     const headers = await this.getHeaderRow_();
 
     const ci = (name: string) => headers.indexOf(name);
@@ -139,37 +148,40 @@ export class GoogleSheet {
       });
 
       return { success: true, familyId: newFid, inviteLink: `${site}/zh/survey/elder?ref=${newFid}` };
-    } else {
-      if (!fid) throw new Error('elder requires familyId');
-
-      const fidLetter = colLetter(aIdx);
-      const res = await this.api<{ values?: string[][] }>(`/values/${encodeURIComponent(`'Survey_Responses'!${fidLetter}:${fidLetter}`)}`);
-      const rows = res.values || [];
-      let targetRow = -1;
-      for (let i = 1; i < rows.length; i++) {
-        if (rows[i][0] === fid) { targetRow = i + 1; break; }
-      }
-      if (targetRow === -1) throw new Error(`family_id ${fid} not found`);
-
-      const updates: { range: string; values: string[][] }[] = [];
-      updates.push({ range: `'Survey_Responses'!${colLetter(rIdx)}${targetRow}`, values: [['elder']] });
-      updates.push({ range: `'Survey_Responses'!${colLetter(sIdx)}${targetRow}`, values: [[new Date().toISOString()]] });
-      if (locale) {
-        const li = ci('locale');
-        if (li !== -1) updates.push({ range: `'Survey_Responses'!${colLetter(li)}${targetRow}`, values: [[locale]] });
-      }
-      for (const [q, av] of Object.entries(answers)) {
-        const i = ci(q);
-        if (i !== -1) updates.push({ range: `'Survey_Responses'!${colLetter(i)}${targetRow}`, values: [[fmt(av)]] });
-      }
-
-      await this.api('/values:batchUpdate', {
-        method: 'POST',
-        body: JSON.stringify({ valueInputOption: 'RAW', data: updates }),
-      });
-
-      return { success: true, familyId: fid };
     }
+
+    if (!fid) throw new Error('elder requires familyId');
+
+    const fidLetter = colLetter(aIdx);
+    const res = await this.api<{ values?: string[][] }>(`/values/${encodeURIComponent(`'Survey_Responses'!${fidLetter}:${fidLetter}`)}`);
+    const rows = res.values || [];
+    let targetRow = -1;
+    for (let i = 1; i < rows.length; i++) {
+      if (rows[i][0] === fid) {
+        targetRow = i + 1;
+        break;
+      }
+    }
+    if (targetRow === -1) throw new Error(`family_id ${fid} not found`);
+
+    const updates: { range: string; values: string[][] }[] = [];
+    updates.push({ range: `'Survey_Responses'!${colLetter(rIdx)}${targetRow}`, values: [['elder']] });
+    updates.push({ range: `'Survey_Responses'!${colLetter(sIdx)}${targetRow}`, values: [[new Date().toISOString()]] });
+    if (locale) {
+      const li = ci('locale');
+      if (li !== -1) updates.push({ range: `'Survey_Responses'!${colLetter(li)}${targetRow}`, values: [[locale]] });
+    }
+    for (const [q, av] of Object.entries(answers)) {
+      const i = ci(q);
+      if (i !== -1) updates.push({ range: `'Survey_Responses'!${colLetter(i)}${targetRow}`, values: [[fmt(av)]] });
+    }
+
+    await this.api('/values:batchUpdate', {
+      method: 'POST',
+      body: JSON.stringify({ valueInputOption: 'RAW', data: updates }),
+    });
+
+    return { success: true, familyId: fid };
   }
 
   private async getHeaderRow_(): Promise<string[]> {

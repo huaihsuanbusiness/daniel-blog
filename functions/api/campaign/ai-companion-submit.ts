@@ -1,11 +1,20 @@
-export const prerender = false;
+import { GoogleSheet } from '../../../src/utils/googleSheet';
 
-import type { APIRoute } from 'astro';
-import { GoogleSheet } from '../../../utils/googleSheet';
+type Env = {
+  GOOGLE_PRIVATE_KEY?: string;
+  GOOGLE_SHEET_ID?: string;
+  SITE?: string;
+};
 
-export const POST: APIRoute = async ({ request }) => {
+export async function onRequestPost(context: { request: Request; env: Env }) {
   try {
-    const body = await request.json();
+    const body = (await context.request.json()) as {
+      role?: 'caregiver' | 'elder';
+      familyId?: string;
+      answers?: Record<string, string | string[]>;
+      locale?: string;
+    };
+
     const { role, familyId, answers, locale } = body;
 
     if (!role || !answers) {
@@ -15,7 +24,7 @@ export const POST: APIRoute = async ({ request }) => {
       });
     }
 
-    const sheet = new GoogleSheet();
+    const sheet = new GoogleSheet(context.env);
     const result = await sheet.appendRow({ role, familyId, answers, locale });
 
     return new Response(JSON.stringify(result), {
@@ -28,4 +37,4 @@ export const POST: APIRoute = async ({ request }) => {
       headers: { 'Content-Type': 'application/json' },
     });
   }
-};
+}

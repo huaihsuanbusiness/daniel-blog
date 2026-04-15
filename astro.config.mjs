@@ -1,5 +1,4 @@
 import { defineConfig, passthroughImageService } from 'astro/config';
-import cloudflare from '@astrojs/cloudflare';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 
@@ -24,7 +23,6 @@ site: 'https://danielcanfly.com',
     },
   },
   output: 'static',
-  adapter: cloudflare(),
   markdown: {
     remarkPlugins: [remarkMath],
     rehypePlugins: [rehypeKatex],
