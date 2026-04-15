@@ -43,4 +43,6 @@ Whoever starts first, once you finish, you'll receive a unique link to share wit
 
 **[Select your role to begin](/en/campaign/ai-companion/)**
 
+If you are willing to leave your contact information, you may have the opportunity to join a **1-month free trial** and experience this voice AI companion designed for elders and their families before anyone else.
+
 Your responses are anonymous and will only be used for product research purposes.
