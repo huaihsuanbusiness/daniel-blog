@@ -253,9 +253,9 @@ const refParam = '';
     <div id="contact-conditional" class="contact-conditional" style="display:none">
       <div class="question-code">選填</div>
       <div class="question-text">聯絡方式（至少填寫一格）</div>
-      <input type="email" name="contact_email" class="text-input" placeholder="電子郵件，例如：example@email.com" style="margin-bottom:8px" />
-      <input type="text" name="contact_line" class="text-input" placeholder="LINE ID" style="margin-bottom:8px" />
-      <input type="tel" name="contact_phone" class="text-input" placeholder="手機號碼" style="margin-bottom:16px" />
+      <div class="contact-row"><span class="contact-row-label">電子郵件</span><input type="email" name="contact_email" class="text-input" placeholder="電子郵件，例如：example@email.com" /></div>
+      <div class="contact-row"><span class="contact-row-label">LINE</span><input type="text" name="contact_line" class="text-input" placeholder="LINE ID" /></div>
+      <div class="contact-row"><span class="contact-row-label">手機</span><input type="tel" name="contact_phone" class="text-input" placeholder="手機號碼" /></div>
       <ul class="options-list">
         <li><label class="option-label"><input type="checkbox" name="consent_followup" value="我願意接受與本研究相關的後續聯絡，包括免費試用邀請與產品優先測試通知" /> <span>我願意接受與本研究相關的後續聯絡，包括免費試用邀請與產品優先測試通知</span></label></li>
         <li><label class="option-label"><input type="checkbox" name="consent_interview" value="我願意接受後續深度訪談邀請（約 15–30 分鐘）" /> <span>我願意接受後續深度訪談邀請（約 15–30 分鐘）</span></label></li>
@@ -274,6 +274,25 @@ const refParam = '';
     font-weight: 600;
     margin-bottom: 4px;
     letter-spacing: 0.5px;
+  }
+  .contact-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+  }
+  .contact-row:last-of-type {
+    margin-bottom: 16px;
+  }
+  .contact-row-label {
+    min-width: 70px;
+    font-size: 1rem;
+    color: var(--text-secondary);
+    flex-shrink: 0;
+  }
+  .contact-row .text-input {
+    flex: 1;
+    margin-bottom: 0 !important;
   }
 </style>
 
