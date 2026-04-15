@@ -2,8 +2,14 @@
 export interface Props {
   title?: string;
   description?: string;
+  /** Set to 'elder' for larger text suitable for senior users */
+  size?: 'normal' | 'elder';
 }
-const { title = '市場調查', description = 'AI 陪伴夥伴市場調查' } = Astro.props;
+const {
+  title = '市場調查',
+  description = 'AI 陪伴夥伴市場調查',
+  size = 'normal',
+} = Astro.props;
 ---
 <!DOCTYPE html>
 <html lang="zh" data-theme="dark">
@@ -301,9 +307,43 @@ const { title = '市場調查', description = 'AI 陪伴夥伴市場調查' } = 
       line-height: 1.7;
       margin: 0 0 12px;
     }
+
+    /* Elder mode — larger text for senior users */
+    [data-survey-size='elder'] {
+      font-size: 18px;
+    }
+    [data-survey-size='elder'] .survey-header h1 {
+      font-size: 1.9rem;
+    }
+    [data-survey-size='elder'] .question-text {
+      font-size: 1.35rem;
+    }
+    [data-survey-size='elder'] .option-label {
+      font-size: 1.2rem;
+      padding: 12px 14px;
+    }
+    [data-survey-size='elder'] .option-label input[type='radio'],
+    [data-survey-size='elder'] .option-label input[type='checkbox'] {
+      width: 22px;
+      height: 22px;
+    }
+    [data-survey-size='elder'] .question-block {
+      padding: 24px 22px;
+    }
+    [data-survey-size='elder'] .submit-btn {
+      font-size: 1.25rem;
+      padding: 18px;
+    }
+    [data-survey-size='elder'] .text-input {
+      font-size: 1.15rem;
+      padding: 14px;
+    }
+    [data-survey-size='elder'] .scale-input label {
+      font-size: 1.1rem;
+    }
   </style>
 </head>
-<body>
+<body data-survey-size={size}>
   <div class="survey-topbar">
     <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle theme">
       <svg class="theme-icon theme-icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">

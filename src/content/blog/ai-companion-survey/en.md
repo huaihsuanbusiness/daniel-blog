@@ -7,24 +7,40 @@ date: 2026-04-15
 featured: false
 ---
 
-We are building a voice AI companion designed to check in with elders, offer gentle conversation, and help family members stay informed — without feeling like surveillance.
+Many elders do have people who care about them.
 
-Before we write a single line of code, we want to hear from real people.
+More often, the situation is this: children live far away, work keeps them busy, and everyone thinks about each other — but it's hard to check in meaningfully every single day.
+
+## We are researching a voice AI companion designed for elders and their distant family members.
+
+It can proactively check in each day, have genuine conversations with elders, and remember things from past interactions to make exchanges feel more continuous. Without making any medical diagnoses, we hope it can accomplish two things at once:
+
+**For elders**, it offers low-pressure companionship with real responses.
+
+**For family members**, it provides support that doesn't intrude, yet lets everyone feel more at ease.
+
+This is not a surveillance camera. It's not here to replace family.
+
+What we really want to know is: Would a service like this actually be needed? Who would need it most? What would make people feel at ease, and what would push them away?
+
+So before we write a single line of code, we want to hear from real people.
 
 ## Who we are looking for
 
-**Elders** — aged 60 and above, living in Taiwan, regardless of how comfortable you are with technology. You do not need to use smartphones or apps. If you can talk on the phone, you can participate.
+**Elders**
+Aged 60 and above, living in Taiwan. No need to be tech-savvy. If you can answer a phone call and are willing to share your thoughts, you are perfect.
 
-**Family members and caregivers** — whether you live with your elder relative or are hundreds of kilometers apart. If you worry about them, this is for you.
+**Family members and caregivers**
+Whether you live with your elder relative, in the same city, far apart, or even abroad — if you normally care, worry, or have ever thought "I wish someone could help me check in on them every day," you are ideal.
 
-## What the survey looks like
+## How the survey works
 
-The survey takes about 10 minutes. There are two versions — one for elders, one for family members. Both are short and written in plain language.
+There are two versions: the **Elder version** and the **Family/Caregiver version**.
 
-After the family member version, a unique link will be generated for you to invite the elder in your life to share their perspective too.
+Whoever starts first, once you finish, you'll receive a unique link to share with the other person in your household. The system will automatically pair both responses, giving us a fuller picture of how both the elder and the family member think within the same household.
 
 ## Take the survey
 
-**[Start here — select your role and begin](/en/campaign/ai-companion/)**
+**[Select your role to begin](/en/campaign/ai-companion/)**
 
 Your responses are anonymous and will only be used for product research purposes.

@@ -222,7 +222,7 @@ function renderQuestion(q: typeof questions[0], qIndex: number) {
 const refParam = '';
 ---
 
-<SurveyLayout title="市場調查｜長輩版" description="請根據您的實際情況填寫">
+<SurveyLayout title="市場調查｜長輩版" description="請根據您的實際情況填寫" size="elder">
   <form id="survey-form">
     {questions.map((q, i) => (
       <Fragment set:html={renderQuestion(q, i)} />
