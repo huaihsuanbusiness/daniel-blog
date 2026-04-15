@@ -250,7 +250,7 @@ const refParam = '';
       </ul>
     </div>
 
-    <div id="contact-conditional" class="contact-conditional">
+    <div id="contact-conditional" class="contact-conditional" style="display:none">
       <div class="question-code">選填</div>
       <div class="question-text">聯絡方式（至少填寫一格）</div>
       <input type="email" name="contact_email" class="text-input" placeholder="電子郵件，例如：example@email.com" style="margin-bottom:8px" />
@@ -297,8 +297,10 @@ const refParam = '';
     radio.addEventListener('change', () => {
       const willing = document.querySelector('input[name="contact_willing"]:checked')?.value;
       if (willing === '願意') {
+        contactConditional.style.display = 'block';
         contactConditional.classList.add('revealed');
       } else {
+        contactConditional.style.display = 'none';
         contactConditional.classList.remove('revealed');
       }
     });
