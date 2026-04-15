@@ -1,5 +1,5 @@
 ---
-title: "Product Rhythms in the Age of AI Part 02 | AI Won't Replace PMs First. It Makes Some Work Cheaper Before It Does Anything Else"
+title: "Product Rhythms in the Age of AI Part02 | AI Won’t Replace PMs First. It Makes Some Work Cheaper Before It Does Anything Else"
 description: ""
 categories: ["pm"]
 tags: []
@@ -27,6 +27,13 @@ But that does not mean the role gets smaller.
 If anything, I think AI makes it easier to see which parts of product work always mattered most. Atlassian’s 2025 DevEx research carries a tone I find quite revealing. Teams do feel AI is saving them time. But that saved time does not automatically dissolve organisational friction. In other words, the cost of moving information around may fall, while judgement, alignment and trade-offs remain expensive.
 
 The way I now think about PM work is roughly in four parts.
+
+| Capability | What AI compresses | What still needs human ownership |
+| --- | --- | --- |
+| Framing | First-pass synthesis, restating the problem, collecting inputs | Deciding which problem is actually worth solving now |
+| Slicing | Drafting feature options and first-pass stories | Turning a large problem into a smaller bet worth testing |
+| Validation design | Producing rough test ideas and metric candidates | Deciding what counts as evidence and what is only noise |
+| Trade-offs | Expanding option space and drafting rationale | Choosing what to do first, what to leave out, and why |
 
 The first is framing.
 

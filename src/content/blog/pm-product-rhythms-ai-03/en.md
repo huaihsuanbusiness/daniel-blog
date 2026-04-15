@@ -1,5 +1,5 @@
 ---
-title: "Product Rhythms in the Age of AI Part 03 | I'm Less Interested in Whether We \"Use Scrum\" and More in Which Rituals Still Earn Their Keep"
+title: "Product Rhythms in the Age of AI Part03 | I’m Less Interested in Whether We “Use Scrum” and More in Which Rituals Still Earn Their Keep"
 description: ""
 categories: ["pm"]
 tags: []
@@ -27,6 +27,12 @@ What is this ritual actually doing for us now?
 If a ceremony mainly exists to synchronise information, AI has probably eaten a meaningful chunk of its cost. If it exists to coordinate decisions, the format may change, but the function doesn’t disappear. If it exists to control quality and surface risk, I’m less willing than before to strip it out.
 
 That’s roughly how I think about Scrum rituals now.
+
+| Type | Typical examples | The question AI forces us to ask | My bias now |
+| --- | --- | --- | --- |
+| Information synchronisation | Status updates, story clean-up, information passing | Does this still need humans in the loop in the same way? | Most likely to shrink or go async |
+| Decision coordination | Planning, scope trade-offs, risk alignment | Is this meeting still making real decisions? | Keep it, but make it shorter and harder-edged |
+| Quality / risk control | Review, retro, DoD | If we remove this, does risk become invisible? | Do not cut lightly; often strengthen it |
 
 One bucket is information synchronisation. What does the story look like now? Which tickets are blocked? What changed? What’s missing? A lot of that used to require human effort simply because somebody had to assemble it. AI is very good at lowering the cost of first-pass assembly: meeting notes, story drafts, rough acceptance criteria, initial test cases. That does not make the ritual useless. It does make some old ways of running it look heavier than they used to.
 

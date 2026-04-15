@@ -1,5 +1,5 @@
 ---
-title: "Product Rhythms in the Age of AI Part 01 | It's Not Agile That's Aging. It's Some of the Ways We Deliver"
+title: "Product Rhythms in the Age of AI Part01 | It’s Not Agile That’s Aging. It’s Some of the Ways We Deliver"
 description: ""
 categories: ["pm"]
 tags: []
@@ -23,6 +23,12 @@ If you blur Agile and Scrum into one lump, you can reach a very satisfying concl
 I’ve ended up believing something narrower, and more useful. AI hasn’t washed Agile away. It has loosened an older cost structure. DORA’s 2025 work describes AI as an amplifier rather than a magic fix. Digital.ai’s 18th State of Agile report doesn’t read like an obituary either. It reads more like a reminder that agility is being adapted, not abandoned. Put together, they point to the same thing: what’s changing is not whether we still have to work through uncertainty. What’s changing is whether we need to carry that uncertainty with the same heavy machinery we used before.
 
 If I strip Scrum back to something more practical, I now see three layers.
+
+| Layer | What it used to do | What AI changes first | How I now read it |
+| --- | --- | --- | --- |
+| Information synchronisation | Gather stories, status, notes and context | Drafting and summarising become cheaper | Most likely to be redesigned or reduced |
+| Rhythm and commitment | Align goals, scope, trade-offs and risk | Harder to justify through heavy information-moving rituals | The form can shrink; the function cannot vanish |
+| Risk control | Hold validation, review, retro and DoD together | Faster generation also scales bad work faster | More important than before |
 
 One layer is basically information synchronisation. What the requirement looks like now. Who has done what. Where something is blocked. Where the boundary of a story roughly sits. A great deal of that used to require manual effort. People had to gather it, write it down and bring it into the room. AI has taken a visible bite out of that cost.
 

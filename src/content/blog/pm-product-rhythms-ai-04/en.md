@@ -1,5 +1,5 @@
 ---
-title: "Product Rhythms in the Age of AI Part 04 | If I Were Running a Product Team Today, I Wouldn't Run Scrum the Same Way"
+title: "Product Rhythms in the Age of AI Part04 | If I Were Running a Product Team Today, I Wouldn’t Run Scrum the Same Way"
 description: ""
 categories: ["pm"]
 tags: []
@@ -27,6 +27,12 @@ AI makes that easier to see.
 DORA’s 2025 work describes AI as an amplifier, which feels about right. AI doesn’t automatically make a team stronger. It tends to magnify what is already there. If the team already has decent clarity, solid habits and a clean feedback loop, AI helps it move faster. If responsibility is blurry, acceptance is fuzzy and meetings are mostly ritual, AI helps those problems move faster too. Digital.ai’s latest State of Agile has a similar tone. It is not really about Agile fading away. It is about adaptation. Put those together and the conclusion I keep returning to is fairly plain: teams in the age of AI do not need less structure by default. They need less time wasted on the wrong structure.
 
 If I had to say what I’d keep, it would be five things.
+
+| Category | What I would keep / cut / add | Why |
+| --- | --- | --- |
+| Keep | clear goal, ownership, review loop, retro loop, validation bar | These are the bones that carry uncertainty, responsibility and validation |
+| Cut | estimation theatre, status recitals, pretty backlog theatre | These mostly served an older cost structure |
+| Add | AI first drafts, context hygiene, small-batch delivery, explicit validation rules | These are the habits the AI era actually makes more necessary |
 
 First, a clear goal. What exactly are we trying to solve in this cycle, and what are we explicitly not trying to solve? This cannot be vague. A surprising number of teams do not lack output. They lack focus.
 

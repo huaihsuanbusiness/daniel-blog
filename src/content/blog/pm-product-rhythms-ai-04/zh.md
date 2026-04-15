@@ -1,5 +1,5 @@
 ---
-title: "AI 時代的產品節奏 Part 04｜如果今天重新帶一支產品團隊，我不會照舊跑 Scrum"
+title: "AI 時代的產品節奏 Part04 | 如果今天重新帶一支產品團隊，我不會照舊跑 Scrum"
 description: ""
 categories: ["pm"]
 tags: []
@@ -27,6 +27,12 @@ AI 進來之後，這件事只會更明顯。
 DORA 2025 把 AI 形容成 amplifier，我覺得很貼切。AI 不是自動把一支團隊變強，它比較像把原本已經存在的東西放大。你本來就清楚、節奏就乾淨、驗收就嚴，AI 會幫你跑更快。你本來就模糊、責任邊界不清、會議只是走流程，它也會幫你更快地把那些問題放大。Digital.ai 今年談 Agile，也不是在講退場，比較像在講 adaptation。這兩個東西放在一起看，我自己的感覺很簡單：AI 時代不是不需要流程，而是更不值得把時間浪費在錯的流程上。 
 
 如果真的要說我現在會怎麼帶，我會保留五樣東西。
+
+| 類別 | 我會保留 / 刪掉 / 補進來的東西 | 原因 |
+| --- | --- | --- |
+| 保留 | clear goal、ownership、review loop、retro loop、validation bar | 這些是在處理不確定性、責任與驗收 |
+| 刪掉 | estimation theatre、status recital、pretty backlog theatre | 這些多半是在替舊成本結構服務 |
+| 補進來 | AI first drafts、context hygiene、small-batch delivery、explicit validation rules | 這些才是 AI 時代更需要的新工作習慣 |
 
 第一個是 clear goal。每一輪到底想解什麼問題，不想解什麼問題。這件事不能模糊。很多團隊不是沒有產出，是同一輪裡塞了太多彼此干擾的目標，最後每件事都做了一點，但沒有一件真的被解開。
 
