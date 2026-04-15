@@ -1,0 +1,413 @@
+---
+export const prerender = true;
+export function getStaticPaths() {
+  return [{ params: { lang: 'en' } }, { params: { lang: 'zh' } }];
+}
+import SurveyLayout from '../../../../layouts/SurveyLayout.astro';
+
+// B1-B34 questions data
+const questions = [
+  // B-1 基本情況
+  {
+    code: 'B1', section: 'B-1 基本情況',
+    text: '您和這位長輩的關係是？',
+    type: 'radio',
+    options: ['子女', '孫子女', '兄弟姊妹', '其他親屬', '朋友／其他照顧者']
+  },
+  {
+    code: 'B2', text: '您和這位長輩目前的居住關係是？',
+    type: 'radio',
+    options: ['同住', '不同住但同一棟／同一社區', '不同住但同一城市', '不同城市', '不同國家']
+  },
+  {
+    code: 'B3', text: '這位長輩目前主要和誰一起住？',
+    type: 'radio',
+    options: ['自己一個人住', '和配偶住', '和子女住', '和看護／照顧者住', '其他']
+  },
+  {
+    code: 'B4', text: '您平常覺得這位長輩使用手機的能力比較接近哪一種？',
+    type: 'radio',
+    options: ['幾乎不用智慧型手機', '主要接電話', '會看 LINE 或訊息', '會語音／視訊', '會自己操作 app']
+  },
+  // B-2 痛點強度與照顧壓力
+  {
+    code: 'B5', section: 'B-2 痛點強度與照顧壓力',
+    text: '您平均多久會主動確認一次這位長輩的狀況？',
+    type: 'radio',
+    options: ['幾乎每天', '一週好幾次', '一週一次', '一個月幾次', '很少']
+  },
+  {
+    code: 'B6', text: '您目前最常用哪種方式確認這位長輩的狀況？',
+    type: 'checkbox',
+    options: ['打電話', 'LINE 文字', 'LINE 語音／視訊', '問其他家人', '看護／照服員回報', '長輩主動聯絡我', '其實沒有固定方式', '其他']
+  },
+  {
+    code: 'B7', text: '以下哪些情況最讓您擔心？',
+    type: 'checkbox',
+    options: ['長輩太孤單', '心情變差但沒人知道', '忘東忘西變嚴重', '跌倒／身體異常', '沒接電話不知道怎麼了', '作息突然變亂', '我沒有時間常常關心', '其他']
+  },
+  {
+    code: 'B8', text: '您目前對這位長輩的擔心程度大概是？',
+    type: 'scale',
+    options: Array.from({ length: 11 }, (_, i) => String(i)),
+    scaleLabels: ['幾乎不擔心', '非常擔心']
+  },
+  {
+    code: 'B9', text: '這份擔心多久會影響您的情緒、注意力或生活安排？',
+    type: 'radio',
+    options: ['幾乎每天', '一週好幾次', '一週一兩次', '很少', '幾乎沒有']
+  },
+  // B-3 現有替代方案
+  {
+    code: 'B10', section: 'B-3 現有替代方案',
+    text: '您目前有沒有用過以下方式幫助自己關心長輩？（矩陣多選）',
+    type: 'matrix',
+    rows: ['固定電話問安', '家庭群組回報', '視訊', '智慧手錶／緊急求助裝置', '遠距監測／感測設備', '請親友鄰居幫忙看', '看護／照服員', '其他 app／工具'],
+    cols: ['有在用', '用過但停了', '沒用過']
+  },
+  {
+    code: 'B11', text: '您現在有沒有自己發展出一些方法來關心長輩？',
+    type: 'checkbox',
+    options: ['固定每天／每週打電話', '和兄弟姊妹輪流聯絡', '請鄰居／親友幫忙看', '用 LINE 群組回報', '看監視器／定位／智慧手錶', '請看護／照服員協助', '沒有特別方法', '其他']
+  },
+  {
+    code: 'B12', text: '您對現有方式最不滿意的地方是？',
+    type: 'checkbox',
+    options: ['太花時間', '資訊不連續', '太像監視', '只能知道出事不能早點知道', '家人之間不好協調', '成本太高', '沒有真正減少我的焦慮', '其他']
+  },
+  // B-4 對 AI 夥伴概念的反應
+  {
+    code: 'B13', section: 'B-4 對 AI 夥伴概念的反應',
+    text: '您看到這樣的語音 AI 夥伴，第一反應比較接近哪一個？',
+    type: 'radio',
+    options: ['很有興趣', '有點興趣', '普通', '不太有興趣', '完全沒興趣']
+  },
+  {
+    code: 'B14', text: '如果只能選一個，您最在意這個服務帶來的哪個價值？',
+    type: 'radio',
+    options: ['長輩比較不孤單', '我每天比較放心', '我能更早知道異常', '我不用一直自己打電話', '家人之間更容易分工']
+  },
+  {
+    code: 'B15', text: '如果只能選兩個，您最希望這個服務做到哪兩件事？',
+    type: 'checkbox',
+    options: ['每天幫忙問安', '長輩能有人聊幾句', '提供心情／狀態趨勢', '異常早知道', '沒有 check-in 時提醒我', '幫助家人協作', '其他']
+  },
+  // B-5 家屬想要的輸出格式
+  {
+    code: 'B16', section: 'B-5 家屬想要的輸出格式',
+    text: '如果只能選一種，您最想收到哪一種資訊？',
+    type: 'radio',
+    options: ['今天是否完成 check-in + 綠黃紅狀態', '情緒／互動趨勢儀表板', '2-3 句短摘要', '狀態+趨勢+異常提醒', '更完整的內容摘要']
+  },
+  {
+    code: 'B17', text: '哪種提醒方式對您最有價值？',
+    type: 'checkbox',
+    options: ['今天完全沒有 check-in', '情緒明顯比平常低', '作息突然異常', '提到身體不舒服', '提到孤單／很低落', '互動內容看起來怪怪的', '不需要提醒我自己有空看就好']
+  },
+  {
+    code: 'B18', text: '對您來說，以下哪一種最不能接受？',
+    type: 'radio',
+    options: ['完全沒有提醒', '提醒太多', '提醒太模糊不知道要不要處理', '看不到趨勢', '摘要太少', '摘要太多']
+  },
+  {
+    code: 'B19', text: '您比較偏好哪種方式？',
+    type: 'radio',
+    options: ['平常只看簡單狀態異常時才多給一些資訊', '平常每天看短摘要就好', '平常看趨勢有異常再看摘要', '想看得越完整越好', '不確定']
+  },
+  // B-6 分享邊界與長輩控制權
+  {
+    code: 'B20', section: 'B-6 分享邊界與長輩控制權',
+    text: '哪些內容您覺得「不一定需要知道」？',
+    type: 'checkbox',
+    options: ['長輩所有情緒細節', '長輩對家人的抱怨', '金錢話題', '私人生活', '與其他人的私下談話', '其實我都想知道', '其他']
+  },
+  {
+    code: 'B21', text: '如果長輩可以自己決定要分享到什麼程度，您是否可以接受？',
+    type: 'radio',
+    options: ['很能接受', '能接受', '普通', '不太能接受', '不能接受']
+  },
+  {
+    code: 'B22', text: '您覺得最合理的做法是？',
+    type: 'radio',
+    options: ['平常只給我大致狀態異常才多一點資訊', '平常就給我短摘要', '平常給我趨勢必要時再看摘要', '我希望看得更完整', '不確定']
+  },
+  // B-7 採用、付費與價格
+  {
+    code: 'B23', section: 'B-7 採用、付費與價格',
+    text: '如果這個服務能讓您更早知道異常、平常也能比較放心，您願意試用嗎？',
+    type: 'radio',
+    options: ['很願意', '願意', '看情況', '不太願意', '完全不願意']
+  },
+  {
+    code: 'B24', text: '若試用後覺得有幫助，您最可能願意為哪個價值付費？',
+    type: 'checkbox',
+    options: ['每天有人幫忙 check-in', '異常早知道', '心情／狀態趨勢', '長輩比較不孤單', '我比較不用一直自己打電話', '家人之間更好分工', '其他']
+  },
+  {
+    code: 'B25', text: '對您來說，以下哪個月費最有可能考慮？',
+    type: 'radio',
+    options: ['NT$149 以下', 'NT$150-299', 'NT$300-499', 'NT$500-799', 'NT$800 以上', '完全不會考慮付費']
+  },
+  {
+    code: 'B26', text: '哪個價格會讓您覺得「太便宜，反而有點不放心」？',
+    type: 'radio',
+    options: ['NT$149 以下', 'NT$150-299', 'NT$300-499', 'NT$500-799', 'NT$800 以上', '沒有這種感覺']
+  },
+  {
+    code: 'B27', text: '哪個價格會讓您覺得「開始有點貴，但還可能考慮」？',
+    type: 'radio',
+    options: ['NT$149 以下', 'NT$150-299', 'NT$300-499', 'NT$500-799', 'NT$800 以上']
+  },
+  {
+    code: 'B28', text: '哪個價格會讓您覺得「太貴，不會考慮」？',
+    type: 'radio',
+    options: ['NT$149 以下', 'NT$150-299', 'NT$300-499', 'NT$500-799', 'NT$800 以上']
+  },
+  {
+    code: 'B29', text: '如果價格一樣，您更願意為哪一種買單？',
+    type: 'radio',
+    options: ['陪伴聊天為主', '問安+短摘要', '問安+異常提醒', '問安+短摘要+異常提醒', '我不會買']
+  },
+  // B-8 多照顧者協作與權限
+  {
+    code: 'B30', section: 'B-8 多照顧者協作與權限',
+    text: '平常是否只有您一個人主要在關心這位長輩？',
+    type: 'radio',
+    options: ['幾乎是我一個人', '主要是我但也有其他人', '有兩三個人一起', '很多人都會管', '不一定']
+  },
+  {
+    code: 'B31', text: '如果有這個服務，您覺得最合理的權限方式是？',
+    type: 'radio',
+    options: ['只給一位主要家屬看', '一位主要家屬+其他人只看簡單狀態', '所有家人都看一樣內容', '由長輩自己設定', '不確定']
+  },
+  {
+    code: 'B32', text: '如果系統偵測到異常，第一個應該通知誰？',
+    type: 'radio',
+    options: ['主要家屬', '最近住得近的人', '所有家人', '先提醒長輩本人', '視情況而定']
+  },
+  // B-9 開放題
+  {
+    code: 'B33', section: 'B-9 開放題',
+    text: '如果這個 AI 夥伴真的要讓您願意持續使用，最重要的一件事是什麼？（非必填）',
+    type: 'textarea'
+  },
+  {
+    code: 'B34', text: '您最怕這個 AI 夥伴做不好的地方是什麼？（非必填）',
+    type: 'textarea'
+  },
+];
+
+function renderQuestion(q: typeof questions[0], qIndex: number) {
+  const isRequired = q.type !== 'textarea';
+  const reqAttr = isRequired ? 'required' : '';
+  const name = q.code;
+
+  if (q.type === 'radio') {
+    return `
+  <div class="question-block">
+    ${q.section ? `<div class="section-label">${q.section}</div>` : ''}
+    <div class="question-code">${q.code}</div>
+    <div class="question-text">${q.text}</div>
+    <ul class="options-list">
+      ${q.options!.map((opt, i) => `
+      <li>
+        <label class="option-label">
+          <input type="radio" name="${name}" value="${opt}" ${reqAttr} />
+          <span>${opt}</span>
+        </label>
+      </li>`).join('')}
+    </ul>
+  </div>`;
+  }
+
+  if (q.type === 'checkbox') {
+    return `
+  <div class="question-block">
+    ${q.section ? `<div class="section-label">${q.section}</div>` : ''}
+    <div class="question-code">${q.code}</div>
+    <div class="question-text">${q.text}</div>
+    <ul class="options-list">
+      ${q.options!.map((opt) => `
+      <li>
+        <label class="option-label">
+          <input type="checkbox" name="${name}" value="${opt}" />
+          <span>${opt}</span>
+        </label>
+      </li>`).join('')}
+    </ul>
+  </div>`;
+  }
+
+  if (q.type === 'scale') {
+    return `
+  <div class="question-block">
+    ${q.section ? `<div class="section-label">${q.section}</div>` : ''}
+    <div class="question-code">${q.code}</div>
+    <div class="question-text">${q.text}</div>
+    <div class="scale-input">
+      <div class="scale-wrapper">${q.scaleLabels![0]}</div>
+      ${q.options!.map((opt) => `
+      <label>
+        <input type="radio" name="${name}" value="${opt}" ${reqAttr} />
+        ${opt}
+      </label>`).join('')}
+      <div class="scale-wrapper">${q.scaleLabels![1]}</div>
+    </div>
+  </div>`;
+  }
+
+  if (q.type === 'textarea') {
+    return `
+  <div class="question-block">
+    ${q.section ? `<div class="section-label">${q.section}</div>` : ''}
+    <div class="question-code">${q.code}</div>
+    <div class="question-text">${q.text}</div>
+    <textarea class="text-input" name="${name}" rows="4" placeholder="請填寫（選填）"></textarea>
+  </div>`;
+  }
+
+  if (q.type === 'matrix') {
+    return `
+  <div class="question-block">
+    ${q.section ? `<div class="section-label">${q.section}</div>` : ''}
+    <div class="question-code">${q.code}</div>
+    <div class="question-text">${q.text}</div>
+    <table class="matrix-table">
+      <thead>
+        <tr>
+          <th></th>
+          ${q.cols!.map(c => `<th>${c}</th>`).join('')}
+        </tr>
+      </thead>
+      <tbody>
+        ${q.rows!.map(row => `
+        <tr>
+          <td class="row-label">${row}</td>
+          ${q.cols!.map(col => `
+          <td>
+            <input type="checkbox" name="${name}" value="${row}|${col}" />
+          </td>`).join('')}
+        </tr>`).join('')}
+      </tbody>
+    </table>
+  </div>`;
+  }
+
+  return '';
+}
+---
+
+<SurveyLayout title="市場調查｜家屬版" description="請根據您的實際情況填寫">
+  <form id="survey-form">
+    {questions.map((q, i) => (
+      <Fragment set:html={renderQuestion(q, i)} />
+    ))}
+    <button type="submit" class="submit-btn" id="submit-btn">送出</button>
+  </form>
+  <div id="error-container"></div>
+</SurveyLayout>
+
+<style>
+  .section-label {
+    font-size: 0.75rem;
+    color: #4a7c59;
+    font-weight: 600;
+    margin-bottom: 4px;
+    letter-spacing: 0.5px;
+  }
+  .matrix-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+    margin-top: 8px;
+  }
+  .matrix-table th, .matrix-table td {
+    padding: 8px 6px;
+    text-align: center;
+    border-bottom: 1px solid #eee;
+  }
+  .matrix-table th {
+    font-size: 0.8rem;
+    color: #666;
+    font-weight: 500;
+  }
+  .matrix-table .row-label {
+    text-align: left;
+    font-weight: 400;
+    padding-left: 4px;
+    color: #333;
+  }
+  .matrix-table input[type="checkbox"] {
+    accent-color: #4a7c59;
+    width: 18px;
+    height: 18px;
+  }
+</style>
+
+<script>
+  const form = document.getElementById('survey-form') as HTMLFormElement;
+  const submitBtn = document.getElementById('submit-btn') as HTMLButtonElement;
+  const errorContainer = document.getElementById('error-container') as HTMLDivElement;
+
+  submitBtn.addEventListener('click', async (e) => {
+    e.preventDefault();
+    errorContainer.innerHTML = '';
+
+    const formData = new FormData(form);
+    const answers: Record<string, string | string[]> = {};
+
+    // Gather answers
+    for (const [key, value] of formData.entries()) {
+      if (answers[key] === undefined) {
+        answers[key] = value;
+      } else if (Array.isArray(answers[key])) {
+        (answers[key] as string[]).push(value);
+      } else {
+        answers[key] = [answers[key] as string, value];
+      }
+    }
+
+    // Validate required fields
+    const requiredQuestions = [
+      'B1','B2','B3','B4','B5','B6','B7','B8','B9',
+      'B13','B14','B15','B16','B17','B18','B19',
+      'B21','B22','B23','B25','B26','B27','B28','B29',
+      'B30','B31','B32'
+    ];
+    const missing = requiredQuestions.filter(q => !answers[q]);
+    if (missing.length > 0) {
+      errorContainer.innerHTML = `<div class="error-msg">請填完所有必填題目（還有 ${missing.length} 題未填）</div>`;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = '送出中…';
+
+    try {
+      const res = await fetch('/api/campaign/ai-companion-submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          role: 'caregiver',
+          answers,
+          locale: 'zh',
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        throw new Error(data.error || '送出失敗');
+      }
+      // Store familyId and inviteLink
+      sessionStorage.setItem('survey_familyId', data.familyId);
+      sessionStorage.setItem('survey_inviteLink', data.inviteLink || '');
+      sessionStorage.setItem('survey_role', 'caregiver');
+      const lang = window.location.pathname.split('/').filter(Boolean)[0] || 'zh';
+      window.location.href = `/${lang}/campaign/ai-companion/thank-you`;
+    } catch (err: any) {
+      errorContainer.innerHTML = `<div class="error-msg">送出失敗：${err.message}</div>`;
+      submitBtn.disabled = false;
+      submitBtn.textContent = '送出';
+    }
+  });
+</script>

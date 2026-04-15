@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 720" role="img" aria-labelledby="title desc">
+  <title id="title">What changes and what stays after AI</title>
+  <desc id="desc">Two-column diagram showing delivery activities compressed by AI and practices that matter more than ever.</desc>
+  <defs>
+    <style>
+      text { font-family: Arial, Inter, sans-serif; fill: #1f2937; }
+      .title { font-size: 32px; font-weight: 700; }
+      .subtitle { font-size: 16px; fill: #4b5563; }
+      .card-title { font-size: 24px; font-weight: 700; }
+      .item { font-size: 19px; }
+      .small { font-size: 15px; fill: #6b7280; }
+      .box { stroke: #d1d5db; stroke-width: 2; rx: 24; ry: 24; }
+      .left { fill: #eef6ff; }
+      .right { fill: #eefbf3; }
+      .pill { fill: white; stroke: #d1d5db; stroke-width: 1.5; rx: 14; ry: 14; }
+      .divider { stroke: #e5e7eb; stroke-width: 2; stroke-dasharray: 8 8; }
+    </style>
+  </defs>
+
+  <text x="60" y="70" class="title">What changes and what stays after AI</text>
+  <text x="60" y="102" class="subtitle">AI compresses some delivery costs. It does not remove the need for judgement, feedback, or validation.</text>
+
+  <rect x="60" y="150" width="500" height="500" class="box left"/>
+  <text x="100" y="205" class="card-title">Compressed by AI</text>
+  <text x="100" y="235" class="small">Manual work that used to consume team time</text>
+
+  <rect x="95" y="270" width="430" height="54" class="pill"/>
+  <text x="120" y="304" class="item">Draft stories and first-pass AC</text>
+
+  <rect x="95" y="340" width="430" height="54" class="pill"/>
+  <text x="120" y="374" class="item">Meeting summaries and action notes</text>
+
+  <rect x="95" y="410" width="430" height="54" class="pill"/>
+  <text x="120" y="444" class="item">First-pass documentation</text>
+
+  <rect x="95" y="480" width="430" height="54" class="pill"/>
+  <text x="120" y="514" class="item">Manual status reporting</text>
+
+  <rect x="95" y="550" width="430" height="54" class="pill"/>
+  <text x="120" y="584" class="item">Boilerplate test cases</text>
+
+  <line x1="600" y1="150" x2="600" y2="650" class="divider"/>
+
+  <rect x="640" y="150" width="500" height="500" class="box right"/>
+  <text x="680" y="205" class="card-title">Still matters more than ever</text>
+  <text x="680" y="235" class="small">The parts that still need human judgement</text>
+
+  <rect x="675" y="270" width="430" height="54" class="pill"/>
+  <text x="700" y="304" class="item">Problem framing</text>
+
+  <rect x="675" y="340" width="430" height="54" class="pill"/>
+  <text x="700" y="374" class="item">Trade-offs and scope choices</text>
+
+  <rect x="675" y="410" width="430" height="54" class="pill"/>
+  <text x="700" y="444" class="item">Review and reality checks</text>
+
+  <rect x="675" y="480" width="430" height="54" class="pill"/>
+  <text x="700" y="514" class="item">Retro and working agreements</text>
+
+  <rect x="675" y="550" width="430" height="54" class="pill"/>
+  <text x="700" y="584" class="item">Definition of done and validation</text>
+</svg>

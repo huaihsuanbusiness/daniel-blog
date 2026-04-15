@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 760" role="img" aria-labelledby="title desc">
+  <title id="title">PM value shift in the age of AI</title>
+  <desc id="desc">A side by side diagram showing PM work becoming cheaper and PM work becoming more valuable in the age of AI.</desc>
+  <defs>
+    <style>
+      text { font-family: Arial, Inter, sans-serif; fill: #1f2937; }
+      .title { font-size: 32px; font-weight: 700; }
+      .subtitle { font-size: 16px; fill: #4b5563; }
+      .card-title { font-size: 24px; font-weight: 700; }
+      .item { font-size: 19px; }
+      .small { font-size: 15px; fill: #6b7280; }
+      .box { stroke: #d1d5db; stroke-width: 2; rx: 24; ry: 24; }
+      .left { fill: #fff5f5; }
+      .right { fill: #eefbf3; }
+      .pill { fill: white; stroke: #d1d5db; stroke-width: 1.5; rx: 14; ry: 14; }
+    </style>
+  </defs>
+
+  <text x="60" y="70" class="title">PM value shift in the age of AI</text>
+  <text x="60" y="102" class="subtitle">AI makes some product work cheaper. It also makes weak product judgement easier to expose.</text>
+
+  <rect x="60" y="150" width="500" height="540" class="box left"/>
+  <text x="100" y="205" class="card-title">Becoming cheaper</text>
+  <text x="100" y="235" class="small">Useful work, but less scarce than before</text>
+
+  <rect x="95" y="270" width="430" height="54" class="pill"/>
+  <text x="120" y="304" class="item">Meeting summaries</text>
+  <rect x="95" y="340" width="430" height="54" class="pill"/>
+  <text x="120" y="374" class="item">Draft PRDs and requirement synthesis</text>
+  <rect x="95" y="410" width="430" height="54" class="pill"/>
+  <text x="120" y="444" class="item">First-pass user stories</text>
+  <rect x="95" y="480" width="430" height="54" class="pill"/>
+  <text x="120" y="514" class="item">Draft acceptance criteria</text>
+  <rect x="95" y="550" width="430" height="54" class="pill"/>
+  <text x="120" y="584" class="item">Basic test-case scaffolds</text>
+
+  <rect x="640" y="150" width="500" height="540" class="box right"/>
+  <text x="680" y="205" class="card-title">Becoming more valuable</text>
+  <text x="680" y="235" class="small">The work that still shapes outcomes</text>
+
+  <rect x="675" y="270" width="430" height="54" class="pill"/>
+  <text x="700" y="304" class="item">Problem framing</text>
+  <rect x="675" y="340" width="430" height="54" class="pill"/>
+  <text x="700" y="374" class="item">Slicing work into small bets</text>
+  <rect x="675" y="410" width="430" height="54" class="pill"/>
+  <text x="700" y="444" class="item">Evidence and validation design</text>
+  <rect x="675" y="480" width="430" height="54" class="pill"/>
+  <text x="700" y="514" class="item">Trade-offs and scope calls</text>
+  <rect x="675" y="550" width="430" height="54" class="pill"/>
+  <text x="700" y="584" class="item">Stakeholder alignment</text>
+</svg>

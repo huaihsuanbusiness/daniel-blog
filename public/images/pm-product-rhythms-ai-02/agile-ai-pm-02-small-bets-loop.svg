@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 540" role="img" aria-labelledby="title desc">
+  <title id="title">A small-bets loop for product work</title>
+  <desc id="desc">A circular loop showing a product rhythm of choosing a small bet, defining evidence, shipping, reviewing, and deciding the next move.</desc>
+  <defs>
+    <style>
+      text { font-family: Arial, Inter, sans-serif; fill: #1f2937; }
+      .title { font-size: 32px; font-weight: 700; }
+      .subtitle { font-size: 16px; fill: #4b5563; }
+      .node { fill: #f9fafb; stroke: #d1d5db; stroke-width: 2; rx: 20; ry: 20; }
+      .nodeText { font-size: 19px; font-weight: 600; }
+      .small { font-size: 14px; fill: #6b7280; }
+      .arrow { stroke: #9ca3af; stroke-width: 3; fill: none; marker-end: url(#arrow); }
+    </style>
+    <marker id="arrow" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#9ca3af"/>
+    </marker>
+  </defs>
+
+  <text x="60" y="70" class="title">A small-bets loop for product work</text>
+  <text x="60" y="102" class="subtitle">Not a grand plan. A rhythm for making one useful decision at a time.</text>
+
+  <rect x="90" y="200" width="180" height="80" class="node"/>
+  <text x="180" y="235" text-anchor="middle" class="nodeText">Problem</text>
+  <text x="180" y="258" text-anchor="middle" class="small">Where is the actual leak?</text>
+
+  <rect x="320" y="90" width="200" height="80" class="node"/>
+  <text x="420" y="125" text-anchor="middle" class="nodeText">Choose a bet</text>
+  <text x="420" y="148" text-anchor="middle" class="small">Pick one slice first</text>
+
+  <rect x="580" y="90" width="220" height="80" class="node"/>
+  <text x="690" y="125" text-anchor="middle" class="nodeText">Define evidence</text>
+  <text x="690" y="148" text-anchor="middle" class="small">What would success look like?</text>
+
+  <rect x="870" y="200" width="180" height="80" class="node"/>
+  <text x="960" y="235" text-anchor="middle" class="nodeText">Ship</text>
+  <text x="960" y="258" text-anchor="middle" class="small">Keep the batch small</text>
+
+  <rect x="580" y="340" width="220" height="80" class="node"/>
+  <text x="690" y="375" text-anchor="middle" class="nodeText">Review</text>
+  <text x="690" y="398" text-anchor="middle" class="small">Signal or noise?</text>
+
+  <rect x="320" y="340" width="200" height="80" class="node"/>
+  <text x="420" y="375" text-anchor="middle" class="nodeText">Decide next move</text>
+  <text x="420" y="398" text-anchor="middle" class="small">Double down, adjust, or stop</text>
+
+  <path d="M270 220 C300 190, 310 170, 320 150" class="arrow"/>
+  <path d="M520 130 L580 130" class="arrow"/>
+  <path d="M800 130 C860 130, 880 160, 900 200" class="arrow"/>
+  <path d="M960 280 C960 330, 830 360, 800 370" class="arrow"/>
+  <path d="M580 380 L520 380" class="arrow"/>
+  <path d="M320 380 C260 380, 210 330, 190 280" class="arrow"/>
+</svg>

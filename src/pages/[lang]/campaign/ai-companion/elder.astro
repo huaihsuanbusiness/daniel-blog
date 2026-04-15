@@ -1,0 +1,319 @@
+---
+export const prerender = true;
+export function getStaticPaths() {
+  return [{ params: { lang: 'en' } }, { params: { lang: 'zh' } }];
+}
+import SurveyLayout from '../../../../layouts/SurveyLayout.astro';
+
+// A1-A26 questions data
+const questions = [
+  // A-1 基本情況
+  {
+    code: 'A1', section: 'A-1 基本情況',
+    text: '您目前幾歲？',
+    type: 'radio',
+    options: ['60–64 歲', '65–69 歲', '70–74 歲', '75–79 歲', '80 歲以上']
+  },
+  {
+    code: 'A2', text: '您目前主要和誰一起住？',
+    type: 'radio',
+    options: ['自己一個人住', '和配偶住', '和子女住', '和看護／照顧者住', '其他']
+  },
+  {
+    code: 'A3', text: '您平常使用手機的情況比較接近哪一種？',
+    type: 'radio',
+    options: ['幾乎不用智慧型手機', '主要用來接電話', '會看 LINE 或訊息', '會用語音／視訊', '會自己開 app 操作功能']
+  },
+  {
+    code: 'A4', text: '您平常會不會用語音功能和別人互動？',
+    type: 'radio',
+    options: ['常常會', '偶爾會', '很少', '幾乎不會']
+  },
+  // A-2 日常陪伴與孤單感
+  {
+    code: 'A5-1', section: 'A-2 日常陪伴與孤單感',
+    text: '您平常多久會覺得有點無聊、想找人說話？',
+    type: 'radio',
+    options: ['幾乎每天', '一週好幾次', '一週一兩次', '很少', '幾乎沒有']
+  },
+  {
+    code: 'A5-2', text: '您平常多久會覺得明明有人可以聯絡，但又不太想麻煩孩子？',
+    type: 'radio',
+    options: ['幾乎每天', '一週好幾次', '一週一兩次', '很少', '幾乎沒有']
+  },
+  {
+    code: 'A5-3', text: '您平常多久會希望有人主動來關心一下近況？',
+    type: 'radio',
+    options: ['幾乎每天', '一週好幾次', '一週一兩次', '很少', '幾乎沒有']
+  },
+  {
+    code: 'A6', text: '如果您想找人說話，通常最常怎麼做？',
+    type: 'checkbox',
+    options: ['打電話給孩子', '傳 LINE／語音', '找朋友／鄰居', '看電視／滑手機打發時間', '不太會主動找人', '其他']
+  },
+  {
+    code: 'A7', text: '您最近半年有沒有出現以下情況？',
+    type: 'checkbox',
+    options: ['常常一個人在家', '常說無聊或沒人說話', '睡不好或半夜常醒', '覺得心情比較低落', '忘東忘西變多', '身體不舒服時不太想跟家人說', '都沒有', '其他']
+  },
+  // A-3 對語音 AI 夥伴的接受度
+  {
+    code: 'A8', section: 'A-3 對語音 AI 夥伴的接受度',
+    text: '您看到這樣的語音 AI 夥伴，第一反應比較接近哪一個？',
+    type: 'radio',
+    options: ['願意試試看', '可以了解看看', '不確定', '不太想用', '完全不想用']
+  },
+  {
+    code: 'A9', text: '如果要試試看，您最希望它做到哪幾件事？（最多選 3 項）',
+    type: 'checkbox',
+    options: ['每天問安', '陪我聊幾句', '記得我前幾天說過的事', '提醒生活小事', '心情不好時陪我說說話', '讓孩子比較放心', '其他']
+  },
+  {
+    code: 'A10', text: '您最擔心的是什麼？（最多選 3 項）',
+    type: 'checkbox',
+    options: ['它聽不懂我說話', '操作太麻煩', '感覺像在監視我', '我說的話被別人看到', '太假不像真人', '會打擾我', '我不需要', '其他']
+  },
+  // A-4 互動頻率與入口偏好
+  {
+    code: 'A11', section: 'A-4 互動頻率與入口偏好',
+    text: '如果有一個很簡單的語音 AI 夥伴，會主動來和您問安、聊幾句，您最能接受哪種頻率？',
+    type: 'radio',
+    options: ['每天 1 次每次約 1 分鐘', '每天 1 次每次約 3 分鐘', '每週 3 次', '有需要時再用', '我不想用這種服務']
+  },
+  {
+    code: 'A12', text: '您會比較喜歡它用哪種方式來找您？',
+    type: 'radio',
+    options: ['像接電話一樣', '像 LINE 語音一樣', '打開 app 說話', '都可以', '都不喜歡']
+  },
+  {
+    code: 'A13', text: '如果第一次要學，您比較希望誰幫您？',
+    type: 'radio',
+    options: ['孩子／孫子女', '服務人員', '朋友／鄰居', '我可以自己試', '我不想學']
+  },
+  // A-5 名字、人格與夥伴感
+  {
+    code: 'A14', section: 'A-5 名字、人格與夥伴感',
+    text: '如果這個 AI 夥伴可以讓您幫它取名字、選它講話的感覺，您覺得：',
+    type: 'radio',
+    options: ['會更有親切感', '有一點加分', '沒差', '反而有點怪', '很不喜歡']
+  },
+  {
+    code: 'A15', text: '您比較能接受把它當成哪一種？',
+    type: 'radio',
+    options: ['問安小助手', '陪我聊幾句的夥伴', '像朋友一樣', '像家人一樣', '我不想把它擬人化']
+  },
+  // A-6 分享邊界與隱私
+  {
+    code: 'A16', section: 'A-6 分享邊界與隱私',
+    text: '如果孩子只能知道「今天有沒有和您問安，還有您大致好不好」，您能接受嗎？',
+    type: 'radio',
+    options: ['很能接受', '可以接受', '普通', '不太能接受', '完全不能接受']
+  },
+  {
+    code: 'A17', text: '如果孩子可以知道「您最近幾天心情大致比較好、普通、或比較低」，您能接受嗎？',
+    type: 'radio',
+    options: ['很能接受', '可以接受', '普通', '不太能接受', '完全不能接受']
+  },
+  {
+    code: 'A18', text: '如果孩子可以看到 2 到 3 句短摘要，例如「今天提到睡不好、胃口普通」，您能接受嗎？',
+    type: 'radio',
+    options: ['很能接受', '可以接受', '普通', '不太能接受', '完全不能接受']
+  },
+  {
+    code: 'A19', text: '如果孩子可以看到比較完整的聊天內容重點，您能接受嗎？',
+    type: 'radio',
+    options: ['很能接受', '可以接受', '普通', '不太能接受', '完全不能接受']
+  },
+  {
+    code: 'A20', text: '哪些內容您一定不想讓孩子看到？',
+    type: 'checkbox',
+    options: ['我的情緒細節', '我對家人的抱怨', '金錢相關', '身體不舒服的細節', '私密生活', '我和別人的私下談話', '其他', '沒有特別']
+  },
+  {
+    code: 'A21', text: '如果系統平常只提供孩子簡單狀態，只有在明顯異常時才多通知一些資訊，您能接受嗎？',
+    type: 'radio',
+    options: ['很能接受', '可以接受', '普通', '不太能接受', '完全不能接受']
+  },
+  // A-7 控制權需求
+  {
+    code: 'A22', section: 'A-7 控制權需求',
+    text: '以下哪些做法會讓您比較安心？（最多選 3 項）',
+    type: 'checkbox',
+    options: ['我可以自己選擇要分享多少資訊', '我可以隨時暫停分享', '要送給孩子前我會先知道會送什麼', '只有異常時才分享更多', '我可以指定只給哪一位家人看', '其他', '這些都不重要']
+  },
+  {
+    code: 'A23', text: '如果真的開始使用，您最希望它保持什麼樣子？',
+    type: 'radio',
+    options: ['越簡單越好不要太多功能', '有固定問安就好', '能陪聊幾句比較好', '能幫孩子放心比較重要', '不確定']
+  },
+  // A-8 試用與持續使用意願
+  {
+    code: 'A24', section: 'A-8 試用與持續使用意願',
+    text: '如果這個服務真的很簡單，而且可以讓孩子比較放心，您願意試用 7 天嗎？',
+    type: 'radio',
+    options: ['很願意', '願意', '看情況', '不太願意', '完全不願意']
+  },
+  {
+    code: 'A25', text: '如果試用後覺得不錯，您覺得自己最可能怎麼使用？',
+    type: 'radio',
+    options: ['幾乎每天', '一週好幾次', '一週一兩次', '偶爾', '不會持續用']
+  },
+  {
+    code: 'A26', text: '對您來說，這種 AI 夥伴最重要的是什麼？（非必填）',
+    type: 'textarea'
+  },
+];
+
+function renderQuestion(q: typeof questions[0], qIndex: number) {
+  const isRequired = q.type !== 'textarea';
+  const reqAttr = isRequired ? 'required' : '';
+  const name = q.code;
+
+  if (q.type === 'radio') {
+    return `
+  <div class="question-block">
+    ${q.section ? `<div class="section-label">${q.section}</div>` : ''}
+    <div class="question-code">${q.code}</div>
+    <div class="question-text">${q.text}</div>
+    <ul class="options-list">
+      ${q.options!.map((opt) => `
+      <li>
+        <label class="option-label">
+          <input type="radio" name="${name}" value="${opt}" ${reqAttr} />
+          <span>${opt}</span>
+        </label>
+      </li>`).join('')}
+    </ul>
+  </div>`;
+  }
+
+  if (q.type === 'checkbox') {
+    return `
+  <div class="question-block">
+    ${q.section ? `<div class="section-label">${q.section}</div>` : ''}
+    <div class="question-code">${q.code}</div>
+    <div class="question-text">${q.text}</div>
+    <ul class="options-list">
+      ${q.options!.map((opt) => `
+      <li>
+        <label class="option-label">
+          <input type="checkbox" name="${name}" value="${opt}" />
+          <span>${opt}</span>
+        </label>
+      </li>`).join('')}
+    </ul>
+  </div>`;
+  }
+
+  if (q.type === 'textarea') {
+    return `
+  <div class="question-block">
+    ${q.section ? `<div class="section-label">${q.section}</div>` : ''}
+    <div class="question-code">${q.code}</div>
+    <div class="question-text">${q.text}</div>
+    <textarea class="text-input" name="${name}" rows="4" placeholder="請填寫（選填）"></textarea>
+  </div>`;
+  }
+
+  return '';
+}
+
+// Read ref param from URL on client side only
+const refParam = '';
+---
+
+<SurveyLayout title="市場調查｜長輩版" description="請根據您的實際情況填寫">
+  <div id="link-invalid" style="display:none" class="question-block">
+    <div class="question-text">此連結已失效，請向家人重新取得。</div>
+  </div>
+  <form id="survey-form" style="display:none">
+    {questions.map((q, i) => (
+      <Fragment set:html={renderQuestion(q, i)} />
+    ))}
+    <button type="submit" class="submit-btn" id="submit-btn">送出</button>
+  </form>
+  <div id="error-container"></div>
+</SurveyLayout>
+
+<style>
+  .section-label {
+    font-size: 0.75rem;
+    color: #4a7c59;
+    font-weight: 600;
+    margin-bottom: 4px;
+    letter-spacing: 0.5px;
+  }
+</style>
+
+<script define:vars={{ refParam }}>
+  const urlParams = new URLSearchParams(window.location.search);
+  const ref = urlParams.get('ref');
+
+  if (!ref || !ref.startsWith('fam_')) {
+    document.getElementById('link-invalid').style.display = 'block';
+  } else {
+    document.getElementById('survey-form').style.display = 'block';
+  }
+
+  const form = document.getElementById('survey-form');
+  const submitBtn = document.getElementById('submit-btn');
+  const errorContainer = document.getElementById('error-container');
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    errorContainer.innerHTML = '';
+
+    const formData = new FormData(form);
+    const answers = {};
+
+    for (const [key, value] of formData.entries()) {
+      if (answers[key] === undefined) {
+        answers[key] = value;
+      } else if (Array.isArray(answers[key])) {
+        answers[key].push(value);
+      } else {
+        answers[key] = [answers[key], value];
+      }
+    }
+
+    const requiredQuestions = [
+      'A1','A2','A3','A4','A5-1','A5-2','A5-3','A6','A7',
+      'A8','A9','A10','A11','A12','A13','A14','A15',
+      'A16','A17','A18','A19','A20','A21','A22','A23',
+      'A24','A25'
+    ];
+    const missing = requiredQuestions.filter(q => !answers[q]);
+    if (missing.length > 0) {
+      errorContainer.innerHTML = `<div class="error-msg">請填完所有必填題目（還有 ${missing.length} 題未填）</div>`;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = '送出中…';
+
+    try {
+      const res = await fetch('/api/campaign/ai-companion-submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          role: 'elder',
+          familyId: ref,
+          answers,
+          locale: 'zh',
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        throw new Error(data.error || '送出失敗');
+      }
+      sessionStorage.setItem('survey_role', 'elder');
+      const lang = window.location.pathname.split('/').filter(Boolean)[0] || 'zh';
+      window.location.href = `/${lang}/campaign/ai-companion/thank-you`;
+    } catch (err) {
+      errorContainer.innerHTML = `<div class="error-msg">送出失敗：${err.message}</div>`;
+      submitBtn.disabled = false;
+      submitBtn.textContent = '送出';
+    }
+  });
+</script>

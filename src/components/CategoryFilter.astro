@@ -338,6 +338,7 @@ const seriesLabel = seriesUi[lang];
   }
 
   function syncCategoryTabs() {
+    const prevActive = activeCategory;
     activeCategory = new URL(window.location.href).searchParams.get('category') || 'all';
     document.querySelectorAll('[data-filter-category]').forEach((tab) => {
       const cat = tab.getAttribute('data-filter-category') || 'all';
@@ -346,6 +347,10 @@ const seriesLabel = seriesUi[lang];
       if (isActive) tab.setAttribute('aria-current', 'page');
       else tab.removeAttribute('aria-current');
     });
+    if (prevActive !== activeCategory) {
+      clearSeriesFilter();
+      applySeriesFilter();
+    }
   }
 
   document.querySelectorAll('[data-filter-category]').forEach((tab) => {
@@ -359,6 +364,7 @@ const seriesLabel = seriesUi[lang];
       clearSeriesFilter();
       syncCategoryTabs();
       syncSeriesControl();
+      applySeriesFilter();
     });
   });
 

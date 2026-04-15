@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700" width="1200" height="700">
+  <defs>
+    <style>
+      text { font-family: Arial, Inter, sans-serif; fill: #222; }
+      .title { font-size: 28px; font-weight: 700; }
+      .subtitle { font-size: 15px; fill: #555; }
+      .box-title { font-size: 22px; font-weight: 700; }
+      .item { font-size: 18px; }
+    </style>
+  </defs>
+  <rect x="0" y="0" width="1200" height="700" fill="#fafafa"/>
+  <text x="60" y="70" class="title">Agile rituals after AI</text>
+  <text x="60" y="100" class="subtitle">A rough cut: what to keep, what to shrink, and what to redesign</text>
+
+  <rect x="60" y="150" rx="22" ry="22" width="320" height="470" fill="#eef7ff" stroke="#b8d8f2"/>
+  <text x="90" y="205" class="box-title">Keep</text>
+  <text x="90" y="255" class="item">• Review / demo</text>
+  <text x="90" y="300" class="item">• Retrospective</text>
+  <text x="90" y="345" class="item">• Definition of Done</text>
+  <text x="90" y="390" class="item">• Explicit validation</text>
+  <text x="90" y="435" class="item">• Risk surfacing</text>
+  <text x="90" y="500" class="subtitle">These are closer to brakes and guardrails</text>
+  <text x="90" y="525" class="subtitle">than paperwork. Faster delivery makes them</text>
+  <text x="90" y="550" class="subtitle">more valuable, not less.</text>
+
+  <rect x="440" y="150" rx="22" ry="22" width="320" height="470" fill="#fff6e8" stroke="#f1d19a"/>
+  <text x="470" y="205" class="box-title">Shrink</text>
+  <text x="470" y="255" class="item">• Planning</text>
+  <text x="470" y="300" class="item">• Refinement</text>
+  <text x="470" y="345" class="item">• Daily standup</text>
+  <text x="470" y="390" class="item">• Scope alignment</text>
+  <text x="470" y="455" class="subtitle">Keep the function. Cut the ceremony-for-</text>
+  <text x="470" y="480" class="subtitle">ceremony’s-sake. Less narration, more</text>
+  <text x="470" y="505" class="subtitle">trade-offs, boundaries and blockers.</text>
+
+  <rect x="820" y="150" rx="22" ry="22" width="320" height="470" fill="#fff0f0" stroke="#f0c0c0"/>
+  <text x="850" y="205" class="box-title">Redesign</text>
+  <text x="850" y="255" class="item">• Manual status recitals</text>
+  <text x="850" y="300" class="item">• Info-only sync meetings</text>
+  <text x="850" y="345" class="item">• Estimation theatre</text>
+  <text x="850" y="390" class="item">• Backlog grooming for optics</text>
+  <text x="850" y="455" class="subtitle">If AI can prepare the information better than</text>
+  <text x="850" y="480" class="subtitle">humans, people should not gather just to</text>
+  <text x="850" y="505" class="subtitle">repeat it.</text>
+</svg>

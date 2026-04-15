@@ -1,0 +1,63 @@
+---
+export const prerender = true;
+export function getStaticPaths() {
+  return [{ params: { lang: 'en' } }, { params: { lang: 'zh' } }];
+}
+import SurveyLayout from '../../../../layouts/SurveyLayout.astro';
+---
+<SurveyLayout title="AI 陪伴夥伴市場調查" description="歡迎參加！請先選擇您的身份">
+<form id="q0-form">
+  <div class="question-block">
+    <div class="question-code">Q0</div>
+    <div class="question-text">您這次是以哪個身分填寫？</div>
+    <ul class="options-list">
+      <li>
+        <label class="option-label">
+          <input type="radio" name="Q0" value="elder" required />
+          <span>我是長輩本人</span>
+        </label>
+      </li>
+      <li>
+        <label class="option-label">
+          <input type="radio" name="Q0" value="caregiver" />
+          <span>我是兒子／女兒</span>
+        </label>
+      </li>
+      <li>
+        <label class="option-label">
+          <input type="radio" name="Q0" value="caregiver" />
+          <span>我是孫子／孫女</span>
+        </label>
+      </li>
+      <li>
+        <label class="option-label">
+          <input type="radio" name="Q0" value="caregiver" />
+          <span>我是其他家屬／親友照顧者</span>
+        </label>
+      </li>
+      <li>
+        <label class="option-label">
+          <input type="radio" name="Q0" value="caregiver" />
+          <span>其他</span>
+        </label>
+      </li>
+    </ul>
+  </div>
+</form>
+
+<script>
+  const form = document.getElementById('q0-form') as HTMLFormElement;
+  form.addEventListener('change', () => {
+    const selected = (form.querySelector('input[name="Q0"]:checked') as HTMLInputElement)?.value;
+    if (!selected) return;
+    // Use current path to derive locale (e.g. /zh/survey/... or /en/survey/...)
+    const segments = window.location.pathname.split('/').filter(Boolean);
+    const lang = segments[0] || 'zh';
+    if (selected === 'elder') {
+      window.location.href = `/${lang}/campaign/ai-companion/elder`;
+    } else {
+      window.location.href = `/${lang}/campaign/ai-companion/caregiver`;
+    }
+  });
+</script>
+</SurveyLayout>

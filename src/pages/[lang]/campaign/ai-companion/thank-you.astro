@@ -1,0 +1,111 @@
+---
+export const prerender = true;
+export function getStaticPaths() {
+  return [{ params: { lang: 'en' } }, { params: { lang: 'zh' } }];
+}
+import SurveyLayout from '../../../../layouts/SurveyLayout.astro';
+---
+
+<SurveyLayout title="感謝填寫" description="">
+  <div class="thankyou-block">
+    <div class="big-check">✓</div>
+    <h2>謝謝您的填寫！</h2>
+    <p id="caregiver-msg" style="display:none">
+      感謝您分享這麼寶貴的意見。<br />
+      您的回覆將幫助我們打造更適合長輩與家屬的 AI 陪伴服務。
+    </p>
+    <p id="elder-msg" style="display:none">
+      感謝您撥冗填寫！<br />
+      您的回覆對我們非常寶貴。
+    </p>
+
+    <div id="share-section" style="display:none" class="share-block">
+      <p class="share-title">請將以下連結分享給長輩：</p>
+      <div class="link-box" id="invite-link-box"></div>
+      <p class="share-hint">長輩可點擊連結填寫長輩版問卷</p>
+    </div>
+  </div>
+</SurveyLayout>
+
+<style>
+  .thankyou-block {
+    text-align: center;
+    padding: 40px 0;
+  }
+  .big-check {
+    font-size: 4rem;
+    color: #4a7c59;
+    margin-bottom: 16px;
+  }
+  h2 {
+    font-size: 1.6rem;
+    font-weight: 600;
+    margin: 0 0 16px;
+    color: #1a1a1a;
+  }
+  p {
+    font-size: 1.05rem;
+    color: #555;
+    line-height: 1.7;
+    margin: 0 0 12px;
+  }
+  .share-block {
+    margin-top: 32px;
+    background: #f0ede8;
+    border-radius: 12px;
+    padding: 24px 20px;
+  }
+  .share-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 12px;
+  }
+  .link-box {
+    background: #fff;
+    border: 1.5px solid #4a7c59;
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 0.95rem;
+    color: #4a7c59;
+    word-break: break-all;
+    cursor: pointer;
+    margin-bottom: 8px;
+    transition: background 0.15s;
+  }
+  .link-box:hover {
+    background: #f0fff4;
+  }
+  .share-hint {
+    font-size: 0.85rem;
+    color: #888;
+    margin: 0;
+  }
+</style>
+
+<script>
+  const role = sessionStorage.getItem('survey_role');
+  const inviteLink = sessionStorage.getItem('survey_inviteLink') || '';
+
+  if (role === 'caregiver') {
+    document.getElementById('caregiver-msg').style.display = 'block';
+    if (inviteLink) {
+      document.getElementById('share-section').style.display = 'block';
+      const linkBox = document.getElementById('invite-link-box');
+      linkBox.textContent = inviteLink;
+      linkBox.addEventListener('click', () => {
+        navigator.clipboard.writeText(inviteLink).then(() => {
+          linkBox.textContent = '已複製！';
+          setTimeout(() => { linkBox.textContent = inviteLink; }, 2000);
+        });
+      });
+    }
+  } else {
+    document.getElementById('elder-msg').style.display = 'block';
+  }
+
+  // Clean up sessionStorage after reading
+  sessionStorage.removeItem('survey_familyId');
+  sessionStorage.removeItem('survey_inviteLink');
+  sessionStorage.removeItem('survey_role');
+</script>
