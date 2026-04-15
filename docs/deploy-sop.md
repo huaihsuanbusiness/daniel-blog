@@ -101,6 +101,9 @@ curl -I https://www.danielcanfly.com/
 - Git-connected deploy is active
 - Custom domains include both apex and `www`
 
+## Related SOPs
+- Shared-folder article sync: `docs/shared-folder-sync-sop.md`
+
 ## Important note
 A previous homepage flash issue was caused by Astro root redirect logic, not infrastructure failure.
 
