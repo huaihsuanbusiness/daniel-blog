@@ -23,6 +23,7 @@ site: 'https://danielcanfly.com',
       cssMinify: true,
     },
   },
+  output: 'static',
   adapter: cloudflare(),
   markdown: {
     remarkPlugins: [remarkMath],
