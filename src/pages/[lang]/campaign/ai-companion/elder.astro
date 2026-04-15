@@ -252,8 +252,10 @@ const refParam = '';
     <div id="contact-conditional" class="contact-conditional question-block">
       <div class="question-code">選填</div>
       <div class="contact-conditional" id="contact-fields">
-        <div class="question-text">電子郵件或 LINE（聯絡方式）</div>
-        <input type="text" name="contact_info" class="text-input" placeholder="例如：example@email.com 或 LINE ID" style="margin-bottom:16px" />
+        <div class="question-text">電子郵件 / LINE / 手機（至少填寫一格）</div>
+        <input type="email" name="contact_email" class="text-input" placeholder="電子郵件，例如：example@email.com" style="margin-bottom:8px" />
+        <input type="text" name="contact_line" class="text-input" placeholder="LINE ID" style="margin-bottom:8px" />
+        <input type="tel" name="contact_phone" class="text-input" placeholder="手機號碼" style="margin-bottom:16px" />
         <ul class="options-list">
           <li><label class="option-label"><input type="checkbox" name="consent_trial" value="我已閱讀並同意隱私權聲明" /> <span>我已閱讀並同意隱私權聲明</span></label></li>
           <li><label class="option-label"><input type="checkbox" name="consent_followup" value="我願意接受與本研究相關的後續聯絡，包括免費試用邀請與產品優先測試通知" /> <span>我願意接受與本研究相關的後續聯絡，包括免費試用邀請與產品優先測試通知</span></label></li>
@@ -342,6 +344,23 @@ const refParam = '';
 
       errorContainer.innerHTML = `<div class="error-msg">還有 ${missing.length} 題未填（請滑到紫色標記的題目）</div>`;
       return;
+    }
+
+    // Conditional validation: if contact_willing = 願意, at least one contact field must be filled
+    const contactWilling = document.querySelector('input[name="contact_willing"]:checked')?.value;
+    if (contactWilling === '願意') {
+      const email = (document.querySelector('input[name="contact_email"]') as HTMLInputElement)?.value.trim();
+      const line = (document.querySelector('input[name="contact_line"]') as HTMLInputElement)?.value.trim();
+      const phone = (document.querySelector('input[name="contact_phone"]') as HTMLInputElement)?.value.trim();
+      if (!email && !line && !phone) {
+        const contactBlock = document.getElementById('contact-conditional');
+        if (contactBlock) {
+          contactBlock.classList.add('question-missing');
+          contactBlock.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        errorContainer.innerHTML = `<div class="error-msg">請填寫電子郵件、LINE 或手機（至少一項）</div>`;
+        return;
+      }
     }
 
     submitBtn.disabled = true;
