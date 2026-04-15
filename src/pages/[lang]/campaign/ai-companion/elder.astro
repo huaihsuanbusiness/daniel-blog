@@ -280,8 +280,18 @@ const refParam = '';
     ];
     const missing = requiredQuestions.filter(q => !answers[q]);
     if (missing.length > 0) {
-      errorContainer.innerHTML = `<div class="error-msg">請填完所有必填題目（還有 ${missing.length} 題未填）</div>`;
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      // Remove previous highlights
+      document.querySelectorAll('.question-missing').forEach(el => el.classList.remove('question-missing'));
+
+      // Scroll to first missing question
+      const firstMissing = missing[0];
+      const target = document.querySelector(`.question-block input[name="${firstMissing}"]`)?.closest('.question-block');
+      if (target) {
+        target.classList.add('question-missing');
+        target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+
+      errorContainer.innerHTML = `<div class="error-msg">還有 ${missing.length} 題未填（請滑到紫色標記的題目）</div>`;
       return;
     }
 
