@@ -3,7 +3,7 @@ title: "Product Rhythms in the Age of AI Part 03 | I'm Less Interested in Whethe
 description: ""
 categories: ["pm"]
 tags: []
-date: 2026-04-15T05:00:00
+date: 2026-04-15T05:02:00
 series: "Product Rhythms in the Age of AI"
 seriesOrder: 3
 ---

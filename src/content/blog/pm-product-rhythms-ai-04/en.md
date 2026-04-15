@@ -3,7 +3,7 @@ title: "Product Rhythms in the Age of AI Part 04 | If I Were Running a Product T
 description: ""
 categories: ["pm"]
 tags: []
-date: 2026-04-15T05:00:00
+date: 2026-04-15T05:03:00
 series: "Product Rhythms in the Age of AI"
 seriesOrder: 4
 ---

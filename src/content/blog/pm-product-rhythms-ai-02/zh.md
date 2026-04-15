@@ -3,7 +3,7 @@ title: "AI 時代的產品節奏 Part 02｜AI 不會先把 PM 取代掉，它先
 description: ""
 categories: ["pm"]
 tags: []
-date: 2026-04-15T05:00:00
+date: 2026-04-15T05:01:00
 series: "AI 時代的產品節奏"
 seriesOrder: 2
 ---

@@ -3,7 +3,7 @@ title: "Product Rhythms in the Age of AI Part 02 | AI Won't Replace PMs First. I
 description: ""
 categories: ["pm"]
 tags: []
-date: 2026-04-15T05:00:00
+date: 2026-04-15T05:01:00
 series: "Product Rhythms in the Age of AI"
 seriesOrder: 2
 ---
