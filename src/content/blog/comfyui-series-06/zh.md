@@ -388,17 +388,3 @@ KSampler 是 ComfyUI 裡很核心的一個採樣節點。
 ## 一句話收掉這篇
 
 > **在 ComfyUI 裡，模型安裝最難的不是下載，而是分清楚每個檔案在整套 workflow 裡到底扮演什麼角色。**
-
-## Image Asset Plan
-
-1. filename: comfyui-model-file-structure.svg
-   purpose: 把 checkpoints、clip、loras、vae、unet、custom_nodes 的關係畫成一張很容易懂的圖
-   placement: 放在「一張表先看：這些東西到底放哪裡」後
-   alt: ComfyUI 常見模型資料夾與檔案類型示意圖
-   prompt: Create a clean blog-friendly SVG diagram showing the ComfyUI model folder structure. Include models/checkpoints, models/clip, models/loras, models/vae, models/unet, and custom_nodes. Show what each folder is for with concise English labels, rounded rectangles, soft colours, and clear arrows from file type to loader node.
-
-2. filename: flux-workflow-assets-map.svg
-   purpose: 解釋 Flux workflow 為什麼會需要主模型、CLIP、T5XXL、VAE、GGUF loader 與 custom nodes
-   placement: 放在「Flux 為什麼這麼常踩坑？」段落後
-   alt: Flux workflow 在 ComfyUI 中常見的模型與節點依賴圖
-   prompt: Create a clean blog-friendly SVG architecture diagram for a Flux workflow in ComfyUI. Show the main model, CLIP, T5XXL, VAE, optional GGUF file, custom node / loader dependency, and KSampler / scheduler path. Keep it clean, minimal, and suitable for a technical blog.

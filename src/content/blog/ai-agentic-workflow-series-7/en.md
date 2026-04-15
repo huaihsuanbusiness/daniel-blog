@@ -368,23 +368,3 @@ And it means we do not have to force all execution logic into the model’s head
 That, to me, is the cleaner and more durable architectural split.
 
 ---
-
-## Image Asset Plan
-
-1. filename: ai-agentic-workflow-series-07-01-mcp-stack.svg  
-   purpose: A top-level diagram showing the relationship between Agent, MCP, Workflow, and Apps / APIs / DB  
-   placement: Before the section “Where Make sits in this stack”  
-   alt: Layered architecture showing Agent, MCP, Workflow, and external systems  
-   prompt: A blog-friendly SVG architecture diagram. Top to bottom: User, Agent, MCP layer, Workflow Engine, Apps/APIs/DB. Show Agent as decision layer, MCP as standardised interface layer, Workflow as execution layer. English labels, rounded boxes, clean arrows, soft colours, modern product-doc style, uncluttered.
-
-2. filename: ai-agentic-workflow-series-07-02-mcp-vs-webhook-vs-api.svg  
-   purpose: A comparison visual showing the responsibility boundaries of MCP, webhooks, and direct API integration  
-   placement: After the section “MCP vs webhook vs direct API integration”  
-   alt: Comparison diagram of MCP, webhook, and direct API integration  
-   prompt: A clean comparison SVG for a technical blog comparing MCP, Webhook, and Direct API Integration. Show each as a separate lane with purpose, strengths, and limits. English labels only, minimal text, generous spacing, rounded cards, crisp arrows, no clutter.
-
----
-
-## Sources
-
-See `./resource/references.md` for the full reading list.

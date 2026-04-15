@@ -397,13 +397,3 @@ But if you intend to keep ComfyUI as your main line, and later add models, LoRAs
 > **doing a clean base install now usually saves time overall, even if it feels a touch slower on day one**
 
 Next, we’ll move on to what happens after launch: what `127.0.0.1:8188` actually is, whether Terminal needs to stay open, and how tmux or background services fit into the picture.
-
-## Image Asset Plan
-
-This article does not need a diagram by force. If we add one later, the most useful choice would be a simple baseline stack graphic showing how Python, the virtual environment, PyTorch, MPS and ComfyUI sit on top of one another.
-
-1. filename: comfyui-series-02-installation-baseline.svg
-   purpose: Show the five-layer baseline for a ComfyUI install on Apple Silicon, so beginners do not muddle Python, venv, PyTorch, MPS and ComfyUI together
-   placement: After the section “What PyTorch, Metal and MPS actually mean”
-   alt: Baseline installation stack for ComfyUI on a Mac mini
-   prompt: Create a clean blog-friendly SVG showing the installation baseline for ComfyUI on Apple Silicon Mac: macOS, Homebrew tools, Python 3.12, virtual environment, PyTorch, MPS backend, and ComfyUI app layer. Use English labels, rounded boxes, soft colours, and clear vertical hierarchy. Minimal technical clutter, suitable for a technical blog article.

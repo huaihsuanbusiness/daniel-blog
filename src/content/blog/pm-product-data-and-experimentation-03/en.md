@@ -306,17 +306,3 @@ It is the contract that translates business meaning into data meaning, so that e
 Next, we can move into SQL.  
 Because once the event layer is stable, SQL becomes evidence retrieval.  
 Without that layer, it is just a more technical way of fishing noise out of the water.
-
-## Image Asset Plan
-
-1. filename: tracking-plan-data-contract-stack.svg
-   purpose: Show the relationship between business purpose, event definition, properties, and QA
-   placement: After the section on what a tracking plan should contain
-   alt: Four-layer data contract structure for a tracking plan
-   prompt: A blog-friendly SVG diagram showing a four-layer data contract for product analytics. Layers from top to bottom: Business Purpose, Event Specification, Properties and Traits, QA and Validation. Clean modern layout, rounded boxes, soft colours, English labels, minimal text, clear arrows, suitable for a technical blog.
-
-2. filename: booking-funnel-closure-map.svg
-   purpose: Show funnel closure and key joins in a booking product
-   placement: After the section on funnel closure
-   alt: Booking product funnel closure map with key identifiers
-   prompt: A clean SVG diagram for a booking app funnel closure map. Steps: Search Performed, Listing Viewed, Booking Started, Payment Succeeded. Show join keys like search_id, listing_id, booking_id, user_id beneath each step. Rounded boxes, clear arrows, blog-friendly, English labels.

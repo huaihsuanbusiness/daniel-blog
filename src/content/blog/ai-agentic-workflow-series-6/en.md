@@ -323,23 +323,3 @@ For me, workflow versus agent is not about which one is more advanced. It is abo
 > **Which control model actually matches the problem in front of you?**
 
 ---
-
-## Image Asset Plan
-
-1. filename: ai-agentic-workflow-series-06-01-decision-ladder.svg  
-   purpose: A visual ladder explaining the progression from single-turn prompts to workflows, agents, and multi-agent systems  
-   placement: Before the section on the four-level decision ladder  
-   alt: Decision ladder for choosing between a single LLM call, workflow, agent, and multi-agent system  
-   prompt: A blog-friendly SVG decision ladder for AI system design. Four levels from bottom to top: Single LLM Call, Workflow, Agent, Multi-Agent. Clean rounded boxes, subtle colours, arrows upward, minimal labels, modern product-doc style, generous spacing, no clutter.
-
-2. filename: ai-agentic-workflow-series-06-02-workflow-vs-agent-table.svg  
-   purpose: A visual comparison of the core differences between workflows and agents  
-   placement: After the decision table  
-   alt: Diagram comparing workflow control and agent control  
-   prompt: A clean comparison SVG for a technical blog showing Workflow vs Agent. Left side workflow with predefined path, checkpoints, retry, auditability. Right side agent with dynamic tool selection, runtime branching, replanning. English labels, soft product illustration style, readable and uncluttered.
-
----
-
-## Sources
-
-See `./resource/references.md` for the full reading list.

@@ -384,17 +384,3 @@ Because GGUF workflows often become complicated due to:
 ## One-sentence takeaway
 
 > **The hardest part of installing models in ComfyUI is not downloading them. It is understanding the role each file plays inside the workflow.**
-
-## Image Asset Plan
-
-1. filename: comfyui-model-file-structure.svg
-   purpose: show the relationship between checkpoints, clip, loras, vae, unet, and custom_nodes in a single easy diagram
-   placement: after the file-type table
-   alt: Diagram of common ComfyUI model folders and file types
-   prompt: Create a clean blog-friendly SVG diagram showing the ComfyUI model folder structure. Include models/checkpoints, models/clip, models/loras, models/vae, models/unet, and custom_nodes. Show what each folder is for with concise English labels, rounded rectangles, soft colours, and clear arrows from file type to loader node.
-
-2. filename: flux-workflow-assets-map.svg
-   purpose: explain why a Flux workflow in ComfyUI may need a main model, CLIP, T5XXL, VAE, GGUF loader, and custom nodes
-   placement: after the section on Flux pain points
-   alt: Dependency map for a Flux workflow in ComfyUI
-   prompt: Create a clean blog-friendly SVG architecture diagram for a Flux workflow in ComfyUI. Show the main model, CLIP, T5XXL, VAE, optional GGUF file, custom node / loader dependency, and KSampler / scheduler path. Keep it clean, minimal, and suitable for a technical blog.

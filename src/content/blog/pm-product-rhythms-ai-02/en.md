@@ -84,17 +84,3 @@ It hasn’t made product judgement cheaper. It has mostly pushed down the price 
 ![PM value shift in the age of AI](./resource/agile-ai-pm-01-pm-value-shift.svg)
 
 ![A small-bets loop for product work](./resource/agile-ai-pm-02-small-bets-loop.svg)
-
-## Image Asset Plan
-
-1. filename: agile-ai-pm-01-pm-value-shift.svg
-   purpose: Contrast the PM work AI makes cheaper with the PM work AI makes more valuable
-   placement: After the section on the four core capabilities
-   alt: PM value shift in the age of AI
-   prompt: A blog-friendly side-by-side SVG. Left: "Becoming cheaper" with meeting summaries, draft PRDs, first-pass stories, basic test cases, requirement synthesis. Right: "Becoming more valuable" with problem framing, slicing, evidence design, trade-offs, stakeholder alignment. English labels, clean modern style.
-
-2. filename: agile-ai-pm-02-small-bets-loop.svg
-   purpose: Visualise a small-bets loop for product work
-   placement: After the registration-completion example
-   alt: A small-bets loop for product work
-   prompt: A circular SVG with nodes: problem, choose a bet, define evidence, ship, review, decide next move. Minimal noise, English labels, suitable for blog body content.

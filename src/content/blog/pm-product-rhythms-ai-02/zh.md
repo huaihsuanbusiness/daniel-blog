@@ -84,17 +84,3 @@ AI 把很多工作變便宜，這是真的。
 ![PM value shift in the age of AI](./resource/agile-ai-pm-01-pm-value-shift.svg)
 
 ![A small-bets loop for product work](./resource/agile-ai-pm-02-small-bets-loop.svg)
-
-## Image Asset Plan
-
-1. filename: agile-ai-pm-01-pm-value-shift.svg
-   purpose: 對照 AI 壓縮成本的 PM 工作，和被 AI 放大價值的 PM 工作
-   placement: 放在四塊核心能力段落之後
-   alt: PM value shift in the age of AI
-   prompt: 一張左右對照的部落格友善 SVG。左邊是 "Becoming cheaper"：meeting summaries, draft PRDs, first-pass stories, basic test cases, requirement synthesis。右邊是 "Becoming more valuable"：problem framing, slicing, evidence design, trade-offs, stakeholder alignment。英文標籤，乾淨、現代、柔和。
-
-2. filename: agile-ai-pm-02-small-bets-loop.svg
-   purpose: 把 PM 的 small bets loop 視覺化
-   placement: 放在註冊完成率例子之後
-   alt: A small-bets loop for product work
-   prompt: 一張循環式 SVG，節點包含 problem, choose a bet, define evidence, ship, review, decide next move。英文標籤，少噪音，適合部落格正文。

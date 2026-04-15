@@ -411,14 +411,3 @@ pip install -r requirements.txt --force-reinstall
 > **第一輪就把環境理乾淨，真的比較省總時間。**
 
 下一篇我們會進到你真的打開 ComfyUI 之後，該怎麼用它、`127.0.0.1:8188` 是什麼、Terminal 要不要一直開著、tmux 跟背景 service 該怎麼看。
-
-## Image Asset Plan
-
-這篇暫時不必硬做流程圖。  
-如果之後要補圖，最有價值的是一張「安裝基線示意圖」，幫讀者把 Python、venv、PyTorch、ComfyUI、MPS 的層次對齊。
-
-1. filename: comfyui-series-02-installation-baseline.svg
-   purpose: 說明 Mac 上 ComfyUI 安裝環境的五層結構，避免新手把 Python、venv、PyTorch、MPS、ComfyUI 混成一團
-   placement: 放在「PyTorch、Metal、MPS 到底是在講什麼？」段落後
-   alt: ComfyUI 在 Mac mini 上的安裝基線結構圖
-   prompt: Create a clean blog-friendly SVG showing the installation baseline for ComfyUI on Apple Silicon Mac: macOS, Homebrew tools, Python 3.12, virtual environment, PyTorch, MPS backend, and ComfyUI app layer. Use English labels, rounded boxes, soft colours, and clear vertical hierarchy. Minimal technical clutter, suitable for a technical blog article.

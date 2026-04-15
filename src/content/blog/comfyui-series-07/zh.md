@@ -430,14 +430,3 @@ ComfyUI 最常見的崩法，就是小錯同時疊三個。
 這時候你就不再只是「把工具裝起來的人」，而是開始有能力自己做判斷、自己排問題的人了。
 
 這在本地 AI 世界裡，很重要。因為很多時候，真正拉開差距的不是你會不會按 Generate，而是你有沒有能力在畫面炸掉時，還知道下一步要看哪裡。
-
-## Image Asset Plan
-
-目前這篇不強制需要圖片。  
-如果之後要補一張，我只建議補一張：
-
-1. filename: comfyui-troubleshooting-01-debug-layers.svg
-   purpose: 用五層排查框架整理 ComfyUI 常見問題來源
-   placement: 放在「先給一個最實用的查錯順序」段落後
-   alt: ComfyUI 常見問題的五層排查框架圖
-   prompt: A clean blog-friendly SVG diagram showing five troubleshooting layers for ComfyUI: environment, models, nodes, memory, and file format. Modern rounded boxes, gentle colours, clear arrows, English labels, no clutter, suitable for a technical blog.

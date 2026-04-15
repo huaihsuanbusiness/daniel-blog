@@ -364,23 +364,3 @@ MCP 幫不了你替代這些思考。
 這才是我現在覺得最合理的架構分工。
 
 ---
-
-## Image Asset Plan
-
-1. filename: ai-agentic-workflow-series-07-01-mcp-stack.svg  
-   purpose: 用一張總覽圖說明 Agent、MCP、Workflow、Apps / APIs / DB 的分層  
-   placement: 放在「Make 在這個世界裡到底是哪一層？」段落前  
-   alt: Agent、MCP、Workflow 與外部系統的分層架構圖  
-   prompt: A blog-friendly SVG architecture diagram. Top to bottom: User, Agent, MCP layer, Workflow Engine, Apps/APIs/DB. Show Agent as decision layer, MCP as standardised interface layer, Workflow as execution layer. English labels, rounded boxes, clean arrows, soft colours, modern product-doc style, uncluttered.
-
-2. filename: ai-agentic-workflow-series-07-02-mcp-vs-webhook-vs-api.svg  
-   purpose: 比較 MCP、Webhook、直接 API integration 的責任邊界  
-   placement: 放在「MCP vs Webhook vs 直接 API 串接」段落後  
-   alt: MCP、Webhook 與直接 API 串接的比較圖  
-   prompt: A clean comparison SVG for a technical blog comparing MCP, Webhook, and Direct API Integration. Show each as a separate lane with purpose, strengths, and limits. English labels only, minimal text, generous spacing, rounded cards, crisp arrows, no clutter.
-
----
-
-## 資料來源
-
-詳細來源請見 `./resource/references.md`。

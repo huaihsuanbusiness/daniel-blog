@@ -417,14 +417,3 @@ By the end of part 7, you should have a fairly solid beginner map for local imag
 At that point, you are no longer just someone who managed to install a tool. You are becoming someone who can make judgements and recover from failure.
 
 And in the local AI world, that matters quite a lot.
-
-## Image Asset Plan
-
-This article does not strictly need an image.  
-If we add one later, I would only suggest one:
-
-1. filename: comfyui-troubleshooting-01-debug-layers.svg
-   purpose: show a five-layer troubleshooting framework for common ComfyUI failures
-   placement: after the section on troubleshooting order
-   alt: Five-layer troubleshooting framework for common ComfyUI issues
-   prompt: A clean blog-friendly SVG diagram showing five troubleshooting layers for ComfyUI: environment, models, nodes, memory, and file format. Modern rounded boxes, gentle colours, clear arrows, English labels, no clutter, suitable for a technical blog.

@@ -68,11 +68,3 @@ It’s some of the ways we deliver.
 And those habits were old before AI arrived. AI just made speed cheaper, which means the practices that only ever existed to prop up an older cost structure are now much easier to spot.
 
 ![What changes and what stays after AI](./resource/agile-ai-01-what-changes-vs-what-stays.svg)
-
-## Image Asset Plan
-
-1. filename: agile-ai-01-what-changes-vs-what-stays.svg
-   purpose: Show which delivery costs AI compresses and which Agile foundations become more important
-   placement: Near the end of the article, before the final compression of the argument
-   alt: What changes and what stays after AI
-   prompt: A blog-friendly two-column SVG. Left column: "Compressed by AI" with draft stories, meeting summaries, first-pass documentation, manual status reporting. Right column: "Still matters more than ever" with problem framing, review, retro, DoD, trade-offs, feedback loops. Clean layout, rounded cards, soft colours, English labels.

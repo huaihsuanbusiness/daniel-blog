@@ -281,13 +281,3 @@ My version is simpler:
 ComfyUI is very much the second sort.
 
 In the next piece, I’ll stop comparing tools and actually install the thing properly on a Mac mini M4, including Python, PyTorch, MPS, Metal acceleration, and the bits that tend to go wrong.
-
-## Image Asset Plan
-
-This article doesn’t strictly need a diagram. If we add one later, the most useful option would be a simple ecosystem positioning chart rather than a process flow.
-
-1. filename: comfyui-series-01-ui-positioning.svg
-   purpose: Show the relative position of A1111, Forge, reForge, InvokeAI, SD.Next, SwarmUI, and ComfyUI in terms of ease of entry and long-term flexibility
-   placement: After the section “What the main UIs are actually like”
-   alt: Positioning chart for major local image-generation UIs
-   prompt: Clean blog-friendly SVG positioning map comparing A1111, Forge, reForge, InvokeAI, SD.Next, SwarmUI, and ComfyUI. Use English labels, soft colours, rounded rectangles, and a two-axis layout: ease of entry on X-axis and long-term flexibility on Y-axis. Keep it minimal, readable, and suitable for a technical blog.

@@ -67,17 +67,3 @@ AI 不是讓你少開會。
 ![Keep, shrink, or drop Agile rituals after AI](./resource/agile-ai-rituals-01-keep-shrink-kill.svg)
 
 ![Refinement before and after AI-assisted drafting](./resource/agile-ai-rituals-02-refinement-before-after.svg)
-
-## Image Asset Plan
-
-1. filename: agile-ai-rituals-01-keep-shrink-kill.svg
-   purpose: 把常見 ceremonies 分成 keep / shrink / redesign
-   placement: 放在三類 ceremony 分析之後
-   alt: Keep, shrink, or drop Agile rituals after AI
-   prompt: A blog-friendly SVG with three columns: Keep, Shrink, Redesign. Include review, retro, DoD in Keep; planning, refinement, daily in Shrink; manual status recitals, information-only sync meetings, estimation theatre in Redesign. Clean modern style, rounded rectangles, soft colors, English labels.
-
-2. filename: agile-ai-rituals-02-refinement-before-after.svg
-   purpose: 對照 refinement 在 AI 前後的差異
-   placement: 放在 refinement 段落之後
-   alt: Refinement before and after AI-assisted drafting
-   prompt: A side-by-side SVG diagram comparing refinement before and after AI-assisted drafting. Left side: manual story writing, manual AC drafting, long sync-heavy meeting. Right side: AI first draft, boundary review, dependency check, DoD alignment, risk discussion. Blog-friendly, minimal, English labels.

@@ -83,17 +83,3 @@ It is the team’s arrangement around speed, judgement, validation and responsib
 ![A Scrum-lite operating model for AI-era product teams](./resource/scrum-lite-01-operating-model.svg)
 
 ![A weekly rhythm for Scrum-lite teams](./resource/scrum-lite-02-weekly-rhythm.svg)
-
-## Image Asset Plan
-
-1. filename: scrum-lite-01-operating-model.svg
-   purpose: Show the core keep/remove/add design of a Scrum-lite operating model
-   placement: After the sections on what to keep, cut and add
-   alt: A Scrum-lite operating model for AI-era product teams
-   prompt: A blog-friendly SVG overview of a Scrum-lite operating model. Centre title: Scrum-lite operating model. Three surrounding zones: Keep (clear goal, ownership, review loop, retro loop, validation bar), Remove (estimation theatre, status recital standups, pretty backlog theatre), Add (AI first drafts, context hygiene, small-batch delivery, explicit validation rules). Clean modern layout, soft colours, rounded rectangles, English labels.
-
-2. filename: scrum-lite-02-weekly-rhythm.svg
-   purpose: Show a possible weekly rhythm for a Scrum-lite team
-   placement: After the signup-completion workflow example
-   alt: A weekly rhythm for Scrum-lite teams
-   prompt: A blog-friendly horizontal SVG showing a weekly rhythm for a Scrum-lite product team: goal setting, async refinement, short planning, build, blocker checkpoint, demo/review, retro, reprioritise. English labels, modern and minimal, clear arrows.

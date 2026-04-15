@@ -307,14 +307,3 @@ ComfyUI 就是後者。
 
 下一篇我們不談模型大戰，也先不碰 Flux。  
 先把 ComfyUI 在 Mac mini M4 上穩穩裝起來，包含 Python、PyTorch、MPS、Metal GPU acceleration，還有那些你大概遲早會踩到的安裝坑。
-
-## Image Asset Plan
-
-目前這篇不強制需要圖片。  
-如果之後你想補一張圖，最值得做的會是 UI 生態定位圖，而不是流程圖。
-
-1. filename: comfyui-series-01-ui-positioning.svg
-   purpose: 用一張圖把 A1111、Forge、InvokeAI、SwarmUI、SD.Next、ComfyUI 的定位與學習曲線拉開
-   placement: 放在「各家 UI 到底差在哪？」段落後
-   alt: 本地生圖 UI 生態定位比較圖
-   prompt: Clean blog-friendly SVG positioning map comparing A1111, Forge, reForge, InvokeAI, SD.Next, SwarmUI, and ComfyUI. Use English labels, soft colours, rounded rectangles, and a two-axis layout: ease of entry on X-axis and long-term flexibility on Y-axis. Keep it minimal, readable, and suitable for a technical blog.
