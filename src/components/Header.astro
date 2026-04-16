@@ -112,10 +112,19 @@ const logoHref = currentLang === 'en' ? '/en/' : '/zh/';
     if (!(langToggle instanceof HTMLAnchorElement)) return;
     const url = new URL(langToggle.href, window.location.origin);
     const currentUrl = new URL(window.location.href);
-    const currentLangFromPath = currentUrl.pathname.startsWith('/zh') ? 'zh' : 'en';
+    const path = currentUrl.pathname;
+    const currentLangFromPath = path.startsWith('/zh') ? 'zh' : 'en';
     const targetLang = currentLangFromPath === 'zh' ? 'en' : 'zh';
 
-    url.pathname = currentUrl.pathname.replace(/^\/(en|zh)(?=\/|$)/, `/${targetLang}`);
+    if (path === '/' || /^\/(en|zh)\/?$/.test(path)) {
+      url.pathname = `/${targetLang}/`;
+    } else if (/^\/(en|zh)(?=\/|$)/.test(path)) {
+      url.pathname = path.replace(/^\/(en|zh)(?=\/|$)/, `/${targetLang}`);
+    } else {
+      // Non-localized routes should keep the server-rendered target pathname.
+      url.pathname = url.pathname;
+    }
+
     url.search = currentUrl.search;
     langToggle.href = url.toString();
   };
