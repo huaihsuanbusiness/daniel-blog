@@ -52,7 +52,7 @@ const homepageCategories = CATEGORY_ORDER.map(id => ({
             ))}
           </h1>
           <p class="hero-subtitle animate-in animate-delay-2">{heroContent.subtitle}</p>
-          <a href={`/${lang}/blog`} class="hero-cta animate-in animate-delay-2">{heroContent.heroCta}</a>
+          <a href={`/${lang}/blog?category=all`} class="hero-cta animate-in animate-delay-2" data-home-see-all-posts>{heroContent.heroCta}</a>
         </div>
 
         <div class="hero-decoration">
@@ -72,7 +72,7 @@ const homepageCategories = CATEGORY_ORDER.map(id => ({
       <div class="container">
         <div class="section-header animate-in">
           <h2 class="section-title">{heroContent.latestLabel}</h2>
-          <a href={`/${lang}/blog`} class="view-all">
+          <a href={`/${lang}/blog?category=all`} class="view-all" data-home-see-all-posts>
             {heroContent.viewAll}
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M5 12h14M12 5l7 7-7 7"/>
@@ -113,7 +113,7 @@ const homepageCategories = CATEGORY_ORDER.map(id => ({
               ))}
             </div>
             <div class="posts-cta-wrap animate-in animate-delay-2">
-              <a href={`/${lang}/blog`} class="hero-cta posts-cta">{heroContent.heroCta}</a>
+              <a href={`/${lang}/blog?category=all`} class="hero-cta posts-cta" data-home-see-all-posts>{heroContent.heroCta}</a>
             </div>
           </>
         )}
@@ -145,6 +145,16 @@ const homepageCategories = CATEGORY_ORDER.map(id => ({
 
   <Footer />
 </Base>
+
+<script>
+  document.querySelectorAll('[data-home-see-all-posts]').forEach((link) => {
+    link.addEventListener('click', () => {
+      try {
+        sessionStorage.removeItem('blog-category');
+      } catch {}
+    });
+  });
+</script>
 
 <style>
   .hero {
