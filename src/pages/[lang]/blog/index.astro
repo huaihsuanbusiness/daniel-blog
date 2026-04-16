@@ -450,19 +450,27 @@ function getSeriesMeta(slug: string, lang: string) {
     const params = new URL(window.location.href).searchParams;
     sessionStorage.setItem('blog-category', params.get('category') || '');
     sessionStorage.setItem('blog-sort', params.get('sort') || '');
+    document.dispatchEvent(new CustomEvent('blog:urlchange'));
   }
 
   // Run on load and whenever controls change
   syncListRuntimeState();
 
-  // Also run when category tabs are clicked (listen on filter container)
-  document.querySelector('.category-filter')?.addEventListener('click', () => {
-    setTimeout(() => { syncListRuntimeState(); persistFilterState(); }, 0);
+  // Also run when category tabs are clicked
+  document.querySelectorAll('[data-filter-category]').forEach((tab) => {
+    tab.addEventListener('click', () => {
+      setTimeout(() => { syncListRuntimeState(); persistFilterState(); }, 0);
+    });
   });
 
   // Re-apply when sort changes (it updates URL)
   const sortSelect = document.getElementById('sort-select');
   sortSelect?.addEventListener('change', () => {
     setTimeout(() => { syncListRuntimeState(); persistFilterState(); }, 0);
+  });
+
+  window.addEventListener('popstate', () => {
+    syncListRuntimeState();
+    persistFilterState();
   });
 </script>

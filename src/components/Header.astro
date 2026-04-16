@@ -108,11 +108,21 @@ const logoHref = currentLang === 'en' ? '/en/' : '/zh/';
     document.documentElement.dataset.theme = storedTheme || 'dark';
   }
 
-  if (langToggle instanceof HTMLAnchorElement) {
+  const syncLangToggleHref = () => {
+    if (!(langToggle instanceof HTMLAnchorElement)) return;
     const url = new URL(langToggle.href, window.location.origin);
-    url.search = window.location.search;
+    const currentUrl = new URL(window.location.href);
+    const currentLangFromPath = currentUrl.pathname.startsWith('/zh') ? 'zh' : 'en';
+    const targetLang = currentLangFromPath === 'zh' ? 'en' : 'zh';
+
+    url.pathname = currentUrl.pathname.replace(/^\/(en|zh)(?=\/|$)/, `/${targetLang}`);
+    url.search = currentUrl.search;
     langToggle.href = url.toString();
-  }
+  };
+
+  syncLangToggleHref();
+  window.addEventListener('popstate', syncLangToggleHref);
+  document.addEventListener('blog:urlchange', syncLangToggleHref);
 
   // Unified header tracking on all screen sizes
   // Wheel (desktop) + Touch scroll (mobile) both use the same direction logic

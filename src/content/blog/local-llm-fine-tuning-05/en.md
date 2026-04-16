@@ -7,10 +7,8 @@ date: 2026-04-09T09:00:00
 series: "Local LLM Fine-Tuning Breakdown: From Modelfiles and LoRA to DPO"
 seriesOrder: 5
 ---
-
 If the previous piece was about separating SFT, LoRA, partial FT and full fine-tuning by the question each one answers, this piece has to move onto another axis that gets flattened far too easily:
 
-**what exactly should the model learn when there is no single canonical answer, only a preference that one answer is better than another?**
 
 That is where DPO comes in.
 
@@ -19,15 +17,15 @@ A lot of explainers start with a memorable line:
 - SFT teaches the model how to answer
 - DPO teaches the model which answer to prefer
 
-That line is useful, and it is not wrong.  
+That line is useful, and it is not wrong.
 But if the whole article stops there, DPO gets explained too thinly.
 
-Because the real point of DPO is not simply that it uses `chosen / rejected` pairs.  
+Because the real point of DPO is not simply that it uses `chosen / rejected` pairs.
 The real point is this:
 
 **it turns what was previously a long RLHF pipeline into a loss that can be optimised directly on offline preference data.**
 
-So DPO is not just a fashionable data format.  
+So DPO is not just a fashionable data format.
 It is a different optimisation route.
 
 ![Comparison of SFT, RLHF and DPO](./resource/local-llm-finetuning-part-05-dpo-rebuilt-map.svg)
@@ -39,7 +37,7 @@ It is a different optimisation route.
 If we stay away from equations for a moment, the simplest distinction is still:
 
 ### SFT
-You give the model one target answer.  
+You give the model one target answer.
 It learns to move towards that answer.
 
 ### DPO
@@ -47,12 +45,12 @@ You give the model two answers:
 - `chosen`
 - `rejected`
 
-What the model learns is not “memorise the chosen one”.  
+What the model learns is not “memorise the chosen one”.
 It learns:
 
 **under this prompt, the chosen answer should sit above the rejected answer.**
 
-The crucial phrase here is not “ground truth answer”.  
+The crucial phrase here is not “ground truth answer”.
 It is “preference ordering”.
 
 That is why DPO is particularly well suited to situations like:
@@ -60,27 +58,27 @@ That is why DPO is particularly well suited to situations like:
 - but one style is clearly preferred
 - for example: more direct, less preachy, more structured, less lecture-like
 
-You can push some of that through SFT.  
+You can push some of that through SFT.
 But DPO fits the ranking problem itself more naturally.
 
 ---
 
 ## Why DPO is always discussed next to RLHF
 
-Because DPO did not appear out of nowhere.  
+Because DPO did not appear out of nowhere.
 It is answering an old and heavy RLHF problem.
 
 A rough sketch of the classic RLHF route looks like this:
 
-1. collect human preference data  
-2. train a reward model from that data  
-3. use an RL method such as PPO to update the policy model  
+1. collect human preference data
+2. train a reward model from that data
+3. use an RL method such as PPO to update the policy model
 4. keep the policy from drifting too far away from a reference policy
 
-That route is not wrong.  
+That route is not wrong.
 It is simply expensive and operationally awkward.
 
-The central claim of the DPO paper is not merely “we have a simpler variant”.  
+The central claim of the DPO paper is not merely “we have a simpler variant”.
 The stronger claim is:
 
 **the KL-constrained RLHF objective can be reparameterised into a directly optimisable objective on preference data, without an explicit reward model and without running a separate RL loop.**
@@ -91,21 +89,19 @@ That is the real reason DPO matters.
 
 ## What RLHF was trying to optimise in the first place
 
-The full derivation does not belong in the middle of a readable column,  
+The full derivation does not belong in the middle of a readable column,
 but the skeletal objective does.
 
 A rough version looks like this:
 
-\[
-\max_{\pi} \; \mathbb{E}_{x \sim D,\; y \sim \pi(\cdot|x)} \left[r(x,y)\right] - \beta \, D_{KL}\big(\pi(\cdot|x)\;||\;\pi_{ref}(\cdot|x)\big)
-\]
+$$\max_{\pi} \; \mathbb{E}_{x \sim D,\; y \sim \pi(\cdot|x)} \left[r(x,y)\right] - \beta \, D_{KL}\big(\pi(\cdot|x)\;||\;\pi_{ref}(\cdot|x)\big)$$
 
 This looks more frightening than it is.
 
 It is really expressing two forces:
 
 ### First force
-You want the model to produce high-reward answers.  
+You want the model to produce high-reward answers.
 That means answers that better reflect human preference.
 
 ### Second force
@@ -115,8 +111,8 @@ So the objective is doing two things at once:
 - pulling the model towards preferred behaviour
 - pushing back against uncontrolled drift
 
-DPO matters because it does not throw this objective away.  
-It rewrites it into something much easier to optimise directly. citeturn187255view0turn442250view2
+DPO matters because it does not throw this objective away.
+It rewrites it into something much easier to optimise directly.
 
 ---
 
@@ -130,16 +126,14 @@ At a high level, if each candidate answer has some reward score, then the probab
 
 A minimal form is:
 
-\[
-P(y^+ \succ y^- \mid x) = \sigma\big(r(x,y^+) - r(x,y^-)\big)
-\]
+$$P(y^+ \succ y^- \mid x) = \sigma\big(r(x,y^+) - r(x,y^-)\big)$$
 
 where:
-- \(x\) is the prompt
-- \(y^+\) is the chosen answer
-- \(y^-\) is the rejected answer
-- \(r(x,y)\) is a reward-like score
-- \(\sigma\) is the sigmoid
+- $x$ is the prompt
+- $y^+$ is the chosen answer
+- $y^-$ is the rejected answer
+- $r(x,y)$ is a reward-like score
+- $\sigma$ is the sigmoid
 
 That expression matters because it turns “human preference” into something trainable rather than something purely intuitive.
 
@@ -147,7 +141,7 @@ In other words:
 
 **preference is not just a feeling. It can be written as a pairwise probability model.**
 
-Cameron Wolfe’s write-up is particularly helpful here because it restores Bradley–Terry to the centre of the story rather than treating preference data as a mysterious black box. citeturn442250view2
+Cameron Wolfe’s write-up is particularly helpful here because it restores Bradley–Terry to the centre of the story rather than treating preference data as a mysterious black box.
 
 ---
 
@@ -158,8 +152,8 @@ In the classic RLHF pipeline, the usual move is:
 - let it score prompt-completion pairs
 - then optimise the language model against those scores
 
-So in the Bradley–Terry framing,  
-the \(r(x,y)\) term is often supplied by an explicit reward model.
+So in the Bradley–Terry framing,
+the $r(x,y)$ term is often supplied by an explicit reward model.
 
 This is where DPO makes its key move.
 
@@ -167,7 +161,7 @@ It says:
 
 **you do not necessarily need to train a separate standalone reward model. You can reparameterise the reward in terms of the policy and the reference policy.**
 
-That is what the paper title means by saying the language model is “secretly” a reward model.  
+That is what the paper title means by saying the language model is “secretly” a reward model.
 Not that the policy literally turns into an extra reward head, but that:
 
 **under this derivation, relative policy probabilities can play the role of an implicit reward.**
@@ -182,16 +176,14 @@ One key part of the derivation begins from the closed-form optimal policy under 
 
 The conceptual version to hold onto is:
 
-\[
-r(x,y) \propto \log \pi_\theta(y|x) - \log \pi_{ref}(y|x)
-\]
+$$r(x,y) \propto \log \pi_\theta(y|x) - \log \pi_{ref}(y|x)$$
 
-More precisely, there are also \(\beta\)-dependent terms and prompt-only terms that later cancel out in the pairwise comparison. But for the main body, the important idea is:
+More precisely, there are also $\beta$-dependent terms and prompt-only terms that later cancel out in the pairwise comparison. But for the main body, the important idea is:
 
 **DPO rewrites the reward signal as the relative log-probability of a completion under the current policy versus the reference policy.**
 
-That is what is meant by an **implicit reward**.  
-The reward is no longer predicted by a separate explicit reward model. It is recovered from the policy-relative structure itself. citeturn187255view0turn442250view2
+That is what is meant by an **implicit reward**.
+The reward is no longer predicted by a separate explicit reward model. It is recovered from the policy-relative structure itself.
 
 ---
 
@@ -201,8 +193,7 @@ This is the structural core the revised part 05 has to keep.
 
 TRL states the DPO loss as:
 
-\[
-\mathcal{L}_{DPO}(\theta)
+$$\mathcal{L}_{DPO}(\theta)
 =
 - \mathbb{E}_{(x,y^+,y^-)}
 \left[
@@ -215,20 +206,19 @@ TRL states the DPO loss as:
 \log \frac{\pi_\theta(y^-|x)}{\pi_{ref}(y^-|x)}
 \right]
 \right)
-\right]
-\]
+\right]$$
 
 Let us unpack the symbols.
 
-- \(x\): prompt
-- \(y^+\): chosen completion
-- \(y^-\): rejected completion
-- \(\pi_\theta\): the policy model you are training
-- \(\pi_{ref}\): the reference model
-- \(\sigma\): sigmoid
-- \(\beta\): the strength of the preference signal
+- $x$: prompt
+- $y^+$: chosen completion
+- $y^-$: rejected completion
+- $\pi_\theta$: the policy model you are training
+- $\pi_{ref}$: the reference model
+- $\sigma$: sigmoid
+- $\beta$: the strength of the preference signal
 
-On paper this looks dense.  
+On paper this looks dense.
 In practice it is doing something very plain:
 
 ### It compares two relative scores
@@ -241,12 +231,12 @@ The other is:
 - how much the current policy likes the rejected answer
 - relative to how much the reference policy likes it
 
-If the chosen side wins by enough margin, the loss gets smaller.  
+If the chosen side wins by enough margin, the loss gets smaller.
 If the rejected side is still too competitive, the loss pushes in the opposite direction.
 
 So in the most practical language:
 
-**DPO is not memorising the chosen answer. It is training the model so that the chosen answer sits above the rejected answer in relative policy-vs-reference space.** citeturn442250view1turn442250view0
+**DPO is not memorising the chosen answer. It is training the model so that the chosen answer sits above the rejected answer in relative policy-vs-reference space.**
 
 ---
 
@@ -265,13 +255,13 @@ That is a useful entry point.
 
 But it is also not the whole story.
 
-Because this is **not** ordinary BCE on raw outputs.  
+Because this is **not** ordinary BCE on raw outputs.
 It is BCE-like behaviour built on:
 - policy-vs-reference relative log-probability
 - chosen-vs-rejected pairwise comparison
 - the implicit reward reparameterisation
 
-So “it behaves like binary cross-entropy” is a good beginner handle, but stopping there would still undersell the method. Both SuperAnnotate and Cameron’s overview are helpful entry ramps here, but the paper’s actual contribution is deeper than a generic pairwise classifier. citeturn442250view4turn442250view3
+So “it behaves like binary cross-entropy” is a good beginner handle, but stopping there would still undersell the method. Both SuperAnnotate and Cameron’s overview are helpful entry ramps here, but the paper’s actual contribution is deeper than a generic pairwise classifier.
 
 ---
 
@@ -286,18 +276,16 @@ A more exact way to put it is:
 That has two big consequences.
 
 ### First consequence
-It preserves the “do not drift arbitrarily far” logic.  
-You are not only asking whether the current policy likes the chosen answer.  
+It preserves the “do not drift arbitrarily far” logic.
+You are not only asking whether the current policy likes the chosen answer.
 You are asking how much more it likes it relative to the reference model.
 
 ### Second consequence
 It is what allows the implicit reward expression to exist in the first place:
 
-\[
-\log \pi_\theta(y|x) - \log \pi_{ref}(y|x)
-\]
+$$\log \pi_\theta(y|x) - \log \pi_{ref}(y|x)$$
 
-That relative structure is not decorative.  
+That relative structure is not decorative.
 It is one of the actual load-bearing beams of DPO.
 
 TRL’s training metrics reflect exactly this logic. Its logs expose:
@@ -305,7 +293,7 @@ TRL’s training metrics reflect exactly this logic. Its logs expose:
 - `rewards/rejected`
 - `rewards/margins`
 
-all in terms of implicit rewards derived from policy-relative probabilities. citeturn442250view0turn442250view1
+all in terms of implicit rewards derived from policy-relative probabilities.
 
 ---
 
@@ -315,15 +303,15 @@ Saying “β controls preference strength” is true, but still a little soft.
 
 A more operational way to hold it is:
 
-- larger \(\beta\): stronger pressure on the chosen-vs-rejected difference
-- smaller \(\beta\): more conservative preference pressure
+- larger $\beta$: stronger pressure on the chosen-vs-rejected difference
+- smaller $\beta$: more conservative preference pressure
 
-So \(\beta\) is not about step size the way the learning rate is.  
+So $\beta$ is not about step size the way the learning rate is.
 It is more like a dial for:
 
 **how seriously the pairwise preference margin is being taken inside the loss**
 
-It is not a speed knob.  
+It is not a speed knob.
 It is a pressure knob.
 
 ---
@@ -343,7 +331,7 @@ It answers:
 - what signal you use to teach the model
 - how preference data is turned into policy updates
 
-So what you actually did in your own experiments was not vaguely “a DPO model”.  
+So what you actually did in your own experiments was not vaguely “a DPO model”.
 It was:
 
 **DPO carried through LoRA.**
@@ -381,8 +369,8 @@ Its central question is:
 
 **can the model push the chosen answer above the rejected answer under a preference objective?**
 
-So these are not cosmetically different trainer names.  
-They reflect different data structure, different objective structure and different logging logic. citeturn187255view1turn442250view1
+So these are not cosmetically different trainer names.
+They reflect different data structure, different objective structure and different logging logic.
 
 ---
 
@@ -474,11 +462,11 @@ Once you place the result back inside the theory, it becomes quite reasonable.
 ### Why it is reasonable
 
 #### 1. Your base model was already strong
-You were using `Llama-3.1-8B-Instruct`, not an unaligned raw base.  
+You were using `Llama-3.1-8B-Instruct`, not an unaligned raw base.
 So the chosen direction was not alien to the model to begin with.
 
 #### 2. The dataset was still tiny
-Twelve examples are enough for a smoke test.  
+Twelve examples are enough for a smoke test.
 They are not much if your goal is to create a large and obvious preference shift in an 8B model.
 
 #### 3. The LoRA scope was conservative
@@ -489,7 +477,7 @@ They are not much if your goal is to create a large and obvious preference shift
 That is a safe setup, but it also naturally limits the magnitude of the movement.
 
 #### 4. Your evaluation was unusually honest
-You did not just ask the model one prompt and decide by vibe.  
+You did not just ask the model one prompt and decide by vibe.
 You directly inspected chosen-vs-rejected margin behaviour.
 
 And that is actually much closer to the heart of DPO.
@@ -539,3 +527,5 @@ If it leaves one more technical sentence, let it be this:
 And if it leaves the sentence most faithful to your own session, let it be this:
 
 **DPO can move a model’s preferences, but it does not turn the model into a different person by magic; how far it moves depends on data scale, preference consistency, base-model strength, LoRA scope and evaluation honesty.**
+
+#
