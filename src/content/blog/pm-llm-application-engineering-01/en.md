@@ -131,9 +131,7 @@ Now the problem is no longer “is the prompt clear enough?” The problem becom
 - who actually executes the tool
 - what happens if the call fails
 
-This is why your notes distinguish tool spec, tool_call, and tool_result. That is not pedantry. It is the point at which the responsibilities become clean enough to reason about: **the model decides and fills arguments; deterministic tools do the actual work.** fileciteturn24file8turn24file6
-
-Calling all of this “prompt engineering” undersells it. You are now orchestrating an application.
+This is why your notes distinguish tool spec, tool_call, and tool_result. That is not pedantry. It is the point at which the responsibilities become clean enough to reason about: **the model decides and fills arguments; deterministic tools do the actual work.** Calling all of this “prompt engineering” undersells it. You are now orchestrating an application.
 
 ### Layer 4: the grounding layer
 
@@ -271,7 +269,7 @@ My answer is this:
 
 **the work stops being just prompt engineering once you become responsible for output contracts, tool boundaries, grounded knowledge access, failure recovery, cost, observability, and governance.**
 
-Prompts matter. They are the first layer.  
+Prompts matter. They are the first layer.
 What makes the system shippable is whether you build the layers above it.
 
 That is why I prefer the name **LLM application engineering and governance**. It is more accurate, and a fair bit more honest.

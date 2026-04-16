@@ -83,9 +83,7 @@ Have you lived with this problem repeatedly. Do you understand a buyer or a work
 
 That is usually more persuasive than prestige by itself.
 
-One smaller exchange from the workshop stuck with me too. Someone asked whether the ask slide should present a range. Melanie’s answer was straightforward: not really. A range tends to signal that the founder has not done the work of tying capital to milestones tightly enough. Fundraising does not eliminate uncertainty, but it does force you to package uncertainty into a plan you can defend. That, too, is part of the judgement. fileciteturn22file11
-
-None of this means every company should sound identical. Deep tech, hardware, regulated products, and scientific companies often need more technical depth and milestone framing than a standard software deck. And, yes, some meetings are opened by networks, timing, and warm intros before the deck has done much at all.
+One smaller exchange from the workshop stuck with me too. Someone asked whether the ask slide should present a range. Melanie’s answer was straightforward: not really. A range tends to signal that the founder has not done the work of tying capital to milestones tightly enough. Fundraising does not eliminate uncertainty, but it does force you to package uncertainty into a plan you can defend. That, too, is part of the judgement. None of this means every company should sound identical. Deep tech, hardware, regulated products, and scientific companies often need more technical depth and milestone framing than a standard software deck. And, yes, some meetings are opened by networks, timing, and warm intros before the deck has done much at all.
 
 Even then, I still think the first job of the deck stays the same.
 

@@ -33,7 +33,7 @@ If I had to reduce the whole piece to one line, it would be this:
 
 > JSON 400 is usually a client-truth problem, not a Qdrant problem.
 
-By client truth, I mean the raw bytes the server receives.  
+By client truth, I mean the raw bytes the server receives.
 Not the template you see in Make. Not the thing you pasted into a validator. Not the shape you imagine the body must have.
 
 Qdrant is actually rather honest here. It parses what it receives. If you think you sent an object but it really received a string, it will reject it. There is no mystery in that.
@@ -44,14 +44,12 @@ A surprising number of JSON 400s that look like parse errors are really endpoint
 
 The most common Qdrant paths in this area are roughly:
 
-- `POST /collections/{collection}/points`  
+- `POST /collections/{collection}/points`
   for point upserts
-- `POST /collections/{collection}/points/query`  
+- `POST /collections/{collection}/points/query`
   for a single query
-- `POST /collections/{collection}/points/query/batch`  
-  for batch queries citeturn851418search2turn851418search4
-
-And here is the key point:
+- `POST /collections/{collection}/points/query/batch`
+  for batch queries And here is the key point:
 
 **the single-query endpoint and the batch-query endpoint do not expect the same body shape.**
 
@@ -129,7 +127,7 @@ But some low-code templating setups end up producing:
 }
 ```
 
-That is no longer valid JSON.  
+That is no longer valid JSON.
 And this is exactly the sort of thing that leads to those irritating `line 2 column 32` messages. In many cases, what the parser is really saying is:
 
 **your vector is not a JSON array at all.**
@@ -201,7 +199,7 @@ If the platform has a JSON-building step, that is usually safer than hand-assemb
 Once you turn the embedding into a string, you are asking for trouble.
 
 ### 3. Avoid double-stringify
-This point deserves repetition.  
+This point deserves repetition.
 If the body is meant to be an object, let the HTTP module send an object. Do not stringify it yourself and then hand it over to be wrapped again.
 
 ## This is not really about Qdrant as much as it is about client behaviour
@@ -235,11 +233,11 @@ So the point is not “every 400 means double-stringify”. The point is:
 
 If I had to reduce this class of problems to a short set of rules, it would be these:
 
-1. confirm the endpoint first  
-2. confirm the outer body shape next  
-3. confirm the vector is a real array  
-4. confirm nothing got double-stringified  
-5. get the single-query path working before batch  
+1. confirm the endpoint first
+2. confirm the outer body shape next
+3. confirm the vector is a real array
+4. confirm nothing got double-stringified
+5. get the single-query path working before batch
 6. only debug filters and payload-index issues after the JSON layer is genuinely stable
 
 It is not glamorous, but it works.

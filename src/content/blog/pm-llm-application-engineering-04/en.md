@@ -35,9 +35,7 @@ If I had to decompose an agent into the smallest useful parts, I would use the s
 - tools,
 - memory or state,
 - guardrails,
-- fallback. fileciteturn22file3
-
-That decomposition is practical because it reminds us that an agent is never “just a better prompt”. It is several operational layers working together.
+- fallback. That decomposition is practical because it reminds us that an agent is never “just a better prompt”. It is several operational layers working together.
 
 ## When an agent is actually worth building
 
@@ -75,7 +73,7 @@ So the question is not whether you can build an agent. It is whether the use cas
 
 This is usually the more important question.
 
-Your notes already point to the right concerns: stability, cost, latency, controllability, and auditability. fileciteturn22file3 I would group them into four common scenarios.
+Your notes already point to the right concerns: stability, cost, latency, controllability, and auditability. I would group them into four common scenarios.
 
 ### 1. The task is solved in one step
 
@@ -126,7 +124,7 @@ A valid-looking tool call is not necessarily a safe one. A valid-looking JSON re
 
 ### 3. PII and sensitive-data controls
 
-Your notes were right to make email, phone, and ID masking a first-class guardrail. fileciteturn22file3 In many real deployments the most serious issue is not a slightly wrong answer. It is an agent touching the wrong data or exposing information that should never have left a controlled context.
+Your notes were right to make email, phone, and ID masking a first-class guardrail. In many real deployments the most serious issue is not a slightly wrong answer. It is an agent touching the wrong data or exposing information that should never have left a controlled context.
 
 ### 4. Bounded retries
 
@@ -177,9 +175,7 @@ Your own notes already contain the right PM-grade metrics to support that layer:
 - latency,
 - cost,
 - adoption,
-- risk incidents. fileciteturn22file0
-
-Those are far more useful than waving around benchmark scores, because they are the metrics that actually determine whether a workflow should ship.
+- risk incidents. Those are far more useful than waving around benchmark scores, because they are the metrics that actually determine whether a workflow should ship.
 
 ## KPIs are not reporting theatre. They are preconditions for shipping
 
@@ -224,9 +220,7 @@ One of the strongest parts of your notes is the Day 7 material, precisely becaus
 - ETL,
 - BI dashboards,
 - RACI,
-- RAID log. fileciteturn22file4
-
-That matters because governance is not just a policy document or a safety slide. It eventually becomes operational infrastructure:
+- RAID log. That matters because governance is not just a policy document or a safety slide. It eventually becomes operational infrastructure:
 
 - what gets logged on every run,
 - which steps fail most often,
@@ -245,22 +239,22 @@ Not scaffolding that slows teams down, but scaffolding that lets them move beyon
 
 If you are taking an AI productivity initiative from proof of concept to production, this is the order I would use.
 
-1. **Decide whether this is truly an agent problem.**  
+1. **Decide whether this is truly an agent problem.**
    In many cases structured outputs plus tools are enough.
 
-2. **Define action and data boundaries first.**  
+2. **Define action and data boundaries first.**
    Draw the whitelist before building the “universal assistant”.
 
-3. **Write down the failure modes.**  
+3. **Write down the failure modes.**
    Missing information, tool failure, PII exposure, wrong tool selection, runaway loops. Each one needs a fallback.
 
-4. **Run evals before talking about scale.**  
+4. **Run evals before talking about scale.**
    No baseline metrics, no rollout conversation.
 
-5. **Design the event schema and dashboard early.**  
+5. **Design the event schema and dashboard early.**
    Logging is not something to add once the system is mature. It is how the system becomes governable.
 
-6. **Assign responsibility.**  
+6. **Assign responsibility.**
    Someone owns accuracy. Someone owns policy. Someone owns the human handoff process. These are not the same role.
 
 That operating model is usually worth more than saying “we built an agent”.

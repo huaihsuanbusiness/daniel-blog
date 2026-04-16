@@ -43,7 +43,7 @@ seriesOrder: 1
 
 但我後來真的動手把東西往產品裡接，才發現 prompt 能解的問題和不能解的問題，邊界很明顯。
 
-Anthropic 在官方 prompt engineering 文件裡就直接提醒了一件很重要的事：**不是每個 failing eval 都該拿 prompt 來修。** 有些問題比較像模型選型、延遲、成本，甚至是整體系統設計的問題。這個提醒很關鍵，因為它等於在官方文件裡明講：prompt 不是萬能扳手。  
+Anthropic 在官方 prompt engineering 文件裡就直接提醒了一件很重要的事：**不是每個 failing eval 都該拿 prompt 來修。** 有些問題比較像模型選型、延遲、成本，甚至是整體系統設計的問題。這個提醒很關鍵，因為它等於在官方文件裡明講：prompt 不是萬能扳手。
 OpenAI 近一年的文件結構其實也在講同一件事。他們把 prompt engineering、structured outputs、function calling、tools、evals 分成不同能力，而不是全部打包成 prompting。
 
 所以，我現在更願意把 prompt engineering 看成第一層，而不是整棟樓。
@@ -128,9 +128,7 @@ OpenAI 近一年的文件結構其實也在講同一件事。他們把 prompt en
 - 誰真正執行工具
 - 錯了怎麼回退
 
-這也是你筆記裡把 tool spec、tool_call、tool_result 分開講的原因。這個分法很對，因為它讓 LLM 的責任被切得比較乾淨：**模型負責決定與組參數，真正執行由 deterministic tools 做。**fileciteturn24file8turn24file6
-
-這裡如果還把它叫成 prompt engineering，就太小了。你已經在做應用編排了。
+這也是你筆記裡把 tool spec、tool_call、tool_result 分開講的原因。這個分法很對，因為它讓 LLM 的責任被切得比較乾淨：**模型負責決定與組參數，真正執行由 deterministic tools 做。** 這裡如果還把它叫成 prompt engineering，就太小了。你已經在做應用編排了。
 
 ### 第四層：知識接地層
 
@@ -268,7 +266,7 @@ OpenAI 近一年的文件結構其實也在講同一件事。他們把 prompt en
 
 **當你開始為輸出合約、工具邊界、知識接地、失敗修復、成本、觀測性與治理負責時，你做的就不再只是 prompt engineering。**
 
-Prompt 很重要，但它只是第一層。  
+Prompt 很重要，但它只是第一層。
 真正讓東西可交付的，是後面那幾層你有沒有補起來。
 
 這也是我為什麼會把這整條線叫做 **LLM application engineering and governance**，而不是 prompt engineering。因為前者比較準，也比較誠實。

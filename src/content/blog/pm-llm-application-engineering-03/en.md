@@ -57,9 +57,7 @@ That is usually where reliability starts to crack.
 
 One line from your own notes gets the boundary exactly right:
 
-> The LLM is not responsible for calculation, retrieval from systems, or writing into systems. The LLM is responsible for deciding which tool to use and filling in the arguments; execution belongs to a deterministic tool. fileciteturn22file0
-
-That is not merely a tidy engineering preference. It is a production design principle.
+> The LLM is not responsible for calculation, retrieval from systems, or writing into systems. The LLM is responsible for deciding which tool to use and filling in the arguments; execution belongs to a deterministic tool. That is not merely a tidy engineering preference. It is a production design principle.
 
 In practice, tool calling has three distinct parts:
 
@@ -73,9 +71,7 @@ First, **reliability**. A deterministic tool will produce the same result for th
 
 Second, **auditability**. You can log the tool input, tool output, and final answer. If something goes wrong, you can inspect whether the model chose the wrong tool, extracted the wrong arguments, or the tool itself produced an incorrect result.
 
-Third, **controllability**. You can apply action whitelists, argument validation, bounded retries, and fallback rules. You can do none of that with any real confidence if the model is freewheeling inside business logic. fileciteturn22file1
-
-This matters enormously for PMs because it changes the allocation of responsibility:
+Third, **controllability**. You can apply action whitelists, argument validation, bounded retries, and fallback rules. You can do none of that with any real confidence if the model is freewheeling inside business logic. This matters enormously for PMs because it changes the allocation of responsibility:
 
 - the model handles interpretation and routing;
 - the tool handles execution and correctness;
@@ -100,9 +96,7 @@ That means the real levers of quality are not especially glamorous.
 
 ### 1. Chunking
 
-Chunks that are too small lose context. Chunks that are too large harm retrieval precision and increase prompt cost. Your notes use a practical starting point of roughly 300 to 500 tokens with overlap, which is a sensible baseline for early systems. fileciteturn22file2
-
-### 2. Citations
+Chunks that are too small lose context. Chunks that are too large harm retrieval precision and increase prompt cost. Your notes use a practical starting point of roughly 300 to 500 tokens with overlap, which is a sensible baseline for early systems. ### 2. Citations
 
 If the answer has no citation trail, the system often slips into a dangerous grey zone where it sounds grounded without actually being grounded.
 

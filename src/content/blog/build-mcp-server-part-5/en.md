@@ -9,7 +9,7 @@ featured: false
 
 **Subtitle: Not every pit deserves a second victim. Once Oracle VM, Cloudflare, nginx, and FastMCP are wired into a public `/mcp` endpoint, the real work becomes having a troubleshooting order that actually saves you.**
 
-The earlier parts of this series were about concepts, deployment, frameworks, and skills.  
+The earlier parts of this series were about concepts, deployment, frameworks, and skills.
 This one is about the much less glamorous part that usually costs more than people expect:
 
 > **After launch, systems rarely die because nobody can write a server. They die because you assumed the wrong layer was already healthy.**
@@ -22,7 +22,7 @@ As soon as you put a FastMCP server on Oracle VM, add Cloudflare, nginx, systemd
 - nginx is active, so why can ChatGPT still not list tools?
 - The repo is updated. Why is the live server behaving like yesterday?
 
-This is not a diary of random frustrations.  
+This is not a diary of random frustrations.
 It is an attempt to turn them into an **operations playbook**.
 
 Because the only useful pitfall post is the one that teaches the next person:
@@ -40,26 +40,26 @@ My original instinct was always feature-first:
 - Maybe the tool descriptions are out of sync
 - Maybe the Make adapter is timing out
 
-All of those are plausible.  
+All of those are plausible.
 None of them are a great first move.
 
 Once a remote MCP server is live, the most common failures are not “a feature went wrong”. They are “an entire layer is not actually in place yet”.
 
 The troubleshooting order that now works much better for me is:
 
-1. **Cloud network layer**  
+1. **Cloud network layer**
    VM, public IP, route table, internet gateway, security rules.
 
-2. **Host reachability layer**  
+2. **Host reachability layer**
    SSH, OS, systemd, listening ports.
 
-3. **Reverse proxy layer**  
+3. **Reverse proxy layer**
    nginx, TLS, DNS, Cloudflare proxying, origin certificates.
 
-4. **MCP transport layer**  
+4. **MCP transport layer**
    `/mcp` path, transport expectations, streaming behaviour.
 
-5. **Application and tool layer**  
+5. **Application and tool layer**
    FastMCP app, tool registration, skill loading, Make adapter, environment variables.
 
 Once that order becomes muscle memory, a lot of supposedly mysterious errors shrink back into their proper category.
@@ -68,7 +68,7 @@ Once that order becomes muscle memory, a lot of supposedly mysterious errors shr
 
 This is probably the most common Oracle VM trap.
 
-Oracle’s documentation on public subnets and internet gateways is quite clear:  
+Oracle’s documentation on public subnets and internet gateways is quite clear:
 a public IP is only one piece. You also need:
 
 - a subnet route table that actually sends internet-bound traffic to an internet gateway
@@ -101,7 +101,7 @@ If SSH is shaky or the box is not even listening on 80 or 443, it is a network p
 
 I also ran into a route-table trap that is worth writing down.
 
-Some route tables are already attached for **internet gateway ingress routing** purposes.  
+Some route tables are already attached for **internet gateway ingress routing** purposes.
 Those tables are not the same thing as the ordinary public-subnet route tables you want for outbound internet traffic. That means you can end up trying to add:
 
 ```text
@@ -126,8 +126,8 @@ Another very common illusion is this:
 
 No.
 
-SSH is `22/tcp`.  
-A public MCP endpoint is almost certainly `443/tcp`.  
+SSH is `22/tcp`.
+A public MCP endpoint is almost certainly `443/tcp`.
 Those are not the same path, not the same rules, and not the same user experience.
 
 Oracle’s own guidance on ingress rules makes this explicit: if you do not add an HTTPS ingress rule for port 443, inbound HTTPS is not allowed. So you can absolutely end up in a situation where:
@@ -151,7 +151,7 @@ sudo systemctl status nginx --no-pager
 curl -vk https://<DOMAIN>/mcp
 ```
 
-If nothing is listening on 443, do not blame Cloudflare yet.  
+If nothing is listening on 443, do not blame Cloudflare yet.
 If 443 is listening internally but the outside world still gets refused, check Oracle ingress rules before you check Python.
 
 ![From public IP to live HTTPS: where 443 actually breaks](./resource/build-your-own-mcp-server-part-5-02-https-breakpoints.svg)
@@ -177,8 +177,8 @@ You test this on the VM:
 curl http://127.0.0.1:8000/mcp
 ```
 
-It works.  
-You feel relieved.  
+It works.
+You feel relieved.
 The deployment is not done.
 
 Because the public path is still:
@@ -203,7 +203,7 @@ Outside the VM:
 curl -i https://mcp.example.com/mcp
 ```
 
-Only when both work do I move on to tool listing.  
+Only when both work do I move on to tool listing.
 If only the first works, the app is alive, but the deployment is not complete.
 
 ## Pitfall 4: `406 Not Acceptable` does not necessarily mean the server is down
@@ -222,9 +222,7 @@ What I had to learn instead was much simpler:
 
 If the client is not speaking the expected transport, not negotiating the right response type, or just poking the endpoint like a generic website, a 4xx response is not surprising.
 
-MCP evolved in 2025 from the older HTTP+SSE transport to Streamable HTTP, and FastMCP now recommends Streamable HTTP for new production deployments while keeping SSE for backward compatibility. That means `/mcp` is not a “show me something pretty” URL. It is part of a transport contract. citeturn677151view5turn677151view4turn677151view3
-
-### My operational rule now
+MCP evolved in 2025 from the older HTTP+SSE transport to Streamable HTTP, and FastMCP now recommends Streamable HTTP for new production deployments while keeping SSE for backward compatibility. That means `/mcp` is not a “show me something pretty” URL. It is part of a transport contract. ### My operational rule now
 
 If `/mcp` gives you a 406, do not immediately classify it as “the server is broken”.
 
@@ -238,7 +236,7 @@ In other words, **406 often means the transport conversation is wrong, not that 
 
 ## Pitfall 5: Cloudflare is very good at making origin problems look different
 
-Cloudflare is extremely useful.  
+Cloudflare is extremely useful.
 It is also very good at disguising the original failure mode.
 
 For example:
@@ -440,7 +438,7 @@ If Part 2 was about how to get the server online, Part 5 is about the part peopl
 > **A self-hosted remote MCP server is never finished at deploy time.**
 > **A large part of the engineering cost lives in operations and troubleshooting order.**
 
-You can read that as bad news.  
+You can read that as bad news.
 Or you can read it as the adult version of the trade-off:
 
 when you stop delegating the entrypoint to a PaaS or a managed platform, you gain control, but you also inherit more truth.

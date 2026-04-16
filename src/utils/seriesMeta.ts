@@ -6,6 +6,14 @@ export interface SeriesMeta {
   label: string;
 }
 
+const slugifySeriesKey = (value: string) =>
+  value
+    .toLowerCase()
+    .normalize('NFKD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9\u4e00-\u9fff]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+
 const SERIES: Array<{ slug: RegExp; key: string; order: number; labelZh: string; labelEn: string }> = [
   { slug: /^openclaw-getting-started-\d+$/, key: 'openclaw-getting-started', order: 1, labelZh: '1. OpenClaw 快速上手', labelEn: '1. OpenClaw Getting Started' },
   { slug: /^openclaw-deployment-and-configuration-part-\d+$/, key: 'openclaw-deployment-and-configuration', order: 2, labelZh: '2. OpenClaw 部署與配置', labelEn: '2. OpenClaw Deployment and Configuration' },
@@ -26,7 +34,16 @@ const SERIES: Array<{ slug: RegExp; key: string; order: number; labelZh: string;
   { slug: /^behind-the-trend-\d+$/, key: 'behind-the-trend', order: 9, labelZh: '9. 趨勢的背後', labelEn: '9. Behind the Trend' },
 ];
 
-export function getSeriesMeta(slug: string, lang: BlogLang): SeriesMeta | null {
+export function getSeriesMeta(slug: string, lang: BlogLang, series?: string | null): SeriesMeta | null {
+  if (series && series.trim()) {
+    const matchedLegacy = SERIES.find((s) => s.slug.test(slug));
+    return {
+      key: slugifySeriesKey(series),
+      order: matchedLegacy?.order ?? 999,
+      label: series,
+    };
+  }
+
   for (const s of SERIES) {
     if (s.slug.test(slug)) {
       return { key: s.key, order: s.order, label: lang === 'zh' ? s.labelZh : s.labelEn };

@@ -34,9 +34,7 @@ In RAG, we often want vector similarity and structured constraints at the same t
 - only search one tenant or one job
 - only search points after a certain version
 
-Embeddings do not solve that layer. Filters do. Payload indexes are part of what stops that layer turning into sludge. citeturn803663search0turn803663search4turn803663search12
-
-## Why having a payload field is not the same as being able to filter on it
+Embeddings do not solve that layer. Filters do. Payload indexes are part of what stops that layer turning into sludge. ## Why having a payload field is not the same as being able to filter on it
 
 In Qdrant, a point’s payload is basically arbitrary JSON. You can quite happily store something like:
 
@@ -51,9 +49,7 @@ In Qdrant, a point’s payload is basically arbitrary JSON. You can quite happil
 
 But “the field exists in payload” and “the system can reliably and efficiently use it for filtering” are not the same thing.
 
-Qdrant’s documentation is quite direct on this. If you want filtering to work efficiently, you should create payload indexes for the relevant fields. It also advises you to index the fields you actually filter on, rather than indexing everything and wasting memory. The API reference treats payload-index creation as an explicit operation, not as something the system quietly infers on your behalf. citeturn803663search0turn803663search1turn803663search4turn803663search15
-
-That is why people run into `Index required` even when the filter looks perfectly valid.
+Qdrant’s documentation is quite direct on this. If you want filtering to work efficiently, you should create payload indexes for the relevant fields. It also advises you to index the fields you actually filter on, rather than indexing everything and wasting memory. The API reference treats payload-index creation as an explicit operation, not as something the system quietly infers on your behalf. That is why people run into `Index required` even when the filter looks perfectly valid.
 
 ## Treat payload indexes as schema migrations and the whole thing starts to make sense
 
@@ -80,9 +76,9 @@ Seen that way, a payload index is effectively saying:
 
 The most common payload index schema types in Qdrant are roughly these:
 
-- `keyword` for exact string matches  
-- `integer` and `float` for numeric filtering or ordering  
-- `bool` for boolean conditions  
+- `keyword` for exact string matches
+- `integer` and `float` for numeric filtering or ordering
+- `bool` for boolean conditions
 - `text` for full-text related use cases
 
 In RAG memory or knowledge-retrieval setups, the most common metadata fields are usually `keyword` fields, such as:
@@ -99,9 +95,7 @@ These are not fuzzy semantic values. They are boundaries. They define data sourc
 
 If you are just starting with Qdrant-backed retrieval, I would not recommend indexing every payload field in sight.
 
-Qdrant’s own docs and production guidance are fairly consistent here: payload indexes consume additional resources, so they should be reserved for fields that genuinely matter to filtering and query planning. citeturn803663search0turn803663search8turn803663search15turn803663search19
-
-In your case, I would begin with these two:
+Qdrant’s own docs and production guidance are fairly consistent here: payload indexes consume additional resources, so they should be reserved for fields that genuinely matter to filtering and query planning. In your case, I would begin with these two:
 
 1. `source_type`
 2. `memory_set`
@@ -123,9 +117,7 @@ Both of these usually belong under `keyword`.
 
 ## What the API looks like
 
-Qdrant’s API reference uses `PUT /collections/{collection_name}/index` to create a payload index, with `field_name` and `field_schema` in the body. citeturn803663search1turn803663search5
-
-For example:
+Qdrant’s API reference uses `PUT /collections/{collection_name}/index` to create a payload index, with `field_name` and `field_schema` in the body. For example:
 
 ```bash
 curl -X PUT "$QDRANT_URL/collections/daniel_job_memory_v1/index" \
@@ -186,7 +178,7 @@ Not every payload field deserves an index.
 
 The rule of thumb I trust is roughly this:
 
-1. **high-frequency filter fields**  
+1. **high-frequency filter fields**
 2. **high-selectivity fields**
 
 Fields such as `source_type`, `memory_set`, and `tenant_id` often pass both tests. But a field that is barely ever filtered, or one that only carries a tiny number of low-value categories, may not justify the extra overhead. Qdrant’s guidance is clear that payload indexes are not free.

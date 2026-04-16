@@ -18,10 +18,10 @@ When people first meet MCP, transport is often imagined like this:
 - add a proxy if needed
 - plug it into ChatGPT at the end
 
-That instinct is understandable.  
+That instinct is understandable.
 It is also dangerous.
 
-Because remote deployment in MCP is not just “wrap the local demo in a URL”.  
+Because remote deployment in MCP is not just “wrap the local demo in a URL”.
 What it actually changes is:
 
 - who maintains the session
@@ -38,9 +38,7 @@ In other words, **transport is not the last mile. It is part of the protocol des
 
 The MCP ecosystem itself does not treat transport as a footnote.
 
-The 2025-03-26 MCP changelog explicitly replaced the older HTTP+SSE transport with the more flexible **Streamable HTTP transport**. FastMCP now recommends HTTP transport for production remote deployments and keeps SSE mainly for backward compatibility. OpenAI is equally explicit: for ChatGPT Developer Mode and the Responses API, remote MCP servers currently need to support **either SSE or streaming/streamable HTTP**. citeturn677151view5turn677151view4turn677151view3turn677151view1turn677151view2
-
-Put those together and you get one very practical engineering truth:
+The 2025-03-26 MCP changelog explicitly replaced the older HTTP+SSE transport with the more flexible **Streamable HTTP transport**. FastMCP now recommends HTTP transport for production remote deployments and keeps SSE mainly for backward compatibility. OpenAI is equally explicit: for ChatGPT Developer Mode and the Responses API, remote MCP servers currently need to support **either SSE or streaming/streamable HTTP**. Put those together and you get one very practical engineering truth:
 
 > **If your MCP server is meant to live at a remote URL rather than as a local stdio process, transport needs to be treated as a first-class design decision from the start.**
 
@@ -55,7 +53,7 @@ Best for:
 - local agents or CLI workflows
 - no public URL requirement
 
-The advantage is speed and simplicity.  
+The advantage is speed and simplicity.
 The limitation is obvious: this is not a public remote service.
 
 ### 2. Remote server over Streamable HTTP
@@ -67,15 +65,11 @@ Best for:
 - cloud-based hosts
 - transport, auth, and reverse proxies that need to be governed together
 
-FastMCP’s own docs describe HTTP transport as the recommended path for production deployments because the server runs as an independent web service and manages its own lifecycle. citeturn677151view4turn677151view3
-
-### 3. SSE transport
-SSE is not unusable.  
+FastMCP’s own docs describe HTTP transport as the recommended path for production deployments because the server runs as an independent web service and manages its own lifecycle. ### 3. SSE transport
+SSE is not unusable.
 But if you are building a new system, control the infrastructure, and do not carry unusual compatibility constraints, I would not make it the default choice.
 
-FastMCP’s current wording is very clear: SSE is there for backward compatibility. citeturn677151view4
-
-## Why “it runs locally” and “it is remote-ready” are completely different milestones
+FastMCP’s current wording is very clear: SSE is there for backward compatibility. ## Why “it runs locally” and “it is remote-ready” are completely different milestones
 
 This is one of the most important distinctions in the whole topic.
 
@@ -127,7 +121,7 @@ For example:
 As soon as you move to remote deployment, all of those become real.
 
 ### Problem 1: path is no longer just a path
-Locally, you may only care about `localhost:8000`.  
+Locally, you may only care about `localhost:8000`.
 Remotely, the path may become:
 
 ```text
@@ -149,14 +143,10 @@ In remote deployments, request headers are not just “whatever the app receives
 - whether auth is bearer, OAuth, or mixed auth
 - whether any header leaks downstream where it should not
 
-That is exactly why I respect the amount of production work FastMCP has been putting into auth and header handling. This is not cosmetic infrastructure. citeturn677151view10turn677151view11
-
-### Problem 3: session and streaming stop being local assumptions
+That is exactly why I respect the amount of production work FastMCP has been putting into auth and header handling. This is not cosmetic infrastructure. ### Problem 3: session and streaming stop being local assumptions
 As soon as you have cross-network access, long-lived connections, and multiple clients, the session and streaming properties of the transport start to shape reliability.
 
-MCP’s roadmap is already discussing horizontal scaling, stateless operation, and middleware patterns around Streamable HTTP. That alone is enough evidence that transport is not some side concern. citeturn635383search0
-
-## My current rule of thumb: transport choice is really a decision about how you want the server to live
+MCP’s roadmap is already discussing horizontal scaling, stateless operation, and middleware patterns around Streamable HTTP. That alone is enough evidence that transport is not some side concern. ## My current rule of thumb: transport choice is really a decision about how you want the server to live
 
 That sentence has become more useful to me than “which protocol is newer”.
 
@@ -224,7 +214,7 @@ I like this shape not because it is flashy, but because the roles are clean:
 A common question is:
 “Why not just expose the app port directly?”
 
-In theory, you can.  
+In theory, you can.
 In practice, I increasingly dislike that choice.
 
 A reverse proxy gives you cleaner control over:
@@ -234,7 +224,7 @@ A reverse proxy gives you cleaner control over:
 - keeping the app bound to loopback
 - separating public networking from app lifecycle
 
-So the proxy is not just “another layer”.  
+So the proxy is not just “another layer”.
 It is how you separate the **protocol entrypoint** from the **application process**.
 
 ![Transport path from client to edge to proxy to MCP app](./resource/mcp-engineering-deep-dive-01-03-end-to-end-path.svg)
@@ -260,7 +250,7 @@ But the actual cause may be:
 
 So in MCP systems, **what looks like a prompt problem can easily be a transport problem**.
 
-That is precisely why I wanted transport to be the first article in the engineering deep dive series.  
+That is precisely why I wanted transport to be the first article in the engineering deep dive series.
 If this layer is shaky, security, contracts, and skills are all built on a floor that moves.
 
 ## The counterexample I want to leave behind
@@ -277,7 +267,7 @@ If you are still:
 
 then stdio is often the smarter choice.
 
-The value of remote deployment is not that it is more advanced.  
+The value of remote deployment is not that it is more advanced.
 Its value begins when you truly need:
 - a public URL
 - host integration
@@ -315,7 +305,7 @@ They become:
 - which headers and tokens cross which layers?
 - how do you stop a public entrypoint from becoming a new attack surface?
 
-Transport keeps the server alive.  
+Transport keeps the server alive.
 Security decides whether it can stay alive **safely**.
 
 ![Decision ladder for choosing stdio, Streamable HTTP, and remote deployment](./resource/mcp-engineering-deep-dive-01-04-transport-decision-ladder.svg)

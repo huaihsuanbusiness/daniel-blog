@@ -9,7 +9,7 @@ featured: false
 
 A lot of RAG systems are very good at performing in demo mode.
 
-You ask a question, they produce a tidy answer.  
+You ask a question, they produce a tidy answer.
 Sometimes they even cite a source, which makes the whole thing look faintly trustworthy. Someone on the team says the usual line:
 
 - “This looks promising.”
@@ -25,7 +25,7 @@ What tends to break is not that the model suddenly becomes stupid. It is things 
 - the same question works today and changes tomorrow after a document update
 - users start asking where exactly a claim came from
 - legal, support, or internal knowledge use cases start demanding permissions, versioning, and auditability
-- somebody on the team finally asks the uncomfortable question:  
+- somebody on the team finally asks the uncomfortable question:
   **how do we know this system is actually improving?**
 
 That is what this article is about:
@@ -59,16 +59,16 @@ A lot of teams put their attention on model choice or prompt engineering, but in
 
 Because the model is really only doing three things:
 
-1. reading the context you gave it  
-2. reasoning within that boundary  
+1. reading the context you gave it
+2. reasoning within that boundary
 3. expressing the result fluently
 
 If the evidence is messy, duplicated, bloated, stale, or mutually inconsistent, then a larger model will mostly just explain that mess with greater confidence.
 
 So the framing I trust more now is:
 
-- **retrieval** is responsible for bringing back the right evidence  
-- **generation** is responsible for staying inside the evidence boundary  
+- **retrieval** is responsible for bringing back the right evidence
+- **generation** is responsible for staying inside the evidence boundary
 - **the system layer** is responsible for making all of this observable, measurable, and auditable
 
 ## The first debugging split: did retrieval fail, or did generation fail?
@@ -112,8 +112,8 @@ A lot of teams initially treat citation as a nice-to-have. I don’t, at least n
 
 In production RAG, citation does at least three jobs:
 
-1. it lets the user verify the answer  
-2. it lets the team debug the system  
+1. it lets the user verify the answer
+2. it lets the team debug the system
 3. it makes the system auditable
 
 If the system says “according to the SOP, refunds require manager approval”, then it should be able to show the SOP passage that supports that claim.
@@ -133,9 +133,7 @@ That is why evaluation frameworks such as RAGAs matter. The current docs lay out
 - context precision
 - context recall
 - faithfulness
-- response relevancy citeturn851418search1turn851418search8turn851418search19
-
-Those metrics matter less because the names sound clever and more because they force you to answer practical questions:
+- response relevancy Those metrics matter less because the names sound clever and more because they force you to answer practical questions:
 
 - did retrieval rank relevant chunks highly enough?
 - did the necessary evidence make it into top-k?
@@ -149,18 +147,18 @@ That is common in demos. It is thin ice in production.
 
 ## A minimal metric set is already much better than none
 
-You do not need to build a cathedral on day one.  
+You do not need to build a cathedral on day one.
 But if you have no metrics at all, most later arguments end up being aesthetic rather than diagnostic.
 
 A practical minimum could look like this:
 
 ### Retrieval
-- Recall@k  
-- Precision@k  
+- Recall@k
+- Precision@k
 
 ### Generation
-- Faithfulness / groundedness  
-- Answer relevance  
+- Faithfulness / groundedness
+- Answer relevance
 
 ### System
 - latency
@@ -233,12 +231,12 @@ This is why I increasingly see RAG not as a system you should max out by default
 
 If I had to reduce the whole article to the set of production rules I actually use, they would be these:
 
-1. clean evidence comes before clever generation  
-2. citation is risk control, not decoration  
-3. evaluation does not need to be perfect on day one, but it cannot be absent  
-4. ACL belongs in retrieval  
-5. versioning is the baseline for reproducibility  
-6. observability determines whether debugging is real or theatrical  
+1. clean evidence comes before clever generation
+2. citation is risk control, not decoration
+3. evaluation does not need to be perfect on day one, but it cannot be absent
+4. ACL belongs in retrieval
+5. versioning is the baseline for reproducibility
+6. observability determines whether debugging is real or theatrical
 7. if you cannot tell whether a failure came from retrieval or generation, the system is not ready for production
 
 ## What comes next

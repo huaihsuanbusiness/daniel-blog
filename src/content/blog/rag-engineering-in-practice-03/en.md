@@ -29,16 +29,14 @@ That sounds slightly philosophical, but it is really an engineering claim.
 
 In a RAG pipeline, a chunk usually plays at least two roles at once:
 
-1. a **retrieval unit**  
+1. a **retrieval unit**
 2. a **citation unit**
 
 If a chunk works for one of those jobs and fails at the other, it is not a very good chunk.
 
 ## Why chunk size on its own is the wrong conversation
 
-Pinecone and LangChain both discuss chunking as a practical starting point. LangChain is especially direct about beginning with `RecursiveCharacterTextSplitter`, then tuning `chunk_size` and `chunk_overlap` if needed. That is sensible advice. citeturn803663search2turn803663search3turn803663search7
-
-But a sensible starting point is not the same thing as a design principle.
+Pinecone and LangChain both discuss chunking as a practical starting point. LangChain is especially direct about beginning with `RecursiveCharacterTextSplitter`, then tuning `chunk_size` and `chunk_overlap` if needed. That is sensible advice. But a sensible starting point is not the same thing as a design principle.
 
 The real question is not “what chunk size should I use?” It is this:
 
@@ -102,12 +100,12 @@ When retrieval returns chunks like these, the top-k looks more like an evidence 
 
 Rubrics play a different role.
 
-A CV is an evidence pool.  
+A CV is an evidence pool.
 A rubric is closer to the rules of the game.
 
 When retrieving CV evidence, it often makes sense to bring back several chunks. With rubrics, you usually only need one or two well-formed rule groups to drive scoring or formatting. If you break the rubric into pieces that are too small, you often create two problems:
 
-1. the model retrieves criteria but misses hard gates  
+1. the model retrieves criteria but misses hard gates
 2. top-1 or top-2 retrieval becomes unstable, so scoring drifts between runs
 
 That kind of drift is annoying because it rarely presents as a dramatic failure. It just slowly makes the system less trustworthy.
@@ -159,20 +157,18 @@ Change the data type or the downstream task, and the chunking logic may need to 
 
 For example:
 
-- **FAQs and knowledge-base articles** often benefit more from heading-aware chunking  
-- **contracts and regulations** care more about clause completeness than small granularity  
-- **tables** may need row-level reconstruction with column semantics carried into each chunk  
-- **code and config files** often want structural or language-aware boundaries rather than ordinary text windows citeturn803663search11turn803663search14turn803663search18
-
-## The engineering judgement I trust now
+- **FAQs and knowledge-base articles** often benefit more from heading-aware chunking
+- **contracts and regulations** care more about clause completeness than small granularity
+- **tables** may need row-level reconstruction with column semantics carried into each chunk
+- **code and config files** often want structural or language-aware boundaries rather than ordinary text windows ## The engineering judgement I trust now
 
 If I had to reduce the whole piece to a short set of working rules, it would be these:
 
-1. one chunk, one topic, one usable citation unit  
-2. cut according to the role of the data first, then tune chunk size  
-3. evidence-pool documents are often worth splitting more finely than rule documents  
-4. chunking and evidence-pack design are two sides of the same problem  
-5. chunks that are too large dilute attention; chunks that are too small force the model to invent glue  
+1. one chunk, one topic, one usable citation unit
+2. cut according to the role of the data first, then tune chunk size
+3. evidence-pool documents are often worth splitting more finely than rule documents
+4. chunking and evidence-pack design are two sides of the same problem
+5. chunks that are too large dilute attention; chunks that are too small force the model to invent glue
 6. when chunking is designed properly, RAG stops feeling mystical and starts feeling like engineering
 
 ## What comes next

@@ -9,7 +9,7 @@ featured: false
 
 **副標：不是每一個坑都值得再踩一次。把 Oracle VM、Cloudflare、nginx、FastMCP 串成公開 `/mcp` 端點後，我最後整理出一套真正能救命的排錯順序與維運手冊。**
 
-前四篇談的是觀念、部署、框架與 skills。  
+前四篇談的是觀念、部署、框架與 skills。
 這一篇我想把鏡頭拉回比較不浪漫、但實際上最貴的那一段：
 
 > **上線之後，系統不是死在「不會寫 server」，而是死在「你以為這層沒問題」。**
@@ -22,7 +22,7 @@ featured: false
 - nginx 已經 active，為什麼 ChatGPT 還是無法列出 tools？
 - repo 裡的程式明明更新了，為什麼 live server 還像活在昨天？
 
-這篇不是把坑列成流水帳，而是把它們整理成一份**維運順序表**。  
+這篇不是把坑列成流水帳，而是把它們整理成一份**維運順序表**。
 因為真正有用的坑文，不是告訴你作者曾經崩潰過，而是讓你知道：
 
 > **下次你也遇到時，應該先看哪一層。**
@@ -40,22 +40,22 @@ featured: false
 
 這樣想很自然，但不高效。
 
-因為 remote MCP server 真正上線後，問題通常不是「某個功能失敗」，而是**某一層根本還沒成立**。  
+因為 remote MCP server 真正上線後，問題通常不是「某個功能失敗」，而是**某一層根本還沒成立**。
 我後來比較穩的排錯順序是：
 
-1. **雲端網路層**  
+1. **雲端網路層**
    VM、public IP、route table、internet gateway、security rules。
 
-2. **主機可達層**  
+2. **主機可達層**
    SSH、OS、systemd、port listen 狀態。
 
-3. **反向代理層**  
+3. **反向代理層**
    nginx、TLS、DNS、Cloudflare proxy、origin cert。
 
-4. **MCP transport 層**  
+4. **MCP transport 層**
    `/mcp` path、Accept / transport expectation、streaming behavior。
 
-5. **應用與工具層**  
+5. **應用與工具層**
    FastMCP app、tool registration、skill loading、Make adapter、env variables。
 
 這個順序一旦固定，很多本來看起來很神祕的問題，其實都會縮回它原本應該在的位置。
@@ -64,7 +64,7 @@ featured: false
 
 這是 Oracle VM 最常見也最浪費時間的一坑。
 
-Oracle 的 public subnet / internet gateway 文件其實很清楚：  
+Oracle 的 public subnet / internet gateway 文件其實很清楚：
 **public IP 只是其中一塊**，還需要：
 
 - subnet 的 route table 真的把對外流量導到 internet gateway
@@ -97,8 +97,8 @@ sudo ss -ltnp | grep -E ':22|:80|:443|:8000'
 
 我在 Oracle networking 上真的踩過一個很怪、但其實很典型的坑：
 
-某些 route table 已經被掛到 **internet gateway ingress routing** 用途。  
-這種表的 target 規則就不是你想的那種「對外 route table」，而是只接受 private IP 類型的 ingress target。  
+某些 route table 已經被掛到 **internet gateway ingress routing** 用途。
+這種表的 target 規則就不是你想的那種「對外 route table」，而是只接受 private IP 類型的 ingress target。
 結果就是你明明只是想加：
 
 ```text
@@ -123,11 +123,11 @@ sudo ss -ltnp | grep -E ':22|:80|:443|:8000'
 
 完全不是。
 
-SSH 用的是 `22/tcp`。  
-公開 MCP endpoint 幾乎一定要走 `443/tcp`。  
+SSH 用的是 `22/tcp`。
+公開 MCP endpoint 幾乎一定要走 `443/tcp`。
 這兩條路從網路規則到外部體感都不是同一件事。
 
-Oracle 的 security rule 文件也明說，如果沒有明確加入 HTTPS 443 的 ingress 規則，入站 HTTPS 不會被允許。  
+Oracle 的 security rule 文件也明說，如果沒有明確加入 HTTPS 443 的 ingress 規則，入站 HTTPS 不會被允許。
 所以你很可能會遇到這種狀況：
 
 - 22 通
@@ -149,7 +149,7 @@ sudo systemctl status nginx --no-pager
 curl -vk https://<DOMAIN>/mcp
 ```
 
-如果 `ss` 根本看不到 443 在 listen，就先別怪 Cloudflare。  
+如果 `ss` 根本看不到 443 在 listen，就先別怪 Cloudflare。
 如果 VM 內部有 443，但外部還是 refused，下一步先看 Oracle 的 ingress rule，不要先看 Python。
 
 ![From public IP to live HTTPS: where 443 actually breaks](./resource/build-your-own-mcp-server-part-5-02-https-breakpoints.svg)
@@ -175,10 +175,10 @@ curl -vk https://<DOMAIN>/mcp
 curl http://127.0.0.1:8000/mcp
 ```
 
-是通的。  
+是通的。
 你就很容易以為一切都好了。
 
-其實沒有。  
+其實沒有。
 因為真正對外的是這條：
 
 ```text
@@ -201,7 +201,7 @@ curl -i http://127.0.0.1:8000/mcp
 curl -i https://mcp.example.com/mcp
 ```
 
-這兩個都過，再往下看 tool listing。  
+這兩個都過，再往下看 tool listing。
 只過第一個，不代表部署成功，只代表 app process 沒死。
 
 ## 坑 4：`406 Not Acceptable` 不一定是 server 掛了
@@ -218,11 +218,9 @@ curl -i https://mcp.example.com/mcp
 
 > **MCP endpoint 不是給「任意 HTTP client」隨便戳就能得到漂亮 HTML 的。**
 
-當 client 沒有用對 transport 期待、沒有講對接收格式，或沒有走 MCP 預期的請求流程時，出現 4xx 並不奇怪。  
-MCP 在 2025 年已把早期的 HTTP+SSE transport 進一步演進成 Streamable HTTP；FastMCP 也明確建議 production 新部署優先使用 Streamable HTTP，而 SSE 主要作為 backward compatibility 存在。  
-所以 `/mcp` 不是首頁，它是協定入口。citeturn677151view5turn677151view4turn677151view3
-
-### 我的實務判準
+當 client 沒有用對 transport 期待、沒有講對接收格式，或沒有走 MCP 預期的請求流程時，出現 4xx 並不奇怪。
+MCP 在 2025 年已把早期的 HTTP+SSE transport 進一步演進成 Streamable HTTP；FastMCP 也明確建議 production 新部署優先使用 Streamable HTTP，而 SSE 主要作為 backward compatibility 存在。
+所以 `/mcp` 不是首頁，它是協定入口。 ### 我的實務判準
 
 如果你遇到 `/mcp` 回 406，不要第一時間把它當成「一定壞掉」。
 
@@ -236,7 +234,7 @@ MCP 在 2025 年已把早期的 HTTP+SSE transport 進一步演進成 Streamable
 
 ## 坑 5：Cloudflare 讓問題看起來不像 origin 問題
 
-Cloudflare 很方便，真的。  
+Cloudflare 很方便，真的。
 但它也很會把問題包裝成另外一種問題。
 
 例如：
@@ -263,7 +261,7 @@ sudo ss -ltnp | grep -E ':443|:8000'
 curl -vk https://mcp.example.com/mcp
 ```
 
-我會盡量避免一開始就只從 Cloudflare 端猜。  
+我會盡量避免一開始就只從 Cloudflare 端猜。
 因為很多時候問題其實還停在 VM 裡。
 
 ## 坑 6：`systemctl status` 不是壞掉，是你掉進 pager 了
@@ -276,7 +274,7 @@ curl -vk https://mcp.example.com/mcp
 systemctl status job-mcp.service
 ```
 
-如果畫面看起來停住，很多人會有一秒鐘懷疑人生。  
+如果畫面看起來停住，很多人會有一秒鐘懷疑人生。
 其實你只是掉進 pager。
 
 我現在幾乎一律這樣用：
@@ -438,7 +436,7 @@ sed -n '1,260p' /opt/job-mcp/app/mcp_server/app/tool_definitions.py
 > **一台自架的 remote MCP server，從來不是 deploy 完就結束。**
 > **它真正的成本，有很大一部分在維運與排錯順序。**
 
-你可以把這理解成壞消息。  
+你可以把這理解成壞消息。
 也可以把它理解成一個比較成熟的工程現實：
 
 當你不再把入口交給 PaaS 或現成平台，得到的是更多控制力，但也順便得到更多需要自己負責的真相。

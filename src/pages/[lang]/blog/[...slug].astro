@@ -65,10 +65,10 @@ const primaryCategory = normalizeCategory(post.data.categories[0] || '') ?? null
 
 
 
-const seriesMeta = getSeriesMeta(slug!, lang!);
+const seriesMeta = getSeriesMeta(slug!, lang!, post.data.series);
 const seriesPosts = seriesMeta
   ? sameLangPosts
-      .filter(p => getSeriesMeta(p.slug, lang!)?.key === seriesMeta.key)
+      .filter(p => getSeriesMeta(p.slug, lang!, p.data.series)?.key === seriesMeta.key)
       .sort((a, b) =>
         ((a.data.seriesOrder ?? 0) - (b.data.seriesOrder ?? 0)) ||
         (a.data.date.valueOf() - b.data.date.valueOf())
@@ -528,6 +528,10 @@ const currentSeriesIndex = seriesPosts.findIndex(p => p.id === post.id);
   .post-content :global(p) {
     margin-bottom: var(--space-3);
     max-width: 100%;
+  }
+
+  .post-content :global(hr) {
+    display: none;
   }
 
   .post-content :global(ul),

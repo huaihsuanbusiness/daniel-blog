@@ -9,7 +9,7 @@ featured: false
 
 很多 RAG 系統在 demo 階段都很會表演。
 
-你問一題，它答一段。  
+你問一題，它答一段。
 有時候還會附來源，看起來甚至像有點可信。團隊裡的人一看，通常就會出現熟悉的句子：
 
 - 「好像可以耶」
@@ -25,10 +25,10 @@ featured: false
 - 同一題今天能答，明天因為文件更新又答得不一樣
 - 使用者開始追問「你這句是根據哪份文件」
 - 法務、客服、內部知識庫場景開始要求權限、版本與稽核
-- 團隊裡有人終於問出那句關鍵問題：  
+- 團隊裡有人終於問出那句關鍵問題：
   **我們怎麼知道這套系統真的有在變好？**
 
-這一篇想講的就是：  
+這一篇想講的就是：
 **RAG 要上線，真正的主考卷不是 prompt，而是 evidence、citation、evaluation、ACL、versioning、observability。**
 
 ## 先講核心主張
@@ -37,8 +37,8 @@ featured: false
 
 > 沒有評估、引用與可觀測性的 RAG，不是 production system，比較像運氣不錯的 demo。
 
-這句不是在裝嚴格，而是因為 production 場景的問題型態真的不一樣。  
-demo 的成功標準通常是「這題看起來答得不錯」。  
+這句不是在裝嚴格，而是因為 production 場景的問題型態真的不一樣。
+demo 的成功標準通常是「這題看起來答得不錯」。
 production 的成功標準則更像：
 
 - 它能不能穩定地抓到對的 evidence？
@@ -50,21 +50,21 @@ production 的成功標準則更像：
 
 ## RAG 上線後，第一個問題不是模型大小，而是 evidence 乾不乾淨
 
-這一點很容易被忽略。  
+這一點很容易被忽略。
 很多人習慣把焦點放在模型選型或 prompt engineering，但在 RAG 裡，最大的 ROI 往往來自 evidence 的品質。
 
 因為模型最終能做的事情，其實是：
 
-1. 從你給它的 context 裡抓重點  
-2. 在這個 context 邊界內做推理  
+1. 從你給它的 context 裡抓重點
+2. 在這個 context 邊界內做推理
 3. 用一種看起來很流暢的方式把結果講出來
 
 如果 evidence 本身就髒、亂、重複、過胖、彼此衝突，那你換再大的模型，它也只是比較有氣勢地把混亂講順而已。
 
 所以我現在比較把 production RAG 想成這樣：
 
-- **R** 要負責把對的證據帶回來  
-- **G** 要負責盡量不要超出證據邊界亂補  
+- **R** 要負責把對的證據帶回來
+- **G** 要負責盡量不要超出證據邊界亂補
 - **系統層** 要負責讓這件事能被觀測、被評估、被追責
 
 ## 先分清楚：錯答通常是 R 壞了，還是 G 壞了
@@ -74,7 +74,7 @@ production 的成功標準則更像：
 一個看起來很爛的答案，表面上是同一個問題，實際上常常落在兩大類：
 
 ### 類型一：R 不到位
-也就是根本沒撈到正確 evidence。  
+也就是根本沒撈到正確 evidence。
 這時候常見原因包括：
 
 - chunking 顆粒度不對
@@ -85,7 +85,7 @@ production 的成功標準則更像：
 - documents 更新後 index 沒同步
 
 ### 類型二：G 不受控
-也就是 evidence 其實到了，但模型還是亂推。  
+也就是 evidence 其實到了，但模型還是亂推。
 這時候常見原因包括：
 
 - prompt 沒有明確要求 grounded answer
@@ -94,13 +94,13 @@ production 的成功標準則更像：
 - 模型習慣跨段補完，導致 hallucination
 - answer template 沒有留「不知道」的出口
 
-我自己現在的習慣是：  
-**先看 evidence，再看回答。**  
+我自己現在的習慣是：
+**先看 evidence，再看回答。**
 如果根本沒抓到該抓的 chunk，那先別急著怪模型。
 
 ## citation 不是 UX 裝飾，它是風險控制
 
-很多人一開始把 citation 當成 nice-to-have。  
+很多人一開始把 citation 當成 nice-to-have。
 我現在比較不這樣看。
 
 在 production RAG 裡，citation 最少有三個作用：
@@ -109,14 +109,14 @@ production 的成功標準則更像：
 2. **讓團隊能 debug**
 3. **讓系統能被 audit**
 
-如果系統說「依據某份 SOP，退款流程需要主管核准」，那你最好真的能把那份 SOP 的段落指出來。  
+如果系統說「依據某份 SOP，退款流程需要主管核准」，那你最好真的能把那份 SOP 的段落指出來。
 不然在客服、法務、內部知識檢索這些場景，它很難被真正信任。
 
 citation 的價值不是讓畫面看起來很像研究論文，而是把回答綁回 evidence，讓錯誤能被定位。
 
 ## evaluation 不是 vibe check，而是要能支撐迭代
 
-RAG 很容易掉進一種假穩定：  
+RAG 很容易掉進一種假穩定：
 系統看起來「差不多可用」，但你其實不知道它到底是變好了，還是只是碰巧沒踩到爛案例。
 
 這也是為什麼 RAGAs 這類 evaluation framework 近年會被大家拿來談。官方文件現在把 RAG evaluation 拆成 retrieval 與 generation 兩邊都能看的維度，像是：
@@ -124,33 +124,31 @@ RAG 很容易掉進一種假穩定：
 - context precision
 - context recall
 - faithfulness
-- response relevancyciteturn851418search1turn851418search8turn851418search19
-
-我覺得這些指標不是因為名字很漂亮，而是因為它們逼你回答幾個很實際的問題：
+- response relevancy 我覺得這些指標不是因為名字很漂亮，而是因為它們逼你回答幾個很實際的問題：
 
 - 檢索抓回來的東西，真的 relevant 嗎？
 - 該抓的 evidence，有進 topK 嗎？
 - 回答有沒有被 context 支撐？
 - 它是不是只答得流暢，但其實偏題？
 
-如果沒有這些指標，很多團隊最後就只能靠 vibe check：  
-「這題感覺有比較好。」  
+如果沒有這些指標，很多團隊最後就只能靠 vibe check：
+「這題感覺有比較好。」
 這在 demo 很常見，在 production 不太夠。
 
 ## 先做最小指標集合，就已經比沒有好很多
 
-你不一定一開始就要把 evaluation 平台蓋到像機房。  
+你不一定一開始就要把 evaluation 平台蓋到像機房。
 但如果完全沒有指標，後面通常只會靠感覺吵架。
 
 一個很務實的最小集合可以是：
 
 ### Retrieval 面
-- Recall@k  
-- Precision@k  
+- Recall@k
+- Precision@k
 
 ### Generation 面
-- Faithfulness / groundedness  
-- Answer relevance  
+- Faithfulness / groundedness
+- Answer relevance
 
 ### System 面
 - latency
@@ -164,19 +162,19 @@ RAG 很容易掉進一種假穩定：
 
 這點很容易被低估，但其實很重要。
 
-如果你的 RAG 系統接的是企業知識、內部文件、法務條款、客服案例，權限問題不能只在 answer 後面補丁。  
+如果你的 RAG 系統接的是企業知識、內部文件、法務條款、客服案例，權限問題不能只在 answer 後面補丁。
 比較正確的做法通常是：
 
 - document 或 chunk 本身就帶 ACL metadata
 - retrieval 階段就做過濾
 - 不是等答案產出後才想辦法把敏感資訊遮掉
 
-因為很多時候，風險不只是「洩漏答案」，還包含「洩漏某份文件存在」這件事。  
+因為很多時候，風險不只是「洩漏答案」，還包含「洩漏某份文件存在」這件事。
 如果 retrieval 階段不管權限，後面很容易補救不完。
 
 ## versioning 不是文件管理潔癖，而是可重現性的底線
 
-production RAG 最煩的一件事是：  
+production RAG 最煩的一件事是：
 同一個問題，今天答跟明天答不一樣，但你還不知道差在哪。
 
 這時候如果沒有版本資訊，你很難回答：
@@ -202,7 +200,7 @@ production RAG 最煩的一件事是：
 - citation 對到哪裡
 - 使用者後續有沒有追問、有沒有點來源
 
-這些資訊的價值，不只是做 dashboard。  
+這些資訊的價值，不只是做 dashboard。
 它是讓你在系統出錯時，知道到底該修 retrieval、generation、schema、chunking，還是 documents 本身。
 
 ## 什麼時候 production RAG 其實不划算
@@ -225,17 +223,17 @@ production RAG 最煩的一件事是：
 
 如果要把整篇收成一組我真的會拿來用的判準，大概是這樣：
 
-1. evidence 先乾淨，generation 才有意義  
-2. citation 不是裝飾，是風險控制  
-3. evaluation 不求一開始完美，但不能沒有  
-4. ACL 要在 retrieval 階段做  
-5. versioning 是可重現性的底線  
-6. observability 決定你能不能真正 debug  
+1. evidence 先乾淨，generation 才有意義
+2. citation 不是裝飾，是風險控制
+3. evaluation 不求一開始完美，但不能沒有
+4. ACL 要在 retrieval 階段做
+5. versioning 是可重現性的底線
+6. observability 決定你能不能真正 debug
 7. 如果你不知道錯答是 R 壞還是 G 壞，系統就還沒準備好上線
 
 ## 下一篇接什麼
 
-接下來如果要把這整套系列收束，我最想接的是一篇 case study：  
+接下來如果要把這整套系列收束，我最想接的是一篇 case study：
 **我的求職 agent 是怎麼把 JD、CV 與 rubric 串成一條 evidence pipeline。**
 
 那篇會把前面幾篇講的方法真正落進一個系統裡，讓讀者看到這些判準不是抽象規範，而是怎麼在一條工作流裡彼此咬合。
