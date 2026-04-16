@@ -15,9 +15,11 @@ More often, the situation is this: children live far away, work keeps them busy,
 
 It can proactively check in each day, have genuine conversations with elders, and remember things from past interactions to make exchanges feel more continuous. Without making any medical diagnoses, we hope it can accomplish two things at once:
 
-**For elders**, it offers low-pressure companionship with real responses.
+**For elders**, it offers low-pressure companionship with real responses and someone who remembers what was said.
 
-**For family members**, it provides support that doesn't intrude, yet lets everyone feel more at ease.
+**For family members**, it provides support that respects the elder's privacy while keeping family informed through simple status signals and gentle nudges.
+
+For example, instead of full conversation details, it might just communicate a quick overall status — like a traffic-light signal indicating how the elder is doing today.
 
 This is not a surveillance camera. It's not here to replace family.
 
