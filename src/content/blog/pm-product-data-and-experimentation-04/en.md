@@ -73,7 +73,7 @@ That 60 to 70 per cent is usually not exotic. It is the very practical stuff:
 5. Relationship checks: do people who did X later become more likely to do Y?  
 6. Sanity checks: is this a product problem, or is the data lying?
 
-Your PM data course outline captures the minimum kit rather well. Day 4 boils it down to `SELECT / WHERE / GROUP BY / JOIN`, then adds time handling, deduplication, and data types. That looks modest, but in practice it is enough to support a very large amount of first-pass product judgement.
+In your PM data course outline, Day 4 only really needs `SELECT / WHERE / GROUP BY / JOIN`, then adds time handling, deduplication, and data types. That looks modest, but in practice it is enough to support a very large amount of first-pass product judgement.
 
 So the first goal of SQL for PMs is not becoming a wizard.  
 It is stopping the habit of waiting for someone else to translate every product question into a query.
