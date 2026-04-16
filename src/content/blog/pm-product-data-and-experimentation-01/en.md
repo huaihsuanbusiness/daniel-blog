@@ -260,7 +260,7 @@ The North Star matters, but it is more like a compass than a full navigation sys
 
 It points you in a direction, but it does not automatically tell you whether the growth is healthy, whether the trade-off is too costly, or whether the experience is being eaten alive by your own optimisation.
 
-So these days I ask teams less often, “What is your North Star?” and more often:
+So when I talk with other teams about metrics, I do not usually ask, “What is your North Star?” What I want to ask instead is:
 
 - How do you know this North Star really represents user value?
 - Which inputs are meant to move it?

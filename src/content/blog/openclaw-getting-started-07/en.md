@@ -1,5 +1,5 @@
 ---
-title: "Running a Local LLM on a Mac mini M4 with 16GB RAM: Why I Started with Ollama and Llama 3.1 8B"
+title: "OpenClaw Getting Started 07 | Can a Mac mini M4 with 16GB RAM Run a Local LLM? Why I Started with Ollama and Llama 3.1 8B"
 description: "If you have a **Mac mini M4 with 16GB of unified memory and a 256GB SSD**, the first problem with local models is rarely installation. It is choosing a sensible starting point."
 categories: ["openclaw"]
 tags: ["openclaw", "local-llm", "ollama", "llama", "mac-mini", "models"]

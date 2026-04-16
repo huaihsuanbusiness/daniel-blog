@@ -1,5 +1,5 @@
 ---
-title: "OpenClaw Getting Started 02 | Discord, Skills, Memory, Remote Access, and the Safety Baseline"
+title: "OpenClaw Getting Started 03 | Discord, Skills, Memory, Remote Access, and the Safety Baseline"
 description: "For readers who already have the base install working and now want a usable but controlled OpenClaw setup with Discord, skills, memory, remote access, and safer execution boundaries."
 categories: ["openclaw"]
 tags: ["openclaw", "agent", "gateway", "self-hosted", "tools", "memory"]

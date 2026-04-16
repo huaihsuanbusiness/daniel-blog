@@ -1,5 +1,5 @@
 ---
-title: "OpenClaw Getting Started 06｜模型怎麼選？從 OpenAI、Claude、Gemini、Grok、MiniMax、z.ai 到本地模型的實戰選型"
+title: "OpenClaw 快速上手 06｜模型怎麼選？從 OpenAI、Claude、Gemini、Grok、MiniMax、z.ai 到本地模型的實戰選型"
 description: "給想把 OpenClaw 真正用起來的新手。一篇把 API 供應商、可轉接的聊天訂閱方案、成本感、額度風險、agent 適配性與 Daniel 的真實配置一次講清楚的選型文。"
 categories: ["openclaw"]
 tags: ["openclaw", "models", "llm", "providers", "agent", "gateway"]
