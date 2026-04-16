@@ -18,7 +18,7 @@ seriesOrder: 03
 
 它只是讓投資人很快決定，這家公司值不值得我再往下看。
 
-這件事不是 Melanie 自己的偏好。DocSend 在 2024 年的 deck 設計研究裡提到，投資人平均花在一份 pitch deck 上的時間大約是 **2 分 42 秒**。這個數字不是拿來嚇人，而是提醒你：deck 不是白皮書。你沒有十分鐘可以慢慢暖機，更沒有頁面可以浪費在自我感覺良好的鋪陳上。([docsend.com](https://www.docsend.com/blog/deck-design-guidelines-how-to-strengthen-your-pitch-with-design/))
+這件事不是 Melanie 自己的偏好。DocSend 在 2024 年的 deck 設計研究裡提到，投資人平均花在一份 pitch deck 上的時間大約是 **2 分 42 秒**。這個數字不是拿來嚇人，而是提醒你：deck 不是白皮書。你沒有十分鐘可以慢慢暖機，更沒有頁面可以浪費在自我感覺良好的鋪陳上。
 
 我以前會把這件事理解成「投資人很沒耐心」。後來看多了 deck，我反而覺得不是耐心問題，而是工作流問題。早期投資人一天要做的，不是理解一家公司而已，而是先快速分辨：
 
@@ -27,7 +27,7 @@ seriesOrder: 03
 - 如果跑通，能不能長成 venture 規模
 - 現在這支團隊，有沒有理由讓我相信他們不是在空講
 
-也難怪 Sequoia 那份經典的 pitching guide，骨架這麼多年都沒有真的變掉。公司要做什麼、問題是什麼、解法是什麼、為什麼是現在、市場有多大、怎麼賺錢、為什麼是你，還是那幾根骨頭。YC 的 seed 與 Series A deck 指南，實際上也還是在回答差不多的問題。模板之所以長得像，不是因為矽谷缺想像力，而是因為早期投資的判斷，真的就先過這幾道門。([sequoiacap.com](https://sequoiacap.com/article/writing-a-business-plan/)) ([ycombinator.com](https://www.ycombinator.com/library/2u-how-to-build-your-seed-round-pitch-deck)) ([ycombinator.com](https://www.ycombinator.com/library/8d-how-to-build-a-great-series-a-pitch-and-deck))
+也難怪 Sequoia 那份經典的 pitching guide，骨架這麼多年都沒有真的變掉。公司要做什麼、問題是什麼、解法是什麼、為什麼是現在、市場有多大、怎麼賺錢、為什麼是你，還是那幾根骨頭。YC 的 seed 與 Series A deck 指南，實際上也還是在回答差不多的問題。模板之所以長得像，不是因為矽谷缺想像力，而是因為早期投資的判斷，真的就先過這幾道門。
 
 所以我現在比較相信一個沒那麼討喜的說法：
 
@@ -56,7 +56,7 @@ Melanie 課上一直在逼大家做的，其實就是這件事。她要求每個
 
 最常見的倒法，是一上來就用 proof 壓人。大 logo、漂亮數字、巨大的 TAM、滿版市場圖、很厲害的 advisor。這些不是不能放，而是前面兩層沒站住的時候，proof 只會讓 deck 更像推銷。
 
-這也是我現在對 market slide 特別敏感的原因。很多 founder 知道投資人要大市場，於是很自然就把 TAM 做到很漂亮。問題是，大市場如果只是天花板，沒有路徑，對判斷幫助其實不大。YC 一直提醒 founders 要做的是讓人看懂這家公司怎麼長大，不是只把全市場相加。Melanie 在課上也一直強調，早期投資人看 market，不只是看你算出多大的數字，而是看你怎麼想。你的市場切法、假設、底層邏輯，有沒有讓人相信你真的理解買方，而不是只會做投影片。([ycombinator.com](https://www.ycombinator.com/library/2u-how-to-build-your-seed-round-pitch-deck))
+這也是我現在對 market slide 特別敏感的原因。很多 founder 知道投資人要大市場，於是很自然就把 TAM 做到很漂亮。問題是，大市場如果只是天花板，沒有路徑，對判斷幫助其實不大。YC 一直提醒 founders 要做的是讓人看懂這家公司怎麼長大，不是只把全市場相加。Melanie 在課上也一直強調，早期投資人看 market，不只是看你算出多大的數字，而是看你怎麼想。你的市場切法、假設、底層邏輯，有沒有讓人相信你真的理解買方，而不是只會做投影片。
 
 競品頁也是一樣。
 

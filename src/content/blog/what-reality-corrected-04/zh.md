@@ -34,7 +34,7 @@ seriesOrder: 04
 
 不是叫你只挑最容易的市場，也不是叫你一頭衝最大市場。它比較像一張效率地圖。你在找的不是最性感的 segment，而是**相對容易贏，而且贏下來之後真的有意義**的那一塊。
 
-這個想法其實和很多 GTM 實務很接近。OpenView 講 best current customer segmentation 時，會一直把 segmentation 拉回「哪些客戶需求足夠相近、購買方式也足夠相近，值得你用同一套訊息和同一套打法去打」。Bessemer 在談從零到一百萬美元 ARR 的 founder playbook 時，甚至直接建議 founder 先選一個「不舒服地窄」的 ICP，再擴。這兩個建議背後其實是同一件事：你不是在找所有可能買你的人，你是在找**現階段最值得你先集中火力贏下來的那群人**。([openviewpartners.com](https://openviewpartners.com/blog/customer-segmentation/)) ([openviewpartners.com](https://openviewpartners.com/wp-content/uploads/2012/10/Customer-Segmentation-eBook-FINAL.pdf)) ([bvp.com](https://www.bvp.com/atlas/the-founders-playbook-for-scaling-to-1-million-arr))
+這個想法其實和很多 GTM 實務很接近。OpenView 講 best current customer segmentation 時，會一直把 segmentation 拉回「哪些客戶需求足夠相近、購買方式也足夠相近，值得你用同一套訊息和同一套打法去打」。Bessemer 在談從零到一百萬美元 ARR 的 founder playbook 時，甚至直接建議 founder 先選一個「不舒服地窄」的 ICP，再擴。這兩個建議背後其實是同一件事：你不是在找所有可能買你的人，你是在找**現階段最值得你先集中火力贏下來的那群人**。
 
 我原本對 GTM 最大的誤判，是把它想成 PMF 後面的事。
 
@@ -110,7 +110,7 @@ seriesOrder: 04
 
 這個問題如果答不出來，你的 GTM 幾乎一定會越講越虛。
 
-我也越來越同意 Bessemer 那種有點不浪漫的說法。ICP 不是你心裡想像中最理想、最酷、最能講故事的客戶，而是**你現在已經能讓他成功，而且他真的會留下來、會擴張、會變成倡議者的那群人**。([bvp.com](https://www.bvp.com/atlas/a-ceo-s-tactical-guide-to-driving-profitable-growth)) ([bvp.com](https://www.bvp.com/atlas/scaling-to-100-million-ramping-your-cloud-gtm-engine))
+我也越來越同意 Bessemer 那種有點不浪漫的說法。ICP 不是你心裡想像中最理想、最酷、最能講故事的客戶，而是**你現在已經能讓他成功，而且他真的會留下來、會擴張、會變成倡議者的那群人**。
 
 這種講法很容易讓人沮喪，因為它常常意味著：
 
@@ -122,7 +122,7 @@ seriesOrder: 04
 
 這裡最容易自我催眠的地方，是把「先做一個大型客製案」誤認成策略突破。這種事不是不可能有用。只是很多時候，它帶來的不是 product signal，而是組織負擔。Support 變重，roadmap 被拉走，sales motion 被扭曲，接著整家公司花一年服務少數幾個看起來很大、實際上把你帶偏的客戶。
 
-這也是為什麼 OpenView 很早就在講，segmentation 不是市場研究部門的工作，而是成長效率問題。你分得越準，訊息越準，pricing 越準，銷售節奏越準，最後連產品都比較有機會收斂。([openviewpartners.com](https://openviewpartners.com/blog/resegment-your-market/))
+這也是為什麼 OpenView 很早就在講，segmentation 不是市場研究部門的工作，而是成長效率問題。你分得越準，訊息越準，pricing 越準，銷售節奏越準，最後連產品都比較有機會收斂。
 
 當然，這套框架也不是萬靈丹。
 

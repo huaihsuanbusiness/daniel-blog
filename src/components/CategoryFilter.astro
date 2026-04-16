@@ -313,6 +313,10 @@ const seriesLabel = seriesUi[lang];
     applySeriesFilter();
   }
 
+  function stripSeriesPrefix(label) {
+    return String(label || '').replace(/^\s*\d+\.\s*/, '').trim();
+  }
+
   function syncSeriesControl() {
     const options = collectSeries(activeCategory);
     if (!seriesWrap || !seriesSelect || !seriesRow) return;
@@ -331,10 +335,10 @@ const seriesLabel = seriesUi[lang];
     placeholder.textContent = seriesSelect.getAttribute('aria-label') === '查看系列' ? '查看系列' : 'Browse series';
     seriesSelect.appendChild(placeholder);
 
-    options.forEach((option) => {
+    options.forEach((option, index) => {
       const el = document.createElement('option');
       el.value = option.key;
-      el.textContent = option.label;
+      el.textContent = `${index + 1}. ${stripSeriesPrefix(option.label)}`;
       seriesSelect.appendChild(el);
     });
 
