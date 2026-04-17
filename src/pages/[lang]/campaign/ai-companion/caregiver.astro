@@ -455,6 +455,10 @@ function renderQuestion(q: typeof questions[0], qIndex: number) {
     border: 2px solid #fff;
     box-shadow: 0 4px 12px rgba(100, 76, 255, 0.35);
     margin-top: -8px;
+    cursor: grab;
+  }
+  :global(.range-input::-webkit-slider-thumb:active) {
+    cursor: grabbing;
   }
   :global(.range-input::-webkit-slider-runnable-track) {
     height: 8px;
@@ -473,6 +477,10 @@ function renderQuestion(q: typeof questions[0], qIndex: number) {
     background: color-mix(in srgb, var(--accent) 88%, #fff 12%);
     border: 2px solid #fff;
     box-shadow: 0 4px 12px rgba(100, 76, 255, 0.35);
+    cursor: grab;
+  }
+  :global(.range-input::-moz-range-thumb:active) {
+    cursor: grabbing;
   }
   :global(.slider-labels) {
     display: grid;
