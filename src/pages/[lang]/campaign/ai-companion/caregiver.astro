@@ -728,12 +728,16 @@ function renderQuestion(q: typeof questions[0], qIndex: number) {
 
   // ── Draft persistence ────────────────────────────────────────
   function saveDraft() {
-    const data: Record<string, string> = {};
-    new FormData(form).forEach((val, key) => {
+    const data: Record<string, string | string[]> = {};
+    for (const [key, value] of new FormData(form)) {
       if (data[key] === undefined) {
-        data[key] = String(val);
+        data[key] = String(value);
+      } else if (Array.isArray(data[key])) {
+        (data[key] as string[]).push(String(value));
+      } else {
+        data[key] = [data[key] as string, String(value)];
       }
-    });
+    }
     sessionStorage.setItem(SESSION_KEY, JSON.stringify(data));
   }
 
@@ -741,14 +745,23 @@ function renderQuestion(q: typeof questions[0], qIndex: number) {
     const raw = sessionStorage.getItem(SESSION_KEY);
     if (!raw) return;
     try {
-      const data: Record<string, string> = JSON.parse(raw);
+      const data: Record<string, string | string[]> = JSON.parse(raw);
       Object.entries(data).forEach(([key, value]) => {
-        const field = form.querySelector(`[name="${key}"][value="${value}"]`) as HTMLInputElement | null;
-        if (!field) return;
-        if (field.type === 'radio' || field.type === 'checkbox') {
-          field.checked = true;
+        if (Array.isArray(value)) {
+          // checkbox multi-select: restore each checked value
+          value.forEach((v) => {
+            const field = form.querySelector(`[name="${key}"][value="${v}"]`) as HTMLInputElement | null;
+            if (field) field.checked = true;
+          });
         } else {
-          field.value = value;
+          // single value: radio or single checkbox
+          const field = form.querySelector(`[name="${key}"][value="${value}"]`) as HTMLInputElement | null;
+          if (!field) return;
+          if (field.type === 'radio' || field.type === 'checkbox') {
+            field.checked = true;
+          } else {
+            field.value = value;
+          }
         }
       });
       document.querySelectorAll('[data-range-output]').forEach((input) => {
