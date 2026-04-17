@@ -129,7 +129,7 @@ const {
       color: var(--text-secondary);
       margin: 0;
     }
-    .question-block {
+    :global(.question-block) {
       position: relative;
       background: var(--bg-card);
       border: 1px solid color-mix(in srgb, var(--border-color) 92%, transparent);
@@ -139,7 +139,7 @@ const {
       box-shadow: 0 1px 4px var(--shadow);
       transition: background 0.2s, box-shadow 0.2s, border-color 0.2s;
     }
-    .question-block::after {
+    :global(.question-block)::after {
       content: '';
       position: absolute;
       left: 20px;
@@ -148,31 +148,31 @@ const {
       height: 2px;
       background: color-mix(in srgb, var(--border-color) 96%, transparent);
     }
-    .question-code {
+    :global(.question-code) {
       font-size: 0.8rem;
       color: var(--text-muted);
       margin-bottom: 6px;
       font-weight: 500;
       letter-spacing: 0.5px;
     }
-    .question-text {
+    :global(.question-text) {
       font-size: 1.1rem;
       font-weight: 500;
       margin-bottom: 14px;
       color: var(--text-primary);
     }
-    .options-list {
+    :global(.options-list) {
       list-style: none;
       padding: 0;
       margin: 0;
     }
-    .options-list li {
+    :global(.options-list li) {
       margin-bottom: 10px;
     }
-    .options-list li:last-child {
+    :global(.options-list li:last-child) {
       margin-bottom: 0;
     }
-    .option-label {
+    :global(.option-label) {
       display: flex;
       align-items: flex-start;
       gap: 10px;
@@ -183,11 +183,11 @@ const {
       font-size: 1rem;
       color: var(--text-primary);
     }
-    .option-label:hover {
+    :global(.option-label:hover) {
       background: var(--hover-bg);
     }
-    .option-label input[type="radio"],
-    .option-label input[type="checkbox"] {
+    :global(.option-label input[type="radio"]),
+    :global(.option-label input[type="checkbox"]) {
       margin-top: 3px;
       flex-shrink: 0;
       width: 18px;
@@ -246,12 +246,12 @@ const {
       70%  { box-shadow: 0 0 0 3px rgba(200, 60, 60, 0.3); border-color: #e05555; }
       100% { box-shadow: 0 0 0 0 rgba(200, 60, 60, 0); border-color: var(--error-border); }
     }
-    .question-block.question-missing {
+    :global(.question-block.question-missing) {
       animation: missing-pulse 1.2s ease-out 2;
       border: 2px solid var(--error-border);
       background: var(--error-bg);
     }
-    .text-input {
+    :global(.text-input) {
       width: 100%;
       padding: 12px;
       border: 1.5px solid var(--border-color);
@@ -264,32 +264,32 @@ const {
       color: var(--text-primary);
       transition: border-color 0.15s, background 0.2s, color 0.2s;
     }
-    textarea.text-input {
+    :global(textarea.text-input) {
       min-height: 168px;
       padding: 14px 16px;
       line-height: 1.6;
     }
-    .text-input:focus {
+    :global(.text-input:focus) {
       outline: none;
       border-color: var(--accent);
     }
-    .scale-input {
+    :global(.scale-input) {
       display: flex;
       align-items: center;
       gap: 8px;
       flex-wrap: wrap;
     }
-    .scale-input label {
+    :global(.scale-input label) {
       display: flex;
       align-items: center;
       gap: 4px;
       font-size: 0.95rem;
       color: var(--text-primary);
     }
-    .scale-input input[type="radio"] {
+    :global(.scale-input input[type="radio"]) {
       accent-color: var(--accent);
     }
-    .scale-wrapper {
+    :global(.scale-wrapper) {
       display: flex;
       align-items: center;
       gap: 4px;
@@ -408,23 +408,23 @@ const {
     [data-survey-size='elder'] .survey-header h1 {
       font-size: 2.1rem;
     }
-    [data-survey-size='elder'] .question-text {
+    [data-survey-size='elder'] :global(.question-text) {
       font-size: 1.5rem;
     }
-    [data-survey-size='elder'] .option-label {
+    [data-survey-size='elder'] :global(.option-label) {
       font-size: 1.3rem;
       padding: 14px 16px;
     }
-    [data-survey-size='elder'] .option-label input[type='radio'],
-    [data-survey-size='elder'] .option-label input[type='checkbox'] {
+    [data-survey-size='elder'] :global(.option-label input[type='radio']),
+    [data-survey-size='elder'] :global(.option-label input[type='checkbox']) {
       width: 24px;
       height: 24px;
     }
-    [data-survey-size='elder'] .question-block {
+    [data-survey-size='elder'] :global(.question-block) {
       padding: 28px 24px 38px;
       margin-bottom: 28px;
     }
-    [data-survey-size='elder'] .question-block::after {
+    [data-survey-size='elder'] :global(.question-block)::after {
       left: 24px;
       right: 24px;
       height: 2px;
@@ -439,7 +439,7 @@ const {
     [data-survey-size='elder'] .contact-row .text-input {
       margin-bottom: 0;
     }
-    [data-survey-size='elder'] textarea.text-input {
+    [data-survey-size='elder'] :global(textarea.text-input) {
       min-height: 196px;
       font-size: 1.08rem;
     }

@@ -369,12 +369,14 @@ function renderQuestion(q: typeof questions[0], qIndex: number) {
     margin-bottom: 4px;
     letter-spacing: 0.5px;
   }
-  .slider-block {
+  :global(.slider-block) {
     display: grid;
+    grid-template-columns: minmax(0, 1fr);
     gap: 14px;
     margin-top: 10px;
+    width: 100%;
   }
-  .slider-value {
+  :global(.slider-value) {
     justify-self: center;
     min-width: 52px;
     padding: 8px 14px;
@@ -385,30 +387,58 @@ function renderQuestion(q: typeof questions[0], qIndex: number) {
     font-size: 1.05rem;
     text-align: center;
   }
-  .range-input {
-    width: calc(100% + 20px);
-    margin: 0 -10px;
+  :global(.range-input) {
+    display: block;
+    width: 100%;
+    min-width: 100%;
     accent-color: var(--accent);
   }
-  .slider-labels {
+  :global(.range-input::-webkit-slider-runnable-track) {
+    height: 6px;
+    border-radius: 999px;
+    background:
+      repeating-linear-gradient(
+        to right,
+        color-mix(in srgb, var(--border-color) 94%, transparent) 0,
+        color-mix(in srgb, var(--border-color) 94%, transparent) 2px,
+        transparent 2px,
+        transparent calc(10% - 2px)
+      ),
+      color-mix(in srgb, var(--accent) 12%, var(--bg-page));
+  }
+  :global(.range-input::-moz-range-track) {
+    height: 6px;
+    border-radius: 999px;
+    background:
+      repeating-linear-gradient(
+        to right,
+        color-mix(in srgb, var(--border-color) 94%, transparent) 0,
+        color-mix(in srgb, var(--border-color) 94%, transparent) 2px,
+        transparent 2px,
+        transparent calc(10% - 2px)
+      ),
+      color-mix(in srgb, var(--accent) 12%, var(--bg-page));
+  }
+  :global(.slider-labels) {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 12px;
     font-size: 0.92rem;
     color: var(--text-secondary);
   }
-  .slider-labels span:last-child {
+  :global(.slider-labels span:last-child) {
     text-align: right;
   }
-  .matrix-table-wrap {
+  :global(.matrix-table-wrap) {
     overflow-x: auto;
+    width: 100%;
     margin-top: 12px;
     border: 1px solid color-mix(in srgb, var(--border-color) 88%, transparent);
     border-radius: 16px;
     background: color-mix(in srgb, var(--bg-page) 60%, transparent);
     padding: 4px;
   }
-  .matrix-table {
+  :global(.matrix-table) {
     width: 100%;
     min-width: 760px;
     border-collapse: separate;
@@ -416,31 +446,31 @@ function renderQuestion(q: typeof questions[0], qIndex: number) {
     font-size: 0.98rem;
     table-layout: fixed;
   }
-  .matrix-table th, .matrix-table td {
+  :global(.matrix-table th), :global(.matrix-table td) {
     padding: 16px 14px;
     text-align: center;
     vertical-align: middle;
     border-bottom: 1px solid color-mix(in srgb, var(--border-color) 84%, transparent);
     background: transparent;
   }
-  .matrix-table th {
+  :global(.matrix-table th) {
     font-size: 0.9rem;
     color: var(--text-secondary);
     font-weight: 700;
     white-space: nowrap;
     background: color-mix(in srgb, var(--bg-card) 74%, var(--bg-page));
   }
-  .matrix-table th:not(.matrix-corner),
-  .matrix-table td:not(.row-label) {
+  :global(.matrix-table th:not(.matrix-corner)),
+  :global(.matrix-table td:not(.row-label)) {
     min-width: 120px;
     width: 120px;
   }
-  .matrix-table .matrix-corner {
+  :global(.matrix-table .matrix-corner) {
     min-width: 280px;
     width: 280px;
     text-align: left;
   }
-  .matrix-table .row-label {
+  :global(.matrix-table .row-label) {
     min-width: 280px;
     width: 280px;
     text-align: left;
@@ -452,10 +482,10 @@ function renderQuestion(q: typeof questions[0], qIndex: number) {
     word-break: break-word;
     background: color-mix(in srgb, var(--bg-card) 58%, var(--bg-page));
   }
-  .matrix-table tr:last-child td {
+  :global(.matrix-table tr:last-child td) {
     border-bottom: none;
   }
-  .matrix-table input[type="checkbox"] {
+  :global(.matrix-table input[type="checkbox"]) {
     accent-color: #4a7c59;
     width: 20px;
     height: 20px;
@@ -491,7 +521,7 @@ function renderQuestion(q: typeof questions[0], qIndex: number) {
     font-size: 0.98rem;
     color: var(--text-muted);
   }
-  .option-label.option-disabled {
+  :global(.option-label.option-disabled) {
     opacity: 0.48;
     cursor: not-allowed;
   }
