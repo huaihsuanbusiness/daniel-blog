@@ -67,11 +67,13 @@ const questions = [
   {
     code: 'A9', text: '如果要試試看，您最希望它做到哪幾件事？（最多選 3 項）',
     type: 'checkbox',
+    maxSelect: 3,
     options: ['每天問安', '陪我聊幾句', '記得我前幾天說過的事', '提醒生活小事', '心情不好時陪我說說話', '讓孩子比較放心', '其他']
   },
   {
     code: 'A10', text: '您最擔心的是什麼？（最多選 3 項）',
     type: 'checkbox',
+    maxSelect: 3,
     options: ['它聽不懂我說話', '操作太麻煩', '感覺像在監視我', '我說的話被別人看到', '太假不像真人', '會打擾我', '我不需要', '其他']
   },
   // A-4 互動頻率與入口偏好
@@ -140,6 +142,7 @@ const questions = [
     code: 'A22', section: 'A-7 控制權需求',
     text: '以下哪些做法會讓您比較安心？（最多選 3 項）',
     type: 'checkbox',
+    maxSelect: 3,
     options: ['我可以自己選擇要分享多少資訊', '我可以隨時暫停分享', '要送給孩子前我會先知道會送什麼', '只有異常時才分享更多', '我可以指定只給哪一位家人看', '其他', '這些都不重要']
   },
   {
@@ -190,7 +193,7 @@ function renderQuestion(q: typeof questions[0], qIndex: number) {
 
   if (q.type === 'checkbox') {
     return `
-  <div class="question-block">
+  <div class="question-block" ${q.maxSelect ? `data-max-select="${q.maxSelect}"` : ''}>
     ${q.section ? `<div class="section-label">${q.section}</div>` : ''}
     <div class="question-code">${q.code}</div>
     <div class="question-text">${q.text}</div>
@@ -323,6 +326,10 @@ const refParam = '';
   [data-survey-size='elder'] .contact-row .text-input::placeholder {
     font-size: 1.04rem;
   }
+  .option-label.option-disabled {
+    opacity: 0.48;
+    cursor: not-allowed;
+  }
 </style>
 
 <script>
@@ -337,6 +344,49 @@ const refParam = '';
   const form = document.getElementById('survey-form');
   const submitBtn = document.getElementById('submit-btn');
   const errorContainer = document.getElementById('error-container');
+
+  function setupMaxSelectLimits() {
+    const limitedBlocks = document.querySelectorAll('.question-block[data-max-select]');
+
+    limitedBlocks.forEach((block) => {
+      const max = Number(block.getAttribute('data-max-select') || '0');
+      const boxes = Array.from(block.querySelectorAll('input[type="checkbox"]'));
+      if (!max || boxes.length === 0) return;
+
+      const sync = () => {
+        const checkedCount = boxes.filter((box) => box.checked).length;
+        const reached = checkedCount >= max;
+
+        boxes.forEach((box) => {
+          const shouldDisable = reached && !box.checked;
+          box.disabled = shouldDisable;
+          box.closest('.option-label')?.classList.toggle('option-disabled', shouldDisable);
+        });
+      };
+
+      boxes.forEach((box) => box.addEventListener('change', sync));
+      sync();
+    });
+  }
+
+  function validateMaxSelectLimits() {
+    const limitedBlocks = Array.from(document.querySelectorAll('.question-block[data-max-select]'));
+
+    for (const block of limitedBlocks) {
+      const max = Number(block.getAttribute('data-max-select') || '0');
+      const checkedCount = block.querySelectorAll('input[type="checkbox"]:checked').length;
+      if (max && checkedCount > max) {
+        block.classList.add('question-missing');
+        block.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        errorContainer.innerHTML = `<div class="error-msg">這題最多只能選 ${max} 項</div>`;
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  setupMaxSelectLimits();
 
   // Contact conditional reveal
   const contactConditional = document.getElementById('contact-conditional');
@@ -357,6 +407,11 @@ const refParam = '';
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     errorContainer.innerHTML = '';
+    document.querySelectorAll('.question-missing').forEach(el => el.classList.remove('question-missing'));
+
+    if (!validateMaxSelectLimits()) {
+      return;
+    }
 
     const formData = new FormData(form);
     const answers = {};

@@ -49,7 +49,7 @@ const questions = [
   },
   {
     code: 'B8', text: '您目前對這位長輩的擔心程度大概是？',
-    type: 'scale',
+    type: 'slider',
     options: Array.from({ length: 11 }, (_, i) => String(i)),
     scaleLabels: ['幾乎不擔心', '非常擔心']
   },
@@ -91,6 +91,7 @@ const questions = [
   {
     code: 'B15', text: '如果只能選兩個，您最希望這個服務做到哪兩件事？',
     type: 'checkbox',
+    maxSelect: 2,
     options: ['每天幫忙問安', '長輩能有人聊幾句', '提供心情／狀態趨勢', '異常早知道', '沒有 check-in 時提醒我', '幫助家人協作', '其他']
   },
   // B-5 家屬想要的輸出格式
@@ -223,7 +224,7 @@ function renderQuestion(q: typeof questions[0], qIndex: number) {
 
   if (q.type === 'checkbox') {
     return `
-  <div class="question-block">
+  <div class="question-block" ${q.maxSelect ? `data-max-select="${q.maxSelect}"` : ''}>
     ${q.section ? `<div class="section-label">${q.section}</div>` : ''}
     <div class="question-code">${q.code}</div>
     <div class="question-text">${q.text}</div>
@@ -257,6 +258,26 @@ function renderQuestion(q: typeof questions[0], qIndex: number) {
   </div>`;
   }
 
+  if (q.type === 'slider') {
+    return `
+  <div class="question-block">
+    ${q.section ? `<div class="section-label">${q.section}</div>` : ''}
+    <div class="question-code">${q.code}</div>
+    <div class="question-text">${q.text}</div>
+    <div class="slider-block">
+      <div class="slider-value" id="${name}-value">5</div>
+      <input type="range" name="${name}" min="0" max="10" step="1" value="5" class="range-input" data-range-output="${name}-value" ${reqAttr} />
+      <div class="slider-labels">
+        <span>${q.scaleLabels![0]}</span>
+        <span>${q.scaleLabels![1]}</span>
+      </div>
+      <div class="slider-ticks">
+        ${q.options!.map((opt) => `<span>${opt}</span>`).join('')}
+      </div>
+    </div>
+  </div>`;
+  }
+
   if (q.type === 'textarea') {
     return `
   <div class="question-block">
@@ -273,24 +294,26 @@ function renderQuestion(q: typeof questions[0], qIndex: number) {
     ${q.section ? `<div class="section-label">${q.section}</div>` : ''}
     <div class="question-code">${q.code}</div>
     <div class="question-text">${q.text}</div>
-    <table class="matrix-table">
-      <thead>
-        <tr>
-          <th></th>
-          ${q.cols!.map(c => `<th>${c}</th>`).join('')}
-        </tr>
-      </thead>
-      <tbody>
-        ${q.rows!.map(row => `
-        <tr>
-          <td class="row-label">${row}</td>
-          ${q.cols!.map(col => `
-          <td>
-            <input type="checkbox" name="${name}" value="${row}|${col}" />
-          </td>`).join('')}
-        </tr>`).join('')}
-      </tbody>
-    </table>
+    <div class="matrix-table-wrap">
+      <table class="matrix-table">
+        <thead>
+          <tr>
+            <th class="matrix-corner"></th>
+            ${q.cols!.map(c => `<th>${c}</th>`).join('')}
+          </tr>
+        </thead>
+        <tbody>
+          ${q.rows!.map(row => `
+          <tr>
+            <td class="row-label">${row}</td>
+            ${q.cols!.map(col => `
+            <td>
+              <input type="checkbox" name="${name}" value="${row}|${col}" />
+            </td>`).join('')}
+          </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>
   </div>`;
   }
 
@@ -349,32 +372,92 @@ function renderQuestion(q: typeof questions[0], qIndex: number) {
     margin-bottom: 4px;
     letter-spacing: 0.5px;
   }
-  .matrix-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.9rem;
+  .slider-block {
+    display: grid;
+    gap: 12px;
     margin-top: 8px;
   }
-  .matrix-table th, .matrix-table td {
-    padding: 8px 6px;
+  .slider-value {
+    justify-self: center;
+    min-width: 52px;
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--accent) 14%, var(--bg-page));
+    color: var(--text-primary);
+    font-weight: 700;
+    font-size: 1.05rem;
     text-align: center;
-    border-bottom: 1px solid #eee;
+  }
+  .range-input {
+    width: 100%;
+    accent-color: var(--accent);
+  }
+  .slider-labels,
+  .slider-ticks {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+  .slider-labels {
+    font-size: 0.92rem;
+    color: var(--text-secondary);
+  }
+  .slider-labels span:last-child {
+    text-align: right;
+  }
+  .slider-ticks {
+    grid-template-columns: repeat(11, minmax(0, 1fr));
+    gap: 4px;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    text-align: center;
+  }
+  .matrix-table-wrap {
+    overflow-x: auto;
+    margin-top: 10px;
+    border: 1px solid color-mix(in srgb, var(--border-color) 85%, transparent);
+    border-radius: 14px;
+    background: color-mix(in srgb, var(--bg-page) 55%, transparent);
+  }
+  .matrix-table {
+    width: 100%;
+    min-width: 620px;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 0.96rem;
+  }
+  .matrix-table th, .matrix-table td {
+    padding: 14px 12px;
+    text-align: center;
+    border-bottom: 1px solid color-mix(in srgb, var(--border-color) 80%, transparent);
+    background: transparent;
   }
   .matrix-table th {
-    font-size: 0.8rem;
-    color: #666;
-    font-weight: 500;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    font-weight: 700;
+    white-space: nowrap;
+    background: color-mix(in srgb, var(--bg-card) 70%, var(--bg-page));
+  }
+  .matrix-table .matrix-corner {
+    min-width: 220px;
+    width: 220px;
+    text-align: left;
   }
   .matrix-table .row-label {
+    min-width: 220px;
+    width: 220px;
     text-align: left;
-    font-weight: 400;
-    padding-left: 4px;
-    color: #333;
+    font-weight: 500;
+    padding-left: 14px;
+    color: var(--text-primary);
+    line-height: 1.55;
+    background: color-mix(in srgb, var(--bg-card) 55%, var(--bg-page));
   }
   .matrix-table input[type="checkbox"] {
     accent-color: #4a7c59;
-    width: 18px;
-    height: 18px;
+    width: 20px;
+    height: 20px;
   }
   .contact-row {
     display: flex;
@@ -407,12 +490,72 @@ function renderQuestion(q: typeof questions[0], qIndex: number) {
     font-size: 0.98rem;
     color: var(--text-muted);
   }
+  .option-label.option-disabled {
+    opacity: 0.48;
+    cursor: not-allowed;
+  }
 </style>
 
 <script>
   const form = document.getElementById('survey-form') as HTMLFormElement;
   const submitBtn = document.getElementById('submit-btn') as HTMLButtonElement;
   const errorContainer = document.getElementById('error-container') as HTMLDivElement;
+
+  function setupMaxSelectLimits() {
+    const limitedBlocks = document.querySelectorAll('.question-block[data-max-select]');
+
+    limitedBlocks.forEach((block) => {
+      const max = Number(block.getAttribute('data-max-select') || '0');
+      const boxes = Array.from(block.querySelectorAll('input[type="checkbox"]')) as HTMLInputElement[];
+      if (!max || boxes.length === 0) return;
+
+      const sync = () => {
+        const checkedCount = boxes.filter((box) => box.checked).length;
+        const reached = checkedCount >= max;
+
+        boxes.forEach((box) => {
+          const shouldDisable = reached && !box.checked;
+          box.disabled = shouldDisable;
+          box.closest('.option-label')?.classList.toggle('option-disabled', shouldDisable);
+        });
+      };
+
+      boxes.forEach((box) => box.addEventListener('change', sync));
+      sync();
+    });
+  }
+
+  function validateMaxSelectLimits() {
+    const limitedBlocks = Array.from(document.querySelectorAll('.question-block[data-max-select]'));
+
+    for (const block of limitedBlocks) {
+      const max = Number(block.getAttribute('data-max-select') || '0');
+      const checkedCount = block.querySelectorAll('input[type="checkbox"]:checked').length;
+      if (max && checkedCount > max) {
+        block.classList.add('question-missing');
+        block.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        errorContainer.innerHTML = `<div class="error-msg">這題最多只能選 ${max} 項</div>`;
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  setupMaxSelectLimits();
+
+  document.querySelectorAll('[data-range-output]').forEach((input) => {
+    const outputId = input.getAttribute('data-range-output');
+    const output = outputId ? document.getElementById(outputId) : null;
+    if (!output) return;
+
+    const sync = () => {
+      output.textContent = input.value;
+    };
+
+    input.addEventListener('input', sync);
+    sync();
+  });
 
   // Contact conditional reveal
   const contactConditional = document.getElementById('contact-conditional');
@@ -433,6 +576,11 @@ function renderQuestion(q: typeof questions[0], qIndex: number) {
   submitBtn.addEventListener('click', async (e) => {
     e.preventDefault();
     errorContainer.innerHTML = '';
+    document.querySelectorAll('.question-missing').forEach(el => el.classList.remove('question-missing'));
+
+    if (!validateMaxSelectLimits()) {
+      return;
+    }
 
     const formData = new FormData(form);
     const answers: Record<string, string | string[]> = {};

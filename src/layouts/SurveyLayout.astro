@@ -130,12 +130,22 @@ const {
       margin: 0;
     }
     .question-block {
+      position: relative;
       background: var(--bg-card);
       border-radius: 12px;
-      padding: 20px;
-      margin-bottom: 16px;
+      padding: 20px 20px 28px;
+      margin-bottom: 22px;
       box-shadow: 0 1px 4px var(--shadow);
       transition: background 0.2s, box-shadow 0.2s;
+    }
+    .question-block::after {
+      content: '';
+      position: absolute;
+      left: 20px;
+      right: 20px;
+      bottom: 0;
+      height: 1px;
+      background: color-mix(in srgb, var(--border-color) 86%, transparent);
     }
     .question-code {
       font-size: 0.8rem;
@@ -405,7 +415,12 @@ const {
       height: 24px;
     }
     [data-survey-size='elder'] .question-block {
-      padding: 28px 24px;
+      padding: 28px 24px 36px;
+      margin-bottom: 26px;
+    }
+    [data-survey-size='elder'] .question-block::after {
+      left: 24px;
+      right: 24px;
     }
     [data-survey-size='elder'] .submit-btn {
       font-size: 1.28rem;
