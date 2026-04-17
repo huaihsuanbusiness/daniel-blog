@@ -185,13 +185,13 @@ export class GoogleSheet {
   }
 
   private async getHeaderRow_(): Promise<string[]> {
-    const ref = encodeURIComponent("'Survey_Responses'");
+    const ref = '%27Survey_Responses%27';
     const res = await this.api<{ values?: string[][] }>(`/values/${ref}!1:1`);
     return res.values?.[0] || [];
   }
 
   private async lastRow_(): Promise<number> {
-    const ref = encodeURIComponent("'Survey_Responses'");
+    const ref = '%27Survey_Responses%27';
     const res = await this.api<{ values?: unknown[][] }>(`/values/${ref}!A:A`);
     return res.values?.length ?? 0;
   }
