@@ -330,7 +330,6 @@ function renderQuestion(q: typeof questions[0], qIndex: number) {
       <div class="question-text">聯絡方式（至少填寫一格）</div>
       <div class="contact-row"><span class="contact-row-label">電子郵件</span><input type="email" name="contact_email" class="text-input" placeholder="電子郵件，例如：example@email.com" /></div>
       <div class="contact-row"><span class="contact-row-label">LINE</span><input type="text" name="contact_line" class="text-input" placeholder="LINE ID" /></div>
-      <div class="contact-row"><span class="contact-row-label">手機</span><input type="tel" name="contact_phone" class="text-input" placeholder="手機號碼" /></div>
       <ul class="options-list">
         <li><label class="option-label"><input type="checkbox" name="consent_followup" value="我願意接受與本研究相關的後續聯絡，包括免費試用邀請與產品優先測試通知" /> <span>我願意接受與本研究相關的後續聯絡，包括免費試用邀請與產品優先測試通知</span></label></li>
         <li><label class="option-label"><input type="checkbox" name="consent_interview" value="我願意接受後續深度訪談邀請（約 15–30 分鐘）" /> <span>我願意接受後續深度訪談邀請（約 15–30 分鐘）</span></label></li>
@@ -396,10 +395,10 @@ function renderQuestion(q: typeof questions[0], qIndex: number) {
   .contact-row .text-input {
     flex: 1;
     margin-bottom: 0 !important;
-    min-height: 52px;
-    height: 52px;
-    padding: 12px 16px;
-    font-size: 1rem;
+    min-height: 46px;
+    height: 46px;
+    padding: 10px 14px;
+    font-size: 0.98rem;
     line-height: 1.3;
     border-radius: 14px;
     resize: none;
@@ -478,8 +477,7 @@ function renderQuestion(q: typeof questions[0], qIndex: number) {
     if (contactWilling === '願意') {
       const email = (document.querySelector('input[name="contact_email"]') as HTMLInputElement)?.value.trim();
       const line = (document.querySelector('input[name="contact_line"]') as HTMLInputElement)?.value.trim();
-      const phone = (document.querySelector('input[name="contact_phone"]') as HTMLInputElement)?.value.trim();
-      const hasContact = !!(email || line || phone);
+      const hasContact = !!(email || line);
       const consentFollowup = !!(document.querySelector('input[name="consent_followup"]:checked'));
       const consentInterview = !!(document.querySelector('input[name="consent_interview"]:checked'));
       const hasConsent = consentFollowup || consentInterview;
@@ -493,7 +491,7 @@ function renderQuestion(q: typeof questions[0], qIndex: number) {
         if (!hasContact && !hasConsent) {
           errorContainer.innerHTML = `<div class="error-msg">請填寫聯絡方式（至少一項）並選擇後續聯絡意願（至少一項）</div>`;
         } else if (!hasContact) {
-          errorContainer.innerHTML = `<div class="error-msg">請填寫電子郵件、LINE 或手機（至少一項）</div>`;
+          errorContainer.innerHTML = `<div class="error-msg">請填寫電子郵件或 LINE（至少一項）</div>`;
         } else {
           errorContainer.innerHTML = `<div class="error-msg">請選擇後續聯絡意願（至少一項）</div>`;
         }
