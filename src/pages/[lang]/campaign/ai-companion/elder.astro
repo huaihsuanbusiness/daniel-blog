@@ -439,6 +439,13 @@ const refParam = '';
     try {
       const data: Record<string, string | string[]> = JSON.parse(raw);
       Object.entries(data).forEach(([key, value]) => {
+        // text / textarea / email: use name-only selector
+        const textField = form.querySelector(`[name="${key}"]:not([type="radio"]):not([type="checkbox"])`) as HTMLInputElement | null;
+        if (textField) {
+          textField.value = String(value);
+          return;
+        }
+        // radio / checkbox
         if (Array.isArray(value)) {
           value.forEach((v) => {
             const field = form.querySelector(`[name="${key}"][value="${v}"]`) as HTMLInputElement | null;
@@ -446,12 +453,7 @@ const refParam = '';
           });
         } else {
           const field = form.querySelector(`[name="${key}"][value="${value}"]`) as HTMLInputElement | null;
-          if (!field) return;
-          if (field.type === 'radio' || field.type === 'checkbox') {
-            field.checked = true;
-          } else {
-            field.value = value;
-          }
+          if (field) field.checked = true;
         }
       });
       const willing = document.querySelector('input[name="contact_willing"]:checked')?.value;
