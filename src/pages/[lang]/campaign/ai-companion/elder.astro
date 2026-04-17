@@ -186,6 +186,7 @@ function renderQuestion(q: typeof questions[0], qIndex: number) {
           <input type="radio" name="${name}" value="${opt}" ${reqAttr} />
           <span>${opt}</span>
         </label>
+        ${opt === '其他' ? `<div class="other-reveal" id="other-reveal-${q.code}"><input type="text" class="other-text-input" name="${name}_other" placeholder="請說明（選填）" autocomplete="off" /></div>` : ''}
       </li>`).join('')}
     </ul>
   </div>`;
@@ -204,6 +205,7 @@ function renderQuestion(q: typeof questions[0], qIndex: number) {
           <input type="checkbox" name="${name}" value="${opt}" />
           <span>${opt}</span>
         </label>
+        ${opt === '其他' ? `<div class="other-reveal" id="other-reveal-${q.code}"><input type="text" class="other-text-input" name="${name}_other" placeholder="請說明（選填）" autocomplete="off" /></div>` : ''}
       </li>`).join('')}
     </ul>
   </div>`;
@@ -330,6 +332,32 @@ const refParam = '';
     opacity: 0.48;
     cursor: not-allowed;
   }
+  :global(.other-reveal) {
+    display: none;
+    margin: 8px 0 4px 32px;
+  }
+  :global(.other-reveal.visible) {
+    display: block;
+  }
+  :global(.other-text-input) {
+    width: 100%;
+    max-width: 340px;
+    padding: 10px 14px;
+    font-size: 0.95rem;
+    border: 1.5px solid color-mix(in srgb, var(--border-color) 70%, transparent);
+    border-radius: 12px;
+    background: color-mix(in srgb, var(--bg-card) 50%, var(--bg-page));
+    color: var(--text-primary);
+    outline: none;
+    transition: border-color 0.18s ease, box-shadow 0.18s ease;
+  }
+  :global(.other-text-input::placeholder) {
+    color: var(--text-muted);
+  }
+  :global(.other-text-input:focus) {
+    border-color: color-mix(in srgb, var(--accent) 60%, transparent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 14%, transparent);
+  }
 </style>
 
 <script>
@@ -387,6 +415,35 @@ const refParam = '';
   }
 
   setupMaxSelectLimits();
+
+  // ── Other-reveal logic ──────────────────────────────────────
+  function setupOtherReveal() {
+    document.querySelectorAll('.question-block').forEach((block) => {
+      const radios = block.querySelectorAll('input[type="radio"]');
+      const checkboxes = block.querySelectorAll('input[type="checkbox"]');
+
+      if (radios.length > 0) {
+        const reveal = block.querySelector('.other-reveal');
+        if (!reveal) return;
+        const sync = () => {
+          const checked = block.querySelector('input[type="radio"]:checked');
+          reveal.classList.toggle('visible', checked?.value === '其他');
+        };
+        radios.forEach((r) => r.addEventListener('change', sync));
+        sync();
+      } else if (checkboxes.length > 0) {
+        const reveal = block.querySelector('.other-reveal');
+        if (!reveal) return;
+        const sync = () => {
+          const otherCb = block.querySelector('input[value="其他"]');
+          reveal.classList.toggle('visible', otherCb?.checked ?? false);
+        };
+        checkboxes.forEach((c) => c.addEventListener('change', sync));
+        sync();
+      }
+    });
+  }
+  setupOtherReveal();
 
   // Contact conditional reveal
   const contactConditional = document.getElementById('contact-conditional');
