@@ -693,6 +693,57 @@ function renderQuestion(q: typeof questions[0], qIndex: number) {
   const form = document.getElementById('survey-form') as HTMLFormElement;
   const submitBtn = document.getElementById('submit-btn') as HTMLButtonElement;
   const errorContainer = document.getElementById('error-container') as HTMLDivElement;
+  const SESSION_KEY = 'caregiver_survey_draft';
+
+  // ── Draft persistence ────────────────────────────────────────
+  function saveDraft() {
+    const data: Record<string, string> = {};
+    new FormData(form).forEach((val, key) => {
+      if (data[key] === undefined) {
+        data[key] = String(val);
+      }
+    });
+    sessionStorage.setItem(SESSION_KEY, JSON.stringify(data));
+  }
+
+  function restoreDraft() {
+    const raw = sessionStorage.getItem(SESSION_KEY);
+    if (!raw) return;
+    try {
+      const data: Record<string, string> = JSON.parse(raw);
+      Object.entries(data).forEach(([key, value]) => {
+        const field = form.querySelector(`[name="${key}"]`) as HTMLInputElement | null;
+        if (!field) return;
+        if (field.type === 'radio' || field.type === 'checkbox') {
+          field.checked = field.value === value;
+        } else {
+          field.value = value;
+        }
+      });
+      document.querySelectorAll('[data-range-output]').forEach((input) => {
+        const out = document.getElementById(input.getAttribute('data-range-output') || '');
+        if (out) out.textContent = (input as HTMLInputElement).value;
+      });
+      const willing = document.querySelector('input[name="contact_willing"]:checked')?.value;
+      const contactConditional = document.getElementById('contact-conditional');
+      if (contactConditional) {
+        contactConditional.style.display = willing === '願意' ? 'block' : 'none';
+      }
+    } catch { /* ignore parse errors */ }
+  }
+
+  function clearDraft() {
+    sessionStorage.removeItem(SESSION_KEY);
+  }
+
+  restoreDraft();
+
+  let saveTimer: ReturnType<typeof setTimeout>;
+  form.addEventListener('input', () => {
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(saveDraft, 300);
+  });
+
 
   function setupMaxSelectLimits() {
     const limitedBlocks = document.querySelectorAll('.question-block[data-max-select]');
@@ -862,6 +913,7 @@ function renderQuestion(q: typeof questions[0], qIndex: number) {
       sessionStorage.setItem('survey_familyId', data.familyId);
       sessionStorage.setItem('survey_inviteLink', data.inviteLink || '');
       sessionStorage.setItem('survey_role', 'caregiver');
+      clearDraft();
       const lang = window.location.pathname.split('/').filter(Boolean)[0] || 'zh';
       window.location.href = `/${lang}/campaign/ai-companion/thank-you`;
     } catch (err: any) {
