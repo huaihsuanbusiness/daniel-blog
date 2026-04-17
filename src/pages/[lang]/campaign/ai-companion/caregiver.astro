@@ -293,6 +293,10 @@ function renderQuestion(q: typeof questions[0], qIndex: number) {
     <div class="question-text">${q.text}</div>
     <div class="matrix-table-wrap">
       <table class="matrix-table">
+        <colgroup>
+          <col class="matrix-col-label" />
+          ${q.cols!.map(() => `<col class="matrix-col-option" />`).join('')}
+        </colgroup>
         <thead>
           <tr>
             <th class="matrix-corner"></th>
@@ -375,6 +379,7 @@ function renderQuestion(q: typeof questions[0], qIndex: number) {
     gap: 14px;
     margin-top: 10px;
     width: 100%;
+    max-width: 100%;
   }
   :global(.slider-value) {
     justify-self: center;
@@ -392,6 +397,9 @@ function renderQuestion(q: typeof questions[0], qIndex: number) {
     width: 100%;
     min-width: 100%;
     accent-color: var(--accent);
+  }
+  :global(.range-input::-webkit-slider-thumb) {
+    margin-top: -5px;
   }
   :global(.range-input::-webkit-slider-runnable-track) {
     height: 6px;
@@ -430,7 +438,7 @@ function renderQuestion(q: typeof questions[0], qIndex: number) {
     text-align: right;
   }
   :global(.matrix-table-wrap) {
-    overflow-x: auto;
+    overflow-x: visible;
     width: 100%;
     margin-top: 12px;
     border: 1px solid color-mix(in srgb, var(--border-color) 88%, transparent);
@@ -440,7 +448,7 @@ function renderQuestion(q: typeof questions[0], qIndex: number) {
   }
   :global(.matrix-table) {
     width: 100%;
-    min-width: 760px;
+    min-width: 0;
     border-collapse: separate;
     border-spacing: 0;
     font-size: 0.98rem;
@@ -460,19 +468,16 @@ function renderQuestion(q: typeof questions[0], qIndex: number) {
     white-space: nowrap;
     background: color-mix(in srgb, var(--bg-card) 74%, var(--bg-page));
   }
-  :global(.matrix-table th:not(.matrix-corner)),
-  :global(.matrix-table td:not(.row-label)) {
-    min-width: 120px;
-    width: 120px;
+  :global(.matrix-table .matrix-col-label) {
+    width: 46%;
+  }
+  :global(.matrix-table .matrix-col-option) {
+    width: 18%;
   }
   :global(.matrix-table .matrix-corner) {
-    min-width: 280px;
-    width: 280px;
     text-align: left;
   }
   :global(.matrix-table .row-label) {
-    min-width: 280px;
-    width: 280px;
     text-align: left;
     font-weight: 500;
     padding: 18px 18px 18px 20px;
@@ -489,6 +494,14 @@ function renderQuestion(q: typeof questions[0], qIndex: number) {
     accent-color: #4a7c59;
     width: 20px;
     height: 20px;
+  }
+  @media (max-width: 860px) {
+    :global(.matrix-table-wrap) {
+      overflow-x: auto;
+    }
+    :global(.matrix-table) {
+      min-width: 700px;
+    }
   }
   .contact-row {
     display: flex;
