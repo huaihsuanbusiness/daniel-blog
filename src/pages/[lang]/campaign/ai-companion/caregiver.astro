@@ -304,12 +304,12 @@ function renderQuestion(q: typeof questions[0], qIndex: number) {
           </tr>
         </thead>
         <tbody>
-          ${q.rows!.map(row => `
+          ${q.rows!.map((row, rowIndex) => `
           <tr>
             <td class="row-label">${row}</td>
             ${q.cols!.map(col => `
             <td>
-              <input type="checkbox" name="${name}" value="${row}|${col}" />
+              <input type="radio" name="${name}__${rowIndex}" value="${row}|${col}" />
             </td>`).join('')}
           </tr>`).join('')}
         </tbody>
@@ -399,7 +399,15 @@ function renderQuestion(q: typeof questions[0], qIndex: number) {
     accent-color: var(--accent);
   }
   :global(.range-input::-webkit-slider-thumb) {
-    margin-top: -5px;
+    -webkit-appearance: none;
+    appearance: none;
+    width: 24px;
+    height: 24px;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--accent) 88%, #fff 12%);
+    border: 2px solid #fff;
+    box-shadow: 0 4px 12px rgba(100, 76, 255, 0.35);
+    margin-top: -8px;
   }
   :global(.range-input::-webkit-slider-runnable-track) {
     height: 8px;
@@ -428,6 +436,14 @@ function renderQuestion(q: typeof questions[0], qIndex: number) {
       ),
       color-mix(in srgb, var(--accent) 28%, var(--bg-page));
     box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 24%, transparent);
+  }
+  :global(.range-input::-moz-range-thumb) {
+    width: 24px;
+    height: 24px;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--accent) 88%, #fff 12%);
+    border: 2px solid #fff;
+    box-shadow: 0 4px 12px rgba(100, 76, 255, 0.35);
   }
   :global(.slider-labels) {
     display: grid;
@@ -492,12 +508,13 @@ function renderQuestion(q: typeof questions[0], qIndex: number) {
   :global(.matrix-table tr:last-child td) {
     border-bottom: none;
   }
-  :global(.matrix-table input[type="checkbox"]) {
+  :global(.matrix-table input[type="checkbox"]),
+  :global(.matrix-table input[type="radio"]) {
     accent-color: var(--accent);
     width: 20px;
     height: 20px;
   }
-  :global(.matrix-table td:has(input[type="checkbox"]:checked)) {
+  :global(.matrix-table td:has(input:checked)) {
     background: color-mix(in srgb, var(--accent) 14%, var(--bg-page));
   }
   @media (max-width: 860px) {
@@ -636,12 +653,13 @@ function renderQuestion(q: typeof questions[0], qIndex: number) {
 
     // Gather answers
     for (const [key, value] of formData.entries()) {
-      if (answers[key] === undefined) {
-        answers[key] = value;
-      } else if (Array.isArray(answers[key])) {
-        (answers[key] as string[]).push(value);
+      const groupedKey = key.match(/^([A-Z]\d+)__\d+$/)?.[1] || key;
+      if (answers[groupedKey] === undefined) {
+        answers[groupedKey] = value;
+      } else if (Array.isArray(answers[groupedKey])) {
+        (answers[groupedKey] as string[]).push(value);
       } else {
-        answers[key] = [answers[key] as string, value];
+        answers[groupedKey] = [answers[groupedKey] as string, value];
       }
     }
 
