@@ -266,7 +266,10 @@ function renderQuestion(q: typeof questions[0], qIndex: number) {
     <div class="question-text">${q.text}</div>
     <div class="slider-block">
       <div class="slider-value" id="${name}-value">5</div>
-      <input type="range" name="${name}" min="0" max="10" step="1" value="5" class="range-input" data-range-output="${name}-value" ${reqAttr} />
+      <div class="slider-track-shell">
+        <div class="slider-ticks" aria-hidden="true">${q.options!.map(() => '<span></span>').join('')}</div>
+        <input type="range" name="${name}" min="0" max="10" step="1" value="5" class="range-input" data-range-output="${name}-value" ${reqAttr} />
+      </div>
       <div class="slider-labels">
         <span>${q.scaleLabels![0]}</span>
         <span>${q.scaleLabels![1]}</span>
@@ -395,11 +398,52 @@ function renderQuestion(q: typeof questions[0], qIndex: number) {
     font-size: 1.05rem;
     text-align: center;
   }
+  :global(.slider-track-shell) {
+    position: relative;
+    width: 100%;
+    padding: 8px 0;
+  }
+  :global(.slider-track-shell::before) {
+    content: '';
+    position: absolute;
+    left: 12px;
+    right: 12px;
+    top: 50%;
+    height: 8px;
+    transform: translateY(-50%);
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--accent) 28%, var(--bg-page));
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 24%, transparent);
+  }
+  :global(.slider-ticks) {
+    position: absolute;
+    left: 12px;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    pointer-events: none;
+    z-index: 1;
+  }
+  :global(.slider-ticks span) {
+    width: 2px;
+    height: 10px;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--accent) 56%, transparent);
+  }
   :global(.range-input) {
+    position: relative;
+    z-index: 2;
     display: block;
     width: 100%;
     min-width: 100%;
+    margin: 0;
+    background: transparent;
     accent-color: var(--accent);
+    -webkit-appearance: none;
+    appearance: none;
   }
   :global(.range-input::-webkit-slider-thumb) {
     -webkit-appearance: none;
@@ -415,30 +459,12 @@ function renderQuestion(q: typeof questions[0], qIndex: number) {
   :global(.range-input::-webkit-slider-runnable-track) {
     height: 8px;
     border-radius: 999px;
-    background:
-      repeating-linear-gradient(
-        to right,
-        color-mix(in srgb, var(--accent) 52%, transparent) 0,
-        color-mix(in srgb, var(--accent) 52%, transparent) 2px,
-        transparent 2px,
-        transparent calc(10% - 2px)
-      ),
-      color-mix(in srgb, var(--accent) 28%, var(--bg-page));
-    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 24%, transparent);
+    background: transparent;
   }
   :global(.range-input::-moz-range-track) {
     height: 8px;
     border-radius: 999px;
-    background:
-      repeating-linear-gradient(
-        to right,
-        color-mix(in srgb, var(--accent) 52%, transparent) 0,
-        color-mix(in srgb, var(--accent) 52%, transparent) 2px,
-        transparent 2px,
-        transparent calc(10% - 2px)
-      ),
-      color-mix(in srgb, var(--accent) 28%, var(--bg-page));
-    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 24%, transparent);
+    background: transparent;
   }
   :global(.range-input::-moz-range-thumb) {
     width: 24px;
@@ -508,6 +534,9 @@ function renderQuestion(q: typeof questions[0], qIndex: number) {
     word-break: break-word;
     background: color-mix(in srgb, var(--bg-card) 58%, var(--bg-page));
   }
+  :global(.matrix-table tbody td[data-col-label]) {
+    padding: 0;
+  }
   :global(.matrix-table tr:last-child td) {
     border-bottom: none;
   }
@@ -518,7 +547,8 @@ function renderQuestion(q: typeof questions[0], qIndex: number) {
     gap: 0;
     width: 100%;
     min-height: 44px;
-    padding: 8px;
+    padding: 10px 0;
+    box-sizing: border-box;
     cursor: pointer;
   }
   :global(.matrix-choice-label) {
