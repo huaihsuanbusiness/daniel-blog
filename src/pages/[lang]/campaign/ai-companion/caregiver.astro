@@ -61,7 +61,7 @@ const questions = [
   // B-3 現有替代方案
   {
     code: 'B10', section: 'B-3 現有替代方案',
-    text: '您目前有沒有用過以下方式幫助自己關心長輩？（矩陣多選）',
+    text: '您目前有沒有用過以下方式幫助自己關心長輩？（每列請選一項）',
     type: 'matrix',
     rows: ['固定電話問安', '家庭群組回報', '視訊', '智慧手錶／緊急求助裝置', '遠距監測／感測設備', '請親友鄰居幫忙看', '看護／照服員', '其他 app／工具'],
     cols: ['有在用', '用過但停了', '沒用過']
@@ -308,8 +308,11 @@ function renderQuestion(q: typeof questions[0], qIndex: number) {
           <tr>
             <td class="row-label">${row}</td>
             ${q.cols!.map(col => `
-            <td>
-              <input type="radio" name="${name}__${rowIndex}" value="${row}|${col}" />
+            <td data-col-label="${col}">
+              <label class="matrix-choice">
+                <input type="radio" name="${name}__${rowIndex}" value="${row}|${col}" />
+                <span class="matrix-choice-label">${col}</span>
+              </label>
             </td>`).join('')}
           </tr>`).join('')}
         </tbody>
@@ -508,6 +511,19 @@ function renderQuestion(q: typeof questions[0], qIndex: number) {
   :global(.matrix-table tr:last-child td) {
     border-bottom: none;
   }
+  :global(.matrix-choice) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    width: 100%;
+    min-height: 44px;
+    padding: 8px;
+    cursor: pointer;
+  }
+  :global(.matrix-choice-label) {
+    display: none;
+  }
   :global(.matrix-table input[type="checkbox"]),
   :global(.matrix-table input[type="radio"]) {
     accent-color: var(--accent);
@@ -517,12 +533,85 @@ function renderQuestion(q: typeof questions[0], qIndex: number) {
   :global(.matrix-table td:has(input:checked)) {
     background: color-mix(in srgb, var(--accent) 14%, var(--bg-page));
   }
+  :global(.matrix-table tbody td) {
+    cursor: pointer;
+  }
+  :global(.matrix-table tbody td:hover) {
+    background: color-mix(in srgb, var(--accent) 8%, var(--bg-page));
+  }
   @media (max-width: 860px) {
     :global(.matrix-table-wrap) {
-      overflow-x: auto;
+      overflow-x: visible;
+      border: none;
+      background: transparent;
+      padding: 0;
+    }
+    :global(.matrix-table),
+    :global(.matrix-table thead),
+    :global(.matrix-table tbody),
+    :global(.matrix-table tr),
+    :global(.matrix-table th),
+    :global(.matrix-table td) {
+      display: block;
+      width: 100%;
     }
     :global(.matrix-table) {
-      min-width: 700px;
+      min-width: 0;
+      border-spacing: 0;
+    }
+    :global(.matrix-table thead) {
+      display: none;
+    }
+    :global(.matrix-table tr) {
+      margin-bottom: 14px;
+      border: 1px solid color-mix(in srgb, var(--border-color) 88%, transparent);
+      border-radius: 14px;
+      background: color-mix(in srgb, var(--bg-card) 72%, var(--bg-page));
+      overflow: hidden;
+    }
+    :global(.matrix-table tr:last-child) {
+      margin-bottom: 0;
+    }
+    :global(.matrix-table .row-label) {
+      width: 100%;
+      min-width: 0;
+      padding: 16px 16px 10px;
+      border-bottom: 1px solid color-mix(in srgb, var(--border-color) 84%, transparent);
+      background: transparent;
+      font-size: 1rem;
+      line-height: 1.6;
+    }
+    :global(.matrix-table td) {
+      padding: 0;
+      border-bottom: none;
+      background: transparent;
+    }
+    :global(.matrix-table td:has(input:checked)) {
+      background: transparent;
+    }
+    :global(.matrix-choice) {
+      justify-content: flex-start;
+      gap: 12px;
+      min-height: 0;
+      padding: 14px 16px;
+      border-bottom: 1px solid color-mix(in srgb, var(--border-color) 76%, transparent);
+    }
+    :global(.matrix-table tr td:last-child .matrix-choice) {
+      border-bottom: none;
+    }
+    :global(.matrix-choice-label) {
+      display: block;
+      font-size: 0.98rem;
+      color: var(--text-primary);
+      line-height: 1.5;
+    }
+    :global(.matrix-choice input[type="radio"]) {
+      width: 22px;
+      height: 22px;
+      flex-shrink: 0;
+    }
+    :global(.matrix-choice:has(input:checked)) {
+      background: color-mix(in srgb, var(--accent) 12%, var(--bg-page));
     }
   }
   .contact-row {
