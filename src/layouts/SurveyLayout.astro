@@ -195,37 +195,37 @@ const {
       height: 18px;
       accent-color: var(--accent);
     }
-    .submit-btn {
+    :global(.submit-btn) {
       appearance: none;
       display: flex;
       align-items: center;
       justify-content: center;
-      width: min(100%, 420px);
-      min-height: 70px;
-      padding: 18px 34px;
-      background: linear-gradient(135deg, var(--accent) 0%, color-mix(in srgb, var(--accent) 74%, #24185f 26%) 100%);
+      width: min(100%, 460px);
+      min-height: 76px;
+      padding: 20px 38px;
+      background: linear-gradient(135deg, var(--accent) 0%, color-mix(in srgb, var(--accent) 72%, #26195f 28%) 100%);
       color: #fff;
-      border: 1px solid color-mix(in srgb, var(--accent) 78%, #1a1147 22%);
+      border: 1px solid color-mix(in srgb, var(--accent) 80%, #1a1147 20%);
       border-radius: 999px;
-      font-size: 1.14rem;
+      font-size: 1.18rem;
       font-weight: 800;
       letter-spacing: 0.01em;
       cursor: pointer;
       text-align: center;
-      margin: 28px auto 0;
-      box-shadow: 0 16px 34px rgba(91, 75, 236, 0.28), 0 4px 12px rgba(0, 0, 0, 0.12);
+      margin: 30px auto 0;
+      box-shadow: 0 18px 38px rgba(100, 76, 255, 0.3), 0 6px 14px rgba(0, 0, 0, 0.12);
       transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease, filter 0.15s ease;
     }
-    .submit-btn:hover {
+    :global(.submit-btn:hover) {
       transform: translateY(-2px) scale(1.01);
-      box-shadow: 0 20px 40px rgba(91, 75, 236, 0.34), 0 6px 14px rgba(0, 0, 0, 0.14);
-      filter: brightness(1.04);
+      box-shadow: 0 22px 44px rgba(100, 76, 255, 0.36), 0 8px 18px rgba(0, 0, 0, 0.14);
+      filter: brightness(1.05);
     }
-    .submit-btn:active {
+    :global(.submit-btn:active) {
       transform: translateY(0);
-      box-shadow: 0 10px 20px rgba(91, 75, 236, 0.22), 0 2px 6px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 10px 20px rgba(100, 76, 255, 0.24), 0 2px 6px rgba(0, 0, 0, 0.1);
     }
-    .submit-btn:disabled {
+    :global(.submit-btn:disabled) {
       opacity: 0.62;
       cursor: not-allowed;
       transform: none;
@@ -433,11 +433,11 @@ const {
       right: 24px;
       height: 2px;
     }
-    [data-survey-size='elder'] .submit-btn {
-      font-size: 1.34rem;
-      min-height: 78px;
-      width: min(100%, 460px);
-      padding: 20px 38px;
+    [data-survey-size='elder'] :global(.submit-btn) {
+      font-size: 1.42rem;
+      min-height: 86px;
+      width: min(100%, 500px);
+      padding: 22px 42px;
       margin: 10px auto 0;
     }
     [data-survey-size='elder'] .contact-row .text-input {
@@ -471,6 +471,12 @@ const {
     </div>
     <slot />
   </div>
+  <button type="button" class="survey-next-btn" id="survey-next-btn" aria-label="下一題" title="下一題" hidden>
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M12 5v14" />
+      <path d="m6 13 6 6 6-6" />
+    </svg>
+  </button>
   <script is:inline>
     const toggle = document.getElementById('theme-toggle');
     toggle.addEventListener('click', () => {
@@ -479,6 +485,52 @@ const {
       document.documentElement.dataset.theme = next;
       localStorage.setItem('theme', next);
     });
+
+    const nextBtn = document.getElementById('survey-next-btn');
+    const getQuestionBlocks = () => Array.from(document.querySelectorAll('.question-block')).filter((el) => !el.closest('#contact-conditional[style*="display:none"]'));
+
+    const getCurrentQuestionIndex = () => {
+      const blocks = getQuestionBlocks();
+      if (blocks.length < 2) return -1;
+      const center = window.innerHeight / 2;
+      let closestIndex = 0;
+      let closestDistance = Infinity;
+      blocks.forEach((block, index) => {
+        const rect = block.getBoundingClientRect();
+        const blockCenter = rect.top + rect.height / 2;
+        const distance = Math.abs(blockCenter - center);
+        if (distance < closestDistance) {
+          closestDistance = distance;
+          closestIndex = index;
+        }
+      });
+      return closestIndex;
+    };
+
+    const updateNextBtn = () => {
+      const blocks = getQuestionBlocks();
+      if (!nextBtn || blocks.length < 2) {
+        if (nextBtn) nextBtn.hidden = true;
+        return;
+      }
+      const currentIndex = getCurrentQuestionIndex();
+      nextBtn.hidden = currentIndex >= blocks.length - 1;
+    };
+
+    nextBtn?.addEventListener('click', () => {
+      const blocks = getQuestionBlocks();
+      const currentIndex = getCurrentQuestionIndex();
+      const nextBlock = currentIndex >= 0 ? blocks[currentIndex + 1] : null;
+      if (!nextBlock) return;
+      const rect = nextBlock.getBoundingClientRect();
+      const targetTop = window.scrollY + rect.top - (window.innerHeight / 2) + (rect.height / 2);
+      window.scrollTo({ top: Math.max(0, targetTop), behavior: 'smooth' });
+      window.setTimeout(updateNextBtn, 220);
+    });
+
+    window.addEventListener('scroll', updateNextBtn, { passive: true });
+    window.addEventListener('resize', updateNextBtn);
+    window.setTimeout(updateNextBtn, 0);
   </script>
 </body>
 </html>

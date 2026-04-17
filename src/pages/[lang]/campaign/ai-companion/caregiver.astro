@@ -402,30 +402,32 @@ function renderQuestion(q: typeof questions[0], qIndex: number) {
     margin-top: -5px;
   }
   :global(.range-input::-webkit-slider-runnable-track) {
-    height: 6px;
+    height: 8px;
     border-radius: 999px;
     background:
       repeating-linear-gradient(
         to right,
-        color-mix(in srgb, var(--border-color) 94%, transparent) 0,
-        color-mix(in srgb, var(--border-color) 94%, transparent) 2px,
+        color-mix(in srgb, var(--accent) 52%, transparent) 0,
+        color-mix(in srgb, var(--accent) 52%, transparent) 2px,
         transparent 2px,
         transparent calc(10% - 2px)
       ),
-      color-mix(in srgb, var(--accent) 12%, var(--bg-page));
+      color-mix(in srgb, var(--accent) 28%, var(--bg-page));
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 24%, transparent);
   }
   :global(.range-input::-moz-range-track) {
-    height: 6px;
+    height: 8px;
     border-radius: 999px;
     background:
       repeating-linear-gradient(
         to right,
-        color-mix(in srgb, var(--border-color) 94%, transparent) 0,
-        color-mix(in srgb, var(--border-color) 94%, transparent) 2px,
+        color-mix(in srgb, var(--accent) 52%, transparent) 0,
+        color-mix(in srgb, var(--accent) 52%, transparent) 2px,
         transparent 2px,
         transparent calc(10% - 2px)
       ),
-      color-mix(in srgb, var(--accent) 12%, var(--bg-page));
+      color-mix(in srgb, var(--accent) 28%, var(--bg-page));
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 24%, transparent);
   }
   :global(.slider-labels) {
     display: grid;
@@ -491,9 +493,12 @@ function renderQuestion(q: typeof questions[0], qIndex: number) {
     border-bottom: none;
   }
   :global(.matrix-table input[type="checkbox"]) {
-    accent-color: #4a7c59;
+    accent-color: var(--accent);
     width: 20px;
     height: 20px;
+  }
+  :global(.matrix-table td:has(input[type="checkbox"]:checked)) {
+    background: color-mix(in srgb, var(--accent) 14%, var(--bg-page));
   }
   @media (max-width: 860px) {
     :global(.matrix-table-wrap) {
