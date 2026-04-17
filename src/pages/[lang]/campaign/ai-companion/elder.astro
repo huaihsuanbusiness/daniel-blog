@@ -416,6 +416,54 @@ const refParam = '';
 
   setupMaxSelectLimits();
 
+  // ── Draft persistence ────────────────────────────────────────
+  const SESSION_KEY = 'elder_survey_draft';
+
+  function saveDraft() {
+    const data: Record<string, string> = {};
+    new FormData(form as HTMLFormElement).forEach((val, key) => {
+      if (data[key] === undefined) {
+        data[key] = String(val);
+      }
+    });
+    sessionStorage.setItem(SESSION_KEY, JSON.stringify(data));
+  }
+
+  function restoreDraft() {
+    const raw = sessionStorage.getItem(SESSION_KEY);
+    if (!raw) return;
+    try {
+      const data: Record<string, string> = JSON.parse(raw);
+      Object.entries(data).forEach(([key, value]) => {
+        const field = form.querySelector(`[name="${key}"][value="${value}"]`) as HTMLInputElement | null;
+        if (!field) return;
+        if (field.type === 'radio' || field.type === 'checkbox') {
+          field.checked = true;
+        } else {
+          field.value = value;
+        }
+      });
+      const willing = document.querySelector('input[name="contact_willing"]:checked')?.value;
+      const contactConditional = document.getElementById('contact-conditional');
+      if (contactConditional) {
+        contactConditional.style.display = willing === '願意' ? 'block' : 'none';
+      }
+    } catch { /* ignore parse errors */ }
+  }
+
+  function clearDraft() {
+    sessionStorage.removeItem(SESSION_KEY);
+  }
+
+  restoreDraft();
+
+  let saveTimer: ReturnType<typeof setTimeout>;
+  (form as HTMLFormElement).addEventListener('input', () => {
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(saveDraft, 300);
+  });
+
+
   // ── Other-reveal logic ──────────────────────────────────────
   function setupOtherReveal() {
     document.querySelectorAll('.question-block').forEach((block) => {
@@ -559,6 +607,7 @@ const refParam = '';
       sessionStorage.setItem('survey_familyId', familyId);
       sessionStorage.setItem('survey_inviteLink', inviteLink);
       sessionStorage.setItem('survey_role', 'elder');
+      clearDraft();
       window.location.href = `/${lang}/campaign/ai-companion/thank-you`;
     } catch (err) {
       errorContainer.innerHTML = `<div class="error-msg">送出失敗：${err.message}</div>`;

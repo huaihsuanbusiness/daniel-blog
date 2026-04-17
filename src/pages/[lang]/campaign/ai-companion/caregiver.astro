@@ -743,10 +743,10 @@ function renderQuestion(q: typeof questions[0], qIndex: number) {
     try {
       const data: Record<string, string> = JSON.parse(raw);
       Object.entries(data).forEach(([key, value]) => {
-        const field = form.querySelector(`[name="${key}"]`) as HTMLInputElement | null;
+        const field = form.querySelector(`[name="${key}"][value="${value}"]`) as HTMLInputElement | null;
         if (!field) return;
         if (field.type === 'radio' || field.type === 'checkbox') {
-          field.checked = field.value === value;
+          field.checked = true;
         } else {
           field.value = value;
         }
