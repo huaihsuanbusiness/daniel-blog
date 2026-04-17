@@ -271,9 +271,6 @@ function renderQuestion(q: typeof questions[0], qIndex: number) {
         <span>${q.scaleLabels![0]}</span>
         <span>${q.scaleLabels![1]}</span>
       </div>
-      <div class="slider-ticks">
-        ${q.options!.map((opt) => `<span>${opt}</span>`).join('')}
-      </div>
     </div>
   </div>`;
   }
@@ -374,8 +371,8 @@ function renderQuestion(q: typeof questions[0], qIndex: number) {
   }
   .slider-block {
     display: grid;
-    gap: 12px;
-    margin-top: 8px;
+    gap: 14px;
+    margin-top: 10px;
   }
   .slider-value {
     justify-self: center;
@@ -389,70 +386,74 @@ function renderQuestion(q: typeof questions[0], qIndex: number) {
     text-align: center;
   }
   .range-input {
-    width: 100%;
+    width: calc(100% + 20px);
+    margin: 0 -10px;
     accent-color: var(--accent);
   }
-  .slider-labels,
-  .slider-ticks {
+  .slider-labels {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 12px;
-  }
-  .slider-labels {
     font-size: 0.92rem;
     color: var(--text-secondary);
   }
   .slider-labels span:last-child {
     text-align: right;
   }
-  .slider-ticks {
-    grid-template-columns: repeat(11, minmax(0, 1fr));
-    gap: 4px;
-    font-size: 0.78rem;
-    color: var(--text-muted);
-    text-align: center;
-  }
   .matrix-table-wrap {
     overflow-x: auto;
-    margin-top: 10px;
-    border: 1px solid color-mix(in srgb, var(--border-color) 85%, transparent);
-    border-radius: 14px;
-    background: color-mix(in srgb, var(--bg-page) 55%, transparent);
+    margin-top: 12px;
+    border: 1px solid color-mix(in srgb, var(--border-color) 88%, transparent);
+    border-radius: 16px;
+    background: color-mix(in srgb, var(--bg-page) 60%, transparent);
+    padding: 4px;
   }
   .matrix-table {
     width: 100%;
-    min-width: 620px;
+    min-width: 760px;
     border-collapse: separate;
     border-spacing: 0;
-    font-size: 0.96rem;
+    font-size: 0.98rem;
+    table-layout: fixed;
   }
   .matrix-table th, .matrix-table td {
-    padding: 14px 12px;
+    padding: 16px 14px;
     text-align: center;
-    border-bottom: 1px solid color-mix(in srgb, var(--border-color) 80%, transparent);
+    vertical-align: middle;
+    border-bottom: 1px solid color-mix(in srgb, var(--border-color) 84%, transparent);
     background: transparent;
   }
   .matrix-table th {
-    font-size: 0.85rem;
+    font-size: 0.9rem;
     color: var(--text-secondary);
     font-weight: 700;
     white-space: nowrap;
-    background: color-mix(in srgb, var(--bg-card) 70%, var(--bg-page));
+    background: color-mix(in srgb, var(--bg-card) 74%, var(--bg-page));
+  }
+  .matrix-table th:not(.matrix-corner),
+  .matrix-table td:not(.row-label) {
+    min-width: 120px;
+    width: 120px;
   }
   .matrix-table .matrix-corner {
-    min-width: 220px;
-    width: 220px;
+    min-width: 280px;
+    width: 280px;
     text-align: left;
   }
   .matrix-table .row-label {
-    min-width: 220px;
-    width: 220px;
+    min-width: 280px;
+    width: 280px;
     text-align: left;
     font-weight: 500;
-    padding-left: 14px;
+    padding: 18px 18px 18px 20px;
     color: var(--text-primary);
-    line-height: 1.55;
-    background: color-mix(in srgb, var(--bg-card) 55%, var(--bg-page));
+    line-height: 1.7;
+    white-space: normal;
+    word-break: break-word;
+    background: color-mix(in srgb, var(--bg-card) 58%, var(--bg-page));
+  }
+  .matrix-table tr:last-child td {
+    border-bottom: none;
   }
   .matrix-table input[type="checkbox"] {
     accent-color: #4a7c59;
