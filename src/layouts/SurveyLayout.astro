@@ -184,26 +184,41 @@ const {
       accent-color: var(--accent);
     }
     .submit-btn {
-      display: block;
-      width: 100%;
-      padding: 16px;
-      background: var(--accent);
+      appearance: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: min(100%, 340px);
+      min-height: 56px;
+      padding: 16px 28px;
+      background: linear-gradient(135deg, var(--accent) 0%, color-mix(in srgb, var(--accent) 82%, #111 18%) 100%);
       color: #fff;
-      border: none;
-      border-radius: 12px;
-      font-size: 1.1rem;
-      font-weight: 600;
+      border: 1px solid color-mix(in srgb, var(--accent) 78%, #000 22%);
+      border-radius: 999px;
+      font-size: 1.05rem;
+      font-weight: 700;
+      letter-spacing: 0.01em;
       cursor: pointer;
       text-align: center;
-      margin-top: 24px;
-      transition: background 0.15s, opacity 0.15s;
+      margin: 24px auto 0;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12), 0 2px 6px rgba(0, 0, 0, 0.08);
+      transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease, filter 0.15s ease;
     }
     .submit-btn:hover {
-      background: var(--accent-hover);
+      transform: translateY(-1px);
+      box-shadow: 0 14px 28px rgba(0, 0, 0, 0.14), 0 4px 10px rgba(0, 0, 0, 0.08);
+      filter: brightness(1.03);
+    }
+    .submit-btn:active {
+      transform: translateY(0);
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12), 0 2px 6px rgba(0, 0, 0, 0.08);
     }
     .submit-btn:disabled {
-      opacity: 0.6;
+      opacity: 0.62;
       cursor: not-allowed;
+      transform: none;
+      filter: saturate(0.8);
+      box-shadow: none;
     }
     .error-msg {
       background: var(--error-bg);
@@ -393,15 +408,13 @@ const {
       padding: 28px 24px;
     }
     [data-survey-size='elder'] .submit-btn {
-      font-size: 1.35rem;
-      padding: 20px;
-      width: auto;
-      min-width: 220px;
-      display: inline-block;
-      margin: 0 auto;
+      font-size: 1.28rem;
+      min-height: 64px;
+      width: min(100%, 380px);
+      padding: 18px 32px;
+      margin: 4px auto 0;
     }
     [data-survey-size='elder'] .contact-row .text-input {
-      padding: 16px;
       margin-bottom: 0;
     }
     [data-survey-size='elder'] .scale-input label {
