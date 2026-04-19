@@ -37,10 +37,21 @@ jobs:
         run: |
           cd dist/server
 
-          # Use printf '%s' (no \n) to preserve exact secret value without trailing newline
-          printf '%s' "$GOOGLE_SHEET_ID" | npx wrangler secret put GOOGLE_SHEET_ID --name daniel-blog --config wrangler.json
-          printf '%s' "$GOOGLE_PRIVATE_KEY" | npx wrangler secret put GOOGLE_PRIVATE_KEY --name daniel-blog --config wrangler.json
-          printf '%s' "$GOOGLE_SERVICE_ACCOUNT_EMAIL" | npx wrangler secret put GOOGLE_SERVICE_ACCOUNT_EMAIL --name daniel-blog --config wrangler.json
+          # Use Python to build properly-escaped JSON for wrangler secret bulk
+          # This correctly handles multi-line JSON secrets like GOOGLE_PRIVATE_KEY
+          python3 << 'PYEOF'
+          import json, os
+          secrets = {
+              "GOOGLE_SHEET_ID": os.environ.get("GOOGLE_SHEET_ID", ""),
+              "GOOGLE_PRIVATE_KEY": os.environ.get("GOOGLE_PRIVATE_KEY", ""),
+              "GOOGLE_SERVICE_ACCOUNT_EMAIL": os.environ.get("GOOGLE_SERVICE_ACCOUNT_EMAIL", ""),
+          }
+          with open("secrets.json", "w") as f:
+              json.dump(secrets, f)
+          PYEOF
+
+          npx wrangler secret bulk --name daniel-blog --config wrangler.json < secrets.json
+          rm secrets.json
 
           npx wrangler deploy --message "${{ github.sha }}" --config wrangler.json
         env:
