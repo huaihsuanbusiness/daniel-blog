@@ -27,6 +27,7 @@ jobs:
         env:
           GOOGLE_PRIVATE_KEY: ${{ secrets.GOOGLE_PRIVATE_KEY }}
           GOOGLE_SHEET_ID: ${{ secrets.GOOGLE_SHEET_ID }}
+          GOOGLE_SERVICE_ACCOUNT_EMAIL: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_EMAIL }}
           SITE: https://danielcanfly.com
 
       - name: Remove wrangler redirect config
@@ -35,8 +36,14 @@ jobs:
       - name: Deploy to Cloudflare Workers
         run: |
           cd dist/server
-          echo "${{ secrets.GOOGLE_SHEET_ID }}" | npx wrangler secret put GOOGLE_SHEET_ID --name daniel-blog --config wrangler.json
-          echo "${{ secrets.GOOGLE_PRIVATE_KEY }}" | npx wrangler secret put GOOGLE_PRIVATE_KEY --name daniel-blog --config wrangler.json
+
+          # Use wrangler secret bulk with JSON file to handle multi-line secrets properly
+          # This avoids the echo | wrangler issue where multi-line values get corrupted
+          echo '{"GOOGLE_SHEET_ID":"${{ secrets.GOOGLE_SHEET_ID }}","GOOGLE_PRIVATE_KEY":"${{ secrets.GOOGLE_PRIVATE_KEY }}","GOOGLE_SERVICE_ACCOUNT_EMAIL":"${{ secrets.GOOGLE_SERVICE_ACCOUNT_EMAIL }}"}' > secrets.json
+
+          npx wrangler secret bulk secrets.json --name daniel-blog --config wrangler.json
+          rm secrets.json
+
           npx wrangler deploy --message "${{ github.sha }}" --config wrangler.json
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
