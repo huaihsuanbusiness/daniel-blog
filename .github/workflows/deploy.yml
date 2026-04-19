@@ -37,12 +37,15 @@ jobs:
         run: |
           cd dist/server
 
-          # Use wrangler secret bulk with JSON file to handle multi-line secrets properly
-          # This avoids the echo | wrangler issue where multi-line values get corrupted
-          echo '{"GOOGLE_SHEET_ID":"${{ secrets.GOOGLE_SHEET_ID }}","GOOGLE_PRIVATE_KEY":"${{ secrets.GOOGLE_PRIVATE_KEY }}","GOOGLE_SERVICE_ACCOUNT_EMAIL":"${{ secrets.GOOGLE_SERVICE_ACCOUNT_EMAIL }}"}' > secrets.json
+          # Write secrets as .env format (newline-safe, handled by wrangler bulk)
+          cat << 'WRAPPER' > secrets.env
+          GOOGLE_SHEET_ID=${{ secrets.GOOGLE_SHEET_ID }}
+          GOOGLE_PRIVATE_KEY=${{ secrets.GOOGLE_PRIVATE_KEY }}
+          GOOGLE_SERVICE_ACCOUNT_EMAIL=${{ secrets.GOOGLE_SERVICE_ACCOUNT_EMAIL }}
+          WRAPPER
 
-          npx wrangler secret bulk secrets.json --name daniel-blog --config wrangler.json
-          rm secrets.json
+          npx wrangler secret bulk secrets.env --name daniel-blog --config wrangler.json
+          rm secrets.env
 
           npx wrangler deploy --message "${{ github.sha }}" --config wrangler.json
         env:
