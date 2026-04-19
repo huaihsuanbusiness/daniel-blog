@@ -3,41 +3,18 @@ export const prerender = false;
 import type { APIRoute } from 'astro';
 import { GoogleSheet } from '../../../utils/googleSheet';
 
-// Cloudflare Workers: import env from cloudflare:workers to access bindings
-// This is the Astro v6 + Workers recommended approach
-let _env: { GOOGLE_PRIVATE_KEY?: string; GOOGLE_SHEET_ID?: string; SITE?: string } | null = null;
-try {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { env: workersEnv } = await import('cloudflare:workers');
-  // Workers env bindings are exposed via the module
-  // We'll try to access them in the function below
-} catch {
-  // Not in Workers environment
+// Astro v6 + Cloudflare Workers: access env via dynamic import from cloudflare:workers
+// This is the ONLY reliable way to access Workers env bindings in API route handlers
+async function getWorkersEnv(): Promise<{ GOOGLE_PRIVATE_KEY?: string; GOOGLE_SHEET_ID?: string; SITE?: string }> {
+  const { env } = await import('cloudflare:workers');
+  return env as { GOOGLE_PRIVATE_KEY?: string; GOOGLE_SHEET_ID?: string; SITE?: string };
 }
 
-function googleSheetEnvRuntime(): { GOOGLE_PRIVATE_KEY?: string; GOOGLE_SHEET_ID?: string; SITE?: string } {
-  // Cloudflare Workers env bindings: try cloudflare:workers import
-  // This works in Workers runtime at module scope
-  if (typeof globalThis !== 'undefined') {
-    const t = globalThis as any;
-    if (t.GOOGLE_SHEET_ID) {
-      return t;
-    }
-    if (t.env?.GOOGLE_SHEET_ID) {
-      return t.env;
-    }
+function googleSheetEnvRuntime(env: { GOOGLE_PRIVATE_KEY?: string; GOOGLE_SHEET_ID?: string; SITE?: string }): { GOOGLE_PRIVATE_KEY?: string; GOOGLE_SHEET_ID?: string; SITE?: string } {
+  if (!env.GOOGLE_SHEET_ID) {
+    throw new Error('GOOGLE_SHEET_ID is not set in environment');
   }
-
-  // Node.js / local dev
-  if (typeof process !== 'undefined' && process.env?.GOOGLE_SHEET_ID) {
-    return {
-      GOOGLE_PRIVATE_KEY: process.env.GOOGLE_PRIVATE_KEY,
-      GOOGLE_SHEET_ID: process.env.GOOGLE_SHEET_ID,
-      SITE: process.env.SITE,
-    };
-  }
-
-  throw new Error('GOOGLE_SHEET_ID is not set in environment');
+  return env;
 }
 
 export const POST: APIRoute = async ({ request }) => {
@@ -52,7 +29,9 @@ export const POST: APIRoute = async ({ request }) => {
       );
     }
 
-    const sheet = new GoogleSheet(googleSheetEnvRuntime);
+    const env = await getWorkersEnv();
+    const envAccessor = () => googleSheetEnvRuntime(env);
+    const sheet = new GoogleSheet(envAccessor);
     const result = await sheet.appendRow({ role, familyId, answers, locale });
 
     return new Response(JSON.stringify(result), {
