@@ -37,15 +37,10 @@ jobs:
         run: |
           cd dist/server
 
-          # Write secrets as .env format (newline-safe, handled by wrangler bulk)
-          cat << 'WRAPPER' > secrets.env
-          GOOGLE_SHEET_ID=${{ secrets.GOOGLE_SHEET_ID }}
-          GOOGLE_PRIVATE_KEY=${{ secrets.GOOGLE_PRIVATE_KEY }}
-          GOOGLE_SERVICE_ACCOUNT_EMAIL=${{ secrets.GOOGLE_SERVICE_ACCOUNT_EMAIL }}
-          WRAPPER
-
-          npx wrangler secret bulk secrets.env --name daniel-blog --config wrangler.json
-          rm secrets.env
+          # Use printf + pipe for multi-line secret values (avoids echo multi-line issues)
+          printf '%s\n' "$GOOGLE_SHEET_ID" | npx wrangler secret put GOOGLE_SHEET_ID --name daniel-blog --config wrangler.json
+          printf '%s\n' "$GOOGLE_PRIVATE_KEY" | npx wrangler secret put GOOGLE_PRIVATE_KEY --name daniel-blog --config wrangler.json
+          printf '%s\n' "$GOOGLE_SERVICE_ACCOUNT_EMAIL" | npx wrangler secret put GOOGLE_SERVICE_ACCOUNT_EMAIL --name daniel-blog --config wrangler.json
 
           npx wrangler deploy --message "${{ github.sha }}" --config wrangler.json
         env:
