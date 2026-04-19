@@ -5,7 +5,7 @@ import rehypeKatex from 'rehype-katex';
 
 export default defineConfig({
   adapter: cloudflare({ platformProxyType: 'nodejs' }),
-  output: 'static',
+  output: 'server',
   image: {
     service: passthroughImageService(),
   },
