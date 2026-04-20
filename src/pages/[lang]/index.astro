@@ -4,7 +4,7 @@ import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
 import PostCard from '../../components/PostCard.astro';
 import { getCollection } from 'astro:content';
-import { CATEGORY_LABELS, CATEGORY_ORDER, normalizeCategory } from '../../utils/categories';
+import { CATEGORY_LABELS, getOrderedCategories, normalizeCategory } from '../../utils/categories';
 import CategoryIcon from '../../components/CategoryIcon.astro';
 
 export function getStaticPaths() {
@@ -52,7 +52,7 @@ const heroContent = {
 };
 
 const content = heroContent[lang as 'en' | 'zh'];
-const homepageCategories = CATEGORY_ORDER.map(id => ({
+const homepageCategories = getOrderedCategories(posts.flatMap(post => post.data.categories)).map(id => ({
   id,
   label: CATEGORY_LABELS[id][lang as 'en' | 'zh'],
 }));

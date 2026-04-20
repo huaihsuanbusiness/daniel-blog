@@ -1,5 +1,5 @@
 ---
-import { CATEGORY_ORDER, CATEGORY_LABELS, type BlogLang } from '../utils/categories';
+import { CATEGORY_LABELS, type BlogLang, type CategoryId } from '../utils/categories';
 import CategoryIcon from './CategoryIcon.astro';
 
 export interface Props {
@@ -7,13 +7,15 @@ export interface Props {
   lang: BlogLang;
 }
 
-const { lang } = Astro.props;
+const { lang, categories = [] } = Astro.props;
 const category = Astro.url.searchParams.get('category');
 const basePath = `/${lang}/blog`;
 
+const activeCategories = categories as CategoryId[];
+
 const filters = [
   { id: 'all', label: lang === 'zh' ? '全部' : 'All', href: basePath },
-  ...CATEGORY_ORDER.map(cat => ({
+  ...activeCategories.map(cat => ({
     id: cat,
     label: CATEGORY_LABELS[cat][lang],
     href: `${basePath}?category=${cat}`,
