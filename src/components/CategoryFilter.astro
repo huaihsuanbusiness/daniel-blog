@@ -241,19 +241,21 @@ const seriesLabel = seriesUi[lang];
 </div>
 
 <script>
-  const postsGrid = document.getElementById('posts-grid');
-  const tempTab = document.getElementById('series-temp-tab');
-  const tempLabel = document.getElementById('series-temp-label');
-  const tempClose = document.getElementById('series-temp-close');
-  const seriesRow = document.getElementById('series-row');
-  const seriesWrap = document.getElementById('series-wrap');
-  const seriesSelect = document.getElementById('series-select');
-  const sortSelect = document.getElementById('sort-select');
-  const gridBtn = document.getElementById('view-grid');
-  const listBtn = document.getElementById('view-list');
-  const blogCountPill = document.getElementById('blog-count-pill');
+  (() => {
+    const init = () => {
+      const postsGrid = document.getElementById('posts-grid');
+      const tempTab = document.getElementById('series-temp-tab');
+      const tempLabel = document.getElementById('series-temp-label');
+      const tempClose = document.getElementById('series-temp-close');
+      const seriesRow = document.getElementById('series-row');
+      const seriesWrap = document.getElementById('series-wrap');
+      const seriesSelect = document.getElementById('series-select');
+      const sortSelect = document.getElementById('sort-select');
+      const gridBtn = document.getElementById('view-grid');
+      const listBtn = document.getElementById('view-list');
+      const blogCountPill = document.getElementById('blog-count-pill');
 
-  let activeCategory = new URL(window.location.href).searchParams.get('category') || sessionStorage.getItem('blog-category') || 'all';
+      let activeCategory = new URL(window.location.href).searchParams.get('category') || sessionStorage.getItem('blog-category') || 'all';
 
   function persistFilterState() {
     const params = new URL(window.location.href).searchParams;
@@ -454,12 +456,20 @@ const seriesLabel = seriesUi[lang];
     applySort(sort);
   });
 
-  const initialSort = new URL(window.location.href).searchParams.get('sort') || 'new';
-  if (sortSelect) sortSelect.value = initialSort;
-  applySort(initialSort);
-  syncCategoryTabs();
-  syncSeriesControl();
-  applySeriesFilter();
+      const initialSort = new URL(window.location.href).searchParams.get('sort') || 'new';
+      if (sortSelect) sortSelect.value = initialSort;
+      applySort(initialSort);
+      syncCategoryTabs();
+      syncSeriesControl();
+      applySeriesFilter();
+    };
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init, { once: true });
+    } else {
+      init();
+    }
+  })();
 </script>
 
 <style>

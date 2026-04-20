@@ -24,7 +24,7 @@ const languagePosts = allPosts
     return { ...post, slug };
   });
 
-const posts = selectedCategory
+const initialVisiblePosts = selectedCategory
   ? languagePosts.filter(post =>
       post.data.categories.some(cat => normalizeCategory(cat) === selectedCategory)
     )
@@ -79,34 +79,37 @@ const selectedCategoryLabel = selectedCategory && selectedCategory in CATEGORY_L
         <div class="blog-header-top">
           <h1 class="blog-title">{label.title}</h1>
           <div class="blog-stats">
-            <span id="blog-count-pill" class:list={['stat-pill', { 'stat-pill-active': !!selectedCategoryLabel }]} data-total-label={label.total} data-total-count={totalPosts}>{posts.length} {label.total}</span>
+            <span id="blog-count-pill" class:list={['stat-pill', { 'stat-pill-active': !!selectedCategoryLabel }]} data-total-label={label.total} data-total-count={totalPosts}>{initialVisiblePosts.length} {label.total}</span>
             {selectedCategoryLabel && <span class="stat-pill stat-pill-active">{selectedCategoryLabel}</span>}
           </div>
         </div>
-        <p class="blog-subtitle muted">{label.summary(posts.length, totalPosts, selectedCategoryLabel)}</p>
+        <p class="blog-subtitle muted">{label.summary(initialVisiblePosts.length, totalPosts, selectedCategoryLabel)}</p>
       </header>
 
       <CategoryFilter categories={allCategories} lang={lang as 'en' | 'zh'} />
 
-      {posts.length === 0 ? (
-        <section class="empty-category animate-in">
-          <div class="empty-category-icon">◌</div>
-          <h2>{label.emptyTitle}</h2>
-          <p class="muted">{label.emptyDesc(selectedCategoryLabel)}</p>
-          <a href={`/${lang}/blog`} class="empty-category-link">{label.clearFilter}</a>
-        </section>
-      ) : (
-        <div class="posts-grid" id="posts-grid">
-          {posts.map((post, i) => (
+      <section class="empty-category animate-in posts-grid-empty-state" style={initialVisiblePosts.length === 0 ? '' : 'display:none;'}>
+        <div class="empty-category-icon">◌</div>
+        <h2>{label.emptyTitle}</h2>
+        <p class="muted">{label.emptyDesc(selectedCategoryLabel)}</p>
+        <a href={`/${lang}/blog`} class="empty-category-link">{label.clearFilter}</a>
+      </section>
+
+      <div class="posts-grid" id="posts-grid">
+        {languagePosts.map((post, i) => {
+          const postCategories = post.data.categories.map(cat => normalizeCategory(cat)).filter(Boolean);
+          const initiallyVisible = !selectedCategory || postCategories.includes(selectedCategory);
+          return (
             <div
               class:list={['animate-in', { 'animate-delay-1': i % 3 === 1, 'animate-delay-2': i % 3 === 2 }]}
               data-post-card
               data-sort-key={post.data.date.toISOString().slice(0,16)}
-              data-category={post.data.categories.map(cat => normalizeCategory(cat)).filter(Boolean).join(' ')}
-              data-categories={JSON.stringify(post.data.categories.map(cat => normalizeCategory(cat)).filter(Boolean))}
+              data-category={postCategories.join(' ')}
+              data-categories={JSON.stringify(postCategories)}
               data-series-key={getSeriesMeta(post.slug, lang as 'en' | 'zh', post.data.series)?.key || ''}
               data-series-label={getSeriesMeta(post.slug, lang as 'en' | 'zh', post.data.series)?.label || ''}
               data-series-order={String(getSeriesMeta(post.slug, lang as 'en' | 'zh', post.data.series)?.order || '')}
+              hidden={!initiallyVisible}
             >
               <PostCard
                 slug={post.slug}
@@ -119,9 +122,9 @@ const selectedCategoryLabel = selectedCategory && selectedCategory in CATEGORY_L
                 search={selectedCategory ? `?category=${selectedCategory}${Astro.url.searchParams.get('sort') ? `&sort=${Astro.url.searchParams.get('sort')}` : ''}` : Astro.url.searchParams.get('sort') ? `?sort=${Astro.url.searchParams.get('sort')}` : ''}
               />
             </div>
-          ))}
-        </div>
-      )}
+          );
+        })}
+      </div>
     </div>
   </main>
 
@@ -332,7 +335,9 @@ const selectedCategoryLabel = selectedCategory && selectedCategory in CATEGORY_L
 </style>
 
 <script>
-  function syncPostCardLinks() {
+  (() => {
+    const init = () => {
+      function syncPostCardLinks() {
     // Read category from sessionStorage first (set by this session's interactions),
     // then fall back to URL params for direct-link visitors.
     const savedCategory = sessionStorage.getItem('blog-category') || '';
@@ -403,24 +408,23 @@ const selectedCategoryLabel = selectedCategory && selectedCategory in CATEGORY_L
     document.dispatchEvent(new CustomEvent('blog:urlchange'));
   }
 
-  // Run on load and whenever controls change
+  // Run on load and whenever the shared filter runtime updates URL/session state.
   syncListRuntimeState();
 
-  // Also run when category tabs are clicked
-  document.querySelectorAll('[data-filter-category]').forEach((tab) => {
-    tab.addEventListener('click', () => {
-      setTimeout(() => { syncListRuntimeState(); persistFilterState(); }, 0);
-    });
-  });
-
-  // Re-apply when sort changes (it updates URL)
-  const sortSelect = document.getElementById('sort-select');
-  sortSelect?.addEventListener('change', () => {
-    setTimeout(() => { syncListRuntimeState(); persistFilterState(); }, 0);
-  });
-
-  window.addEventListener('popstate', () => {
+  document.addEventListener('blog:urlchange', () => {
     syncListRuntimeState();
-    persistFilterState();
   });
+
+      window.addEventListener('popstate', () => {
+        syncListRuntimeState();
+        persistFilterState();
+      });
+    };
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init, { once: true });
+    } else {
+      init();
+    }
+  })();
 </script>
