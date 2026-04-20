@@ -1,5 +1,5 @@
 ---
-import { CATEGORY_LABELS, type BlogLang, type CategoryId } from '../utils/categories';
+import { CATEGORY_ORDER, CATEGORY_LABELS, type BlogLang } from '../utils/categories';
 import CategoryIcon from './CategoryIcon.astro';
 
 export interface Props {
@@ -7,15 +7,13 @@ export interface Props {
   lang: BlogLang;
 }
 
-const { lang, categories = [] } = Astro.props;
+const { lang } = Astro.props;
 const category = Astro.url.searchParams.get('category');
 const basePath = `/${lang}/blog`;
 
-const activeCategories = categories as CategoryId[];
-
 const filters = [
   { id: 'all', label: lang === 'zh' ? '全部' : 'All', href: basePath },
-  ...activeCategories.map(cat => ({
+  ...CATEGORY_ORDER.map(cat => ({
     id: cat,
     label: CATEGORY_LABELS[cat][lang],
     href: `${basePath}?category=${cat}`,
@@ -245,6 +243,7 @@ const seriesLabel = seriesUi[lang];
 <script>
   (() => {
     const init = () => {
+      const blogBasePath = `${basePath}`;
       const postsGrid = document.getElementById('posts-grid');
       const tempTab = document.getElementById('series-temp-tab');
       const tempLabel = document.getElementById('series-temp-label');
@@ -289,6 +288,45 @@ const seriesLabel = seriesUi[lang];
     blogCountPill.textContent = `${count} ${label}`;
   }
 
+  function syncPostCardLinks() {
+    const savedCategory = sessionStorage.getItem('blog-category') || '';
+    const savedSort = sessionStorage.getItem('blog-sort') || '';
+    const urlParams = new URL(window.location.href).searchParams;
+    const urlCategory = urlParams.get('category') || '';
+    const urlSort = urlParams.get('sort') || '';
+    const activeCat = urlCategory || savedCategory || 'all';
+    const activeSort = urlSort || savedSort || 'new';
+
+    const params = new URLSearchParams();
+    if (activeCat && activeCat !== 'all') params.set('category', activeCat);
+    if (activeSort) params.set('sort', activeSort);
+    const searchStr = params.toString() ? `?${params.toString()}` : '';
+
+    document.querySelectorAll('[data-post-link]').forEach(link => {
+      if (!(link instanceof HTMLAnchorElement)) return;
+      const href = link.getAttribute('href');
+      if (!href) return;
+      const url = new URL(href, window.location.origin);
+      url.search = searchStr.replace('?', '');
+      link.href = `${url.pathname}${url.search ? '?' + url.search : ''}`;
+    });
+
+    const clearLink = document.querySelector('.empty-category-link');
+    if (clearLink instanceof HTMLAnchorElement) {
+      const clearParams = new URLSearchParams();
+      if (activeSort && activeSort !== 'new') clearParams.set('sort', activeSort);
+      const clearSearch = clearParams.toString() ? `?${clearParams.toString()}` : '';
+      clearLink.href = `${blogBasePath}${clearSearch}`;
+    }
+  }
+
+  function syncEmptyState(visibleCount) {
+    const empty = document.querySelector('.posts-grid-empty-state');
+    if (empty instanceof HTMLElement) {
+      empty.style.display = visibleCount === 0 ? '' : 'none';
+    }
+  }
+
   function applySeriesFilter() {
     const cards = Array.from(document.querySelectorAll('[data-post-card]'));
     const effectiveSeries = (tempTab instanceof HTMLElement && !tempTab.hidden ? tempTab.dataset.seriesKey || activeSeries : activeSeries) || '';
@@ -304,6 +342,8 @@ const seriesLabel = seriesUi[lang];
       if (show) visibleCount += 1;
     });
     updateCountPill(activeCategory === 'all' ? Number(blogCountPill?.getAttribute('data-total-count') || visibleCount) : visibleCount);
+    syncEmptyState(visibleCount);
+    syncPostCardLinks();
   }
 
   function clearSeriesFilter() {
@@ -464,6 +504,13 @@ const seriesLabel = seriesUi[lang];
       syncCategoryTabs();
       syncSeriesControl();
       applySeriesFilter();
+
+      window.addEventListener('popstate', () => {
+        syncCategoryTabs();
+        syncSeriesControl();
+        applySeriesFilter();
+        persistFilterState();
+      });
     };
 
     if (document.readyState === 'loading') {
