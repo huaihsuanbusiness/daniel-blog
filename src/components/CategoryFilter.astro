@@ -240,7 +240,7 @@ const seriesLabel = seriesUi[lang];
   </div>
 </div>
 
-<script>
+<script define:vars={{ basePath }}>
   (() => {
     const init = () => {
       const blogBasePath = `${basePath}`;
@@ -308,7 +308,7 @@ const seriesLabel = seriesUi[lang];
       if (!href) return;
       const url = new URL(href, window.location.origin);
       url.search = searchStr.replace('?', '');
-      link.href = `${url.pathname}${url.search ? '?' + url.search : ''}`;
+      link.setAttribute('href', `${url.pathname}${url.search || ''}`);
     });
 
     const clearLink = document.querySelector('.empty-category-link');

@@ -23,10 +23,14 @@ export async function getStaticPaths() {
 }
 
 const { lang, slug } = Astro.params;
-const { post } = Astro.props;
-const { Content } = await render(post);
-
 const allPosts = await getCollection('blog');
+const post = allPosts.find(p => p.id === `${slug}/${lang}`);
+
+if (!post) {
+  throw new Error(`Blog post not found: ${slug}/${lang}`);
+}
+
+const { Content } = await render(post);
 const otherLang = lang === 'zh' ? 'en' : 'zh';
 const currentCategory = Astro.url.searchParams.get('category');
 const currentSort = Astro.url.searchParams.get('sort');
