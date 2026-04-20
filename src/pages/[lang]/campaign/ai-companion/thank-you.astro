@@ -33,9 +33,13 @@ import SurveyLayout from '../../../../layouts/SurveyLayout.astro';
         邀請您分享給長輩填寫
       </p>
 
-      <!-- 連結＋按鈕 -->
-      <div class="share-row">
+      <!-- 連結滿寬 -->
+      <div class="link-block">
         <div class="share-link" id="share-link"></div>
+      </div>
+
+      <!-- 按鈕組：上下排列 -->
+      <div class="btn-group">
         <button class="btn-copy" id="btn-copy">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
           <span id="copy-label">複製</span>
@@ -111,14 +115,12 @@ import SurveyLayout from '../../../../layouts/SurveyLayout.astro';
     line-height: 1.5;
   }
 
-  .share-row {
-    display: flex;
-    align-items: center;
-    gap: 7px;
+  .link-block {
+    flex: none;
+    width: 100%;
   }
-
   .share-link {
-    flex: 1;
+    width: 100%;
     background: #fff;
     border: 1.5px solid #c5cae9;
     border-radius: 8px;
@@ -132,25 +134,33 @@ import SurveyLayout from '../../../../layouts/SurveyLayout.astro';
     min-height: 40px;
     display: flex;
     align-items: center;
+    box-sizing: border-box;
     transition: border-color 0.15s;
   }
   .share-link:hover { border-color: #4f46e5; }
+
+  .btn-group {
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+    margin-top: 8px;
+  }
 
   .btn-copy {
     display: flex;
     align-items: center;
     gap: 4px;
-    padding: 0 11px;
+    padding: 0 14px;
     height: 40px;
     background: #4f46e5;
     color: #fff;
     border: none;
     border-radius: 8px;
-    font-size: 0.8rem;
+    font-size: 0.82rem;
     font-weight: 600;
     cursor: pointer;
     white-space: nowrap;
-    flex-shrink: 0;
+    flex: 1;
     transition: background 0.15s;
   }
   .btn-copy:hover { background: #4338ca; }
@@ -161,15 +171,15 @@ import SurveyLayout from '../../../../layouts/SurveyLayout.astro';
     align-items: center;
     gap: 4px;
     height: 40px;
-    padding: 0 11px;
+    padding: 0 14px;
     background: #00B900;
     color: #fff;
     border-radius: 8px;
-    font-size: 0.8rem;
+    font-size: 0.82rem;
     font-weight: 700;
     text-decoration: none;
     white-space: nowrap;
-    flex-shrink: 0;
+    flex: 1;
     transition: background 0.15s;
   }
   .btn-line:hover { background: #009100; }
