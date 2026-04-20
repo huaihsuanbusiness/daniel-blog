@@ -21,52 +21,220 @@ import SurveyLayout from '../../../../layouts/SurveyLayout.astro';
 
     <div id="share-section" style="display:none" class="share-block">
       <p class="share-title" id="share-title"></p>
-      <div class="link-box" id="invite-link-box"></div>
+      <div class="link-row">
+        <div class="link-box" id="invite-link-box"></div>
+        <div class="action-btns">
+          <button class="btn-copy" id="btn-copy" title="複製連結">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            <span id="copy-label">複製</span>
+          </button>
+          <a class="btn-line" id="btn-line" href="#" target="_blank" rel="noopener" title="分享到 LINE">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63h2.386c.346 0 .627.285.627.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.924c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.198 0 .376.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0v-2.162c0-.344.282-.629.63-.629.346 0 .63.285.63.629v2.162H10.77V8.108c0-.345.282-.63.63-.63.346 0 .63.285.63.63v4.771H10.77zm-4.877 0H1.624c-.346 0-.63-.285-.63-.629V8.108c0-.345.284-.63.63-.63.345 0 .63.285.63.63v4.141h5.302V8.108c0-.345.284-.63.63-.63.345 0 .63.285.63.63v4.771zM8.437 9.68l-.382 2.924 2.665-2.924H8.437zm7.073 4.196H3.748l-.104-.629 4.197-4.141.104.63 4.465-.001v4.141z"/></svg>
+            LINE
+          </a>
+        </div>
+      </div>
       <p class="share-hint" id="share-hint"></p>
+    </div>
+
+    <div class="back-row">
+      <a href="#" id="back-btn" class="btn-back">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        返回文章
+      </a>
     </div>
   </div>
 </SurveyLayout>
 
+<style>
+  .thankyou-block {
+    text-align: center;
+    padding: 48px 24px;
+    max-width: 540px;
+    margin: 0 auto;
+  }
+  .big-check {
+    font-size: 64px;
+    line-height: 1;
+    margin-bottom: 16px;
+  }
+  h2 {
+    font-size: 1.5rem;
+    margin-bottom: 8px;
+    color: var(--text);
+  }
+  p {
+    color: var(--text-secondary, #666);
+    font-size: 1rem;
+    line-height: 1.6;
+    margin: 4px 0;
+  }
+  .share-block {
+    margin-top: 32px;
+    text-align: left;
+    background: var(--gray-15, #f5f5f5);
+    border-radius: 12px;
+    padding: 20px;
+  }
+  .share-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 12px;
+  }
+  .link-row {
+    display: flex;
+    gap: 8px;
+    align-items: stretch;
+  }
+  .link-box {
+    flex: 1;
+    background: #fff;
+    border: 1.5px solid var(--border, #ddd);
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 0.85rem;
+    font-family: monospace;
+    color: var(--accent, #7c3aed);
+    word-break: break-all;
+    cursor: pointer;
+    user-select: all;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    transition: border-color 0.15s;
+  }
+  .link-box:hover {
+    border-color: var(--accent, #7c3aed);
+  }
+  .action-btns {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .btn-copy {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 0 12px;
+    height: 36px;
+    background: var(--accent, #7c3aed);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.15s;
+  }
+  .btn-copy:hover {
+    background: var(--accent-hover, #6d28d9);
+  }
+  .btn-copy.copied {
+    background: #16a34a;
+  }
+  .btn-line {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    height: 36px;
+    padding: 0 12px;
+    background: #00B900;
+    color: #fff;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background 0.15s;
+  }
+  .btn-line:hover {
+    background: #00a000;
+  }
+  .share-hint {
+    font-size: 0.82rem;
+    margin-top: 10px;
+  }
+  .back-row {
+    margin-top: 32px;
+    text-align: center;
+  }
+  .btn-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 24px;
+    color: var(--text-secondary, #666);
+    text-decoration: none;
+    font-size: 0.9rem;
+    border: 1.5px solid var(--border, #ddd);
+    border-radius: 8px;
+    transition: all 0.15s;
+  }
+  .btn-back:hover {
+    color: var(--accent, #7c3aed);
+    border-color: var(--accent, #7c3aed);
+  }
+</style>
+
 <script>
   const role = sessionStorage.getItem('survey_role');
-  const inviteLink = sessionStorage.getItem('survey_inviteLink') || '';
+  const relLink = sessionStorage.getItem('survey_inviteLink') || '';
+  // Build full URL
+  const fullUrl = window.location.origin + relLink;
 
   const shareSection = document.getElementById('share-section');
   const shareTitle = document.getElementById('share-title');
   const shareHint = document.getElementById('share-hint');
   const linkBox = document.getElementById('invite-link-box');
+  const btnCopy = document.getElementById('btn-copy');
+  const copyLabel = document.getElementById('copy-label');
+  const btnLine = document.getElementById('btn-line');
+  const backBtn = document.getElementById('back-btn');
+
+  // Set back button href: go back to article (history back) or fallback to home
+  backBtn.href = document.referrer
+    ? document.referrer
+    : window.location.origin + '/zh/';
 
   if (role === 'caregiver') {
     document.getElementById('caregiver-msg').style.display = 'block';
-    if (inviteLink) {
+    if (relLink) {
       shareSection.style.display = 'block';
       shareTitle.textContent = '請將以下連結分享給長輩：';
       shareHint.textContent = '長輩可點擊連結填寫長輩版問卷';
-      linkBox.textContent = inviteLink;
-      linkBox.addEventListener('click', () => {
-        navigator.clipboard.writeText(inviteLink).then(() => {
-          linkBox.textContent = '已複製！';
-          setTimeout(() => { linkBox.textContent = inviteLink; }, 2000);
-        });
-      });
+      linkBox.textContent = fullUrl;
     }
   } else {
     document.getElementById('elder-msg').style.display = 'block';
-    if (inviteLink) {
+    if (relLink) {
       shareSection.style.display = 'block';
       shareTitle.textContent = '請將以下連結分享給家人或照顧者：';
       shareHint.textContent = '他們可以點擊連結填寫家屬版問卷';
-      linkBox.textContent = inviteLink;
-      linkBox.addEventListener('click', () => {
-        navigator.clipboard.writeText(inviteLink).then(() => {
-          linkBox.textContent = '已複製！';
-          setTimeout(() => { linkBox.textContent = inviteLink; }, 2000);
-        });
-      });
+      linkBox.textContent = fullUrl;
     }
   }
 
-  // Clean up sessionStorage after reading
+  // Copy button
+  btnCopy.addEventListener('click', () => {
+    navigator.clipboard.writeText(fullUrl).then(() => {
+      copyLabel.textContent = '已複製';
+      btnCopy.classList.add('copied');
+      setTimeout(() => {
+        copyLabel.textContent = '複製';
+        btnCopy.classList.remove('copied');
+      }, 2000);
+    });
+  });
+
+  // LINE share button
+  if (btnLine) {
+    btnLine.href = 'https://social-plugins.line.me/lineit/share?url=' + encodeURIComponent(fullUrl);
+  }
+
+  // Clean up sessionStorage
   sessionStorage.removeItem('survey_familyId');
   sessionStorage.removeItem('survey_inviteLink');
   sessionStorage.removeItem('survey_role');
