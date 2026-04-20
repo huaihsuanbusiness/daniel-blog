@@ -72,7 +72,7 @@ function colLetter(idx: number): string {
 }
 
 /** Format answer value for Sheets:
- * - string[] (multi-select / matrix): join with " | " between items, ", " between rows
+ * - string[] (multi-select / matrix): join with ", "
  *   e.g. ["固定電話問安|有在用","視訊|沒用過"] → "固定電話問安|有在用, 視訊|沒用過"
  * - string: pass through as-is
  */
@@ -80,9 +80,38 @@ function fmt(v: string | string[]): string {
   return Array.isArray(v) ? v.join(', ') : v;
 }
 
+/**
+ * Merge "其他" checkbox selections with their corresponding _other text fields.
+ * e.g. answers = { B7: ["長輩太孤單","其他"], B7_other: "LINE洗掉" }
+ *   → B7 becomes ["長輩太孤單","其他(LINE洗掉)"]
+ */
+function mergeOtherOptions(answers: Record<string, string | string[]>): Record<string, string | string[]> {
+  const merged: Record<string, string | string[]> = { ...answers };
+  for (const key of Object.keys(merged)) {
+    if (!key.endsWith('_other')) continue;
+    const baseKey = key.slice(0, -6); // e.g. "B7_other" → "B7"
+    const otherText = (merged[key] as string)?.trim();
+    const baseVal = merged[baseKey];
+    if (!otherText) continue;
+    if (Array.isArray(baseVal)) {
+      // Replace "其他" with "其他({text})" if present, else append
+      const idx = baseVal.indexOf('其他');
+      if (idx !== -1) {
+        baseVal[idx] = `其他(${otherText})`;
+      } else {
+        baseVal.push(`其他(${otherText})`);
+      }
+    } else if (baseVal === '其他') {
+      merged[baseKey] = `其他(${otherText})`;
+    }
+    // Remove the _other field so it doesn't get written to its own column
+    delete merged[key];
+  }
+  return merged;
+}
+
 // ── Question code constants ──────────────────────────────────────────────
 
-// Caregiver questions (B series)
 const CAREGIVER_QUESTION_CODES = [
   'B1','B2','B3','B4','B5','B6','B7','B8','B9',
   'B10','B11','B12','B13','B14','B15','B16','B17','B18','B19',
@@ -92,7 +121,6 @@ const CAREGIVER_QUESTION_CODES = [
   'consent_followup','consent_interview',
 ];
 
-// Elder questions (A series)
 const ELDER_QUESTION_CODES = [
   'A1','A2','A3','A4',
   'A5-1','A5-2','A5-3',
@@ -154,26 +182,16 @@ export class GoogleSheet {
     };
   }
 
-  /**
-   * Create (or rename default sheet to) Caregiver sheet and add Elder sheet,
-   * each with the correct header row. Idempotent — safe to call multiple times.
-   */
   async setupBothSheets(): Promise<{ caregiverSheetName: string; elderSheetName: string }> {
     const CAREGIVER_NAME = 'Caregiver';
     const ELDER_NAME = 'Elder';
-
-    // Get existing sheet list
     const meta = await this.api<{ sheets?: { properties?: { title: string; sheetId: number } }[] }>('');
     const existingSheets = meta.sheets ?? [];
-
     const defaultSheet = existingSheets.find(s => s.properties?.title === '工作表1');
     const defaultSheetId = defaultSheet?.properties?.sheetId;
     const hasCaregiver = existingSheets.some(s => s.properties?.title === CAREGIVER_NAME);
     const hasElder = existingSheets.some(s => s.properties?.title === ELDER_NAME);
-
     const requests: Record<string, unknown>[] = [];
-
-    // Rename default "工作表1" → Caregiver if it exists and Caregiver doesn't
     if (defaultSheetId !== undefined && !hasCaregiver) {
       requests.push({
         updateSheetProperties: {
@@ -182,16 +200,12 @@ export class GoogleSheet {
         },
       });
     }
-    // Add Elder sheet if missing
     if (!hasElder) {
       requests.push({ addSheet: { properties: { title: ELDER_NAME, index: 1 } } });
     }
-
     if (requests.length > 0) {
       await this.api_batchUpdate({ requests });
     }
-
-    // Build header rows
     const caregiverHeaders = [
       'family_id', 'role', 'submitted_at', 'locale',
       ...CAREGIVER_QUESTION_CODES,
@@ -202,8 +216,6 @@ export class GoogleSheet {
       ...ELDER_QUESTION_CODES,
       'linked_caregiver_row',
     ];
-
-    // Write headers (overwrite safe since headers are fixed)
     await this.api(
       `/values/${encodeURIComponent(CAREGIVER_NAME + '!A1:' + colLetter(caregiverHeaders.length - 1) + '1')}?valueInputOption=RAW`,
       { method: 'PUT', body: JSON.stringify({ values: [caregiverHeaders] }) }
@@ -212,7 +224,6 @@ export class GoogleSheet {
       `/values/${encodeURIComponent(ELDER_NAME + '!A1:' + colLetter(elderHeaders.length - 1) + '1')}?valueInputOption=RAW`,
       { method: 'PUT', body: JSON.stringify({ values: [elderHeaders] }) }
     );
-
     return { caregiverSheetName: CAREGIVER_NAME, elderSheetName: ELDER_NAME };
   }
 
@@ -230,7 +241,6 @@ export class GoogleSheet {
     return res.values?.length ?? 0;
   }
 
-  /** Find a row by family_id (returns 1-based row number, or -1 if not found) */
   private async findRowByFamilyId(sheetName: string, familyId: string): Promise<number> {
     const res = await this.api<{ values?: string[][] }>(
       `/values/${encodeURIComponent(`${sheetName}!A:A`)}`
@@ -243,19 +253,18 @@ export class GoogleSheet {
   }
 
   /**
-   * Write a plain-text cross-reference note into a link column.
-   * Uses RAW mode so Sheets stores it as plain text (no formula #ERROR!).
+   * Write a plain-text cross-reference into a link column.
+   * Shows: "→ {linkSheet} row {row}" e.g. "→ Elder row 5"
    */
   private async writeLinkCell(
     sheetName: string,
     colLetter_: string,
     row: number,
     linkSheet: string,
-    linkFamilyId: string
+    linkRow: number
   ): Promise<void> {
     const range = `${sheetName}!${colLetter_}${row}:${colLetter_}${row}`;
-    // Plain text format: "→ {linkSheet} {family_id}"
-    const note = '\u2192 ' + linkSheet + ' ' + linkFamilyId;
+    const note = '\u2192 ' + linkSheet + ' row ' + linkRow;
     await this.api(
       `/values/${encodeURIComponent(range)}?valueInputOption=RAW`,
       { method: 'PUT', body: JSON.stringify({ values: [[note]] }) }
@@ -271,7 +280,9 @@ export class GoogleSheet {
     const { role, familyId: fid, answers, locale } = params;
     const site = this.env.SITE || 'https://danielcanfly.com';
 
-    // Ensure both sheets exist with headers
+    // Merge "其他" checkbox + text fields before processing
+    const mergedAnswers = mergeOtherOptions(answers);
+
     await this.setupBothSheets();
 
     if (role === 'caregiver') {
@@ -280,6 +291,7 @@ export class GoogleSheet {
       const headers = await this.getHeaderRow_(sheetName);
       const ci = (name: string) => headers.indexOf(name);
       const lastRow = await this.lastRow_(sheetName);
+      const newCaregiverRow = lastRow + 1;
 
       const row: string[] = Array(headers.length).fill('');
       row[ci('family_id')] = newFid;
@@ -289,16 +301,30 @@ export class GoogleSheet {
         const li = ci('locale');
         if (li !== -1) row[li] = locale;
       }
-      for (const [q, av] of Object.entries(answers)) {
+      for (const [q, av] of Object.entries(mergedAnswers)) {
         const i = ci(q);
         if (i !== -1) row[i] = fmt(av);
       }
 
-      const rng = `${sheetName}!A${lastRow + 1}:${colLetter(headers.length - 1)}${lastRow + 1}`;
+      const rng = `${sheetName}!A${newCaregiverRow}:${colLetter(headers.length - 1)}${newCaregiverRow}`;
       await this.api(`/values/${encodeURIComponent(rng)}?valueInputOption=RAW`, {
         method: 'PUT',
         body: JSON.stringify({ values: [row] }),
       });
+
+      // Write cross-link: Caregiver → Elder (placeholder for when Elder row exists)
+      const caregiverLinkedColIdx = ci('linked_elder_row');
+      if (caregiverLinkedColIdx !== -1) {
+        // Find the elder row that has the same family_id (it may already exist from a prior elder submission,
+        // or we write a placeholder that gets updated when elder submits)
+        const elderRow = await this.findRowByFamilyId('Elder', newFid);
+        if (elderRow !== -1) {
+          // Elder already submitted — link immediately
+          await this.writeLinkCell(sheetName, colLetter(caregiverLinkedColIdx), newCaregiverRow, 'Elder', elderRow);
+        }
+        // If elder hasn't submitted yet, linked_elder_row stays blank for now;
+        // it will be filled in when the elder submits (see elder branch below)
+      }
 
       return {
         success: true,
@@ -314,23 +340,16 @@ export class GoogleSheet {
       // Check if elder already submitted (update mode)
       const existingRow = await this.findRowByFamilyId(sheetName, fid);
       if (existingRow !== -1) {
-        // Update existing row
         const headers = await this.getHeaderRow_(sheetName);
         const ci = (name: string) => headers.indexOf(name);
         const updates: { range: string; values: string[][] }[] = [];
-        updates.push({
-          range: `${sheetName}!${colLetter(ci('role'))}${existingRow}`,
-          values: [['elder']],
-        });
-        updates.push({
-          range: `${sheetName}!${colLetter(ci('submitted_at'))}${existingRow}`,
-          values: [[new Date().toISOString()]],
-        });
+        updates.push({ range: `${sheetName}!${colLetter(ci('role'))}${existingRow}`, values: [['elder']] });
+        updates.push({ range: `${sheetName}!${colLetter(ci('submitted_at'))}${existingRow}`, values: [[new Date().toISOString()]] });
         if (locale) {
           const li = ci('locale');
           if (li !== -1) updates.push({ range: `${sheetName}!${colLetter(li)}${existingRow}`, values: [[locale]] });
         }
-        for (const [q, av] of Object.entries(answers)) {
+        for (const [q, av] of Object.entries(mergedAnswers)) {
           const i = ci(q);
           if (i !== -1) updates.push({ range: `${sheetName}!${colLetter(i)}${existingRow}`, values: [[fmt(av)]] });
         }
@@ -338,6 +357,18 @@ export class GoogleSheet {
           method: 'POST',
           body: JSON.stringify({ valueInputOption: 'RAW', data: updates }),
         });
+
+        // Also back-fill the Caregiver row's linked_elder_row (caregiver may have submitted first)
+        const caregiverRow = await this.findRowByFamilyId('Caregiver', fid);
+        if (caregiverRow !== -1) {
+          const cgHeaders = await this.getHeaderRow_('Caregiver');
+          const cgCi = (n: string) => cgHeaders.indexOf(n);
+          const cgLinkedIdx = cgCi('linked_elder_row');
+          if (cgLinkedIdx !== -1) {
+            await this.writeLinkCell('Caregiver', colLetter(cgLinkedIdx), caregiverRow, 'Elder', existingRow);
+          }
+        }
+
         return { success: true, familyId: fid };
       }
 
@@ -345,6 +376,7 @@ export class GoogleSheet {
       const headers = await this.getHeaderRow_(sheetName);
       const ci = (name: string) => headers.indexOf(name);
       const lastRow = await this.lastRow_(sheetName);
+      const newElderRow = lastRow + 1;
 
       const row: string[] = Array(headers.length).fill('');
       row[ci('family_id')] = fid;
@@ -354,32 +386,34 @@ export class GoogleSheet {
         const li = ci('locale');
         if (li !== -1) row[li] = locale;
       }
-      for (const [q, av] of Object.entries(answers)) {
+      for (const [q, av] of Object.entries(mergedAnswers)) {
         const i = ci(q);
         if (i !== -1) row[i] = fmt(av);
       }
 
-      const rng = `${sheetName}!A${lastRow + 1}:${colLetter(headers.length - 1)}${lastRow + 1}`;
+      const rng = `${sheetName}!A${newElderRow}:${colLetter(headers.length - 1)}${newElderRow}`;
       await this.api(`/values/${encodeURIComponent(rng)}?valueInputOption=RAW`, {
         method: 'PUT',
         body: JSON.stringify({ values: [row] }),
       });
 
-      // Write cross-link from Elder → Caregiver and Caregiver → Elder
-      const elderLinkedColIdx = ci('linked_caregiver_row');
-      const caregiverLinkedColIdx = ci('linked_elder_row');
-      const newElderRow = lastRow + 1;
-
       // Write Elder → Caregiver link (on the new elder row)
+      const elderLinkedColIdx = ci('linked_caregiver_row');
       if (elderLinkedColIdx !== -1) {
-        await this.writeLinkCell(sheetName, colLetter(elderLinkedColIdx), newElderRow, 'Caregiver', fid);
-      }
-
-      // Also update the Caregiver row's linked_elder_row (find the caregiver row for this family)
-      if (caregiverLinkedColIdx !== -1) {
         const caregiverRow = await this.findRowByFamilyId('Caregiver', fid);
         if (caregiverRow !== -1) {
-          await this.writeLinkCell('Caregiver', colLetter(caregiverLinkedColIdx), caregiverRow, 'Elder', fid);
+          await this.writeLinkCell(sheetName, colLetter(elderLinkedColIdx), newElderRow, 'Caregiver', caregiverRow);
+        }
+      }
+
+      // Also back-fill Caregiver row's linked_elder_row if caregiver already submitted
+      const caregiverRow = await this.findRowByFamilyId('Caregiver', fid);
+      if (caregiverRow !== -1) {
+        const cgHeaders = await this.getHeaderRow_('Caregiver');
+        const cgCi = (n: string) => cgHeaders.indexOf(n);
+        const cgLinkedIdx = cgCi('linked_elder_row');
+        if (cgLinkedIdx !== -1) {
+          await this.writeLinkCell('Caregiver', colLetter(cgLinkedIdx), caregiverRow, 'Elder', newElderRow);
         }
       }
 
