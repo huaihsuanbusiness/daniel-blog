@@ -10,27 +10,40 @@ import SurveyLayout from '../../../../layouts/SurveyLayout.astro';
   <div class="thankyou-block">
     <div class="big-check">✓</div>
     <h2>謝謝您的填寫！</h2>
-    <p id="caregiver-msg" style="display:none">
+
+    <p id="caregiver-msg" class="sub-msg" style="display:none">
       感謝您分享這麼寶貴的意見。<br />
       您的回覆將幫助我們打造更適合長輩與家屬的 AI 陪伴服務。
     </p>
-    <p id="elder-msg" style="display:none">
+    <p id="elder-msg" class="sub-msg" style="display:none">
       感謝您撥冗填寫！<br />
       您的回覆對我們非常寶貴。
     </p>
 
-    <div id="share-section" style="display:none" class="share-block">
+    <!-- Elder prompt -->
+    <p id="elder-prompt" class="prompt-text" style="display:none">
+      邀請您分享給家中長輩填寫長輩版問卷<br />
+      （不限年齡，只要願意分享近況即可）
+    </p>
+
+    <!-- Caregiver prompt -->
+    <p id="caregiver-prompt" class="prompt-text" style="display:none">
+      邀請您分享給長輩填寫長輩版問卷<br />
+      （由長輩本人分享，或由您協助填寫）
+    </p>
+
+    <div id="share-section" class="share-block" style="display:none">
       <p class="share-title" id="share-title"></p>
       <div class="link-row">
         <div class="link-box" id="invite-link-box"></div>
         <div class="action-btns">
-          <button class="btn-copy" id="btn-copy" title="複製連結">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-            <span id="copy-label">複製</span>
+          <button class="btn-copy" id="btn-copy">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            <span id="copy-label">複製連結</span>
           </button>
-          <a class="btn-line" id="btn-line" href="#" target="_blank" rel="noopener" title="分享到 LINE">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63h2.386c.346 0 .627.285.627.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.924c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.198 0 .376.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0v-2.162c0-.344.282-.629.63-.629.346 0 .63.285.63.629v2.162H10.77V8.108c0-.345.282-.63.63-.63.346 0 .63.285.63.63v4.771H10.77zm-4.877 0H1.624c-.346 0-.63-.285-.63-.629V8.108c0-.345.284-.63.63-.63.345 0 .63.285.63.63v4.141h5.302V8.108c0-.345.284-.63.63-.63.345 0 .63.285.63.63v4.771zM8.437 9.68l-.382 2.924 2.665-2.924H8.437zm7.073 4.196H3.748l-.104-.629 4.197-4.141.104.63 4.465-.001v4.141z"/></svg>
-            LINE
+          <a class="btn-line" id="btn-line" href="#" target="_blank" rel="noopener">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63h2.386c.346 0 .627.285.627.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.924c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.198 0 .376.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0v-2.162c0-.344.282-.629.63-.629.346 0 .63.285.63.629v2.162H10.77V8.108c0-.345.282-.63.63-.63.346 0 .63.285.63.63v4.771H10.77zm-4.877 0H1.624c-.346 0-.63-.285-.63-.629V8.108c0-.345.284-.63.63-.63.345 0 .63.285.63.63v4.141h5.302V8.108c0-.345.284-.63.63-.63.345 0 .63.285.63.63v4.771zM8.437 9.68l-.382 2.924 2.665-2.924H8.437zm7.073 4.196H3.748l-.104-.629 4.197-4.141.104.63 4.465-.001v4.141z"/></svg>
+            分享 LINE
           </a>
         </div>
       </div>
@@ -38,7 +51,7 @@ import SurveyLayout from '../../../../layouts/SurveyLayout.astro';
     </div>
 
     <div class="back-row">
-      <a href="https://www.danielcanfly.com/zh/blog/ai-companion-survey?category=business" id="back-btn" class="btn-back">
+      <a href="https://www.danielcanfly.com/zh/blog/ai-companion-survey?category=business" class="btn-back">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
         返回文章
       </a>
@@ -63,16 +76,24 @@ import SurveyLayout from '../../../../layouts/SurveyLayout.astro';
     margin-bottom: 8px;
     color: var(--text);
   }
-  p {
+  .sub-msg, .prompt-text {
     color: var(--text-secondary, #666);
-    font-size: 1rem;
-    line-height: 1.6;
+    font-size: 0.95rem;
+    line-height: 1.7;
     margin: 4px 0;
   }
+  .prompt-text {
+    background: #f0f4ff;
+    border: 1.5px solid #c7d2fe;
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-size: 0.9rem;
+    margin-top: 12px;
+  }
   .share-block {
-    margin-top: 32px;
+    margin-top: 24px;
     text-align: left;
-    background: var(--gray-15, #f5f5f5);
+    background: #f8f9fa;
     border-radius: 12px;
     padding: 20px;
   }
@@ -90,12 +111,12 @@ import SurveyLayout from '../../../../layouts/SurveyLayout.astro';
   .link-box {
     flex: 1;
     background: #fff;
-    border: 1.5px solid var(--border, #ddd);
+    border: 1.5px solid #ddd;
     border-radius: 8px;
     padding: 10px 12px;
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     font-family: monospace;
-    color: var(--accent, #7c3aed);
+    color: #7c3aed;
     word-break: break-all;
     cursor: pointer;
     user-select: all;
@@ -104,13 +125,12 @@ import SurveyLayout from '../../../../layouts/SurveyLayout.astro';
     align-items: center;
     transition: border-color 0.15s;
   }
-  .link-box:hover {
-    border-color: var(--accent, #7c3aed);
-  }
+  .link-box:hover { border-color: #7c3aed; }
   .action-btns {
     display: flex;
     flex-direction: column;
     gap: 6px;
+    flex-shrink: 0;
   }
   .btn-copy {
     display: flex;
@@ -118,7 +138,7 @@ import SurveyLayout from '../../../../layouts/SurveyLayout.astro';
     gap: 5px;
     padding: 0 12px;
     height: 36px;
-    background: var(--accent, #7c3aed);
+    background: #7c3aed;
     color: #fff;
     border: none;
     border-radius: 8px;
@@ -128,12 +148,8 @@ import SurveyLayout from '../../../../layouts/SurveyLayout.astro';
     white-space: nowrap;
     transition: background 0.15s;
   }
-  .btn-copy:hover {
-    background: var(--accent-hover, #6d28d9);
-  }
-  .btn-copy.copied {
-    background: #16a34a;
-  }
+  .btn-copy:hover { background: #6d28d9; }
+  .btn-copy.copied { background: #16a34a; }
   .btn-line {
     display: flex;
     align-items: center;
@@ -150,15 +166,14 @@ import SurveyLayout from '../../../../layouts/SurveyLayout.astro';
     white-space: nowrap;
     transition: background 0.15s;
   }
-  .btn-line:hover {
-    background: #00a000;
-  }
+  .btn-line:hover { background: #00a000; }
   .share-hint {
-    font-size: 0.82rem;
-    margin-top: 10px;
+    font-size: 0.8rem;
+    color: #888;
+    margin-top: 8px;
   }
   .back-row {
-    margin-top: 32px;
+    margin-top: 28px;
     text-align: center;
   }
   .btn-back {
@@ -166,29 +181,27 @@ import SurveyLayout from '../../../../layouts/SurveyLayout.astro';
     align-items: center;
     gap: 6px;
     padding: 10px 24px;
-    color: var(--text-secondary, #666);
+    color: #666;
     text-decoration: none;
     font-size: 0.9rem;
-    border: 1.5px solid var(--border, #ddd);
+    border: 1.5px solid #ddd;
     border-radius: 8px;
     transition: all 0.15s;
   }
   .btn-back:hover {
-    color: var(--accent, #7c3aed);
-    border-color: var(--accent, #7c3aed);
+    color: #7c3aed;
+    border-color: #7c3aed;
   }
 </style>
 
 <script>
-  // Priority 1: Read from URL params (set by form submission)
-  // Priority 2: Fall back to sessionStorage
+  // Read from URL params (set by form before redirect) — this is the PRIMARY source
   const urlParams = new URLSearchParams(window.location.search);
-  const roleFromUrl = urlParams.get('role'); // 'caregiver' or 'elder'
-  const inviteFromUrl = urlParams.get('invite'); // full URL or encoded URL
+  const role = urlParams.get('role') || sessionStorage.getItem('survey_role') || '';
+  const inviteParam = urlParams.get('invite') || '';
 
-  const role = roleFromUrl || sessionStorage.getItem('survey_role') || '';
-  // Try URL param first, then sessionStorage, then generate from referrer
-  let relLink = sessionStorage.getItem('survey_inviteLink') || '';
+  // Build full URL: if inviteParam is already a full URL use it, otherwise prepend origin
+  const fullUrl = inviteParam || '';
 
   const shareSection = document.getElementById('share-section');
   const shareTitle = document.getElementById('share-title');
@@ -200,43 +213,30 @@ import SurveyLayout from '../../../../layouts/SurveyLayout.astro';
 
   if (role === 'caregiver') {
     document.getElementById('caregiver-msg').style.display = 'block';
-    if (relLink) {
+    document.getElementById('caregiver-prompt').style.display = 'block';
+    if (fullUrl) {
       shareSection.style.display = 'block';
       shareTitle.textContent = '請將以下連結分享給長輩：';
+      linkBox.textContent = fullUrl;
       shareHint.textContent = '長輩可點擊連結填寫長輩版問卷';
-      linkBox.textContent = relLink;
     }
   } else if (role === 'elder') {
     document.getElementById('elder-msg').style.display = 'block';
-    if (relLink) {
+    document.getElementById('elder-prompt').style.display = 'block';
+    if (fullUrl) {
       shareSection.style.display = 'block';
       shareTitle.textContent = '請將以下連結分享給家人或照顧者：';
+      linkBox.textContent = fullUrl;
       shareHint.textContent = '他們可以點擊連結填寫家屬版問卷';
-      linkBox.textContent = relLink;
     }
   }
 
-  // Build full URL from relLink
-  const fullUrl = relLink.startsWith('http')
-    ? relLink
-    : window.location.origin + relLink;
-
-  // Only show share section if we have a valid link
-  if (fullUrl && fullUrl !== window.location.origin + '/') {
-    shareSection.style.display = 'block';
-    linkBox.textContent = fullUrl;
-  }
-
-  // Copy button
+  // Copy button — stays "已複製" indefinitely
   if (btnCopy && fullUrl) {
     btnCopy.addEventListener('click', () => {
       navigator.clipboard.writeText(fullUrl).then(() => {
-        copyLabel.textContent = '已複製';
+        copyLabel.textContent = '已複製 ✓';
         btnCopy.classList.add('copied');
-        setTimeout(() => {
-          copyLabel.textContent = '複製';
-          btnCopy.classList.remove('copied');
-        }, 2000);
       });
     });
   }
