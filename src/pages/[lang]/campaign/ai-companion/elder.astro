@@ -621,7 +621,11 @@ const refParam = '';
       sessionStorage.setItem('survey_inviteLink', inviteLink);
       sessionStorage.setItem('survey_role', 'elder');
       clearDraft();
-      window.location.href = `/${lang}/campaign/ai-companion/thank-you`;
+      const lang2 = window.location.pathname.split('/').filter(Boolean)[0] || 'zh';
+      const fullInvite = inviteLink.startsWith('http')
+        ? inviteLink
+        : window.location.origin + inviteLink;
+      window.location.href = `/${lang2}/campaign/ai-companion/thank-you?role=elder&invite=${encodeURIComponent(fullInvite)}`;
     } catch (err) {
       errorContainer.innerHTML = `<div class="error-msg">送出失敗：${err.message}</div>`;
       submitBtn.disabled = false;

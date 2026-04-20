@@ -989,7 +989,10 @@ function renderQuestion(q: typeof questions[0], qIndex: number) {
       sessionStorage.setItem('survey_role', 'caregiver');
       clearDraft();
       const lang = window.location.pathname.split('/').filter(Boolean)[0] || 'zh';
-      window.location.href = `/${lang}/campaign/ai-companion/thank-you`;
+      const fullInvite = (data.inviteLink || '').startsWith('http')
+        ? data.inviteLink
+        : window.location.origin + (data.inviteLink || '');
+      window.location.href = `/${lang}/campaign/ai-companion/thank-you?role=caregiver&invite=${encodeURIComponent(fullInvite)}`;
     } catch (err: any) {
       errorContainer.innerHTML = `<div class="error-msg">送出失敗：${err.message}</div>`;
       submitBtn.disabled = false;
