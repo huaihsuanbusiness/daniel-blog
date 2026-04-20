@@ -2,13 +2,6 @@ export const prerender = false;
 import type { APIRoute } from 'astro';
 import { GoogleSheet } from '../../../utils/googleSheet';
 
-// Workers runtime: access env via cloudflare:workers module
-// This is the Astro v6 + Cloudflare Workers recommended approach
-async function getWorkersEnv(): Promise<{ GOOGLE_PRIVATE_KEY?: string; GOOGLE_SHEET_ID?: string; SITE?: string }> {
-  const { env } = await import('cloudflare:workers');
-  return env as { GOOGLE_PRIVATE_KEY?: string; GOOGLE_SHEET_ID?: string; SITE?: string };
-}
-
 export const POST: APIRoute = async ({ request }) => {
   try {
     const body = await request.json();
@@ -21,15 +14,15 @@ export const POST: APIRoute = async ({ request }) => {
       );
     }
 
-    const env = await getWorkersEnv();
-    const envAccessor = () => {
-      if (!env.GOOGLE_SHEET_ID) {
-        throw new Error('GOOGLE_SHEET_ID is not set in environment');
-      }
-      return env;
+    const { env } = await import('cloudflare:workers');
+
+    const googleEnv = {
+      GOOGLE_PRIVATE_KEY: env.GOOGLE_PRIVATE_KEY ?? '',
+      GOOGLE_SHEET_ID: env.GOOGLE_SHEET_ID ?? '',
+      SITE: env.SITE ?? 'https://danielcanfly.com',
     };
 
-    const sheet = new GoogleSheet(envAccessor);
+    const sheet = new GoogleSheet(googleEnv);
     const result = await sheet.appendRow({ role, familyId, answers, locale });
 
     return new Response(JSON.stringify(result), {

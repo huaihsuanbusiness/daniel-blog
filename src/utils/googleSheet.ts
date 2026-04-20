@@ -109,6 +109,59 @@ export class GoogleSheet {
     return body;
   }
 
+  async getSpreadsheetMeta(): Promise<{ spreadsheetTitle: string; sheets: string[] }> {
+    const meta = await this.api<{ properties?: { title: string }; sheets?: { properties?: { title: string } }[] }>('');
+    return {
+      spreadsheetTitle: meta.properties?.title ?? '',
+      sheets: meta.sheets?.map(s => s.properties?.title ?? '工作表1') ?? ['工作表1'],
+    };
+  }
+
+  async writeTestValue(): Promise<Record<string, unknown>> {
+    const meta = await this.api<{ sheets?: { properties?: { title: string } }[] }>('');
+    const sheetName = meta.sheets?.[0]?.properties?.title ?? '工作表1';
+    const testValue = 'TEST_' + Date.now();
+    await this.api(
+      `/values/${encodeURIComponent(`${sheetName}!A1:A1`)}?valueInputOption=RAW`,
+      {
+        method: 'PUT',
+        body: JSON.stringify({ values: [[testValue]] }),
+      }
+    );
+    const res = await this.api<{ values?: string[][] }>(
+      `/values/${encodeURIComponent(`${sheetName}!A1:A1`)}`
+    );
+    return { sheetName, testValue, readBack: res.values?.[0]?.[0] };
+  }
+
+  /** Ensure header row exists, creating it if the sheet is blank.
+   * Returns both the header array and the sheet tab name. */
+  async ensureHeaderRow(): Promise<{ headers: string[]; sheetName: string }> {
+    const meta = await this.api<{ sheets?: { properties?: { title: string } }[] }>('');
+    const sheetName = meta.sheets?.[0]?.properties?.title ?? '工作表1';
+    const headers = await this.getHeaderRow_(sheetName);
+    if (headers.length > 0) return { headers, sheetName };
+    // Sheet is empty — write header row
+    const headerRow = ['family_id', 'role', 'submitted_at', 'locale'];
+    await this.api(
+      `/values/${encodeURIComponent(`${sheetName}!A1:${colLetter(headerRow.length - 1)}1`)}?valueInputOption=RAW`,
+      { method: 'PUT', body: JSON.stringify({ values: [headerRow] }) }
+    );
+    return { headers: headerRow, sheetName };
+  }
+
+  private async getHeaderRow_(sheetName: string): Promise<string[]> {
+    // Use A1:ZZ1 as the range — Sheets will return all columns up to ZZ (column 702)
+    const res = await this.api<{ values?: string[][] }>(`/values/${encodeURIComponent(`${sheetName}!A1:ZZ1`)}`);
+    return res.values?.[0] || [];
+  }
+
+
+  private async lastRow_(sheetName: string): Promise<number> {
+    const res = await this.api<{ values?: unknown[][] }>(`/values/${encodeURIComponent(`${sheetName}!A:A`)}`);
+    return res.values?.length ?? 0;
+  }
+
   async appendRow(params: {
     role: 'caregiver' | 'elder';
     familyId?: string;
@@ -117,8 +170,7 @@ export class GoogleSheet {
   }): Promise<{ success: boolean; familyId: string; inviteLink?: string }> {
     const { role, familyId: fid, answers, locale } = params;
     const site = this.env.SITE || 'https://danielcanfly.com';
-    const headers = await this.getHeaderRow_();
-
+    const { headers, sheetName } = await this.ensureHeaderRow();
     const ci = (name: string) => headers.indexOf(name);
     const aIdx = ci('family_id');
     const rIdx = ci('role');
@@ -126,7 +178,7 @@ export class GoogleSheet {
 
     if (role === 'caregiver') {
       const newFid = 'fam_' + nanoid(8);
-      const lastRow = await this.lastRow_();
+      const lastRow = await this.lastRow_(sheetName);
 
       const row: string[] = Array(headers.length).fill('');
       row[aIdx] = newFid;
@@ -141,7 +193,7 @@ export class GoogleSheet {
         if (i !== -1) row[i] = fmt(av);
       }
 
-      const rng = `'Survey_Responses'!A${lastRow + 1}:${colLetter(headers.length - 1)}${lastRow + 1}`;
+      const rng = `${sheetName}!A${lastRow + 1}:${colLetter(headers.length - 1)}${lastRow + 1}`;
       await this.api(`/values/${encodeURIComponent(rng)}?valueInputOption=RAW`, {
         method: 'PUT',
         body: JSON.stringify({ values: [row] }),
@@ -153,7 +205,9 @@ export class GoogleSheet {
     if (!fid) throw new Error('elder requires familyId');
 
     const fidLetter = colLetter(aIdx);
-    const res = await this.api<{ values?: string[][] }>(`/values/${encodeURIComponent(`'Survey_Responses'!${fidLetter}:${fidLetter}`)}`);
+    const res = await this.api<{ values?: string[][] }>(
+      `/values/${encodeURIComponent(`${sheetName}!${fidLetter}:${fidLetter}`)}`
+    );
     const rows = res.values || [];
     let targetRow = -1;
     for (let i = 1; i < rows.length; i++) {
@@ -165,15 +219,15 @@ export class GoogleSheet {
     if (targetRow === -1) throw new Error(`family_id ${fid} not found`);
 
     const updates: { range: string; values: string[][] }[] = [];
-    updates.push({ range: `'Survey_Responses'!${colLetter(rIdx)}${targetRow}`, values: [['elder']] });
-    updates.push({ range: `'Survey_Responses'!${colLetter(sIdx)}${targetRow}`, values: [[new Date().toISOString()]] });
+    updates.push({ range: `${sheetName}!${colLetter(rIdx)}${targetRow}`, values: [['elder']] });
+    updates.push({ range: `${sheetName}!${colLetter(sIdx)}${targetRow}`, values: [[new Date().toISOString()]] });
     if (locale) {
       const li = ci('locale');
-      if (li !== -1) updates.push({ range: `'Survey_Responses'!${colLetter(li)}${targetRow}`, values: [[locale]] });
+      if (li !== -1) updates.push({ range: `${sheetName}!${colLetter(li)}${targetRow}`, values: [[locale]] });
     }
     for (const [q, av] of Object.entries(answers)) {
       const i = ci(q);
-      if (i !== -1) updates.push({ range: `'Survey_Responses'!${colLetter(i)}${targetRow}`, values: [[fmt(av)]] });
+      if (i !== -1) updates.push({ range: `${sheetName}!${colLetter(i)}${targetRow}`, values: [[fmt(av)]] });
     }
 
     await this.api('/values:batchUpdate', {
@@ -182,15 +236,5 @@ export class GoogleSheet {
     });
 
     return { success: true, familyId: fid };
-  }
-
-  private async getHeaderRow_(): Promise<string[]> {
-    const res = await this.api<{ values?: string[][] }>('/values/Survey_Responses!1:1');
-    return res.values?.[0] || [];
-  }
-
-  private async lastRow_(): Promise<number> {
-    const res = await this.api<{ values?: unknown[][] }>('/values/Survey_Responses!A:A');
-    return res.values?.length ?? 0;
   }
 }
