@@ -12,7 +12,6 @@ import SurveyLayout from '../../../../layouts/SurveyLayout.astro';
     <div class="big-check">✓</div>
     <h2>謝謝您的填寫！</h2>
 
-    <!-- 填寫後的感謝語 -->
     <p id="caregiver-msg" class="thank-msg" style="display:none">
       感謝您分享這麼寶貴的意見。<br />
       您的回覆將幫助我們打造更適合長輩與家屬的 AI 陪伴服務。
@@ -22,46 +21,57 @@ import SurveyLayout from '../../../../layouts/SurveyLayout.astro';
       您的回覆對我們非常寶貴。
     </p>
 
-    <!-- 單一分享容器：Prompt + 連結 + 按鈕 -->
+    <!-- 第一區：個人邀請連結 -->
     <div id="share-panel" class="share-panel" style="display:none">
 
-      <!-- 邀請提示語（置換後的正確版本） -->
-      <p id="elder-prompt" class="prompt-line" style="display:none">
+      <p class="panel-label">個人邀請連結</p>
+      <p class="prompt-line" id="elder-prompt" style="display:none">
         邀請您分享給家人或照顧者填寫
       </p>
-      <p id="caregiver-prompt" class="prompt-line" style="display:none">
+      <p class="prompt-line" id="caregiver-prompt" style="display:none">
         邀請您分享給長輩填寫
       </p>
 
-      <!-- 連結滿寬 -->
       <div class="link-block">
         <div class="share-link" id="share-link"></div>
       </div>
 
-      <!-- 按鈕組：上下排列 -->
       <div class="btn-group">
         <button class="btn-copy" id="btn-copy">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
           <span id="copy-label">複製連結</span>
         </button>
         <a class="btn-line" id="btn-line" href="#" target="_blank" rel="noopener">
-          <svg width="18" height="18" viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg" style="border-radius:6px">
-            <rect width="50" height="50" rx="10" fill="#00B900"/>
-            <path d="M25 8C15.1 8 10 12.3 10 19.5c0 4.2 2.1 7.9 5.4 10.1v2.5l4.8-2.8c.9.1 1.8.2 2.8.2 9.9 0 15-6.2 15-13.5S34.9 8 25 8z" fill="white"/>
-            <text x="25" y="33" text-anchor="middle" fill="#00B900" font-size="13" font-weight="800" font-family="Arial,sans-serif" style="letter-spacing:-0.5px">LINE</text>
-          </svg>
+          <img src="/images/line-icon.png" alt="LINE" width="18" height="18" />
           分享到LINE
         </a>
       </div>
+    </div>
 
-      <!-- 提示文字 -->
-      <p id="elder-hint" class="share-hint" style="display:none"></p>
-      <p id="caregiver-hint" class="share-hint" style="display:none"></p>
+    <!-- 第二區：分享給其他人 -->
+    <div class="share-panel share-panel-second">
+      <p class="panel-label">分享給其他長輩或照顧者</p>
+      <p class="prompt-line">將問卷連結分享給更多有需要的人</p>
+
+      <div class="link-block">
+        <div class="share-link" id="article-link"></div>
+      </div>
+
+      <div class="btn-group">
+        <button class="btn-copy" id="btn-copy-article">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+          <span id="copy-article-label">複製連結</span>
+        </button>
+        <a class="btn-line" id="btn-line-article" href="#" target="_blank" rel="noopener">
+          <img src="/images/line-icon.png" alt="LINE" width="18" height="18" />
+          分享到LINE
+        </a>
+      </div>
     </div>
 
     <div class="back-row">
       <a href="https://www.danielcanfly.com/zh/blog/ai-companion-survey?category=business" class="btn-back">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
         返回文章
       </a>
     </div>
@@ -76,28 +86,23 @@ import SurveyLayout from '../../../../layouts/SurveyLayout.astro';
     max-width: 520px;
     margin: 0 auto;
   }
-
   .big-check {
     font-size: 60px;
     line-height: 1;
     margin-bottom: 14px;
   }
-
   h2 {
     font-size: 1.45rem;
     margin-bottom: 10px;
-    color: #fff;
+    color: #111;
     font-weight: 700;
   }
-
   .thank-msg {
     font-size: 0.92rem;
-    color: #e8e8f0;
+    color: #444;
     line-height: 1.75;
     margin: 0 0 4px;
   }
-
-  /* 單一分享容器 */
   .share-panel {
     margin-top: 28px;
     background: #f7f8ff;
@@ -106,7 +111,17 @@ import SurveyLayout from '../../../../layouts/SurveyLayout.astro';
     padding: 18px 20px 14px;
     text-align: left;
   }
-
+  .share-panel-second {
+    margin-top: 14px;
+  }
+  .panel-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #8b8ba0;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin: 0 0 8px;
+  }
   .prompt-line {
     font-size: 0.88rem;
     font-weight: 600;
@@ -114,7 +129,6 @@ import SurveyLayout from '../../../../layouts/SurveyLayout.astro';
     margin: 0 0 12px;
     line-height: 1.5;
   }
-
   .link-block {
     flex: none;
     width: 100%;
@@ -138,14 +152,12 @@ import SurveyLayout from '../../../../layouts/SurveyLayout.astro';
     transition: border-color 0.15s;
   }
   .share-link:hover { border-color: #4f46e5; }
-
   .btn-group {
     display: flex;
     gap: 8px;
     flex-shrink: 0;
     margin-top: 8px;
   }
-
   .btn-copy {
     display: flex;
     align-items: center;
@@ -165,11 +177,10 @@ import SurveyLayout from '../../../../layouts/SurveyLayout.astro';
   }
   .btn-copy:hover { background: #4338ca; }
   .btn-copy.copied { background: #16a34a; }
-
   .btn-line {
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: 5px;
     height: 40px;
     padding: 0 14px;
     background: #00B900;
@@ -183,19 +194,10 @@ import SurveyLayout from '../../../../layouts/SurveyLayout.astro';
     transition: background 0.15s;
   }
   .btn-line:hover { background: #009100; }
-
-  .share-hint {
-    font-size: 0.78rem;
-    color: #b0b0c8;
-    margin: 8px 0 0;
-    line-height: 1.5;
-  }
-
   .back-row {
     margin-top: 28px;
     text-align: center;
   }
-
   .btn-back {
     display: inline-flex;
     align-items: center;
@@ -210,7 +212,7 @@ import SurveyLayout from '../../../../layouts/SurveyLayout.astro';
   }
   .btn-back:hover {
     color: #fff;
-    border-color: rgba(255,255,255,0.5);
+    border-color: #fff;
   }
 </style>
 
@@ -218,17 +220,22 @@ import SurveyLayout from '../../../../layouts/SurveyLayout.astro';
   const urlParams = new URLSearchParams(window.location.search);
   const role = urlParams.get('role') || sessionStorage.getItem('survey_role') || '';
   const inviteUrl = urlParams.get('invite') || '';
+  const articleUrl = 'https://www.danielcanfly.com/zh/blog/ai-companion-survey';
 
   const panel = document.getElementById('share-panel');
   const linkEl = document.getElementById('share-link');
+  const articleLinkEl = document.getElementById('article-link');
   const btnCopy = document.getElementById('btn-copy');
   const copyLabel = document.getElementById('copy-label');
   const btnLine = document.getElementById('btn-line');
+  const btnCopyArticle = document.getElementById('btn-copy-article');
+  const copyArticleLabel = document.getElementById('copy-article-label');
+  const btnLineArticle = document.getElementById('btn-line-article');
 
+  // 個人邀請連結
   if (role === 'caregiver') {
     document.getElementById('caregiver-msg').style.display = 'block';
     document.getElementById('caregiver-prompt').style.display = 'block';
-    document.getElementById('caregiver-hint').style.display = 'block';
     if (inviteUrl) {
       panel.style.display = 'block';
       linkEl.textContent = inviteUrl;
@@ -236,21 +243,21 @@ import SurveyLayout from '../../../../layouts/SurveyLayout.astro';
   } else if (role === 'elder') {
     document.getElementById('elder-msg').style.display = 'block';
     document.getElementById('elder-prompt').style.display = 'block';
-    document.getElementById('elder-hint').style.display = 'block';
     if (inviteUrl) {
       panel.style.display = 'block';
       linkEl.textContent = inviteUrl;
     }
   }
 
-  // 複製按鈕：停在「已複製 ✓」
+  // 文章連結（固定，永遠顯示）
+  if (articleLinkEl) {
+    articleLinkEl.textContent = articleUrl;
+  }
+
+  // 複製個人連結
   if (btnCopy && inviteUrl) {
-    // Set copy button label based on role
-    if (role === 'caregiver') {
-      copyLabel.textContent = '複製長輩連結';
-    } else if (role === 'elder') {
-      copyLabel.textContent = '複製家人連結';
-    }
+    if (role === 'caregiver') copyLabel.textContent = '複製長輩專屬連結';
+    else if (role === 'elder') copyLabel.textContent = '複製家人/照顧者專屬連結';
     btnCopy.addEventListener('click', () => {
       navigator.clipboard.writeText(inviteUrl).then(() => {
         copyLabel.textContent = '已複製 ✓';
@@ -259,12 +266,26 @@ import SurveyLayout from '../../../../layouts/SurveyLayout.astro';
     });
   }
 
-  // LINE 分享
+  // LINE 分享個人連結
   if (btnLine && inviteUrl) {
     btnLine.href = 'https://social-plugins.line.me/lineit/share?url=' + encodeURIComponent(inviteUrl);
   }
 
-  // 清理 sessionStorage
+  // 複製文章連結
+  if (btnCopyArticle) {
+    btnCopyArticle.addEventListener('click', () => {
+      navigator.clipboard.writeText(articleUrl).then(() => {
+        copyArticleLabel.textContent = '已複製 ✓';
+        btnCopyArticle.classList.add('copied');
+      });
+    });
+  }
+
+  // LINE 分享文章連結
+  if (btnLineArticle) {
+    btnLineArticle.href = 'https://social-plugins.line.me/lineit/share?url=' + encodeURIComponent(articleUrl);
+  }
+
   sessionStorage.removeItem('survey_familyId');
   sessionStorage.removeItem('survey_inviteLink');
   sessionStorage.removeItem('survey_role');
