@@ -394,6 +394,15 @@ import SurveyLayout from '../../../../layouts/SurveyLayout.astro';
     }, 2400);
   }
 
+  function openFbUrl(fbUrl, isMobile) {
+    if (isMobile) {
+      // fb:// 會直接開 Facebook App
+      window.location.href = fbUrl;
+    } else {
+      window.open(fbUrl, '_blank', 'noopener');
+    }
+  }
+
   function showFbLoadingState(btn) {
     const label = btn?.querySelector('.fb-label');
     if (label) label.textContent = '已複製，重新導向中...';
@@ -421,58 +430,59 @@ import SurveyLayout from '../../../../layouts/SurveyLayout.astro';
 
   // FB 分享個人連結：先複製貼文文案，再開 Facebook 分享頁
   if (btnFb && inviteUrl) {
-    btnFb.href = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(inviteUrl);
     btnFb.addEventListener('click', (e) => {
       e.preventDefault();
-      const targetUrl = btnFb.href;
+      const webUrl = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(inviteUrl);
+      const fbAppUrl = 'fb://facewebmodal/f?href=' + encodeURIComponent(inviteUrl);
       navigator.clipboard.writeText(composeShareText(inviteUrl))
         .then(() => {
           showFbLoadingState(btnFb);
           setTimeout(() => {
+            openFbUrl(fbAppUrl, isMobileBrowser);
+            // 如果是 mobile，先試 fb://，3 秒後偵測是否還在同一頁，沒跳轉就改用 web
             if (isMobileBrowser) {
-              window.location.href = targetUrl;
+              setTimeout(() => {
+                if (document.hidden || document.hasFocus?.() !== false) {
+                  resetFbState(btnFb);
+                }
+              }, 3000);
             } else {
-              window.open(targetUrl, '_blank', 'noopener');
+              resetFbState(btnFb);
             }
-            resetFbState(btnFb);
           }, 1000);
         })
         .catch(() => {
           showToast('未能自動複製文案，請改用左側複製按鈕');
-          if (isMobileBrowser) {
-            window.location.href = targetUrl;
-          } else {
-            window.open(targetUrl, '_blank', 'noopener');
-          }
+          openFbUrl(webUrl, isMobileBrowser);
         });
     });
   }
 
   // FB 分享文章連結：先複製貼文文案，再開 Facebook 分享頁
   if (btnFbArticle) {
-    btnFbArticle.href = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(articleUrl);
     btnFbArticle.addEventListener('click', (e) => {
       e.preventDefault();
-      const targetUrl = btnFbArticle.href;
+      const webUrl = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(articleUrl);
+      const fbAppUrl = 'fb://facewebmodal/f?href=' + encodeURIComponent(articleUrl);
       navigator.clipboard.writeText(composeShareText(articleUrl))
         .then(() => {
           showFbLoadingState(btnFbArticle);
           setTimeout(() => {
+            openFbUrl(fbAppUrl, isMobileBrowser);
             if (isMobileBrowser) {
-              window.location.href = targetUrl;
+              setTimeout(() => {
+                if (document.hidden || document.hasFocus?.() !== false) {
+                  resetFbState(btnFbArticle);
+                }
+              }, 3000);
             } else {
-              window.open(targetUrl, '_blank', 'noopener');
+              resetFbState(btnFbArticle);
             }
-            resetFbState(btnFbArticle);
           }, 1000);
         })
         .catch(() => {
           showToast('未能自動複製文案，請改用左側複製按鈕');
-          if (isMobileBrowser) {
-            window.location.href = targetUrl;
-          } else {
-            window.open(targetUrl, '_blank', 'noopener');
-          }
+          openFbUrl(webUrl, isMobileBrowser);
         });
     });
   }
