@@ -74,7 +74,7 @@ seriesOrder: 3
 看不見不是沒有治理。看不見代表治理要更早進入產品設計，而不是等事故發生再補。
 
 <figure>
-  ![Risk map for invisible Web3 and agent payments](/images/invisible-web3/invisible-web3-03-risk-map.svg)
+  <img src="/images/invisible-web3/invisible-web3-03-risk-map.svg" alt="Risk map for invisible Web3 and agent payments" />
   <figcaption>Invisible Web3 的風險不只在鏈上。授權、付款、信任與營運，會一起變成 agent payment 的控制點。</figcaption>
 </figure>
 

@@ -86,7 +86,7 @@ x402 試著讓它不要卡在這裡。
 不是把 Web3 講得更大聲，而是讓某些原本卡住的任務變得不中斷。
 
 <figure>
-  ![Visible Web3 versus invisible Web3 infrastructure map](/images/invisible-web3/invisible-web3-01-visible-vs-invisible.svg)
+  <img src="/images/invisible-web3/invisible-web3-01-visible-vs-invisible.svg" alt="Visible Web3 versus invisible Web3 infrastructure map" />
   <figcaption>Visible Web3 把鏈、錢包、gas、token 放在使用者面前；Invisible Web3 把它們變成任務背後的基礎設施。</figcaption>
 </figure>
 
