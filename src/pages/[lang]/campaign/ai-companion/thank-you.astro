@@ -306,26 +306,32 @@ import SurveyLayout from '../../../../layouts/SurveyLayout.astro';
 
   // LINE 個人連結
   if (btnLine && inviteUrl) {
-    btnLine.href = 'line://msg/text/' + encodeURIComponent(TRIGGER + ' ' + inviteUrl);
+    var isMac = /Mac/i.test(navigator.userAgent) && !/iPhone|iPad/i.test(navigator.userAgent);
+    if (isMac) {
+      btnLine.href = 'https://line.me/R/msg/text?url=' + encodeURIComponent(inviteUrl) + '&text=' + encodeURIComponent(TRIGGER + ' ' + inviteUrl);
+    } else {
+      btnLine.href = 'line://msg/text/' + encodeURIComponent(TRIGGER + ' ' + inviteUrl);
+    }
   }
 
   // LINE 文章連結
   if (btnLineArticle) {
-    btnLineArticle.href = 'line://msg/text/' + encodeURIComponent(TRIGGER + ' ' + articleUrl);
+    var isMac2 = /Mac/i.test(navigator.userAgent) && !/iPhone|iPad/i.test(navigator.userAgent);
+    if (isMac2) {
+      btnLineArticle.href = 'https://line.me/R/msg/text?url=' + encodeURIComponent(articleUrl) + '&text=' + encodeURIComponent(TRIGGER + ' ' + articleUrl);
+    } else {
+      btnLineArticle.href = 'line://msg/text/' + encodeURIComponent(TRIGGER + ' ' + articleUrl);
+    }
   }
 
   // FB 個人連結
   if (btnFb && inviteUrl) {
     btnFb.href = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(inviteUrl);
-    btnFb.addEventListener('click', function(e) {
-      e.preventDefault();
-      window.open(this.href, 'fb-share', 'width=600,height=400');
-    });
   }
 
-  // FB 文章連結 - use onclick
+  // FB 文章連結
   if (btnFbArticle) {
-    
+    btnFbArticle.href = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(articleUrl);
   }
 
   // 複製個人連結
