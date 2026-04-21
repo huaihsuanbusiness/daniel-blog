@@ -316,14 +316,26 @@ import SurveyLayout from '../../../../layouts/SurveyLayout.astro';
   // ─── 分享區域 ───
   var TRIGGER = 'AI 陪伴服務上線問卷填寫中！邀請您一起填寫\n填寫問卷，服務上線後有機會獲得至少一個月免費試用！';
 
-  // LINE 個人連結（line:// 通用 Mac/Win/Android/iOS）
+  // LINE 個人連結
   if (btnLine && inviteUrl) {
-    btnLine.href = 'line://msg/text/' + encodeURIComponent(TRIGGER + ' ' + inviteUrl);
+    var isMac = /Mac/i.test(navigator.userAgent) && !/iPhone|iPad/i.test(navigator.userAgent);
+    if (isMac) {
+      // Mac: use line.me web share (opens LINE native app with text+url)
+      btnLine.href = 'https://line.me/R/msg/text?' + 'url=' + encodeURIComponent(inviteUrl) + '&text=' + encodeURIComponent(TRIGGER + ' ' + inviteUrl);
+    } else {
+      // iOS/Android: line:// deep link
+      btnLine.href = 'line://msg/text/' + encodeURIComponent(TRIGGER + ' ' + inviteUrl);
+    }
   }
 
   // LINE 文章連結
   if (btnLineArticle) {
-    btnLineArticle.href = 'line://msg/text/' + encodeURIComponent(TRIGGER + ' ' + articleUrl);
+    var isMac2 = /Mac/i.test(navigator.userAgent) && !/iPhone|iPad/i.test(navigator.userAgent);
+    if (isMac2) {
+      btnLineArticle.href = 'https://line.me/R/msg/text?' + 'url=' + encodeURIComponent(articleUrl) + '&text=' + encodeURIComponent(TRIGGER + ' ' + articleUrl);
+    } else {
+      btnLineArticle.href = 'line://msg/text/' + encodeURIComponent(TRIGGER + ' ' + articleUrl);
+    }
   }
 
   // FB 個人連結
