@@ -45,7 +45,7 @@ import SurveyLayout from '../../../../layouts/SurveyLayout.astro';
           <img src="/images/line-icon.png" alt="LINE" width="18" height="18" />
           分享到LINE
         </a>
-        <a class="btn-fb" id="btn-fb" href="#" target="_blank" rel="noopener">
+        <a class="btn-fb" id="btn-fb" href="javascript:void(0)" target="_blank" rel="noopener">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
           分享到Facebook
         </a>
@@ -70,7 +70,7 @@ import SurveyLayout from '../../../../layouts/SurveyLayout.astro';
           <img src="/images/line-icon.png" alt="LINE" width="18" height="18" />
           分享到LINE
         </a>
-        <a class="btn-fb" id="btn-fb-article" href="#" target="_blank" rel="noopener">
+        <a class="btn-fb" id="btn-fb-article" href="javascript:void(0)" target="_blank" rel="noopener">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
           分享到Facebook
         </a>
@@ -301,18 +301,6 @@ import SurveyLayout from '../../../../layouts/SurveyLayout.astro';
     articleLinkEl.textContent = 'AI 陪伴服務上線問卷填寫中！邀請您一起填寫\n填寫問卷，服務上線後有機會獲得至少一個月免費試用！ ' + articleUrl;
   }
 
-  // 複製個人連結
-  if (btnCopy && inviteUrl) {
-    if (role === 'caregiver') copyLabel.textContent = '複製長輩專屬連結';
-    else if (role === 'elder') copyLabel.textContent = '複製家人/照顧者專屬連結';
-    btnCopy.addEventListener('click', () => {
-      navigator.clipboard.writeText('填寫問卷，服務上線後有機會獲得至少一個月免費試用！ \n' + inviteUrl).then(() => {
-        copyLabel.textContent = '已複製 ✓';
-        btnCopy.classList.add('copied');
-      });
-    });
-  }
-
   // ─── 分享區域 ───
   var TRIGGER = 'AI 陪伴服務上線問卷填寫中！邀請您一起填寫\n填寫問卷，服務上線後有機會獲得至少一個月免費試用！';
 
@@ -321,7 +309,7 @@ import SurveyLayout from '../../../../layouts/SurveyLayout.astro';
     var isMac = /Mac/i.test(navigator.userAgent) && !/iPhone|iPad/i.test(navigator.userAgent);
     if (isMac) {
       // Mac: use line.me web share (opens LINE native app with text+url)
-      btnLine.href = 'https://line.me/R/msg/text?' + 'url=' + encodeURIComponent(inviteUrl) + '&text=' + encodeURIComponent(TRIGGER + ' ' + inviteUrl);
+      btnLine.href = 'https://line.me/R/msg/text?' + encodeURIComponent('url=' + inviteUrl + '&text=' + TRIGGER + ' ' + inviteUrl);
     } else {
       // iOS/Android: line:// deep link
       btnLine.href = 'line://msg/text/' + encodeURIComponent(TRIGGER + ' ' + inviteUrl);
@@ -332,20 +320,20 @@ import SurveyLayout from '../../../../layouts/SurveyLayout.astro';
   if (btnLineArticle) {
     var isMac2 = /Mac/i.test(navigator.userAgent) && !/iPhone|iPad/i.test(navigator.userAgent);
     if (isMac2) {
-      btnLineArticle.href = 'https://line.me/R/msg/text?' + 'url=' + encodeURIComponent(articleUrl) + '&text=' + encodeURIComponent(TRIGGER + ' ' + articleUrl);
+      btnLineArticle.href = 'https://line.me/R/msg/text?' + encodeURIComponent('url=' + articleUrl + '&text=' + TRIGGER + ' ' + articleUrl);
     } else {
       btnLineArticle.href = 'line://msg/text/' + encodeURIComponent(TRIGGER + ' ' + articleUrl);
     }
   }
 
-  // FB 個人連結
+  // FB 個人連結 - use onclick to prevent popup blockers
   if (btnFb && inviteUrl) {
-    btnFb.href = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(inviteUrl);
+    btnFb.setAttribute('onclick', "window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent('" + inviteUrl + "'), '_blank', 'width=600,height=400');");
   }
 
-  // FB 文章連結
+  // FB 文章連結 - use onclick
   if (btnFbArticle) {
-    btnFbArticle.href = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(articleUrl);
+    btnFbArticle.setAttribute('onclick', "window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent('" + articleUrl + "'), '_blank', 'width=600,height=400');");
   }
 
   // 複製個人連結
