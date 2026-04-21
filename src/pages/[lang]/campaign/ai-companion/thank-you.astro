@@ -317,17 +317,15 @@ import SurveyLayout from '../../../../layouts/SurveyLayout.astro';
   // FB 分享個人連結（含 trigger）
   const btnFb = document.getElementById('btn-fb');
   if (btnFb && inviteUrl) {
-    const fbText = encodeURIComponent('填寫問卷，服務上線後有機會獲得至少一個月免費試用！ ').replace(/%20/g, '+');
-    const fbUrl = encodeURIComponent(inviteUrl);
-    btnFb.href = 'https://www.facebook.com/dialog/share?href=' + fbUrl + '&quote=' + fbText + '&display=popup';
+    const fbText = encodeURIComponent('填寫問卷，服務上線後有機會獲得至少一個月免費試用！');
+    btnFb.href = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(inviteUrl) + '&t=' + fbText;
   }
 
   // FB 分享文章連結（含 trigger）
   const btnFbArticle = document.getElementById('btn-fb-article');
   if (btnFbArticle) {
-    const fbText = encodeURIComponent('填寫問卷，服務上線後有機會獲得至少一個月免費試用！ ').replace(/%20/g, '+');
-    const fbUrl = encodeURIComponent(articleUrl);
-    btnFbArticle.href = 'https://www.facebook.com/dialog/share?href=' + fbUrl + '&quote=' + fbText + '&display=popup';
+    const fbText = encodeURIComponent('AI 陪伴服務上線問卷填寫中！邀請您一起填寫');
+    btnFbArticle.href = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(articleUrl) + '&t=' + fbText;
   }
 
   sessionStorage.removeItem('survey_familyId');
