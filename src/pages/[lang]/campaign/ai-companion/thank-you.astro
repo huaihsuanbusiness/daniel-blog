@@ -424,7 +424,7 @@ import SurveyLayout from '../../../../layouts/SurveyLayout.astro';
     btnFb.addEventListener('click', (e) => {
       if (!isMobileBrowser) e.preventDefault();
       const webUrl = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(inviteUrl);
-      const fbAppUrl = 'fb://facewebmodal/f?href=' + encodeURIComponent(inviteUrl);
+      const fbAppUrl = 'fb://composer?text=' + encodeURIComponent(composeShareText(inviteUrl));
       navigator.clipboard.writeText(composeShareText(inviteUrl))
         .then(() => {
           showFbLoadingState(btnFb);
@@ -453,7 +453,7 @@ import SurveyLayout from '../../../../layouts/SurveyLayout.astro';
     btnFbArticle.addEventListener('click', (e) => {
       if (!isMobileBrowser) e.preventDefault();
       const webUrl = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(articleUrl);
-      const fbAppUrl = 'fb://facewebmodal/f?href=' + encodeURIComponent(articleUrl);
+      const fbAppUrl = 'fb://composer?text=' + encodeURIComponent(composeShareText(articleUrl));
       navigator.clipboard.writeText(composeShareText(articleUrl))
         .then(() => {
           showFbLoadingState(btnFbArticle);
