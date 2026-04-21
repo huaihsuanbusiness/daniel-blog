@@ -424,27 +424,11 @@ import SurveyLayout from '../../../../layouts/SurveyLayout.astro';
     btnFb.addEventListener('click', (e) => {
       if (!isMobileBrowser) e.preventDefault();
       const webUrl = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(inviteUrl);
-      const fbAppUrl = 'fb://composer?text=' + encodeURIComponent(composeShareText(inviteUrl));
-      navigator.clipboard.writeText(composeShareText(inviteUrl))
-        .then(() => {
-          showFbLoadingState(btnFb);
-          setTimeout(() => {
-            if (isMobileBrowser) {
-              window.location.href = fbAppUrl;
-            } else {
-              window.open(webUrl, '_blank', 'noopener');
-            }
-            resetFbState(btnFb);
-          }, 1000);
-        })
-        .catch(() => {
-          showToast('未能自動複製文案，請改用左側複製按鈕');
-          if (isMobileBrowser) {
-            window.location.href = webUrl;
-          } else {
-            window.open(webUrl, '_blank', 'noopener');
-          }
-        });
+      if (isMobileBrowser) {
+        window.location.href = 'fb://composer';
+      } else {
+        window.open(webUrl, '_blank', 'noopener');
+      }
     });
   }
 
@@ -453,27 +437,11 @@ import SurveyLayout from '../../../../layouts/SurveyLayout.astro';
     btnFbArticle.addEventListener('click', (e) => {
       if (!isMobileBrowser) e.preventDefault();
       const webUrl = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(articleUrl);
-      const fbAppUrl = 'fb://composer?text=' + encodeURIComponent(composeShareText(articleUrl));
-      navigator.clipboard.writeText(composeShareText(articleUrl))
-        .then(() => {
-          showFbLoadingState(btnFbArticle);
-          setTimeout(() => {
-            if (isMobileBrowser) {
-              window.location.href = fbAppUrl;
-            } else {
-              window.open(webUrl, '_blank', 'noopener');
-            }
-            resetFbState(btnFbArticle);
-          }, 1000);
-        })
-        .catch(() => {
-          showToast('未能自動複製文案，請改用左側複製按鈕');
-          if (isMobileBrowser) {
-            window.location.href = webUrl;
-          } else {
-            window.open(webUrl, '_blank', 'noopener');
-          }
-        });
+      if (isMobileBrowser) {
+        window.location.href = 'fb://composer';
+      } else {
+        window.open(webUrl, '_blank', 'noopener');
+      }
     });
   }
 
