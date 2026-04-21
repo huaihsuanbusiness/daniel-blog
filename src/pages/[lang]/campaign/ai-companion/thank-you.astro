@@ -34,6 +34,7 @@ import SurveyLayout from '../../../../layouts/SurveyLayout.astro';
 
       <div class="link-block">
         <div class="share-link" id="share-link"></div>
+      <div class="share-trigger" id="share-trigger"></div>
       </div>
 
       <div class="btn-group">
@@ -59,6 +60,7 @@ import SurveyLayout from '../../../../layouts/SurveyLayout.astro';
 
       <div class="link-block">
         <div class="share-link" id="article-link"></div>
+      <div class="share-trigger" id="article-trigger"></div>
       </div>
 
       <div class="btn-group">
@@ -161,6 +163,13 @@ import SurveyLayout from '../../../../layouts/SurveyLayout.astro';
     transition: border-color 0.15s;
   }
   .share-link:hover { border-color: #4f46e5; }
+  .share-trigger {
+    font-size: 0.78rem;
+    color: #fff;
+    margin-top: 4px;
+    padding: 0 2px;
+    line-height: 1.5;
+  }
   .btn-group {
     display: flex;
     gap: 8px;
@@ -286,6 +295,8 @@ import SurveyLayout from '../../../../layouts/SurveyLayout.astro';
     if (inviteUrl) {
       panel.style.display = 'block';
       linkEl.textContent = inviteUrl;
+      const triggerEl = document.getElementById('share-trigger');
+      if (triggerEl) triggerEl.textContent = '填寫問卷，服務上線後有機會獲得至少一個月免費試用！';
     }
   } else if (role === 'elder') {
     document.getElementById('elder-msg').style.display = 'block';
@@ -293,12 +304,16 @@ import SurveyLayout from '../../../../layouts/SurveyLayout.astro';
     if (inviteUrl) {
       panel.style.display = 'block';
       linkEl.textContent = inviteUrl;
+      const triggerEl = document.getElementById('share-trigger');
+      if (triggerEl) triggerEl.textContent = '填寫問卷，服務上線後有機會獲得至少一個月免費試用！';
     }
   }
 
   // 文章連結（固定，永遠顯示）
   if (articleLinkEl) {
     articleLinkEl.textContent = articleUrl;
+    const articleTriggerEl = document.getElementById('article-trigger');
+    if (articleTriggerEl) articleTriggerEl.textContent = 'AI 陪伴服務上線問卷填寫中！邀請您一起填寫';
   }
 
   // 複製個人連結
@@ -316,11 +331,14 @@ import SurveyLayout from '../../../../layouts/SurveyLayout.astro';
   // LINE 分享個人連結（含 trigger）
   if (btnLine && inviteUrl) {
     const lineText = '填寫問卷，服務上線後有機會獲得至少一個月免費試用！ '.replace(/%20/g, '+');
-    // Mobile: line:// direct | Desktop: social-plugins web share
+    // Mobile: line:// direct with text+url | Desktop: social-plugins with text param
     var isMobile = /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
-    btnLine.href = isMobile
-      ? 'line://msg/text/' + encodeURIComponent(inviteUrl)
-      : 'https://social-plugins.line.me/lineit/share?url=' + encodeURIComponent(inviteUrl);
+    var shareText = '填寫問卷，服務上線後有機會獲得至少一個月免費試用！';
+    if (isMobile) {
+      btnLine.href = 'line://msg/text/' + encodeURIComponent(shareText + ' ' + inviteUrl);
+    } else {
+      btnLine.href = 'https://social-plugins.line.me/lineit/share?url=' + encodeURIComponent(inviteUrl) + '&text=' + encodeURIComponent(shareText + ' ' + inviteUrl);
+    }
   }
 
   // 複製文章連結
@@ -337,9 +355,12 @@ import SurveyLayout from '../../../../layouts/SurveyLayout.astro';
   if (btnLineArticle) {
     const lineText = '填寫問卷，服務上線後有機會獲得至少一個月免費試用！ '.replace(/%20/g, '+');
     var isMobile2 = /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
-    btnLineArticle.href = isMobile2
-      ? 'line://msg/text/' + encodeURIComponent(articleUrl)
-      : 'https://social-plugins.line.me/lineit/share?url=' + encodeURIComponent(articleUrl);
+    var shareText2 = 'AI 陪伴服務上線問卷填寫中！邀請您一起填寫';
+    if (isMobile2) {
+      btnLineArticle.href = 'line://msg/text/' + encodeURIComponent(shareText2 + ' ' + articleUrl);
+    } else {
+      btnLineArticle.href = 'https://social-plugins.line.me/lineit/share?url=' + encodeURIComponent(articleUrl) + '&text=' + encodeURIComponent(shareText2 + ' ' + articleUrl);
+    }
   }
 
   // FB 分享個人連結（含 trigger）
