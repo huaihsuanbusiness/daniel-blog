@@ -285,20 +285,20 @@ import SurveyLayout from '../../../../layouts/SurveyLayout.astro';
     document.getElementById('caregiver-prompt').style.display = 'block';
     if (inviteUrl) {
       panel.style.display = 'block';
-      linkEl.textContent = '填寫問卷，服務上線後有機會獲得至少一個月免費試用！ ' + inviteUrl;
+      linkEl.textContent = 'AI 陪伴服務上線問卷填寫中！邀請您一起填寫\n填寫問卷，服務上線後有機會獲得至少一個月免費試用！ ' + inviteUrl;
     }
   } else if (role === 'elder') {
     document.getElementById('elder-msg').style.display = 'block';
     document.getElementById('elder-prompt').style.display = 'block';
     if (inviteUrl) {
       panel.style.display = 'block';
-      linkEl.textContent = '填寫問卷，服務上線後有機會獲得至少一個月免費試用！ ' + inviteUrl;
+      linkEl.textContent = 'AI 陪伴服務上線問卷填寫中！邀請您一起填寫\n填寫問卷，服務上線後有機會獲得至少一個月免費試用！ ' + inviteUrl;
     }
   }
 
   // 文章連結（固定，永遠顯示）
   if (articleLinkEl) {
-    articleLinkEl.textContent = 'AI 陪伴服務上線問卷填寫中！邀請您一起填寫 ' + articleUrl;
+    articleLinkEl.textContent = 'AI 陪伴服務上線問卷填寫中！邀請您一起填寫\n填寫問卷，服務上線後有機會獲得至少一個月免費試用！ ' + articleUrl;
   }
 
   // 複製個人連結
@@ -318,7 +318,7 @@ import SurveyLayout from '../../../../layouts/SurveyLayout.astro';
     const lineText = '填寫問卷，服務上線後有機會獲得至少一個月免費試用！ '.replace(/%20/g, '+');
     // Mobile: line:// direct with text+url | Desktop: social-plugins with text param
     var isMobile = /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
-    var shareText = '填寫問卷，服務上線後有機會獲得至少一個月免費試用！';
+    var shareText = 'AI 陪伴服務上線問卷填寫中！邀請您一起填寫\n填寫問卷，服務上線後有機會獲得至少一個月免費試用！';
     if (isMobile) {
       btnLine.href = 'line://msg/text/' + encodeURIComponent(shareText + ' ' + inviteUrl);
     } else {
@@ -340,7 +340,7 @@ import SurveyLayout from '../../../../layouts/SurveyLayout.astro';
   if (btnLineArticle) {
     const lineText = '填寫問卷，服務上線後有機會獲得至少一個月免費試用！ '.replace(/%20/g, '+');
     var isMobile2 = /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
-    var shareText2 = 'AI 陪伴服務上線問卷填寫中！邀請您一起填寫';
+    var shareText2 = 'AI 陪伴服務上線問卷填寫中！邀請您一起填寫\n填寫問卷，服務上線後有機會獲得至少一個月免費試用！';
     if (isMobile2) {
       btnLineArticle.href = 'line://msg/text/' + encodeURIComponent(shareText2 + ' ' + articleUrl);
     } else {
