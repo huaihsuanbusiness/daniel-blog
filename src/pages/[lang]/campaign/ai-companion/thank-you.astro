@@ -316,6 +316,7 @@ import SurveyLayout from '../../../../layouts/SurveyLayout.astro';
   const role = urlParams.get('role') || sessionStorage.getItem('survey_role') || '';
   const inviteUrl = urlParams.get('invite') || '';
   const articleUrl = 'https://www.danielcanfly.com/zh/blog/ai-companion-survey';
+  const isMobileBrowser = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
   const panel = document.getElementById('share-panel');
   const linkEl = document.getElementById('share-link');
@@ -428,13 +429,21 @@ import SurveyLayout from '../../../../layouts/SurveyLayout.astro';
         .then(() => {
           showFbLoadingState(btnFb);
           setTimeout(() => {
-            window.open(targetUrl, '_blank', 'noopener');
+            if (isMobileBrowser) {
+              window.location.href = targetUrl;
+            } else {
+              window.open(targetUrl, '_blank', 'noopener');
+            }
             resetFbState(btnFb);
           }, 1000);
         })
         .catch(() => {
           showToast('未能自動複製文案，請改用左側複製按鈕');
-          window.open(targetUrl, '_blank', 'noopener');
+          if (isMobileBrowser) {
+            window.location.href = targetUrl;
+          } else {
+            window.open(targetUrl, '_blank', 'noopener');
+          }
         });
     });
   }
@@ -449,13 +458,21 @@ import SurveyLayout from '../../../../layouts/SurveyLayout.astro';
         .then(() => {
           showFbLoadingState(btnFbArticle);
           setTimeout(() => {
-            window.open(targetUrl, '_blank', 'noopener');
+            if (isMobileBrowser) {
+              window.location.href = targetUrl;
+            } else {
+              window.open(targetUrl, '_blank', 'noopener');
+            }
             resetFbState(btnFbArticle);
           }, 1000);
         })
         .catch(() => {
           showToast('未能自動複製文案，請改用左側複製按鈕');
-          window.open(targetUrl, '_blank', 'noopener');
+          if (isMobileBrowser) {
+            window.location.href = targetUrl;
+          } else {
+            window.open(targetUrl, '_blank', 'noopener');
+          }
         });
     });
   }
