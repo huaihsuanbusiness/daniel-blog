@@ -345,13 +345,13 @@ import SurveyLayout from '../../../../layouts/SurveyLayout.astro';
   // FB 分享個人連結
   const btnFb = document.getElementById('btn-fb');
   if (btnFb && inviteUrl) {
-    btnFb.href = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(inviteUrl);
+    btnFb.href = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(inviteUrl) + '&quote=' + encodeURIComponent('AI 陪伴服務上線問卷填寫中！邀請您一起填寫 填寫問卷，服務上線後有機會獲得至少一個月免費試用！');
   }
 
   // FB 分享文章連結
   const btnFbArticle = document.getElementById('btn-fb-article');
   if (btnFbArticle) {
-    btnFbArticle.href = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(articleUrl);
+    btnFbArticle.href = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(articleUrl) + '&quote=' + encodeURIComponent('AI 陪伴服務上線問卷填寫中！邀請您一起填寫 填寫問卷，服務上線後有機會獲得至少一個月免費試用！');
   }
 
   // 複製文章連結
