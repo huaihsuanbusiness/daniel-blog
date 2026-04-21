@@ -328,19 +328,14 @@ import SurveyLayout from '../../../../layouts/SurveyLayout.astro';
 
 
 
-  // FB onclick：動態設定 href，確保連結正確
+  // FB 個人連結
   if (btnFb && inviteUrl) {
-    btnFb.addEventListener('click', function(e) {
-      e.preventDefault();
-      window.location.href = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(inviteUrl);
-    });
+    btnFb.href = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(inviteUrl);
   }
 
+  // FB 文章連結
   if (btnFbArticle) {
-    btnFbArticle.addEventListener('click', function(e) {
-      e.preventDefault();
-      window.location.href = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(articleUrl);
-    });
+    btnFbArticle.href = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(articleUrl);
   }
 
   // 複製個人連結
