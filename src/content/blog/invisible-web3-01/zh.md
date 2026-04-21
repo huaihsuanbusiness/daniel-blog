@@ -5,7 +5,7 @@ categories: ["web3"]
 tags: ["x402", "invisible-web3", "ai-agent", "stablecoin", "agent-commerce"]
 date: 2026-04-21T09:00:00
 featured: false
-series: "看不見的 Web3"
+series: "x402：看不見的 Web3"
 seriesOrder: 1
 ---
 

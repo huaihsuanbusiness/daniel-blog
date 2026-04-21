@@ -5,7 +5,7 @@ categories: ["web3"]
 tags: ["x402", "paid-request-grammar", "agent-commerce", "ap2", "mpp", "erc-8004"]
 date: 2026-04-21T09:10:00
 featured: false
-series: "看不見的 Web3"
+series: "x402：看不見的 Web3"
 seriesOrder: 2
 ---
 

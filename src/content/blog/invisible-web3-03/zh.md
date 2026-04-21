@@ -5,7 +5,7 @@ categories: ["web3"]
 tags: ["x402", "invisible-web3", "wallet-firewall", "facilitator", "metadata", "agent-governance", "erc-8004", "ap2"]
 date: 2026-04-21T09:20:00
 featured: false
-series: "看不見的 Web3"
+series: "x402：看不見的 Web3"
 seriesOrder: 3
 ---
 
