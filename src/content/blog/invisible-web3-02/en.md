@@ -100,7 +100,7 @@ That is why I call it paid request grammar.
 Not because the phrase is stylish, but because it is more accurate than “payment tool”.
 
 <figure>
-  <img src="./resource/invisible-web3-02-paid-request-grammar.svg" alt="x402 paid request grammar showing client, resource server, facilitator, and payment rail" />
+  ![x402 paid request grammar showing client, resource server, facilitator, and payment rail](/images/invisible-web3/invisible-web3-02-paid-request-grammar.svg)
   <figcaption>x402 is closer to the grammar of a paid request: it defines how a client, resource server, facilitator and payment rail coordinate around one resource request.</figcaption>
 </figure>
 
@@ -220,7 +220,7 @@ A fuller map looks more like this:
 This is not a map a single protocol can swallow. It is a stack.
 
 <figure>
-  <img src="./resource/invisible-web3-02-agent-commerce-stack.svg" alt="Layered map of agent commerce protocols and responsibilities including AP2, x402, MPP, ERC-8004 and ACP" />
+  ![Layered map of agent commerce protocols and responsibilities including AP2, x402, MPP, ERC-8004 and ACP](/images/invisible-web3/invisible-web3-02-agent-commerce-stack.svg)
   <figcaption>x402 is important inside the agent commerce stack, but it mainly occupies the paid request / payment execution layer. Full commerce also needs authority, discovery, trust, validation and operational governance.</figcaption>
 </figure>
 

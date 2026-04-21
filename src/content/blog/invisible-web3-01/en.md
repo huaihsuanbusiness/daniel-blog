@@ -86,7 +86,7 @@ That is the flavour of invisible Web3.
 Not Web3 shouting louder, but the task continuing without the usual interruption.
 
 <figure>
-  <img src="./resource/invisible-web3-01-visible-vs-invisible.svg" alt="Visible Web3 versus invisible Web3 infrastructure map" />
+  ![Visible Web3 versus invisible Web3 infrastructure map](/images/invisible-web3/invisible-web3-01-visible-vs-invisible.svg)
   <figcaption>Visible Web3 places chains, wallets, gas and tokens in front of the user. Invisible Web3 turns them into background infrastructure for task completion.</figcaption>
 </figure>
 

@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img" aria-labelledby="title desc">
+  <title id="title">x402 Paid Request Grammar</title>
+  <desc id="desc">An x402-style paid request flow showing the HTTP 402 challenge, payment signature retry, facilitator verification, settlement, and resource delivery.</desc>
+  <rect width="1200" height="675" fill="#f8fafc"/>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#334155"/></marker>
+  </defs>
+  <g font-family="Arial, Inter, sans-serif">
+    <text x="600" y="52" text-anchor="middle" font-size="31" font-weight="700" fill="#0f172a">x402 as Paid Request Grammar</text>
+    <text x="600" y="84" text-anchor="middle" font-size="16" fill="#475569">A resource request can carry price, payment proof, verification and delivery terms.</text>
+
+    <rect x="68" y="145" width="220" height="96" rx="22" fill="#e0f2fe" stroke="#0284c7" stroke-width="2"/>
+    <text x="178" y="185" text-anchor="middle" font-size="21" font-weight="700" fill="#075985">Client / Agent</text>
+    <text x="178" y="213" text-anchor="middle" font-size="14" fill="#075985">wants a paid resource</text>
+
+    <rect x="374" y="145" width="220" height="96" rx="22" fill="#fef9c3" stroke="#ca8a04" stroke-width="2"/>
+    <text x="484" y="185" text-anchor="middle" font-size="21" font-weight="700" fill="#713f12">Resource Server</text>
+    <text x="484" y="213" text-anchor="middle" font-size="14" fill="#713f12">quotes payment terms</text>
+
+    <rect x="680" y="145" width="220" height="96" rx="22" fill="#ede9fe" stroke="#7c3aed" stroke-width="2"/>
+    <text x="790" y="185" text-anchor="middle" font-size="21" font-weight="700" fill="#4c1d95">Facilitator</text>
+    <text x="790" y="213" text-anchor="middle" font-size="14" fill="#4c1d95">verifies and settles</text>
+
+    <rect x="986" y="145" width="154" height="96" rx="22" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+    <text x="1063" y="185" text-anchor="middle" font-size="21" font-weight="700" fill="#14532d">Payment Rail</text>
+    <text x="1063" y="213" text-anchor="middle" font-size="14" fill="#14532d">USDC / chain</text>
+
+    <path d="M288 188 H374" stroke="#334155" stroke-width="3" marker-end="url(#arrow)"/>
+    <text x="331" y="169" text-anchor="middle" font-size="13" fill="#334155">1. GET /paid-data</text>
+
+    <path d="M374 218 H288" stroke="#334155" stroke-width="3" marker-end="url(#arrow)"/>
+    <text x="331" y="249" text-anchor="middle" font-size="13" fill="#334155">2. HTTP 402 + PAYMENT-REQUIRED</text>
+
+    <path d="M178 295 H484" stroke="#334155" stroke-width="3" marker-end="url(#arrow)"/>
+    <text x="331" y="277" text-anchor="middle" font-size="13" fill="#334155">3. retry + PAYMENT-SIGNATURE</text>
+
+    <path d="M594 295 H680" stroke="#334155" stroke-width="3" marker-end="url(#arrow)"/>
+    <text x="637" y="277" text-anchor="middle" font-size="13" fill="#334155">4. verify</text>
+
+    <path d="M900 295 H986" stroke="#334155" stroke-width="3" marker-end="url(#arrow)"/>
+    <text x="943" y="277" text-anchor="middle" font-size="13" fill="#334155">5. settle</text>
+
+    <path d="M680 335 H594" stroke="#334155" stroke-width="3" marker-end="url(#arrow)"/>
+    <text x="637" y="365" text-anchor="middle" font-size="13" fill="#334155">6. payment result</text>
+
+    <path d="M484 335 H178" stroke="#334155" stroke-width="3" marker-end="url(#arrow)"/>
+    <text x="331" y="365" text-anchor="middle" font-size="13" fill="#334155">7. 200 OK + PAYMENT-RESPONSE</text>
+
+    <rect x="88" y="445" width="1024" height="86" rx="26" fill="#ffffff" stroke="#cbd5e1" stroke-width="2"/>
+    <text x="600" y="477" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">What x402 standardises</text>
+    <text x="600" y="505" text-anchor="middle" font-size="15" fill="#475569">A paid request handshake: quote → authorisation → verification → settlement → delivery.</text>
+
+    <rect x="194" y="564" width="812" height="54" rx="18" fill="#fff7ed" stroke="#fb923c"/>
+    <text x="600" y="596" text-anchor="middle" font-size="15" font-weight="700" fill="#9a3412">What x402 does not standardise: refunds, disputes, tax, accounting, service discovery, trust, or full checkout.</text>
+  </g>
+</svg>

@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img" aria-labelledby="title desc">
+  <title id="title">Invisible Web3 Risk Layers</title>
+  <desc id="desc">A layered map for invisible Web3 in agent payments, showing authority, payment, trust, and operations responsibilities around an AI agent task.</desc>
+  <rect width="1200" height="675" fill="#f8fafc"/>
+  <text x="600" y="48" text-anchor="middle" font-family="Arial, Inter, sans-serif" font-size="30" font-weight="700" fill="#0f172a">Invisible Web3 still needs visible accountability</text>
+  <text x="600" y="78" text-anchor="middle" font-family="Arial, Inter, sans-serif" font-size="16" fill="#475569">When an agent spends in the background, product teams must design four responsibility layers.</text>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#64748b"/></marker>
+  </defs>
+  <rect x="455" y="250" width="290" height="122" rx="28" fill="#0f172a"/>
+  <text x="600" y="292" text-anchor="middle" font-family="Arial, Inter, sans-serif" font-size="26" font-weight="700" fill="#f8fafc">AI Agent Task</text>
+  <text x="600" y="326" text-anchor="middle" font-family="Arial, Inter, sans-serif" font-size="17" fill="#cbd5e1">buys data, tools, inference</text>
+  <text x="600" y="352" text-anchor="middle" font-family="Arial, Inter, sans-serif" font-size="15" fill="#94a3b8">without making users read the rails</text>
+
+  <g font-family="Arial, Inter, sans-serif">
+    <rect x="80" y="132" width="325" height="100" rx="24" fill="#e0f2fe" stroke="#0284c7" stroke-width="2"/>
+    <text x="242" y="164" text-anchor="middle" font-size="20" font-weight="700" fill="#075985">Authority Layer</text>
+    <text x="242" y="191" text-anchor="middle" font-size="15" fill="#075985">AP2, wallet policy, limits</text>
+    <text x="242" y="215" text-anchor="middle" font-size="14" fill="#075985">Who allowed this spend?</text>
+
+    <rect x="795" y="132" width="325" height="100" rx="24" fill="#fef9c3" stroke="#ca8a04" stroke-width="2"/>
+    <text x="957" y="164" text-anchor="middle" font-size="20" font-weight="700" fill="#713f12">Payment Layer</text>
+    <text x="957" y="191" text-anchor="middle" font-size="15" fill="#713f12">x402, MPP, facilitator</text>
+    <text x="957" y="215" text-anchor="middle" font-size="14" fill="#713f12">Was the paid request correct?</text>
+
+    <rect x="80" y="440" width="325" height="100" rx="24" fill="#ede9fe" stroke="#7c3aed" stroke-width="2"/>
+    <text x="242" y="472" text-anchor="middle" font-size="20" font-weight="700" fill="#4c1d95">Trust Layer</text>
+    <text x="242" y="499" text-anchor="middle" font-size="15" fill="#4c1d95">ERC-8004, reputation, validation</text>
+    <text x="242" y="523" text-anchor="middle" font-size="14" fill="#4c1d95">Who is this service?</text>
+
+    <rect x="795" y="440" width="325" height="100" rx="24" fill="#fff7ed" stroke="#ea580c" stroke-width="2"/>
+    <text x="957" y="472" text-anchor="middle" font-size="20" font-weight="700" fill="#7c2d12">Operations Layer</text>
+    <text x="957" y="499" text-anchor="middle" font-size="15" fill="#7c2d12">refunds, tax, audit, disputes</text>
+    <text x="957" y="523" text-anchor="middle" font-size="14" fill="#7c2d12">Who is accountable?</text>
+  </g>
+
+  <g stroke="#64748b" stroke-width="3" fill="none" marker-end="url(#arrow)">
+    <path d="M405 182 C470 195, 510 220, 555 250"/>
+    <path d="M795 182 C730 195, 690 220, 645 250"/>
+    <path d="M405 490 C470 475, 510 420, 555 372"/>
+    <path d="M795 490 C730 475, 690 420, 645 372"/>
+  </g>
+
+  <g font-family="Arial, Inter, sans-serif" font-size="13" fill="#475569">
+    <rect x="457" y="112" width="286" height="50" rx="16" fill="#fee2e2" stroke="#dc2626"/>
+    <text x="600" y="135" text-anchor="middle" font-weight="700" fill="#7f1d1d">Metadata can reveal intent</text>
+    <text x="600" y="153" text-anchor="middle" fill="#7f1d1d">the amount is not always the sensitive part</text>
+
+    <rect x="457" y="512" width="286" height="50" rx="16" fill="#dcfce7" stroke="#16a34a"/>
+    <text x="600" y="535" text-anchor="middle" font-weight="700" fill="#14532d">Discovery becomes power</text>
+    <text x="600" y="553" text-anchor="middle" fill="#14532d">ranking may replace advertising</text>
+  </g>
+</svg>

@@ -74,7 +74,7 @@ Users do not need to understand every chain, but they need to know what they aut
 Invisible does not mean ungoverned. It means governance must enter product design earlier, not later.
 
 <figure>
-  <img src="./resource/invisible-web3-03-risk-map.svg" alt="Risk map for invisible Web3 and agent payments" />
+  ![Risk map for invisible Web3 and agent payments](/images/invisible-web3/invisible-web3-03-risk-map.svg)
   <figcaption>The risks of invisible Web3 are not only on-chain. Authority, payment, trust and operations all become control points in agent payments.</figcaption>
 </figure>
 
