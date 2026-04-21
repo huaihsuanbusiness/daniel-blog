@@ -339,13 +339,8 @@ import SurveyLayout from '../../../../layouts/SurveyLayout.astro';
   // LINE 分享文章連結（含 trigger）
   if (btnLineArticle) {
     const lineText = '填寫問卷，服務上線後有機會獲得至少一個月免費試用！ '.replace(/%20/g, '+');
-    var isMobile2 = /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
-    var shareText2 = 'AI 陪伴服務上線問卷填寫中！邀請您一起填寫\n填寫問卷，服務上線後有機會獲得至少一個月免費試用！';
-    if (isMobile2) {
-      btnLineArticle.href = 'line://msg/text/' + encodeURIComponent(shareText2 + ' ' + articleUrl);
-    } else {
-      btnLineArticle.href = 'https://social-plugins.line.me/lineit/share?url=' + encodeURIComponent(articleUrl) + '&text=' + encodeURIComponent(shareText2 + ' ' + articleUrl);
-    }
+    // LINE: always use line:// (works on Mac/Win native app)
+    btnLineArticle.href = 'line://msg/text/' + encodeURIComponent('AI 陪伴服務上線問卷填寫中！邀請您一起填寫\n填寫問卷，服務上線後有機會獲得至少一個月免費試用！ ' + articleUrl);
   }
 
   // FB 分享個人連結（含 trigger）
