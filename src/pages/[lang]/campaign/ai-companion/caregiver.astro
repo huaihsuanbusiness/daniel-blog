@@ -701,7 +701,7 @@ function renderQuestion(q: typeof questions[0], qIndex: number) {
   }
   :global(.other-text-input) {
     width: 100%;
-    max-width: 340px;
+    max-width: 100%;
     padding: 10px 14px;
     font-size: 0.95rem;
     border: 1.5px solid color-mix(in srgb, var(--border-color) 70%, transparent);
@@ -709,7 +709,13 @@ function renderQuestion(q: typeof questions[0], qIndex: number) {
     background: color-mix(in srgb, var(--bg-card) 50%, var(--bg-page));
     color: var(--text-primary);
     outline: none;
+    box-sizing: border-box;
     transition: border-color 0.18s ease, box-shadow 0.18s ease;
+  }
+  @media (max-width: 480px) {
+    :global(.other-reveal) {
+      margin-left: 0;
+    }
   }
   :global(.other-text-input::placeholder) {
     color: var(--text-muted);
