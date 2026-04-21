@@ -34,7 +34,6 @@ import SurveyLayout from '../../../../layouts/SurveyLayout.astro';
 
       <div class="link-block">
         <div class="share-link" id="share-link"></div>
-      <div class="share-trigger" id="share-trigger"></div>
       </div>
 
       <div class="btn-group">
@@ -60,7 +59,6 @@ import SurveyLayout from '../../../../layouts/SurveyLayout.astro';
 
       <div class="link-block">
         <div class="share-link" id="article-link"></div>
-      <div class="share-trigger" id="article-trigger"></div>
       </div>
 
       <div class="btn-group">
@@ -163,13 +161,6 @@ import SurveyLayout from '../../../../layouts/SurveyLayout.astro';
     transition: border-color 0.15s;
   }
   .share-link:hover { border-color: #4f46e5; }
-  .share-trigger {
-    font-size: 0.78rem;
-    color: #fff;
-    margin-top: 4px;
-    padding: 0 2px;
-    line-height: 1.5;
-  }
   .btn-group {
     display: flex;
     gap: 8px;
@@ -294,26 +285,20 @@ import SurveyLayout from '../../../../layouts/SurveyLayout.astro';
     document.getElementById('caregiver-prompt').style.display = 'block';
     if (inviteUrl) {
       panel.style.display = 'block';
-      linkEl.textContent = inviteUrl;
-      const triggerEl = document.getElementById('share-trigger');
-      if (triggerEl) triggerEl.textContent = '填寫問卷，服務上線後有機會獲得至少一個月免費試用！';
+      linkEl.textContent = '填寫問卷，服務上線後有機會獲得至少一個月免費試用！ ' + inviteUrl;
     }
   } else if (role === 'elder') {
     document.getElementById('elder-msg').style.display = 'block';
     document.getElementById('elder-prompt').style.display = 'block';
     if (inviteUrl) {
       panel.style.display = 'block';
-      linkEl.textContent = inviteUrl;
-      const triggerEl = document.getElementById('share-trigger');
-      if (triggerEl) triggerEl.textContent = '填寫問卷，服務上線後有機會獲得至少一個月免費試用！';
+      linkEl.textContent = '填寫問卷，服務上線後有機會獲得至少一個月免費試用！ ' + inviteUrl;
     }
   }
 
   // 文章連結（固定，永遠顯示）
   if (articleLinkEl) {
-    articleLinkEl.textContent = articleUrl;
-    const articleTriggerEl = document.getElementById('article-trigger');
-    if (articleTriggerEl) articleTriggerEl.textContent = 'AI 陪伴服務上線問卷填寫中！邀請您一起填寫';
+    articleLinkEl.textContent = 'AI 陪伴服務上線問卷填寫中！邀請您一起填寫 ' + articleUrl;
   }
 
   // 複製個人連結
