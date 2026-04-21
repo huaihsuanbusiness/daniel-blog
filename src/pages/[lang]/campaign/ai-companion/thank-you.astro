@@ -313,48 +313,49 @@ import SurveyLayout from '../../../../layouts/SurveyLayout.astro';
     });
   }
 
-  // LINE 分享個人連結（含 trigger）
+  // ─── 分享區域 ───
+  var TRIGGER = 'AI 陪伴服務上線問卷填寫中！邀請您一起填寫\n填寫問卷，服務上線後有機會獲得至少一個月免費試用！';
+
+  // LINE 個人連結（line:// 通用 Mac/Win/Android/iOS）
   if (btnLine && inviteUrl) {
-    const lineText = '填寫問卷，服務上線後有機會獲得至少一個月免費試用！ '.replace(/%20/g, '+');
-    // Mobile: line:// direct with text+url | Desktop: social-plugins with text param
-    var isMobile = /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
-    var shareText = 'AI 陪伴服務上線問卷填寫中！邀請您一起填寫\n填寫問卷，服務上線後有機會獲得至少一個月免費試用！';
-    if (isMobile) {
-      btnLine.href = 'line://msg/text/' + encodeURIComponent(shareText + ' ' + inviteUrl);
-    } else {
-      btnLine.href = 'https://social-plugins.line.me/lineit/share?url=' + encodeURIComponent(inviteUrl) + '&text=' + encodeURIComponent(shareText + ' ' + inviteUrl);
-    }
+    btnLine.href = 'line://msg/text/' + encodeURIComponent(TRIGGER + ' ' + inviteUrl);
+  }
+
+  // LINE 文章連結
+  if (btnLineArticle) {
+    btnLineArticle.href = 'line://msg/text/' + encodeURIComponent(TRIGGER + ' ' + articleUrl);
+  }
+
+  // FB 個人連結
+  if (btnFb && inviteUrl) {
+    btnFb.href = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(inviteUrl);
+  }
+
+  // FB 文章連結
+  if (btnFbArticle) {
+    btnFbArticle.href = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(articleUrl);
+  }
+
+  // 複製個人連結
+  if (btnCopy && inviteUrl) {
+    if (role === 'caregiver') copyLabel.textContent = '複製長輩專屬連結';
+    else if (role === 'elder') copyLabel.textContent = '複製家人/照顧者專屬連結';
+    btnCopy.addEventListener('click', () => {
+      navigator.clipboard.writeText(TRIGGER + ' ' + inviteUrl).then(() => {
+        copyLabel.textContent = '已複製 ✓';
+        btnCopy.classList.add('copied');
+      });
+    });
   }
 
   // 複製文章連結
   if (btnCopyArticle) {
     btnCopyArticle.addEventListener('click', () => {
-      navigator.clipboard.writeText('填寫問卷，服務上線後有機會獲得至少一個月免費試用！ \n' + articleUrl).then(() => {
+      navigator.clipboard.writeText(TRIGGER + ' ' + articleUrl).then(() => {
         copyArticleLabel.textContent = '已複製 ✓';
         btnCopyArticle.classList.add('copied');
       });
     });
-  }
-
-  // LINE 分享文章連結（含 trigger）
-  if (btnLineArticle) {
-    const lineText = '填寫問卷，服務上線後有機會獲得至少一個月免費試用！ '.replace(/%20/g, '+');
-    // LINE: always use line:// (works on Mac/Win native app)
-    btnLineArticle.href = 'line://msg/text/' + encodeURIComponent('AI 陪伴服務上線問卷填寫中！邀請您一起填寫\n填寫問卷，服務上線後有機會獲得至少一個月免費試用！ ' + articleUrl);
-  }
-
-  // FB 分享個人連結（含 trigger）
-  const btnFb = document.getElementById('btn-fb');
-  if (btnFb && inviteUrl) {
-    const fbText = encodeURIComponent('填寫問卷，服務上線後有機會獲得至少一個月免費試用！');
-    btnFb.href = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(inviteUrl) + '&t=' + fbText;
-  }
-
-  // FB 分享文章連結（含 trigger）
-  const btnFbArticle = document.getElementById('btn-fb-article');
-  if (btnFbArticle) {
-    const fbText = encodeURIComponent('AI 陪伴服務上線問卷填寫中！邀請您一起填寫');
-    btnFbArticle.href = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(articleUrl) + '&t=' + fbText;
   }
 
   sessionStorage.removeItem('survey_familyId');
