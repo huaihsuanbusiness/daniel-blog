@@ -167,6 +167,19 @@ import SurveyLayout from '../../../../layouts/SurveyLayout.astro';
     flex-shrink: 0;
     margin-top: 8px;
   }
+
+  @media (max-width: 480px) {
+    .btn-group {
+      flex-direction: column;
+    }
+    .btn-copy,
+    .btn-line,
+    .btn-fb {
+      flex: none !important;
+      width: 100%;
+      justify-content: center;
+    }
+  }
   .btn-copy {
     display: flex;
     align-items: center;
