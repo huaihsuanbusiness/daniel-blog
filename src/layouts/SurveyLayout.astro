@@ -2,12 +2,14 @@
 export interface Props {
   title?: string;
   description?: string;
+  ogTitle?: string;
   /** Set to 'elder' for larger text suitable for senior users */
   size?: 'normal' | 'elder';
 }
 const {
   title = '市場調查',
   description = 'AI 陪伴夥伴市場調查',
+  ogTitle = 'AI 陪伴服務上線問卷填寫中！邀請您一起填寫 填寫問卷，服務上線後有機會獲得至少一個月免費試用！',
   size = 'normal',
 } = Astro.props;
 ---
@@ -18,6 +20,9 @@ const {
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>{title}</title>
   <meta name="description" content={description} />
+  <meta property="og:title" content={ogTitle} />
+  <meta property="og:description" content={description} />
+  <meta property="og:type" content="website" />
   <script is:inline>
     // Apply theme before render to avoid flash
     const stored = localStorage.getItem('theme');
