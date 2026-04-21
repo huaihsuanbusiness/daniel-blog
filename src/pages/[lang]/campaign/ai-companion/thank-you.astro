@@ -51,10 +51,9 @@ import SurveyLayout from '../../../../layouts/SurveyLayout.astro';
         </a>
         <a class="btn-fb" id="btn-fb" href="#" target="_blank" rel="noopener">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-          <span class="fb-label">分享到Facebook</span>
+          <span class="fb-label">複製文案並分享到Facebook</span>
         </a>
       </div>
-      <p class="share-feedback" id="fb-feedback" aria-live="polite"></p>
     </div>
 
     <!-- 第二區：分享給其他人 -->
@@ -77,10 +76,9 @@ import SurveyLayout from '../../../../layouts/SurveyLayout.astro';
         </a>
         <a class="btn-fb" id="btn-fb-article" href="#" target="_blank" rel="noopener">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-          <span class="fb-label">分享到Facebook</span>
+          <span class="fb-label">複製文案並分享到Facebook</span>
         </a>
       </div>
-      <p class="share-feedback" id="fb-feedback-article" aria-live="polite"></p>
     </div>
 
     <div class="back-row">
@@ -89,6 +87,8 @@ import SurveyLayout from '../../../../layouts/SurveyLayout.astro';
         返回文章
       </a>
     </div>
+
+    <div class="toast" id="share-toast" aria-live="polite"></div>
 
   </div>
 </SurveyLayout>
@@ -251,16 +251,29 @@ import SurveyLayout from '../../../../layouts/SurveyLayout.astro';
     background: #145bd1;
     box-shadow: 0 0 0 3px rgba(24, 119, 242, 0.16);
   }
-  .share-feedback {
-    min-height: 1.15rem;
-    margin: 8px 2px 0;
-    font-size: 0.76rem;
-    color: #4b5563;
+  .toast {
+    position: fixed;
+    left: 50%;
+    bottom: 24px;
+    transform: translateX(-50%) translateY(12px);
+    background: rgba(17, 24, 39, 0.94);
+    color: #fff;
+    padding: 11px 14px;
+    border-radius: 12px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    line-height: 1.4;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.28);
     opacity: 0;
-    transition: opacity 0.15s ease;
+    pointer-events: none;
+    transition: opacity 0.18s ease, transform 0.18s ease;
+    z-index: 60;
+    max-width: min(92vw, 420px);
+    text-align: center;
   }
-  .share-feedback.show {
+  .toast.show {
     opacity: 1;
+    transform: translateX(-50%) translateY(0);
   }
   .back-row {
     margin-top: 28px;
@@ -301,8 +314,7 @@ import SurveyLayout from '../../../../layouts/SurveyLayout.astro';
   const btnLineArticle = document.getElementById('btn-line-article');
   const btnFb = document.getElementById('btn-fb');
   const btnFbArticle = document.getElementById('btn-fb-article');
-  const fbFeedback = document.getElementById('fb-feedback');
-  const fbFeedbackArticle = document.getElementById('fb-feedback-article');
+  const shareToast = document.getElementById('share-toast');
 
   // 個人邀請連結
   if (role === 'caregiver') {
@@ -359,20 +371,26 @@ import SurveyLayout from '../../../../layouts/SurveyLayout.astro';
     return `${TRIGGER}\n${url}`;
   }
 
-  function showFbPreparedState(btn, feedbackEl) {
+  function showToast(message) {
+    if (!shareToast) return;
+    shareToast.textContent = message;
+    shareToast.classList.add('show');
+    clearTimeout(shareToast._hideTimer);
+    shareToast._hideTimer = setTimeout(() => {
+      shareToast.classList.remove('show');
+    }, 2400);
+  }
+
+  function showFbPreparedState(btn) {
     const label = btn?.querySelector('.fb-label');
     if (label) label.textContent = '已複製文案 ✓';
     btn?.classList.add('copied');
-    if (feedbackEl) {
-      feedbackEl.textContent = '已幫您複製 Facebook 貼文文案，開啟分享頁後直接貼上即可。';
-      feedbackEl.classList.add('show');
-    }
+    showToast('文案已複製，可直接貼上');
     clearTimeout(btn?._fbResetTimer);
     btn._fbResetTimer = setTimeout(() => {
-      if (label) label.textContent = '分享到Facebook';
+      if (label) label.textContent = '複製文案並分享到Facebook';
       btn?.classList.remove('copied');
-      feedbackEl?.classList.remove('show');
-    }, 3200);
+    }, 2400);
   }
 
   // 複製個人連結
@@ -392,12 +410,9 @@ import SurveyLayout from '../../../../layouts/SurveyLayout.astro';
     btnFb.href = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(inviteUrl);
     btnFb.addEventListener('click', () => {
       navigator.clipboard.writeText(composeShareText(inviteUrl))
-        .then(() => showFbPreparedState(btnFb, fbFeedback))
+        .then(() => showFbPreparedState(btnFb))
         .catch(() => {
-          if (fbFeedback) {
-            fbFeedback.textContent = '已開啟 Facebook；若未成功複製，請改用左側複製按鈕。';
-            fbFeedback.classList.add('show');
-          }
+          showToast('未能自動複製文案，請改用左側複製按鈕');
         });
     });
   }
@@ -407,12 +422,9 @@ import SurveyLayout from '../../../../layouts/SurveyLayout.astro';
     btnFbArticle.href = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(articleUrl);
     btnFbArticle.addEventListener('click', () => {
       navigator.clipboard.writeText(composeShareText(articleUrl))
-        .then(() => showFbPreparedState(btnFbArticle, fbFeedbackArticle))
+        .then(() => showFbPreparedState(btnFbArticle))
         .catch(() => {
-          if (fbFeedbackArticle) {
-            fbFeedbackArticle.textContent = '已開啟 Facebook；若未成功複製，請改用左側複製按鈕。';
-            fbFeedbackArticle.classList.add('show');
-          }
+          showToast('未能自動複製文案，請改用左側複製按鈕');
         });
     });
   }
