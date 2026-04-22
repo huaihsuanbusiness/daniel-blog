@@ -891,6 +891,25 @@ function renderQuestion(q: typeof questions[0], qIndex: number) {
 
   setupMaxSelectLimits();
 
+  function findQuestionBlock(questionCode: string) {
+    const byName = document.querySelector(`.question-block input[name="${questionCode}"]`)?.closest('.question-block');
+    if (byName) return byName;
+
+    const byCode = Array.from(document.querySelectorAll('.question-block')).find((block) => {
+      const codeEl = block.querySelector('.question-code');
+      return codeEl?.textContent?.trim() === questionCode;
+    });
+    return byCode || null;
+  }
+
+  function focusMissingBlock(target: Element | null) {
+    if (!target) return;
+    target.classList.add('question-missing');
+    const rect = target.getBoundingClientRect();
+    const absoluteTop = window.scrollY + rect.top - 96;
+    window.scrollTo({ top: Math.max(absoluteTop, 0), behavior: 'smooth' });
+  }
+
   document.querySelectorAll('[data-range-output]').forEach((input) => {
     const outputId = input.getAttribute('data-range-output');
     const output = outputId ? document.getElementById(outputId) : null;
@@ -958,11 +977,8 @@ function renderQuestion(q: typeof questions[0], qIndex: number) {
 
       // Scroll to first missing question
       const firstMissing = missing[0];
-      const target = document.querySelector(`.question-block input[name="${firstMissing}"]`)?.closest('.question-block');
-      if (target) {
-        target.classList.add('question-missing');
-        target.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
+      const target = findQuestionBlock(firstMissing);
+      focusMissingBlock(target);
 
       errorContainer.innerHTML = `<div class="error-msg">還有 ${missing.length} 題未填（請滑到紫色標記的題目）</div>`;
       return;
@@ -980,10 +996,7 @@ function renderQuestion(q: typeof questions[0], qIndex: number) {
 
       if (!hasContact || !hasConsent) {
         const contactBlock = document.getElementById('contact-conditional');
-        if (contactBlock) {
-          contactBlock.classList.add('question-missing');
-          contactBlock.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
+        focusMissingBlock(contactBlock);
         if (!hasContact && !hasConsent) {
           errorContainer.innerHTML = `<div class="error-msg">請填寫聯絡方式（至少一項）並選擇後續聯絡意願（至少一項）</div>`;
         } else if (!hasContact) {
