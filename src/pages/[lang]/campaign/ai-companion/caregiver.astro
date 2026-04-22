@@ -920,7 +920,7 @@ function renderQuestion(q: typeof questions[0], qIndex: number) {
     });
   });
 
-  submitBtn.addEventListener('click', async (e) => {
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
     errorContainer.innerHTML = '';
     document.querySelectorAll('.question-missing').forEach(el => el.classList.remove('question-missing'));
