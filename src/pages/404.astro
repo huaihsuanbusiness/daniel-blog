@@ -54,9 +54,6 @@ const blogHref = lang === 'zh' ? '/zh/blog?category=all' : '/en/blog?category=al
         </div>
 
         <div class="not-found-visual animate-in animate-delay-2">
-          <div class="visual-orbit orbit-1"></div>
-          <div class="visual-orbit orbit-2"></div>
-          <div class="visual-grid" aria-hidden="true"></div>
           <div id="not-found-lottie" class="not-found-lottie" aria-label="404 animation"></div>
         </div>
       </div>
@@ -94,6 +91,11 @@ const blogHref = lang === 'zh' ? '/zh/blog?category=all' : '/en/blog?category=al
 
 <style>
   .not-found-page {
+    --not-found-accent: #66dcff;
+    --not-found-accent-hover: #a8efff;
+    --not-found-accent-soft: rgba(102, 220, 255, 0.16);
+    --not-found-text: #f3f8ff;
+    --not-found-text-soft: #c8d6e5;
     min-height: calc(100vh - 80px);
     display: flex;
     align-items: center;
@@ -116,7 +118,7 @@ const blogHref = lang === 'zh' ? '/zh/blog?category=all' : '/en/blog?category=al
     font-size: 0.8rem;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: var(--color-accent);
+    color: var(--not-found-accent);
     margin-bottom: var(--space-2);
   }
 
@@ -124,12 +126,14 @@ const blogHref = lang === 'zh' ? '/zh/blog?category=all' : '/en/blog?category=al
     max-width: 10ch;
     margin-bottom: var(--space-3);
     line-height: 1.02;
+    color: var(--not-found-text);
   }
 
   .not-found-body {
     max-width: 56ch;
     font-size: 1rem;
     margin-bottom: var(--space-4);
+    color: var(--not-found-text-soft);
   }
 
   .not-found-actions {
@@ -159,122 +163,66 @@ const blogHref = lang === 'zh' ? '/zh/blog?category=all' : '/en/blog?category=al
   }
 
   .not-found-btn-primary {
-    color: var(--color-bg);
-    background: var(--color-accent);
-    border-color: var(--color-accent);
+    color: #041522;
+    background: var(--not-found-accent);
+    border-color: var(--not-found-accent);
   }
 
   .not-found-btn-primary:hover {
-    color: var(--color-bg);
-    background: var(--color-accent-hover);
-    border-color: var(--color-accent-hover);
-    box-shadow: 0 14px 30px color-mix(in srgb, var(--color-accent) 18%, transparent);
+    color: #041522;
+    background: var(--not-found-accent-hover);
+    border-color: var(--not-found-accent-hover);
+    box-shadow: 0 14px 30px var(--not-found-accent-soft);
   }
 
   .not-found-btn-secondary {
-    color: var(--color-text);
-    background: color-mix(in srgb, var(--color-surface) 88%, transparent);
+    color: var(--not-found-text);
+    background: transparent;
+    border-color: color-mix(in srgb, var(--not-found-accent) 34%, var(--color-border));
   }
 
   .not-found-btn-secondary:hover {
-    color: var(--color-accent);
-    border-color: var(--color-accent);
-    box-shadow: 0 14px 30px color-mix(in srgb, var(--color-accent) 10%, transparent);
+    color: var(--not-found-accent);
+    border-color: var(--not-found-accent);
+    box-shadow: 0 14px 30px rgba(102, 220, 255, 0.1);
   }
 
   .not-found-note {
     font-family: var(--font-mono);
     font-size: 0.78rem;
     letter-spacing: 0.03em;
-    color: var(--color-muted);
+    color: color-mix(in srgb, var(--not-found-text-soft) 82%, var(--color-muted));
     max-width: 56ch;
   }
 
   .not-found-visual {
-    position: relative;
     min-height: 520px;
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 1px solid color-mix(in srgb, var(--color-border) 88%, transparent);
-    border-radius: 32px;
-    overflow: hidden;
-    background:
-      radial-gradient(circle at 50% 18%, color-mix(in srgb, var(--color-accent) 18%, transparent), transparent 30%),
-      radial-gradient(circle at 82% 86%, color-mix(in srgb, var(--color-accent) 8%, transparent), transparent 24%),
-      linear-gradient(180deg, color-mix(in srgb, var(--color-surface) 96%, transparent), var(--color-surface));
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.03), 0 30px 80px rgba(0,0,0,0.18);
-  }
-
-  .visual-grid {
-    position: absolute;
-    inset: 0;
-    background-image:
-      linear-gradient(to right, color-mix(in srgb, var(--color-border) 70%, transparent) 1px, transparent 1px),
-      linear-gradient(to bottom, color-mix(in srgb, var(--color-border) 70%, transparent) 1px, transparent 1px);
-    background-size: 48px 48px;
-    mask-image: radial-gradient(circle at center, black 24%, transparent 84%);
-    opacity: 0.22;
-    pointer-events: none;
-  }
-
-  .visual-orbit {
-    position: absolute;
-    border-radius: 999px;
-    border: 1px solid color-mix(in srgb, var(--color-accent) 18%, var(--color-border));
-    pointer-events: none;
-  }
-
-  .orbit-1 {
-    width: min(72%, 360px);
-    aspect-ratio: 1;
-    animation: orbitPulse 8s ease-in-out infinite;
-  }
-
-  .orbit-2 {
-    width: min(86%, 430px);
-    aspect-ratio: 1;
-    border-color: color-mix(in srgb, var(--color-accent) 10%, var(--color-border));
-    animation: orbitPulse 8s ease-in-out infinite reverse;
   }
 
   .not-found-lottie {
-    position: relative;
-    z-index: 1;
     width: min(100%, 460px);
     aspect-ratio: 1 / 1;
     display: flex;
     align-items: center;
     justify-content: center;
+    filter: drop-shadow(0 14px 36px rgba(102, 220, 255, 0.12));
+  }
+
+  .not-found-lottie :global(svg) {
+    width: 100%;
+    height: auto;
   }
 
   .not-found-lottie[data-ready='fallback']::before {
     content: '404';
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 180px;
-    height: 180px;
-    border-radius: 50%;
-    border: 1px solid color-mix(in srgb, var(--color-accent) 24%, var(--color-border));
-    color: var(--color-text);
+    color: var(--not-found-accent);
     font-family: var(--font-display);
-    font-size: 3rem;
+    font-size: 4.25rem;
     font-weight: 700;
-    letter-spacing: -0.04em;
-    background: color-mix(in srgb, var(--color-surface) 92%, transparent);
-    box-shadow: 0 20px 50px rgba(0,0,0,0.2);
-  }
-
-  @keyframes orbitPulse {
-    0%, 100% {
-      transform: scale(1);
-      opacity: 0.9;
-    }
-    50% {
-      transform: scale(1.035);
-      opacity: 0.55;
-    }
+    letter-spacing: -0.05em;
   }
 
   @media (max-width: 960px) {
