@@ -1,0 +1,322 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
+const pathname = Astro.url.pathname;
+const lang = pathname.startsWith('/zh') ? 'zh' : 'en';
+
+const content = {
+  en: {
+    title: '404 — Page not found',
+    description: 'The page you are looking for does not exist.',
+    eyebrow: '404 / Lost route',
+    heading: 'This page does not exist.',
+    body: 'The link may be outdated, the URL may be wrong, or the page may have moved. Let’s get you back to something useful.',
+    primaryCta: 'Go home',
+    secondaryCta: 'Browse blog',
+    note: 'If you came here from an internal link, it is worth fixing.',
+  },
+  zh: {
+    title: '404 — 找不到頁面',
+    description: '你要找的頁面不存在。',
+    eyebrow: '404 / 路徑遺失',
+    heading: '這個頁面不存在。',
+    body: '可能是連結過期、網址打錯，或頁面已經移動。先把你帶回可用的地方。',
+    primaryCta: '回首頁',
+    secondaryCta: '逛部落格',
+    note: '如果這是站內連結帶你進來的，代表它值得被修掉。',
+  },
+} as const;
+
+const copy = content[lang as 'en' | 'zh'];
+const homeHref = lang === 'zh' ? '/zh/' : '/en/';
+const blogHref = lang === 'zh' ? '/zh/blog?category=all' : '/en/blog?category=all';
+---
+
+<Base title={`danielcanfly — ${copy.title}`} description={copy.description} lang={lang}>
+  <Header currentLang={lang} />
+
+  <main class="not-found-page">
+    <section class="not-found-hero">
+      <div class="container not-found-shell">
+        <div class="not-found-copy">
+          <p class="not-found-eyebrow animate-in">{copy.eyebrow}</p>
+          <h1 class="not-found-title animate-in animate-delay-1">{copy.heading}</h1>
+          <p class="not-found-body muted animate-in animate-delay-2">{copy.body}</p>
+
+          <div class="not-found-actions animate-in animate-delay-3">
+            <a href={homeHref} class="not-found-btn not-found-btn-primary">{copy.primaryCta}</a>
+            <a href={blogHref} class="not-found-btn not-found-btn-secondary">{copy.secondaryCta}</a>
+          </div>
+
+          <p class="not-found-note animate-in animate-delay-4">{copy.note}</p>
+        </div>
+
+        <div class="not-found-visual animate-in animate-delay-2">
+          <div class="visual-orbit orbit-1"></div>
+          <div class="visual-orbit orbit-2"></div>
+          <div class="visual-grid" aria-hidden="true"></div>
+          <div id="not-found-lottie" class="not-found-lottie" aria-label="404 animation"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Base>
+
+<script is:inline type="module">
+  const container = document.getElementById('not-found-lottie');
+
+  if (container) {
+    import('https://cdn.jsdelivr.net/npm/lottie-web@5.12.2/+esm')
+      .then(({ default: lottie }) => {
+        lottie.loadAnimation({
+          container,
+          renderer: 'svg',
+          loop: true,
+          autoplay: true,
+          path: '/animations/404-lottie.json',
+          rendererSettings: {
+            preserveAspectRatio: 'xMidYMid meet',
+            progressiveLoad: true,
+          },
+        });
+
+        container.dataset.ready = 'true';
+      })
+      .catch(() => {
+        container.dataset.ready = 'fallback';
+      });
+  }
+</script>
+
+<style>
+  .not-found-page {
+    min-height: calc(100vh - 80px);
+    display: flex;
+    align-items: center;
+  }
+
+  .not-found-hero {
+    width: 100%;
+    padding: var(--space-8) 0;
+  }
+
+  .not-found-shell {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(320px, 520px);
+    align-items: center;
+    gap: var(--space-6);
+  }
+
+  .not-found-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+    margin-bottom: var(--space-2);
+  }
+
+  .not-found-title {
+    max-width: 10ch;
+    margin-bottom: var(--space-3);
+    line-height: 1.02;
+  }
+
+  .not-found-body {
+    max-width: 56ch;
+    font-size: 1rem;
+    margin-bottom: var(--space-4);
+  }
+
+  .not-found-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: var(--space-3);
+  }
+
+  .not-found-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 148px;
+    padding: 0.92rem 1.25rem;
+    border-radius: 999px;
+    border: 1px solid var(--color-border);
+    text-decoration: none;
+    font-family: var(--font-display);
+    font-size: 0.92rem;
+    font-weight: 600;
+    transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast), color var(--transition-fast);
+  }
+
+  .not-found-btn:hover {
+    transform: translateY(-2px);
+  }
+
+  .not-found-btn-primary {
+    color: var(--color-bg);
+    background: var(--color-accent);
+    border-color: var(--color-accent);
+  }
+
+  .not-found-btn-primary:hover {
+    color: var(--color-bg);
+    background: var(--color-accent-hover);
+    border-color: var(--color-accent-hover);
+    box-shadow: 0 14px 30px color-mix(in srgb, var(--color-accent) 18%, transparent);
+  }
+
+  .not-found-btn-secondary {
+    color: var(--color-text);
+    background: color-mix(in srgb, var(--color-surface) 88%, transparent);
+  }
+
+  .not-found-btn-secondary:hover {
+    color: var(--color-accent);
+    border-color: var(--color-accent);
+    box-shadow: 0 14px 30px color-mix(in srgb, var(--color-accent) 10%, transparent);
+  }
+
+  .not-found-note {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.03em;
+    color: var(--color-muted);
+    max-width: 56ch;
+  }
+
+  .not-found-visual {
+    position: relative;
+    min-height: 520px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid color-mix(in srgb, var(--color-border) 88%, transparent);
+    border-radius: 32px;
+    overflow: hidden;
+    background:
+      radial-gradient(circle at 50% 18%, color-mix(in srgb, var(--color-accent) 18%, transparent), transparent 30%),
+      radial-gradient(circle at 82% 86%, color-mix(in srgb, var(--color-accent) 8%, transparent), transparent 24%),
+      linear-gradient(180deg, color-mix(in srgb, var(--color-surface) 96%, transparent), var(--color-surface));
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.03), 0 30px 80px rgba(0,0,0,0.18);
+  }
+
+  .visual-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(to right, color-mix(in srgb, var(--color-border) 70%, transparent) 1px, transparent 1px),
+      linear-gradient(to bottom, color-mix(in srgb, var(--color-border) 70%, transparent) 1px, transparent 1px);
+    background-size: 48px 48px;
+    mask-image: radial-gradient(circle at center, black 24%, transparent 84%);
+    opacity: 0.22;
+    pointer-events: none;
+  }
+
+  .visual-orbit {
+    position: absolute;
+    border-radius: 999px;
+    border: 1px solid color-mix(in srgb, var(--color-accent) 18%, var(--color-border));
+    pointer-events: none;
+  }
+
+  .orbit-1 {
+    width: min(72%, 360px);
+    aspect-ratio: 1;
+    animation: orbitPulse 8s ease-in-out infinite;
+  }
+
+  .orbit-2 {
+    width: min(86%, 430px);
+    aspect-ratio: 1;
+    border-color: color-mix(in srgb, var(--color-accent) 10%, var(--color-border));
+    animation: orbitPulse 8s ease-in-out infinite reverse;
+  }
+
+  .not-found-lottie {
+    position: relative;
+    z-index: 1;
+    width: min(100%, 460px);
+    aspect-ratio: 1 / 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .not-found-lottie[data-ready='fallback']::before {
+    content: '404';
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    border: 1px solid color-mix(in srgb, var(--color-accent) 24%, var(--color-border));
+    color: var(--color-text);
+    font-family: var(--font-display);
+    font-size: 3rem;
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    background: color-mix(in srgb, var(--color-surface) 92%, transparent);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+  }
+
+  @keyframes orbitPulse {
+    0%, 100% {
+      transform: scale(1);
+      opacity: 0.9;
+    }
+    50% {
+      transform: scale(1.035);
+      opacity: 0.55;
+    }
+  }
+
+  @media (max-width: 960px) {
+    .not-found-shell {
+      grid-template-columns: 1fr;
+    }
+
+    .not-found-title {
+      max-width: 14ch;
+    }
+
+    .not-found-visual {
+      min-height: 420px;
+      order: -1;
+    }
+
+    .not-found-lottie {
+      width: min(100%, 360px);
+    }
+  }
+
+  @media (max-width: 640px) {
+    .not-found-hero {
+      padding: var(--space-5) 0 var(--space-6);
+    }
+
+    .not-found-actions {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .not-found-btn {
+      width: 100%;
+    }
+
+    .not-found-visual {
+      min-height: 340px;
+      border-radius: 24px;
+    }
+
+    .not-found-lottie {
+      width: min(100%, 300px);
+    }
+  }
+</style>

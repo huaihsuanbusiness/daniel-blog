@@ -27,6 +27,10 @@ npm-debug.log*
 .openclaw/
 .openclaw.zip
 
+# Local secret payloads
+secret_payload.txt
+secrets.json
+
 # wrangler files
 .wrangler
 .dev.vars*
