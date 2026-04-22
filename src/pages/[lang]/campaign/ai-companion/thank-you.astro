@@ -407,6 +407,39 @@ import SurveyLayout from '../../../../layouts/SurveyLayout.astro';
     btn?.classList.remove('loading');
   }
 
+  function openFacebookShare(targetUrl) {
+    if (isMobileBrowser) {
+      window.location.href = 'fb://composer';
+      setTimeout(() => {
+        if (document.visibilityState === 'visible') {
+          window.location.href = targetUrl;
+        }
+      }, 1200);
+    } else {
+      window.open(targetUrl, '_blank', 'noopener');
+    }
+  }
+
+  function bindFacebookShare(button, shareUrl) {
+    if (!button || !shareUrl) return;
+    button.addEventListener('click', async (e) => {
+      e.preventDefault();
+      const targetUrl = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(shareUrl);
+      try {
+        await navigator.clipboard.writeText(composeShareText(shareUrl));
+        showFbLoadingState(button);
+        setTimeout(() => {
+          openFacebookShare(targetUrl);
+          setTimeout(() => resetFbState(button), 1600);
+        }, 1000);
+      } catch (err) {
+        showToast('未能自動複製文案，仍會直接前往 Facebook');
+        openFacebookShare(targetUrl);
+        setTimeout(() => resetFbState(button), 1200);
+      }
+    });
+  }
+
   // 複製個人連結
   if (btnCopy && inviteUrl) {
     if (role === 'caregiver') copyLabel.textContent = '複製長輩專屬連結';
@@ -419,31 +452,9 @@ import SurveyLayout from '../../../../layouts/SurveyLayout.astro';
     });
   }
 
-  // FB 分享個人連結：先複製貼文文案，再開 Facebook 分享頁
-  if (btnFb && inviteUrl) {
-    btnFb.addEventListener('click', (e) => {
-      if (!isMobileBrowser) e.preventDefault();
-      const webUrl = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(inviteUrl);
-      if (isMobileBrowser) {
-        window.location.href = 'fb://composer';
-      } else {
-        window.open(webUrl, '_blank', 'noopener');
-      }
-    });
-  }
-
-  // FB 分享文章連結：先複製貼文文案，再開 Facebook 分享頁
-  if (btnFbArticle) {
-    btnFbArticle.addEventListener('click', (e) => {
-      if (!isMobileBrowser) e.preventDefault();
-      const webUrl = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(articleUrl);
-      if (isMobileBrowser) {
-        window.location.href = 'fb://composer';
-      } else {
-        window.open(webUrl, '_blank', 'noopener');
-      }
-    });
-  }
+  // FB 分享：先複製文案，顯示 spinner，再導向 Facebook
+  bindFacebookShare(btnFb, inviteUrl);
+  bindFacebookShare(btnFbArticle, articleUrl);
 
   // 複製文章連結
   if (btnCopyArticle) {
