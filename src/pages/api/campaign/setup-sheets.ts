@@ -2,9 +2,15 @@ export const prerender = false;
 import type { APIRoute } from 'astro';
 import { GoogleSheet } from '../../../utils/googleSheet';
 
-export const POST: APIRoute = async ({ request }) => {
+type WorkersEnv = {
+  GOOGLE_PRIVATE_KEY?: string;
+  GOOGLE_SHEET_ID?: string;
+  SITE?: string;
+};
+
+export const POST: APIRoute = async ({ locals }) => {
   try {
-    const { env } = await import('cloudflare:workers');
+    const env = ((locals as { workersEnv?: WorkersEnv }).workersEnv ?? {}) as WorkersEnv;
 
     const googleEnv = {
       GOOGLE_PRIVATE_KEY: env.GOOGLE_PRIVATE_KEY ?? '',
