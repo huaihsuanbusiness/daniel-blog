@@ -312,8 +312,25 @@ import SurveyLayout from '../../../../layouts/SurveyLayout.astro';
 </style>
 
 <script>
+  const safeSession = {
+    get(key) {
+      try {
+        return sessionStorage.getItem(key);
+      } catch {
+        return null;
+      }
+    },
+    remove(key) {
+      try {
+        sessionStorage.removeItem(key);
+      } catch {
+        // ignore storage failures in mobile/in-app/private browsing
+      }
+    },
+  };
+
   const urlParams = new URLSearchParams(window.location.search);
-  const role = urlParams.get('role') || sessionStorage.getItem('survey_role') || '';
+  const role = urlParams.get('role') || safeSession.get('survey_role') || '';
   const inviteUrl = urlParams.get('invite') || '';
   const articleUrl = 'https://www.danielcanfly.com/zh/blog/ai-companion-survey';
   const isMobileBrowser = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
@@ -466,7 +483,7 @@ import SurveyLayout from '../../../../layouts/SurveyLayout.astro';
     });
   }
 
-  sessionStorage.removeItem('survey_familyId');
-  sessionStorage.removeItem('survey_inviteLink');
-  sessionStorage.removeItem('survey_role');
+  safeSession.remove('survey_familyId');
+  safeSession.remove('survey_inviteLink');
+  safeSession.remove('survey_role');
 </script>

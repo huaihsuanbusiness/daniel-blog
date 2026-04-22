@@ -378,6 +378,29 @@ const refParam = '';
   const form = document.getElementById('survey-form');
   const submitBtn = document.getElementById('submit-btn');
   const errorContainer = document.getElementById('error-container');
+  const safeSession = {
+    get(key: string) {
+      try {
+        return sessionStorage.getItem(key);
+      } catch {
+        return null;
+      }
+    },
+    set(key: string, value: string) {
+      try {
+        sessionStorage.setItem(key, value);
+      } catch {
+        // ignore storage failures in mobile/in-app/private browsing
+      }
+    },
+    remove(key: string) {
+      try {
+        sessionStorage.removeItem(key);
+      } catch {
+        // ignore storage failures in mobile/in-app/private browsing
+      }
+    },
+  };
 
   function setupMaxSelectLimits() {
     const limitedBlocks = document.querySelectorAll('.question-block[data-max-select]');
@@ -436,11 +459,11 @@ const refParam = '';
         data[key] = [data[key] as string, String(value)];
       }
     }
-    sessionStorage.setItem(SESSION_KEY, JSON.stringify(data));
+    safeSession.set(SESSION_KEY, JSON.stringify(data));
   }
 
   function restoreDraft() {
-    const raw = sessionStorage.getItem(SESSION_KEY);
+    const raw = safeSession.get(SESSION_KEY);
     if (!raw) return;
     try {
       const data: Record<string, string | string[]> = JSON.parse(raw);
@@ -471,7 +494,7 @@ const refParam = '';
   }
 
   function clearDraft() {
-    sessionStorage.removeItem(SESSION_KEY);
+    safeSession.remove(SESSION_KEY);
   }
 
   restoreDraft();
@@ -623,9 +646,9 @@ const refParam = '';
       const lang = window.location.pathname.split('/').filter(Boolean)[0] || 'zh';
       const inviteLink = `/${lang}/campaign/ai-companion/caregiver?ref=${familyId}`;
 
-      sessionStorage.setItem('survey_familyId', familyId);
-      sessionStorage.setItem('survey_inviteLink', inviteLink);
-      sessionStorage.setItem('survey_role', 'elder');
+      safeSession.set('survey_familyId', familyId);
+      safeSession.set('survey_inviteLink', inviteLink);
+      safeSession.set('survey_role', 'elder');
       clearDraft();
       const lang2 = window.location.pathname.split('/').filter(Boolean)[0] || 'zh';
       const fullInvite = inviteLink.startsWith('http')

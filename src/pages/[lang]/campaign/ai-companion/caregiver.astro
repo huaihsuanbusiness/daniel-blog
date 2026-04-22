@@ -731,6 +731,29 @@ function renderQuestion(q: typeof questions[0], qIndex: number) {
   const submitBtn = document.getElementById('submit-btn') as HTMLButtonElement;
   const errorContainer = document.getElementById('error-container') as HTMLDivElement;
   const SESSION_KEY = 'caregiver_survey_draft';
+  const safeSession = {
+    get(key: string) {
+      try {
+        return sessionStorage.getItem(key);
+      } catch {
+        return null;
+      }
+    },
+    set(key: string, value: string) {
+      try {
+        sessionStorage.setItem(key, value);
+      } catch {
+        // ignore storage failures in mobile/in-app/private browsing
+      }
+    },
+    remove(key: string) {
+      try {
+        sessionStorage.removeItem(key);
+      } catch {
+        // ignore storage failures in mobile/in-app/private browsing
+      }
+    },
+  };
 
   // ── Draft persistence ────────────────────────────────────────
   function saveDraft() {
@@ -744,11 +767,11 @@ function renderQuestion(q: typeof questions[0], qIndex: number) {
         data[key] = [data[key] as string, String(value)];
       }
     }
-    sessionStorage.setItem(SESSION_KEY, JSON.stringify(data));
+    safeSession.set(SESSION_KEY, JSON.stringify(data));
   }
 
   function restoreDraft() {
-    const raw = sessionStorage.getItem(SESSION_KEY);
+    const raw = safeSession.get(SESSION_KEY);
     if (!raw) return;
     try {
       const data: Record<string, string | string[]> = JSON.parse(raw);
@@ -783,7 +806,7 @@ function renderQuestion(q: typeof questions[0], qIndex: number) {
   }
 
   function clearDraft() {
-    sessionStorage.removeItem(SESSION_KEY);
+    safeSession.remove(SESSION_KEY);
   }
 
   restoreDraft();
@@ -990,9 +1013,9 @@ function renderQuestion(q: typeof questions[0], qIndex: number) {
         throw new Error(data.error || '送出失敗');
       }
       // Store familyId and inviteLink
-      sessionStorage.setItem('survey_familyId', data.familyId);
-      sessionStorage.setItem('survey_inviteLink', data.inviteLink || '');
-      sessionStorage.setItem('survey_role', 'caregiver');
+      safeSession.set('survey_familyId', data.familyId);
+      safeSession.set('survey_inviteLink', data.inviteLink || '');
+      safeSession.set('survey_role', 'caregiver');
       clearDraft();
       const lang = window.location.pathname.split('/').filter(Boolean)[0] || 'zh';
       const fullInvite = (data.inviteLink || '').startsWith('http')
