@@ -1,14 +1,9 @@
 export const prerender = false;
 import type { APIRoute } from 'astro';
 import { GoogleSheet } from '../../../utils/googleSheet';
+import { getWorkersEnv } from '../../../utils/workersEnv';
 
-type WorkersEnv = {
-  GOOGLE_PRIVATE_KEY?: string;
-  GOOGLE_SHEET_ID?: string;
-  SITE?: string;
-};
-
-export const POST: APIRoute = async ({ request, locals }) => {
+export const POST: APIRoute = async ({ request }) => {
   try {
     const body = await request.json();
     const { role, familyId, answers, locale } = body;
@@ -20,7 +15,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
       );
     }
 
-    const env = ((locals as { workersEnv?: WorkersEnv }).workersEnv ?? {}) as WorkersEnv;
+    const env = await getWorkersEnv();
 
     const googleEnv = {
       GOOGLE_PRIVATE_KEY: env.GOOGLE_PRIVATE_KEY ?? '',
