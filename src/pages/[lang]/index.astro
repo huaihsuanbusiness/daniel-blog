@@ -75,9 +75,8 @@ const homepageCategories = CATEGORY_ORDER.map(id => ({
           <a href={`/${lang}/blog?category=all`} class="hero-cta animate-in animate-delay-2" data-home-see-all-posts>{content.heroCta}</a>
         </div>
 
-        <div class="hero-decoration">
-          <div class="deco-circle"></div>
-          <div class="deco-line"></div>
+        <div class="hero-visual animate-in animate-delay-2">
+          <div class="hero-lottie" data-home-hero-lottie aria-hidden="true"></div>
         </div>
         <a href="#latest-posts" class="scroll-hint" aria-label={lang === 'zh' ? '往下閱讀' : 'Scroll down'}>
           <span class="scroll-hint-mouse" aria-hidden="true">
@@ -166,7 +165,7 @@ const homepageCategories = CATEGORY_ORDER.map(id => ({
   <Footer />
 </Base>
 
-<script>
+<script is:inline type="module">
   document.querySelectorAll('[data-home-see-all-posts]').forEach((link) => {
     link.addEventListener('click', () => {
       try {
@@ -174,6 +173,32 @@ const homepageCategories = CATEGORY_ORDER.map(id => ({
       } catch {}
     });
   });
+
+  const heroLottieEls = document.querySelectorAll('[data-home-hero-lottie]');
+
+  if (heroLottieEls.length) {
+    import('https://cdn.jsdelivr.net/npm/lottie-web@5.12.2/+esm')
+      .then(({ default: lottie }) => {
+        heroLottieEls.forEach((container) => {
+          lottie.loadAnimation({
+            container,
+            renderer: 'svg',
+            loop: true,
+            autoplay: true,
+            path: '/animations/home-hero-lottie.json',
+            rendererSettings: {
+              preserveAspectRatio: 'xMidYMid meet',
+              progressiveLoad: true,
+            },
+          });
+        });
+      })
+      .catch(() => {
+        heroLottieEls.forEach((container) => {
+          container.setAttribute('data-ready', 'fallback');
+        });
+      });
+  }
 </script>
 
 <style>
@@ -241,43 +266,35 @@ const homepageCategories = CATEGORY_ORDER.map(id => ({
     box-shadow: 0 10px 24px color-mix(in srgb, var(--color-accent) 18%, transparent);
   }
 
-  .hero-decoration {
-    position: relative;
-    width: 300px;
-    height: 300px;
+  .hero-visual {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: min(46vw, 520px);
+    min-width: 320px;
   }
 
-  .deco-circle {
-    position: absolute;
-    inset: 0;
-    border: 1px solid var(--color-border);
-    border-radius: 50%;
-    animation: pulse 4s ease-in-out infinite;
+  .hero-lottie {
+    width: min(100%, 500px);
+    aspect-ratio: 950 / 847;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    filter: drop-shadow(0 18px 42px rgba(102, 220, 255, 0.14));
   }
 
-  .deco-circle::before {
+  .hero-lottie :global(svg) {
+    width: 100%;
+    height: auto;
+  }
+
+  .hero-lottie[data-ready='fallback']::before {
     content: '';
-    position: absolute;
-    inset: 40px;
-    border: 1px solid var(--color-accent);
+    width: min(72vw, 280px);
+    aspect-ratio: 1;
     border-radius: 50%;
-    opacity: 0.3;
-  }
-
-  .deco-line {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 2px;
-    height: 200px;
-    background: linear-gradient(to bottom, transparent, var(--color-accent), transparent);
-    opacity: 0.5;
-  }
-
-  @keyframes pulse {
-    0%, 100% { transform: scale(1); opacity: 1; }
-    50% { transform: scale(1.05); opacity: 0.7; }
+    border: 1px solid color-mix(in srgb, var(--color-accent) 38%, var(--color-border));
+    box-shadow: inset 0 0 0 36px color-mix(in srgb, var(--color-accent) 5%, transparent);
   }
 
   .scroll-hint {
@@ -523,8 +540,10 @@ const homepageCategories = CATEGORY_ORDER.map(id => ({
       grid-template-columns: 1fr;
     }
 
-    .hero-decoration {
-      display: none;
+    .hero-visual {
+      width: min(100%, 360px);
+      min-width: 0;
+      margin: 0 auto;
     }
 
     .posts-grid {
