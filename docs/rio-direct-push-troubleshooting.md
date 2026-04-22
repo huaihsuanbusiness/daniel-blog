@@ -51,6 +51,19 @@ If Rio still cannot act directly after config recovery:
 - start a new thread/session
 - retry a small real repo change
 
+## daniel-blog specific Cloudflare caveat
+If the blog repo can push normally but the survey backend breaks with:
+```text
+Error: GOOGLE_SHEET_ID is not set
+```
+that is **not** usually a repo connectivity problem.
+
+For `daniel-blog`, that symptom can mean Cloudflare promoted a fresh Worker version without the three Google survey secrets bound to the live production version.
+
+See:
+- `/Users/daniel/daniel-blog/docs/deploy-sop.md`
+- `/Users/daniel/.openclaw/workspace-rio/memory/private/daniel-blog-sop.md`
+
 ## Verification
 A valid end-to-end verification should include:
 1. Rio edits a local repo file
@@ -58,6 +71,7 @@ A valid end-to-end verification should include:
 3. a commit is created
 4. push to `main` succeeds
 5. Cloudflare deploy triggers successfully
+6. for survey-related deploys, the live production submit API returns `success: true`
 
 ## Safety note
 If direct-push capability is enabled in Discord or other chat surfaces, keep approval controls and allowlists in place.
