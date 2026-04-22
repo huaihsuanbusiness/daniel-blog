@@ -15,7 +15,6 @@ const content = {
     body: 'The link may be outdated, the URL may be wrong, or the page may have moved. Let’s get you back to something useful.',
     primaryCta: 'Go home',
     secondaryCta: 'Browse blog',
-    note: 'If you came here from an internal link, it is worth fixing.',
   },
   zh: {
     title: '404 — 找不到頁面',
@@ -25,7 +24,6 @@ const content = {
     body: '可能是連結過期、網址打錯，或頁面已經移動。先把你帶回可用的地方。',
     primaryCta: '回首頁',
     secondaryCta: '逛部落格',
-    note: '如果這是站內連結帶你進來的，代表它值得被修掉。',
   },
 } as const;
 
@@ -50,7 +48,6 @@ const blogHref = lang === 'zh' ? '/zh/blog?category=all' : '/en/blog?category=al
             <a href={blogHref} class="not-found-btn not-found-btn-secondary">{copy.secondaryCta}</a>
           </div>
 
-          <p class="not-found-note animate-in animate-delay-4">{copy.note}</p>
         </div>
 
         <div class="not-found-visual animate-in animate-delay-2">
@@ -187,13 +184,6 @@ const blogHref = lang === 'zh' ? '/zh/blog?category=all' : '/en/blog?category=al
     box-shadow: 0 14px 30px rgba(102, 220, 255, 0.1);
   }
 
-  .not-found-note {
-    font-family: var(--font-mono);
-    font-size: 0.78rem;
-    letter-spacing: 0.03em;
-    color: color-mix(in srgb, var(--not-found-text-soft) 82%, var(--color-muted));
-    max-width: 56ch;
-  }
 
   .not-found-visual {
     min-height: 520px;
