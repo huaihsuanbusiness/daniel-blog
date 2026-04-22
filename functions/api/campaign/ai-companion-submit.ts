@@ -1,12 +1,15 @@
-import { GoogleSheet } from '../../../src/utils/googleSheet';
+import { env } from "cloudflare:workers";
+import { GoogleSheet } from '../../../utils/googleSheet';
 
-type Env = {
+export const prerender = false;
+
+type GoogleSheetEnv = {
   GOOGLE_PRIVATE_KEY?: string;
   GOOGLE_SHEET_ID?: string;
   SITE?: string;
 };
 
-export async function onRequestPost(context: { request: Request; env: Env }) {
+export async function onRequestPost(context: { request: Request; env: GoogleSheetEnv }) {
   try {
     const body = (await context.request.json()) as {
       role?: 'caregiver' | 'elder';
