@@ -60,6 +60,10 @@ that is **not** usually a repo connectivity problem.
 
 For `daniel-blog`, that symptom can mean Cloudflare promoted a fresh Worker version without the three Google survey secrets bound to the live production version.
 
+Current standard fix:
+- use `npm run deploy:cloudflare`
+- or let `.github/workflows/deploy.yml` deploy via `scripts/deploy-with-secrets.sh`
+
 See:
 - `/Users/daniel/daniel-blog/docs/deploy-sop.md`
 - `/Users/daniel/.openclaw/workspace-rio/memory/private/daniel-blog-sop.md`

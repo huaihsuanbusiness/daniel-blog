@@ -22,38 +22,13 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build
-        run: npm run build
-        env:
-          GOOGLE_PRIVATE_KEY: ${{ secrets.GOOGLE_PRIVATE_KEY }}
-          GOOGLE_SHEET_ID: ${{ secrets.GOOGLE_SHEET_ID }}
-          GOOGLE_SERVICE_ACCOUNT_EMAIL: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_EMAIL }}
-          SITE: https://danielcanfly.com
-
-      - name: Remove wrangler redirect config
-        run: rm -rf .wrangler
-
-      - name: Deploy to Cloudflare Workers
-        run: |
-          cd dist/server
-
-          # Use Python to build properly-escaped JSON for wrangler secret bulk
-          # This correctly handles multi-line JSON secrets like GOOGLE_PRIVATE_KEY
-          python3 << 'PYEOF'
-          import json, os
-          secrets = {
-              "GOOGLE_SHEET_ID": os.environ.get("GOOGLE_SHEET_ID", ""),
-              "GOOGLE_PRIVATE_KEY": os.environ.get("GOOGLE_PRIVATE_KEY", ""),
-              "GOOGLE_SERVICE_ACCOUNT_EMAIL": os.environ.get("GOOGLE_SERVICE_ACCOUNT_EMAIL", ""),
-          }
-          with open("secrets.json", "w") as f:
-              json.dump(secrets, f)
-          PYEOF
-
-          npx wrangler secret bulk --name daniel-blog --config wrangler.json < secrets.json
-          rm secrets.json
-
-          npx wrangler deploy --message "${{ github.sha }}" --config wrangler.json
+      - name: Deploy to Cloudflare Workers with version-bound secrets
+        run: bash ./scripts/deploy-with-secrets.sh
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          GOOGLE_PRIVATE_KEY: ${{ secrets.GOOGLE_PRIVATE_KEY }}
+          GOOGLE_SHEET_ID: ${{ secrets.GOOGLE_SHEET_ID }}
+          GOOGLE_SERVICE_ACCOUNT_EMAIL: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_EMAIL }}
+          SITE_URL: https://www.danielcanfly.com
+          DEPLOY_MESSAGE: ${{ github.sha }}

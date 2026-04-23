@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
-    "preview": "astro preview"
+    "preview": "astro preview",
+    "deploy:cloudflare": "bash ./scripts/deploy-with-secrets.sh"
   },
   "dependencies": {
     "@astrojs/cloudflare": "^13.1.9",
