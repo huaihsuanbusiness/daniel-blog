@@ -241,6 +241,22 @@ const currentSeriesIndex = seriesPosts.findIndex(p => p.id === post.id);
       nextLink.hidden = true;
     }
   }
+
+  document.querySelectorAll('.post-content img').forEach((img) => {
+    if (!(img instanceof HTMLImageElement)) return;
+
+    try {
+      const current = new URL(img.currentSrc || img.src, window.location.origin);
+      if (current.pathname !== '/_image') return;
+
+      const originalHref = current.searchParams.get('href');
+      if (!originalHref || !/\.svg(?:[?#].*)?$/i.test(originalHref)) return;
+
+      img.src = originalHref;
+      img.removeAttribute('srcset');
+      img.removeAttribute('sizes');
+    } catch {}
+  });
 </script>
 
 
