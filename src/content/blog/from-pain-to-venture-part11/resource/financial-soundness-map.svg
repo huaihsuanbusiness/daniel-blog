@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1180 600">
+<style>
+text{font-family:Arial, sans-serif;fill:#223}.title{font-size:30px;font-weight:700}.h{font-size:18px;font-weight:700}.b{font-size:14px}.box{fill:#fff;stroke:#cbd5e1;stroke-width:2;rx:14}.soft{fill:#f8fafc}
+</style>
+<text x="50" y="55" class="title">Financial Soundness: cash is the lifeblood of the venture</text>
+<rect x="80" y="110" width="240" height="135" class="box soft"/><text x="110" y="150" class="h">Economic Viability</text><text x="110" y="182" class="b">Can the model create profit?</text>
+<rect x="350" y="110" width="240" height="135" class="box"/><text x="380" y="150" class="h">Free Cash Flow</text><text x="380" y="182" class="b">Collect early, pay late?</text>
+<rect x="620" y="110" width="240" height="135" class="box soft"/><text x="650" y="150" class="h">Profit-Centric View</text><text x="650" y="182" class="b">Gross margin, payback, churn</text>
+<rect x="890" y="110" width="240" height="135" class="box"/><text x="920" y="150" class="h">New Venture Economics</text><text x="920" y="182" class="b">Runway, burn, funding need</text>
+<rect x="170" y="350" width="840" height="105" class="box"/>
+<text x="205" y="390" class="h">Founder question</text>
+<text x="205" y="425" class="b">Do we know where cash ends up, when customers pay, and what must change before the runway runs out?</text>
+</svg>

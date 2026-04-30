@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 760">
+<style>
+text{font-family:Arial, sans-serif; fill:#223}.title{font-size:28px;font-weight:700}.axis{font-size:18px;font-weight:700}.b{font-size:14px}.dot{stroke:#334155;stroke-width:2}.label{font-size:15px;font-weight:700}
+</style>
+<text x="50" y="45" class="title">Competitive Matrix｜Independent Hospitality Example</text>
+<line x1="120" y1="620" x2="850" y2="620" stroke="#334155" stroke-width="3"/>
+<line x1="120" y1="620" x2="120" y2="100" stroke="#334155" stroke-width="3"/>
+<text x="390" y="690" class="axis">Higher relationship ownership →</text>
+<text x="20" y="390" class="axis" transform="rotate(-90 20 390)">Higher operating complexity →</text>
+<circle cx="250" cy="545" r="12" fill="#e2e8f0" class="dot"/><text x="270" y="550" class="label">OTA</text>
+<circle cx="350" cy="470" r="12" fill="#e2e8f0" class="dot"/><text x="370" y="475" class="label">Booking Engine</text>
+<circle cx="580" cy="410" r="12" fill="#e2e8f0" class="dot"/><text x="600" y="415" class="label">CRM / Email</text>
+<circle cx="720" cy="300" r="12" fill="#e2e8f0" class="dot"/><text x="740" y="305" class="label">Hotel Chain Loyalty</text>
+<circle cx="470" cy="535" r="12" fill="#e2e8f0" class="dot"/><text x="490" y="540" class="label">Google Sheet / LINE</text>
+<circle cx="690" cy="470" r="12" fill="#60a5fa" class="dot"/><text x="710" y="475" class="label">Independent Stay Alliance</text>
+<text x="135" y="645" class="b">Low ownership</text><text x="700" y="645" class="b">High ownership</text>
+<text x="135" y="125" class="b">High complexity</text><text x="135" y="600" class="b">Low complexity</text>
+</svg>

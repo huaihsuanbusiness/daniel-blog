@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1180 540">
+<style>
+text{font-family:Arial, sans-serif; fill:#223}.title{font-size:30px;font-weight:700}.h{font-size:18px;font-weight:700}.b{font-size:14px}.box{fill:#fff;stroke:#cbd5e1;stroke-width:2;rx:16}.soft{fill:#f8fafc}
+</style>
+<text x="50" y="55" class="title">Positioning: not a slogan, but a place in the customer’s mind</text>
+<rect x="70" y="100" width="210" height="125" class="box soft"/><text x="95" y="138" class="h">Category</text><text x="95" y="168" class="b">What are you?</text>
+<rect x="310" y="100" width="210" height="125" class="box"/><text x="335" y="138" class="h">Problem</text><text x="335" y="168" class="b">What do you solve?</text>
+<rect x="550" y="100" width="210" height="125" class="box soft"/><text x="575" y="138" class="h">Difference</text><text x="575" y="168" class="b">Why not alternatives?</text>
+<rect x="790" y="100" width="210" height="125" class="box"/><text x="815" y="138" class="h">Trust</text><text x="815" y="168" class="b">Why believe you?</text>
+<rect x="430" y="305" width="640" height="110" class="box soft"/>
+<text x="455" y="345" class="h">Template</text>
+<text x="455" y="380" class="b">For ___, we are ___; unlike ___, we provide ___, because ___.</text>
+</svg>

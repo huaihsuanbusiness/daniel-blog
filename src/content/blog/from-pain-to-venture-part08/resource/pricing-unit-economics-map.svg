@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1180 560">
+<style>
+text{font-family:Arial, sans-serif;fill:#223}.title{font-size:30px;font-weight:700}.h{font-size:18px;font-weight:700}.b{font-size:14px}.box{fill:#fff;stroke:#cbd5e1;stroke-width:2;rx:14}.soft{fill:#f8fafc}
+</style>
+<text x="50" y="55" class="title">Pricing and Unit Economics: demand is not yet a business</text>
+<rect x="70" y="100" width="240" height="140" class="box soft"/><text x="95" y="138" class="h">Willingness to Pay</text><text x="95" y="170" class="b">What do they pay now?</text><text x="95" y="198" class="b">Who pays vs benefits?</text>
+<rect x="340" y="100" width="240" height="140" class="box"/><text x="365" y="138" class="h">Revenue Model</text><text x="365" y="170" class="b">Subscription / usage</text><text x="365" y="198" class="b">Setup / success / hybrid</text>
+<rect x="610" y="100" width="240" height="140" class="box soft"/><text x="635" y="138" class="h">Unit Economics</text><text x="635" y="170" class="b">CAC, LTV, gross margin</text><text x="635" y="198" class="b">Payback, churn, retention</text>
+<rect x="880" y="100" width="240" height="140" class="box"/><text x="905" y="138" class="h">Risk</text><text x="905" y="170" class="b">Can it scale?</text><text x="905" y="198" class="b">Where does cost explode?</text>
+<rect x="140" y="330" width="900" height="110" class="box"/>
+<text x="170" y="370" class="h">Business question</text>
+<text x="170" y="405" class="b">Can we repeatedly create, deliver, and capture value without the cost structure eating the business?</text>
+</svg>

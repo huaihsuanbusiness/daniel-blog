@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1180 560">
+<style>
+text{font-family:Arial, sans-serif; fill:#223}.title{font-size:30px;font-weight:700}.h{font-size:20px;font-weight:700}.b{font-size:15px}.box{fill:#fff;stroke:#cbd5e1;stroke-width:2;rx:16}.soft{fill:#f8fafc}
+</style>
+<text x="50" y="55" class="title">Demand Creation reduces three costs</text>
+<rect x="90" y="120" width="300" height="220" class="box soft"/><text x="120" y="165" class="h">Understanding Cost</text><text x="120" y="205" class="b">They do not understand</text><text x="120" y="235" class="b">what problem you solve.</text><text x="120" y="285" class="b">Messaging must clarify the job, gap and result.</text>
+<rect x="440" y="120" width="300" height="220" class="box"/><text x="470" y="165" class="h">Trust Cost</text><text x="470" y="205" class="b">They do not yet believe</text><text x="470" y="235" class="b">you can deliver.</text><text x="470" y="285" class="b">Proof, cases and credibility lower risk.</text>
+<rect x="790" y="120" width="300" height="220" class="box soft"/><text x="820" y="165" class="h">Action Cost</text><text x="820" y="205" class="b">Change feels too hard</text><text x="820" y="235" class="b">or not urgent enough.</text><text x="820" y="285" class="b">Reduce friction, next step and perceived switching pain.</text>
+</svg>

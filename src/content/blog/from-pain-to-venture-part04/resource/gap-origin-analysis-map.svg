@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1300" height="760" viewBox="0 0 1300 760">
+  <defs><marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#555"/></marker><style>text{font-family:Arial,'Noto Sans TC',sans-serif;fill:#1f2937}.title{font-size:30px;font-weight:700}.sub{font-size:17px;fill:#4b5563}.box{fill:#fff;stroke:#d1d5db;stroke-width:2}.head{font-size:19px;font-weight:700}.body{font-size:15px;fill:#374151}.side{font-size:16px;font-weight:700}</style></defs>
+  <rect width="1300" height="760" fill="#fafafa"/>
+  <text x="60" y="60" class="title">How the Gap Took Place</text>
+  <text x="60" y="92" class="sub">把重大期許落差拆成過程、原因、需求面根本問題與供給面根本問題。</text>
+  <g>
+    <rect x="60" y="145" width="200" height="430" rx="18" fill="#f9fafb" stroke="#d1d5db"/>
+    <text x="90" y="195" class="side">分析層次</text>
+    <text x="90" y="265" class="body">發生的結構或過程</text>
+    <text x="90" y="345" class="body">導致問題發生的原因</text>
+    <text x="90" y="425" class="body">根本問題（需求面）</text>
+    <text x="90" y="505" class="body">根本問題（供給面）</text>
+  </g>
+  <g>
+    <rect x="290" y="145" width="180" height="430" rx="18" class="box"/><text x="318" y="190" class="head">OTA 新客</text><text x="315" y="265" class="body">新客主要來自 OTA</text><text x="315" y="345" class="body">短期最有效</text><text x="315" y="425" class="body">需要穩定訂單</text><text x="315" y="505" class="body">平台解交易</text>
+    <rect x="500" y="145" width="180" height="430" rx="18" class="box"/><text x="528" y="190" class="head">關係斷點</text><text x="525" y="265" class="body">入住退房後斷線</text><text x="525" y="345" class="body">沒有自然導流</text><text x="525" y="425" class="body">需要低摩擦互動</text><text x="525" y="505" class="body">工具不解誘因</text>
+    <rect x="710" y="145" width="180" height="430" rx="18" class="box"/><text x="738" y="190" class="head">想做回訪</text><text x="735" y="265" class="body">想做直訂回訪</text><text x="735" y="345" class="body">資料與誘因不足</text><text x="735" y="425" class="body">人力能力有限</text><text x="735" y="505" class="body">CRM 太重</text>
+    <rect x="920" y="145" width="180" height="430" rx="18" class="box"/><text x="948" y="190" class="head">臨時補洞</text><text x="945" y="265" class="body">表單/LINE/優惠碼</text><text x="945" y="345" class="body">工具分散</text><text x="945" y="425" class="body">缺持續路徑</text><text x="945" y="505" class="body">導入成本高</text>
+    <rect x="1110" y="145" width="140" height="430" rx="18" fill="#fff7ed" stroke="#fed7aa" stroke-width="2"/><text x="1130" y="190" class="head">Gap</text><text x="1130" y="265" class="body">依賴加深</text><text x="1130" y="345" class="body">關係未累積</text><text x="1130" y="425" class="body">期許未滿足</text><text x="1130" y="505" class="body">缺基礎設施</text>
+  </g>
+  <line x1="472" y1="360" x2="492" y2="360" stroke="#555" stroke-width="2" marker-end="url(#arrow)"/><line x1="682" y1="360" x2="702" y2="360" stroke="#555" stroke-width="2" marker-end="url(#arrow)"/><line x1="892" y1="360" x2="912" y2="360" stroke="#555" stroke-width="2" marker-end="url(#arrow)"/><line x1="1102" y1="360" x2="1108" y2="360" stroke="#555" stroke-width="2" marker-end="url(#arrow)"/>
+  <rect x="90" y="625" width="1120" height="68" rx="18" fill="#ecfdf5" stroke="#a7f3d0"/>
+  <text x="125" y="653" class="body">施力點：用低摩擦、有旅客誘因、可跨旅宿累積的方式，在入住與退房場景建立可持續的顧客關係入口。</text>
+  <text x="125" y="678" class="body">Goal: 不是再補一個工具，而是化解需求面與供給面共同造成的罩門。</text>
+</svg>

@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1220 720">
+<style>
+text{font-family:Arial, sans-serif; fill:#223}.title{font-size:30px;font-weight:700}.h{font-size:15px;font-weight:700}.b{font-size:12px}.box{fill:#fff;stroke:#334155;stroke-width:1.6}.soft{fill:#f8fafc}
+</style>
+<text x="50" y="45" class="title">Business Model Canvas: nine assumptions, not nine boxes</text>
+<rect x="60" y="80" width="180" height="420" class="box soft"/><text x="75" y="110" class="h">Key Partners</text><text x="75" y="140" class="b">Who must help?</text>
+<rect x="240" y="80" width="180" height="210" class="box"/><text x="255" y="110" class="h">Key Activities</text><text x="255" y="140" class="b">What must we do well?</text>
+<rect x="240" y="290" width="180" height="210" class="box soft"/><text x="255" y="320" class="h">Key Resources</text><text x="255" y="350" class="b">What must we control?</text>
+<rect x="420" y="80" width="220" height="420" class="box"/><text x="440" y="110" class="h">Value Propositions</text><text x="440" y="140" class="b">Why should customers care?</text>
+<rect x="640" y="80" width="180" height="210" class="box soft"/><text x="655" y="110" class="h">Customer Relationships</text><text x="655" y="140" class="b">How do we get, keep, grow?</text>
+<rect x="640" y="290" width="180" height="210" class="box"/><text x="655" y="320" class="h">Channels</text><text x="655" y="350" class="b">How do we reach and deliver?</text>
+<rect x="820" y="80" width="180" height="420" class="box soft"/><text x="835" y="110" class="h">Customer Segments</text><text x="835" y="140" class="b">Who do we serve?</text>
+<rect x="60" y="500" width="470" height="130" class="box"/><text x="80" y="530" class="h">Cost Structure</text><text x="80" y="560" class="b">What costs form? Fixed? variable? who pays?</text>
+<rect x="530" y="500" width="470" height="130" class="box soft"/><text x="550" y="530" class="h">Revenue Streams</text><text x="550" y="560" class="b">How does money come in? Subscription? usage? success fee?</text>
+<rect x="1020" y="80" width="140" height="550" class="box"/><text x="1040" y="115" class="h">Validation</text><text x="1040" y="150" class="b">Customer?</text><text x="1040" y="175" class="b">Value?</text><text x="1040" y="200" class="b">Channel?</text><text x="1040" y="225" class="b">Revenue?</text><text x="1040" y="250" class="b">Cost?</text><text x="1040" y="275" class="b">Partners?</text>
+</svg>

@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 620">
+<style>
+text{font-family:Arial, sans-serif;fill:#223}.title{font-size:30px;font-weight:700}.h{font-size:18px;font-weight:700}.b{font-size:14px}.box{fill:#fff;stroke:#cbd5e1;stroke-width:2;rx:14}.soft{fill:#f8fafc}.arrow{stroke:#64748b;stroke-width:3;fill:none;marker-end:url(#a)}
+</style>
+<defs><marker id="a" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#64748b"/></marker></defs>
+<text x="50" y="55" class="title">90-Day Validation Plan</text>
+<rect x="80" y="120" width="280" height="160" class="box soft"/><text x="110" y="160" class="h">Days 1-30</text><text x="110" y="195" class="b">Validate problem, ICP, pain, access</text><text x="110" y="225" class="b">10-15 interviews + risk map</text>
+<path d="M360 200 H450" class="arrow"/>
+<rect x="460" y="120" width="280" height="160" class="box"/><text x="490" y="160" class="h">Days 31-60</text><text x="490" y="195" class="b">Run MVP / pilot test</text><text x="490" y="225" class="b">3 trials + behaviour signals</text>
+<path d="M740 200 H830" class="arrow"/>
+<rect x="840" y="120" width="280" height="160" class="box soft"/><text x="870" y="160" class="h">Days 61-90</text><text x="870" y="195" class="b">Business model evidence</text><text x="870" y="225" class="b">Paid pilot / partner / kill rule</text>
+<rect x="170" y="390" width="860" height="110" class="box"/>
+<text x="205" y="430" class="h">Decision gate</text>
+<text x="205" y="465" class="b">Continue, pivot, pause or stop based on evidence, not founder emotion.</text>
+</svg>

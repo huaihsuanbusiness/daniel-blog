@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 760" role="img" aria-labelledby="title desc">
+  <title id="title">C-P-S Fit framework</title>
+  <desc id="desc">A structured map from felt phenomenon to customer context, problem gap, solution hypothesis, MVP and CPS fit.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#475569"/>
+    </marker>
+    <style>
+      .bg{fill:#fbfaf7}.box{fill:#fff;stroke:#d6d3d1;stroke-width:2}.c{fill:#eff6ff;stroke:#93c5fd}.p{fill:#fff7ed;stroke:#fdba74}.s{fill:#f5f3ff;stroke:#c4b5fd}.h{font:700 24px Arial, sans-serif;fill:#1e293b}.t{font:18px Arial, sans-serif;fill:#334155}.small{font:15px Arial, sans-serif;fill:#64748b}.label{font:700 20px Arial, sans-serif;fill:#1e293b}.pill{fill:#ffffff;stroke:#e2e8f0;stroke-width:1.5}.arrow{stroke:#475569;stroke-width:2.4;fill:none;marker-end:url(#arrow)}
+    </style>
+  </defs>
+  <rect class="bg" x="0" y="0" width="1200" height="760" rx="28"/>
+  <text class="h" x="60" y="62">C-P-S Fit: from a felt phenomenon to a testable venture thesis</text>
+  <text class="small" x="60" y="92">先確認有感的現象，再把 Customer / Problem / Solution 對齊，不要一開始就跳進產品。</text>
+
+  <rect class="box" x="60" y="126" width="1080" height="72" rx="18"/>
+  <text class="label" x="90" y="170">0. Felt Phenomenon</text>
+  <text class="t" x="320" y="170">確認有感的現象：不是有人說不錯，而是有人已經被它卡住。</text>
+
+  <rect class="c" x="60" y="238" width="330" height="330" rx="22"/>
+  <text class="label" x="90" y="278">C｜Customer Context</text>
+  <rect class="pill" x="90" y="310" width="270" height="48" rx="14"/><text class="t" x="112" y="340">當事人與特定情境</text>
+  <rect class="pill" x="90" y="374" width="270" height="48" rx="14"/><text class="t" x="112" y="404">JTBD，要完成的任務</text>
+  <rect class="pill" x="90" y="438" width="270" height="48" rx="14"/><text class="t" x="112" y="468">Outcome Expectation</text>
+  <rect class="pill" x="90" y="502" width="270" height="48" rx="14"/><text class="t" x="112" y="532">Important Unfulfilled</text>
+
+  <rect class="p" x="435" y="238" width="330" height="330" rx="22"/>
+  <text class="label" x="465" y="278">P｜Problem Gap</text>
+  <rect class="pill" x="465" y="310" width="270" height="58" rx="14"/><text class="t" x="487" y="336">Aspiration</text><text class="small" x="487" y="358">價值、意義、期許</text>
+  <rect class="pill" x="465" y="388" width="270" height="72" rx="14"/><text class="t" x="487" y="416">Gap</text><text class="small" x="487" y="438">需求面與供給面錯位形成落差</text>
+  <rect class="pill" x="465" y="480" width="270" height="58" rx="14"/><text class="t" x="487" y="516">Bottleneck</text>
+
+  <rect class="s" x="810" y="238" width="330" height="330" rx="22"/>
+  <text class="label" x="840" y="278">S｜Solution System</text>
+  <rect class="pill" x="840" y="310" width="270" height="54" rx="14"/><text class="t" x="862" y="344">可能的 Solution</text>
+  <rect class="pill" x="840" y="380" width="270" height="54" rx="14"/><text class="t" x="862" y="414">舉一反三法</text>
+  <rect class="pill" x="840" y="450" width="270" height="54" rx="14"/><text class="t" x="862" y="484">Solution 驗證假設</text>
+  <rect class="pill" x="840" y="520" width="270" height="54" rx="14"/><text class="t" x="862" y="554">必要的 MVP</text>
+
+  <path class="arrow" d="M390 403 H435"/>
+  <path class="arrow" d="M765 403 H810"/>
+  <path class="arrow" d="M975 590 C975 662 226 662 226 590"/>
+  <rect class="box" x="310" y="626" width="580" height="64" rx="18"/>
+  <text class="label" x="342" y="665">可能的 C-P-S Fit：情境、期望落差、施力點、解法彼此對齊</text>
+</svg>

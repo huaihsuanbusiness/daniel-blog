@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1180 660">
+<style>
+text{font-family:Arial, sans-serif;fill:#223}.title{font-size:30px;font-weight:700}.h{font-size:16px;font-weight:700}.b{font-size:13px}.box{fill:#fff;stroke:#cbd5e1;stroke-width:2;rx:14}.soft{fill:#f8fafc}
+</style>
+<text x="50" y="55" class="title">Risk Register: classify, test, reduce</text>
+<rect x="70" y="100" width="220" height="95" class="box soft"/><text x="95" y="135" class="h">Market Risk</text><text x="95" y="165" class="b">Does anyone need this now?</text>
+<rect x="320" y="100" width="220" height="95" class="box"/><text x="345" y="135" class="h">Product Risk</text><text x="345" y="165" class="b">Does the solution work?</text>
+<rect x="570" y="100" width="220" height="95" class="box soft"/><text x="595" y="135" class="h">Channel Risk</text><text x="595" y="165" class="b">Can we reach customers?</text>
+<rect x="820" y="100" width="220" height="95" class="box"/><text x="845" y="135" class="h">Revenue Risk</text><text x="845" y="165" class="b">Will money come in?</text>
+<rect x="70" y="230" width="220" height="95" class="box"/><text x="95" y="265" class="h">Delivery Risk</text><text x="95" y="295" class="b">Can we fulfil repeatedly?</text>
+<rect x="320" y="230" width="220" height="95" class="box soft"/><text x="345" y="265" class="h">Team Risk</text><text x="345" y="295" class="b">Can this team do it?</text>
+<rect x="570" y="230" width="220" height="95" class="box"/><text x="595" y="265" class="h">Legal / Data Risk</text><text x="595" y="295" class="b">Consent, compliance, misuse</text>
+<rect x="820" y="230" width="220" height="95" class="box soft"/><text x="845" y="265" class="h">Financial Risk</text><text x="845" y="295" class="b">Will cash last?</text>
+<rect x="185" y="430" width="810" height="120" class="box"/>
+<text x="215" y="470" class="h">Each risk needs:</text>
+<text x="215" y="505" class="b">Trigger → likelihood → impact → early warning → owner → mitigation → decision rule</text>
+</svg>

@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1180 600">
+<style>
+text{font-family:Arial, sans-serif; fill:#223}.title{font-size:30px;font-weight:700}.h{font-size:18px;font-weight:700}.b{font-size:14px}.box{fill:#fff;stroke:#cbd5e1;stroke-width:2;rx:14}.arrow{stroke:#64748b;stroke-width:3;fill:none;marker-end:url(#a)}
+</style>
+<defs><marker id="a" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#64748b"/></marker></defs>
+<text x="50" y="55" class="title">AIDAR Demand Path</text>
+<rect x="70" y="130" width="180" height="120" class="box"/><text x="100" y="170" class="h">Attention</text><text x="100" y="202" class="b">Notice the issue</text>
+<path d="M250 190 H310" class="arrow"/>
+<rect x="320" y="130" width="180" height="120" class="box"/><text x="350" y="170" class="h">Interest</text><text x="350" y="202" class="b">Feel it is relevant</text>
+<path d="M500 190 H560" class="arrow"/>
+<rect x="570" y="130" width="180" height="120" class="box"/><text x="600" y="170" class="h">Desire</text><text x="600" y="202" class="b">Want the outcome</text>
+<path d="M750 190 H810" class="arrow"/>
+<rect x="820" y="130" width="180" height="120" class="box"/><text x="850" y="170" class="h">Action</text><text x="850" y="202" class="b">Take the next step</text>
+<path d="M910 250 V315" class="arrow"/>
+<rect x="770" y="325" width="280" height="120" class="box"/><text x="800" y="365" class="h">Referral</text><text x="800" y="397" class="b">Invite others after proof</text>
+<rect x="110" y="385" width="500" height="95" class="box" style="fill:#f8fafc"/>
+<text x="140" y="425" class="h">Rule</text><text x="140" y="455" class="b">Each step needs a different message, proof and action.</text>
+</svg>

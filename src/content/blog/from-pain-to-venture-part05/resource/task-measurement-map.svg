@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 560">
+<style>
+text{font-family:Arial, sans-serif; fill:#223}.title{font-size:28px;font-weight:700}.h{font-size:20px;font-weight:700}.b{font-size:15px}.box{fill:#fff;stroke:#ccd3df;stroke-width:2;rx:18}.c1{fill:#eef6ff}.c2{fill:#fff6e8}.c3{fill:#f2f0ff}.c4{fill:#eefaf2}
+</style>
+<text x="60" y="56" class="title">Task Measurement</text>
+<rect x="60" y="95" width="390" height="180" class="box c1"/><text x="90" y="135" class="h">Value Shock</text><text x="90" y="170" class="b">Impact, growth, pain, cost of inaction</text>
+<rect x="510" y="95" width="390" height="180" class="box c2"/><text x="540" y="135" class="h">Technical Feasibility</text><text x="540" y="170" class="b">Technology, access, conditions, logic</text>
+<rect x="60" y="320" width="390" height="180" class="box c3"/><text x="90" y="360" class="h">Story Resonance</text><text x="90" y="395" class="b">Meaning, change, why it matters</text>
+<rect x="510" y="320" width="390" height="180" class="box c4"/><text x="540" y="360" class="h">Economic Support</text><text x="540" y="395" class="b">Resources, revenue, KPIs, viability</text>
+</svg>

@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1180 560">
+<style>
+text{font-family:Arial, sans-serif; fill:#223}.title{font-size:30px;font-weight:700}.h{font-size:18px;font-weight:700}.b{font-size:14px}.box{fill:#fff;stroke:#cbd5e1;stroke-width:2;rx:14}.green{fill:#eefaf2}.blue{fill:#eef6ff}.yellow{fill:#fff7e6}.pink{fill:#fff1f2}
+</style>
+<text x="50" y="55" class="title">Learning Logbook｜Prototype｜MVP</text>
+<rect x="50" y="95" width="255" height="120" class="box blue"/><text x="75" y="130" class="h">Action</text><text x="75" y="162" class="b">What did we do?</text><text x="75" y="188" class="b">What process was executed?</text>
+<rect x="325" y="95" width="255" height="120" class="box green"/><text x="350" y="130" class="h">Observation</text><text x="350" y="162" class="b">What happened?</text><text x="350" y="188" class="b">What facts did we see?</text>
+<rect x="600" y="95" width="255" height="120" class="box yellow"/><text x="625" y="130" class="h">Interpretation</text><text x="625" y="162" class="b">What does it mean?</text><text x="625" y="188" class="b">What issue appears?</text>
+<rect x="875" y="95" width="255" height="120" class="box pink"/><text x="900" y="130" class="h">Decision / Next Step</text><text x="900" y="162" class="b">Persevere, pivot, kill?</text><text x="900" y="188" class="b">What should we test next?</text>
+<rect x="90" y="290" width="1000" height="190" class="box"/>
+<text x="125" y="330" class="h">MVP Test Flow</text>
+<text x="125" y="365" class="b">1. Clarify the core concept and the key question to validate.</text>
+<text x="125" y="395" class="b">2. Design the simplest testable MVP and choose the test audience.</text>
+<text x="125" y="425" class="b">3. Observe behaviour, not just opinions.</text>
+<text x="125" y="455" class="b">4. Read the evidence, revise the concept, and move to the next experiment.</text>
+</svg>

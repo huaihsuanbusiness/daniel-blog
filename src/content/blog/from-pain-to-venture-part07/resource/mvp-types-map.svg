@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1180 620">
+<style>
+text{font-family:Arial, sans-serif;fill:#223}.title{font-size:30px;font-weight:700}.h{font-size:18px;font-weight:700}.b{font-size:14px}.box{fill:#fff;stroke:#cbd5e1;stroke-width:2;rx:14}.shade{fill:#f8fafc}
+</style>
+<text x="50" y="55" class="title">MVP Types: choose the test that matches the assumption</text>
+<g>
+<rect x="60" y="95" width="240" height="110" class="box shade"/><text x="85" y="132" class="h">Landing Page</text><text x="85" y="162" class="b">Demand / message</text>
+<rect x="330" y="95" width="240" height="110" class="box"/><text x="355" y="132" class="h">Concierge MVP</text><text x="355" y="162" class="b">Manual value delivery</text>
+<rect x="600" y="95" width="240" height="110" class="box shade"/><text x="625" y="132" class="h">Wizard-of-Oz</text><text x="625" y="162" class="b">Looks automated, run manually</text>
+<rect x="870" y="95" width="240" height="110" class="box"/><text x="895" y="132" class="h">Fake Door</text><text x="895" y="162" class="b">Measure behavioural intent</text>
+<rect x="60" y="245" width="240" height="110" class="box"/><text x="85" y="282" class="h">Paid Pilot</text><text x="85" y="312" class="b">Willingness to pay</text>
+<rect x="330" y="245" width="240" height="110" class="box shade"/><text x="355" y="282" class="h">Demo-first</text><text x="355" y="312" class="b">Comprehension / sales signal</text>
+<rect x="600" y="245" width="240" height="110" class="box"/><text x="625" y="282" class="h">Spreadsheet MVP</text><text x="625" y="312" class="b">Operations before software</text>
+<rect x="870" y="245" width="240" height="110" class="box shade"/><text x="895" y="282" class="h">Community-first</text><text x="895" y="312" class="b">Audience and trust first</text>
+</g>
+<rect x="120" y="430" width="940" height="110" class="box"/>
+<text x="150" y="470" class="h">Rule</text>
+<text x="150" y="505" class="b">A good MVP is not the smallest product. It is the cheapest credible way to learn the thing that matters most.</text>
+</svg>

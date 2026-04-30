@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1240 840" role="img" aria-labelledby="title desc">
+  <title id="title">CPS validation and practical 4D loop</title>
+  <desc id="desc">A structured map of CPS content, presentation, validation and a practical Define, Discover, Develop, Deliver loop.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="#475569"/></marker>
+    <style>.bg{fill:#fbfaf7}.col{fill:#fff;stroke:#d6d3d1;stroke-width:2}.head{fill:#f8fafc;stroke:#d6d3d1}.h{fill:#1e293b;font:700 24px Arial}.sh{fill:#1e293b;font:700 19px Arial}.t{fill:#334155;font:17px Arial}.s{fill:#64748b;font:14px Arial}.loop{fill:#fff;stroke:#cbd5e1;stroke-width:2}.d1{fill:#eff6ff}.d2{fill:#ecfdf5}.d3{fill:#fff7ed}.d4{fill:#f5f3ff}.arrow{stroke:#475569;stroke-width:2.2;fill:none;marker-end:url(#arrow)}</style>
+  </defs>
+  <rect class="bg" width="1240" height="840" rx="28"/>
+  <text class="h" x="60" y="60">CPS problem framing: content, expression, validation</text>
+  <text class="s" x="60" y="88">把工具保留下來，但每個工具都要服務判斷，不只是填表。</text>
+
+  <g transform="translate(60,125)">
+    <rect class="col" x="0" y="0" width="350" height="230" rx="18"/>
+    <rect class="head" x="0" y="0" width="350" height="58" rx="18"/>
+    <text class="sh" x="24" y="36">CPS 的內涵</text>
+    <text class="t" x="24" y="92">• 當事人的情境</text>
+    <text class="t" x="24" y="126">• 所要完成事情的期許落差</text>
+    <text class="t" x="24" y="160">• 施力點</text>
+    <text class="t" x="24" y="194">• 解決方案</text>
+
+    <rect class="col" x="395" y="0" width="350" height="230" rx="18"/>
+    <rect class="head" x="395" y="0" width="350" height="58" rx="18"/>
+    <text class="sh" x="419" y="36">CPS 的呈現</text>
+    <text class="t" x="419" y="92">• 期許</text>
+    <text class="t" x="419" y="126">• 價值主張</text>
+    <text class="t" x="419" y="160">• 一句話表述</text>
+    <text class="t" x="419" y="194">• User Story</text>
+
+    <rect class="col" x="790" y="0" width="350" height="230" rx="18"/>
+    <rect class="head" x="790" y="0" width="350" height="58" rx="18"/>
+    <text class="sh" x="814" y="36">CPS 的驗證</text>
+    <text class="t" x="814" y="92">• 驗證表格</text>
+    <text class="t" x="814" y="126">• Logbook</text>
+    <text class="t" x="814" y="160">• 相互挑戰</text>
+  </g>
+
+  <text class="h" x="60" y="435">Practical Four D Process from the notes</text>
+  <text class="s" x="60" y="463">這裡採用偏實務的驗證順序：先定義要驗什麼，再用行動驗證深化理解。</text>
+
+  <g transform="translate(70,510)">
+    <rect class="loop d1" x="0" y="0" width="245" height="170" rx="24"/>
+    <text class="sh" x="26" y="42">Define</text>
+    <text class="t" x="26" y="78">定義與發想</text>
+    <text class="s" x="26" y="112">聚焦重大機會</text>
+    <text class="s" x="26" y="136">建立驗證計畫</text>
+
+    <rect class="loop d2" x="300" y="0" width="245" height="170" rx="24"/>
+    <text class="sh" x="326" y="42">Discover</text>
+    <text class="t" x="326" y="78">行動驗證與發現</text>
+    <text class="s" x="326" y="112">執行驗證計畫</text>
+    <text class="s" x="326" y="136">深化狀況了解</text>
+
+    <rect class="loop d3" x="600" y="0" width="245" height="170" rx="24"/>
+    <text class="sh" x="626" y="42">Develop</text>
+    <text class="t" x="626" y="78">再定義再發想</text>
+    <text class="s" x="626" y="112">創造更多可能方案</text>
+    <text class="s" x="626" y="136">聚焦最好解法</text>
+
+    <rect class="loop d4" x="900" y="0" width="245" height="170" rx="24"/>
+    <text class="sh" x="926" y="42">Deliver</text>
+    <text class="t" x="926" y="78">交付 / 測試</text>
+    <text class="s" x="926" y="112">根據成果</text>
+    <text class="s" x="926" y="136">進一步聚焦關鍵點</text>
+
+    <path class="arrow" d="M248 85 H294"/>
+    <path class="arrow" d="M548 85 H594"/>
+    <path class="arrow" d="M848 85 H894"/>
+    <path class="arrow" d="M1022 176 C1022 248 120 248 120 176"/>
+  </g>
+</svg>

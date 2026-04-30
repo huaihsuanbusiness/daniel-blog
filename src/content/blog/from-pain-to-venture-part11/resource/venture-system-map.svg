@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1220 720">
+<style>
+text{font-family:Arial, sans-serif;fill:#223}.title{font-size:30px;font-weight:700}.h{font-size:17px;font-weight:700}.b{font-size:13px}.box{fill:#fff;stroke:#cbd5e1;stroke-width:2;rx:16}.soft{fill:#f8fafc}.arrow{stroke:#64748b;stroke-width:3;fill:none;marker-end:url(#a)}
+</style>
+<defs><marker id="a" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#64748b"/></marker></defs>
+<text x="50" y="55" class="title">Venture System Map</text>
+<rect x="80" y="110" width="230" height="130" class="box soft"/><text x="105" y="145" class="h">Value Proposition</text><text x="105" y="175" class="b">What promise must be delivered?</text>
+<rect x="380" y="110" width="230" height="130" class="box"/><text x="405" y="145" class="h">Key Activities</text><text x="405" y="175" class="b">Sales, delivery, product, data, support</text>
+<rect x="680" y="110" width="230" height="130" class="box soft"/><text x="705" y="145" class="h">Key Resources</text><text x="705" y="175" class="b">People, capital, data, brand, tech</text>
+<rect x="980" y="110" width="160" height="130" class="box"/><text x="1005" y="145" class="h">Partners</text><text x="1005" y="175" class="b">Who helps the model work?</text>
+<path d="M310 175 H380" class="arrow"/><path d="M610 175 H680" class="arrow"/><path d="M910 175 H980" class="arrow"/>
+<rect x="180" y="350" width="210" height="120" class="box"/><text x="205" y="385" class="h">Team &amp; Culture</text><text x="205" y="415" class="b">Who can learn and execute?</text>
+<rect x="505" y="350" width="210" height="120" class="box soft"/><text x="530" y="385" class="h">Finance</text><text x="530" y="415" class="b">Cash, margin, runway, payback</text>
+<rect x="830" y="350" width="210" height="120" class="box"/><text x="855" y="385" class="h">Risk &amp; Kill Criteria</text><text x="855" y="415" class="b">What can break? When to stop?</text>
+<rect x="250" y="560" width="720" height="90" class="box soft"/>
+<text x="285" y="598" class="h">System question</text>
+<text x="285" y="628" class="b">Can this venture repeatedly create, deliver and capture value without the system collapsing under cost, risk or execution?</text>
+</svg>
