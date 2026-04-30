@@ -3,7 +3,7 @@ title: "From Pain to Venture Part 01 | Do not start with the idea. Start by admi
 description: "Some venture ideas are not born in front of a whiteboard."
 categories: ["startup"]
 tags: []
-date: 2026-04-28T05:31:24
+date: 2026-04-28T05:00:00
 series: "From Pain to Venture"
 seriesOrder: 1
 ---

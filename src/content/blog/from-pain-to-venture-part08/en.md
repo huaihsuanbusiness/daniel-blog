@@ -3,7 +3,7 @@ title: "From Pain to Venture Part 08 | Business model: demand is not the same as
 description: "The earlier parts dealt with problems, pain, early markets, and MVPs."
 categories: ["startup"]
 tags: []
-date: 2026-04-28T05:59:40
+date: 2026-04-28T05:07:00
 series: "From Pain to Venture"
 seriesOrder: 8
 ---

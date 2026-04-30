@@ -3,7 +3,7 @@ title: "From Pain to Venture Part 03 | Do not ask users what they want. Ask wher
 description: "There is a kind of customer interview that goes wrong from the first sentence."
 categories: ["startup"]
 tags: []
-date: 2026-04-28T05:24:46
+date: 2026-04-28T05:02:00
 series: "From Pain to Venture"
 seriesOrder: 3
 ---

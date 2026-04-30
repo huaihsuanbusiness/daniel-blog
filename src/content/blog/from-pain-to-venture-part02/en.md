@@ -3,7 +3,7 @@ title: "From Pain to Venture Part 02 | Tools are not for memorising. They are fo
 description: "The most dangerous thing about tools is not that they are useless."
 categories: ["startup"]
 tags: []
-date: 2026-04-28T05:31:24
+date: 2026-04-28T05:01:00
 series: "From Pain to Venture"
 seriesOrder: 2
 ---

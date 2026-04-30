@@ -3,7 +3,7 @@ title: "從痛點到事業 Part 07｜MVP 不是迷你產品，而是最小化的
 description: "很多人說 MVP，其實心裡想的是「低配版產品」。"
 categories: ["startup"]
 tags: []
-date: 2026-04-28T05:59:40
+date: 2026-04-28T05:06:00
 series: "從痛點到事業"
 seriesOrder: 7
 ---

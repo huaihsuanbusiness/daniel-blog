@@ -3,7 +3,7 @@ title: "From Pain to Venture Part 10 | Demand creation: having a product does no
 description: "Many products do not die because they have no value."
 categories: ["startup"]
 tags: []
-date: 2026-04-28T06:29:30
+date: 2026-04-28T05:09:00
 series: "From Pain to Venture"
 seriesOrder: 10
 ---

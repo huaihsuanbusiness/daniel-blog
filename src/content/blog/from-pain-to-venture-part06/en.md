@@ -3,7 +3,7 @@ title: "From Pain to Venture Part 06 | From problem to solution: do not invent t
 description: "Once a problem has been found, it is tempting to relax."
 categories: ["startup"]
 tags: []
-date: 2026-04-28T05:10:54
+date: 2026-04-28T05:05:00
 series: "From Pain to Venture"
 seriesOrder: 6
 ---

@@ -3,7 +3,7 @@ title: "From Pain to Venture Part 07 | An MVP is not a smaller product. It is a 
 description: "When people say MVP, they often mean “a cheaper version of the product”."
 categories: ["startup"]
 tags: []
-date: 2026-04-28T05:59:40
+date: 2026-04-28T05:06:00
 series: "From Pain to Venture"
 seriesOrder: 7
 ---

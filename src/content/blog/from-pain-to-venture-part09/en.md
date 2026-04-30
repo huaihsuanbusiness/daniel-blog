@@ -3,7 +3,7 @@ title: "From Pain to Venture Part 09 | Market, competition, and positioning: you
 description: "The earlier parts looked at problems, customers, MVPs, and business models."
 categories: ["startup"]
 tags: []
-date: 2026-04-28T06:29:30
+date: 2026-04-28T05:08:00
 series: "From Pain to Venture"
 seriesOrder: 9
 ---

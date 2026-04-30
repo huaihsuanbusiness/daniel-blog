@@ -3,7 +3,7 @@ title: "From Pain to Venture Part 04 | A pain point is not a complaint. The usef
 description: "Founders are easily drawn towards complaints."
 categories: ["startup"]
 tags: []
-date: 2026-04-28T05:19:02
+date: 2026-04-28T05:03:00
 series: "From Pain to Venture"
 seriesOrder: 4
 ---

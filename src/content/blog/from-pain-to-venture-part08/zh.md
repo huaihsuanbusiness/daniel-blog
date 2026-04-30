@@ -3,7 +3,7 @@ title: "從痛點到事業 Part 08｜商業模式：有需求不等於有生意"
 description: "前面幾篇都在談問題、痛點、早期市場、MVP。"
 categories: ["startup"]
 tags: []
-date: 2026-04-28T05:59:40
+date: 2026-04-28T05:07:00
 series: "從痛點到事業"
 seriesOrder: 8
 ---

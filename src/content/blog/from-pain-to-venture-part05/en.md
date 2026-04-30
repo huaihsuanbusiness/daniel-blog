@@ -3,7 +3,7 @@ title: "From Pain to Venture Part 05 | Your early market is not the biggest grou
 description: "I used to describe markets too broadly."
 categories: ["startup"]
 tags: []
-date: 2026-04-28T05:10:54
+date: 2026-04-28T05:04:00
 series: "From Pain to Venture"
 seriesOrder: 5
 ---

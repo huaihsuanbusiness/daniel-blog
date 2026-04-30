@@ -3,7 +3,7 @@ title: "From Pain to Venture Part 11 | From product to venture system: operation
 description: "The product is the part customers see."
 categories: ["startup"]
 tags: []
-date: 2026-04-28T07:54:36
+date: 2026-04-28T05:10:00
 series: "From Pain to Venture"
 seriesOrder: 11
 ---
