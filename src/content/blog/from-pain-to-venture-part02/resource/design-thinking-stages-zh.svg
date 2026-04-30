@@ -2,34 +2,34 @@
   <title id="title">Design Thinking 設計思考 – 六階段</title>
   <desc id="desc">設計思考六階段流程：Empathise 同理、Define 定義、Ideate 發想、Prototype 原型、Test 測試、Launch 交付。</desc>
   <style>
-text{font-family:'Noto Sans TC',Arial,sans-serif;fill:#1f2937}.title{font-size:22px;font-weight:700;fill:#1e293b}.stage{font-size:16px;font-weight:700;fill:#fff}.arrow{stroke:#94a3b8;stroke-width:3;fill:none;marker-end:url(#arr)}.bg{fill:#fbfaf7}
+text{font-family:'Noto Sans TC',Arial,sans-serif;fill:#1f2937}.title{font-size:20px;font-weight:700;fill:#1e293b}.stage{font-size:15px;font-weight:700;fill:#fff}.arrow{stroke:#94a3b8;stroke-width:3;fill:none;marker-end:url(#arr)}
   </style>
   <rect width="1200" height="240" fill="#fbfaf7"/>
   <defs>
     <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#94a3b8"/></marker>
   </defs>
-  <text x="40" y="38" class="title">Design Thinking 設計思考</text>
+  <!-- 80px padding each side, usable 1040px: 6 blocks of 150px + 5 arrows of 28px = 1040px -->
 
-  <rect x="40" y="60" width="168" height="68" rx="18" fill="#5b21b6"/>
-  <text x="124" y="102" class="stage" text-anchor="middle">Empathise</text>
+  <rect x="80" y="86" width="150" height="68" rx="18" fill="#5b21b6"/>
+  <text x="155" y="127" class="stage" text-anchor="middle">Empathise</text>
 
-  <path d="M208 94 H248" class="arrow"/>
-  <rect x="248" y="60" width="168" height="68" rx="18" fill="#5b21b6"/>
-  <text x="332" y="102" class="stage" text-anchor="middle">Define</text>
+  <path d="M230 120 H258" class="arrow"/>
+  <rect x="258" y="86" width="150" height="68" rx="18" fill="#5b21b6"/>
+  <text x="333" y="127" class="stage" text-anchor="middle">Define</text>
 
-  <path d="M416 94 H456" class="arrow"/>
-  <rect x="456" y="60" width="168" height="68" rx="18" fill="#5b21b6"/>
-  <text x="540" y="102" class="stage" text-anchor="middle">Ideate</text>
+  <path d="M408 120 H436" class="arrow"/>
+  <rect x="436" y="86" width="150" height="68" rx="18" fill="#5b21b6"/>
+  <text x="511" y="127" class="stage" text-anchor="middle">Ideate</text>
 
-  <path d="M624 94 H664" class="arrow"/>
-  <rect x="664" y="60" width="168" height="68" rx="18" fill="#5b21b6"/>
-  <text x="748" y="102" class="stage" text-anchor="middle">Prototype</text>
+  <path d="M586 120 H614" class="arrow"/>
+  <rect x="614" y="86" width="150" height="68" rx="18" fill="#5b21b6"/>
+  <text x="689" y="127" class="stage" text-anchor="middle">Prototype</text>
 
-  <path d="M832 94 H872" class="arrow"/>
-  <rect x="872" y="60" width="168" height="68" rx="18" fill="#5b21b6"/>
-  <text x="956" y="102" class="stage" text-anchor="middle">Test</text>
+  <path d="M764 120 H792" class="arrow"/>
+  <rect x="792" y="86" width="150" height="68" rx="18" fill="#5b21b6"/>
+  <text x="867" y="127" class="stage" text-anchor="middle">Test</text>
 
-  <path d="M1040 94 H1080" class="arrow"/>
-  <rect x="1080" y="60" width="130" height="68" rx="18" fill="#5b21b6"/>
-  <text x="1145" y="102" class="stage" text-anchor="middle">Launch</text>
+  <path d="M942 120 H970" class="arrow"/>
+  <rect x="970" y="86" width="150" height="68" rx="18" fill="#5b21b6"/>
+  <text x="1045" y="127" class="stage" text-anchor="middle">Launch</text>
 </svg>
