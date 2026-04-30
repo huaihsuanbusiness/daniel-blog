@@ -447,13 +447,19 @@ Used well, they make it harder to pretend you already have.
 
 ---
 
+![Official Value Proposition Canvas reference](./resource/official-vpc-strategyzer.png)
 
-![Reference Images](./resource/reference-images-en.svg)
+*Source image: Strategyzer — The Value Proposition Canvas.*
+
+![Official Double Diamond reference](./resource/official-double-diamond-design-council.png)
+
+*Source image: Design Council — The Double Diamond (CC BY 4.0).* 
+
 ## References and image notes
 
 - **Value Proposition Canvas**  
   https://www.strategyzer.com/library/the-value-proposition-canvas  
-  Best used via official reference or redrawn as an educational diagram, rather than re-hosting copyrighted official assets.
+  The article now includes a local reference image for commentary context, but the official source remains the best place to view the original framework in full.
 
 - **Double Diamond by Design Council**  
   https://www.designcouncil.org.uk/our-resources/the-double-diamond/  

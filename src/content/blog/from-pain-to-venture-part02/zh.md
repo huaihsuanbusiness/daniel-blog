@@ -78,6 +78,10 @@ seriesOrder: 2
 
 而是逼你先不要太快武斷。
 
+![Design Thinking 五階段參考圖](./resource/design-thinking-5-stage-coach-chiao.png)
+
+*參考圖來源：Coach Chiao 的設計思考階段整理文章。*
+
 ### Empathize：不是蒐集心情，是理解情境
 
 同理不是聽對方說「我覺得很麻煩」就收工。
@@ -161,6 +165,10 @@ Design Council 的 Double Diamond 常見四段是：
 4. Deliver｜交付
 
 它最有力的地方，不是四個英文字本身。
+
+![Double Diamond 官方參考圖](./resource/official-double-diamond-design-council.png)
+
+*來源圖：Design Council — The Double Diamond（CC BY 4.0）。*
 
 而是它把整件事切成兩個菱形：
 
@@ -246,6 +254,10 @@ Products & Services、Pain Relievers、Gain Creators，也都填滿了。
 但填滿不代表對齊。
 
 這個工具真正要做的是：把顧客那一側的任務、痛苦、期待，對到你這一側的產品、減痛、創造收益。
+
+![Value Proposition Canvas 官方參考圖](./resource/official-vpc-strategyzer.png)
+
+*來源圖：Strategyzer — The Value Proposition Canvas。*
 
 ### Customer Profile
 
@@ -507,8 +519,6 @@ MVP 的型態，應該跟你要驗證的假設綁在一起。
 
 ---
 
-
-![參考圖](./resource/reference-images-zh.svg)
 ## 參考圖與說明
 
 ### Design Thinking / Double Diamond
@@ -524,4 +534,4 @@ MVP 的型態，應該跟你要驗證的假設綁在一起。
 
 - Strategyzer｜The Value Proposition Canvas  
   https://www.strategyzer.com/library/the-value-proposition-canvas  
-  建議引用官方連結，或自行重繪教學版示意圖，避免直接重發官方版權素材。
+  本文現在已放入一張本地參考圖供解說使用，但若要看完整原始框架，仍建議回到官方來源。

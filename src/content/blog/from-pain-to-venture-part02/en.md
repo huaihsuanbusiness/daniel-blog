@@ -78,6 +78,10 @@ The value of Design Thinking is not that it makes you more creative.
 
 It slows down premature certainty.
 
+![Design Thinking five-stage reference](./resource/design-thinking-5-stage-coach-chiao.png)
+
+*Reference image from Coach Chiao’s article on common Design Thinking stage variants.*
+
 ### Empathise: not collecting emotions, but understanding situations.
 
 Empathy is not finished when someone says, “This is annoying.”
@@ -161,6 +165,10 @@ The Design Council version is commonly described as:
 4. Deliver
 
 Its power is not in the four words.
+
+![Official Double Diamond reference](./resource/official-double-diamond-design-council.png)
+
+*Source image: Design Council — The Double Diamond (CC BY 4.0).* 
 
 It is in the two diamonds:
 
@@ -247,6 +255,10 @@ Products & Services, Pain Relievers, Gain Creators. Filled.
 But a full canvas is not the same as fit.
 
 The tool matters because it forces the customer side and the offer side to meet.
+
+![Official Value Proposition Canvas reference](./resource/official-vpc-strategyzer.png)
+
+*Source image: Strategyzer — The Value Proposition Canvas.*
 
 ### Customer Profile
 
@@ -508,8 +520,6 @@ The real problem is never truly knowing what problem you were solving.
 
 ---
 
-
-![Reference Images](./resource/reference-images-en.svg)
 ## References and image notes
 
 ### Design Thinking / Double Diamond
@@ -525,4 +535,4 @@ The real problem is never truly knowing what problem you were solving.
 
 - Strategyzer｜The Value Proposition Canvas  
   https://www.strategyzer.com/library/the-value-proposition-canvas  
-  Best referenced through the official link, or redrawn as an educational diagram rather than re-hosting copyrighted assets.
+  This article now includes a local reference image for commentary context, while the official source remains the best place to inspect the original framework in full.
