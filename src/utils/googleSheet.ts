@@ -82,8 +82,8 @@ function fmt(v: string | string[]): string {
 
 /**
  * Merge "其他" checkbox selections with their corresponding _other text fields.
- * e.g. answers = { B7: ["長輩太孤單","其他"], B7_other: "LINE洗掉" }
- *   → B7 becomes ["長輩太孤單","其他(LINE洗掉)"]
+ * e.g. answers = { B7: ["長輩太孤單／沒有人說話","其他"], B7_other: "LINE洗掉" }
+ *   → B7 becomes ["長輩太孤單／沒有人說話","其他(LINE洗掉)"]
  */
 function mergeOtherOptions(answers: Record<string, string | string[]>): Record<string, string | string[]> {
   const merged: Record<string, string | string[]> = { ...answers };
