@@ -78,9 +78,8 @@ seriesOrder: 2
 
 而是逼你先不要太快武斷。
 
-![Design Thinking 參考圖](./resource/design-thinking-figure-02.png)
+![Design Thinking stages diagram](./resource/design-thinking-stages-zh.svg)
 
-*Design Thinking 段落使用的參考圖（Daniel 指定的圖二）。* 
 
 ### Empathize：不是蒐集心情，是理解情境
 
@@ -168,7 +167,6 @@ Design Council 的 Double Diamond 常見四段是：
 
 ![Double Diamond 參考圖](./resource/double-diamond-figure-01.png)
 
-*Double Diamond 段落使用的參考圖（Daniel 指定的圖一）。* 
 
 而是它把整件事切成兩個菱形：
 
@@ -257,7 +255,6 @@ Products & Services、Pain Relievers、Gain Creators，也都填滿了。
 
 ![Value Proposition Canvas 參考圖](./resource/value-proposition-canvas-figure-03.png)
 
-*Value Proposition Canvas 段落使用的參考圖（Daniel 指定的圖三）。* 
 
 ### Customer Profile
 

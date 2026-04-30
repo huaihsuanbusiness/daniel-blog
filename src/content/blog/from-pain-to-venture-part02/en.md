@@ -78,9 +78,8 @@ The value of Design Thinking is not that it makes you more creative.
 
 It slows down premature certainty.
 
-![Design Thinking reference figure](./resource/design-thinking-figure-02.png)
+![Design Thinking stages diagram](./resource/design-thinking-stages-en.svg)
 
-*Reference image used for the Design Thinking section (Daniel-specified figure 2).* 
 
 ### Empathise: not collecting emotions, but understanding situations.
 
@@ -168,7 +167,6 @@ Its power is not in the four words.
 
 ![Double Diamond reference figure](./resource/double-diamond-figure-01.png)
 
-*Reference image used for the Double Diamond section (Daniel-specified figure 1).* 
 
 It is in the two diamonds:
 
@@ -258,7 +256,6 @@ The tool matters because it forces the customer side and the offer side to meet.
 
 ![Value Proposition Canvas reference figure](./resource/value-proposition-canvas-figure-03.png)
 
-*Reference image used for the Value Proposition Canvas section (Daniel-specified figure 3).* 
 
 ### Customer Profile
 
