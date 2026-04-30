@@ -756,6 +756,10 @@ function renderQuestion(q: typeof questions[0], qIndex: number) {
     },
   };
 
+  // ── URL ref param for invite-link tracking ──────────────────
+  const urlParams = new URLSearchParams(window.location.search);
+  const refParam = urlParams.get('ref') || '';
+
   // ── Draft persistence ────────────────────────────────────────
   function saveDraft() {
     const data: Record<string, string | string[]> = {};
@@ -1018,6 +1022,7 @@ function renderQuestion(q: typeof questions[0], qIndex: number) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           role: 'caregiver',
+          familyId: refParam || undefined,
           answers,
           locale: 'zh',
         }),

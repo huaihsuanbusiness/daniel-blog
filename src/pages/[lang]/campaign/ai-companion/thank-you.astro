@@ -334,6 +334,9 @@ import SurveyLayout from '../../../../layouts/SurveyLayout.astro';
   const inviteUrl = urlParams.get('invite') || '';
   const articleUrl = 'https://www.danielcanfly.com/zh/blog/ai-companion-survey';
   const isMobileBrowser = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+  // 如果是從 ref 連結進來的家屬版，則跳過第一個專屬分享 panel
+  const hasRefInvite = inviteUrl.includes('ref=');
+  const showFirstPanel = !(role === 'caregiver' && hasRefInvite);
 
   const panel = document.getElementById('share-panel');
   const linkEl = document.getElementById('share-link');
@@ -348,14 +351,14 @@ import SurveyLayout from '../../../../layouts/SurveyLayout.astro';
   const btnFbArticle = document.getElementById('btn-fb-article');
   const shareToast = document.getElementById('share-toast');
 
-  // 個人邀請連結
-  if (role === 'caregiver') {
+  // 個人邀請連結（如果是從 ref 連結進來的家屬版，則跳過此 panel）
+  if (showFirstPanel && role === 'caregiver') {
     document.getElementById('caregiver-prompt').style.display = 'block';
     if (inviteUrl) {
       panel.style.display = 'block';
       linkEl.textContent = 'AI 陪伴服務上線問卷填寫中！邀請您一起填寫\n填寫問卷，服務上線後有機會獲得至少一個月免費試用！ ' + inviteUrl;
     }
-  } else if (role === 'elder') {
+  } else if (showFirstPanel && role === 'elder') {
     document.getElementById('elder-prompt').style.display = 'block';
     if (inviteUrl) {
       panel.style.display = 'block';
@@ -371,8 +374,8 @@ import SurveyLayout from '../../../../layouts/SurveyLayout.astro';
   // ─── 分享區域 ───
   var TRIGGER = 'AI 陪伴服務上線問卷填寫中！邀請您一起填寫\n填寫問卷，服務上線後有機會獲得至少一個月免費試用！';
 
-  // LINE 個人連結
-  if (btnLine && inviteUrl) {
+  // LINE 個人連結（只有第一個 panel 需要，skip if role=caregiver with ref）
+  if (btnLine && inviteUrl && showFirstPanel) {
     var isMac = /Mac/i.test(navigator.userAgent) && !/iPhone|iPad/i.test(navigator.userAgent);
     if (isMac) {
       btnLine.href = 'https://line.me/R/msg/text?url=' + encodeURIComponent(inviteUrl) + '&text=' + encodeURIComponent(TRIGGER + ' ' + inviteUrl);
