@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 520" role="img" aria-labelledby="title desc">
+  <title id="title">90-Day Validation Plan</title>
+  <desc id="desc">A 90-day structured validation plan split into three 30-day phases with decision gates.</desc>
+  <style>
+text{font-family:Arial,sans-serif;fill:#1f2937}.bg{fill:#fbfaf7}.h{font-size:28px;font-weight:700;fill:#1e293b}.t{font-size:16px;font-weight:700;fill:#1e293b}.b{font-size:13px}.box{fill:#fff;stroke:#d1d5db;stroke-width:2;rx:16}.c1{fill:#eff6ff;stroke:#93c5fd;stroke-width:2}.c2{fill:#fff7ed;stroke:#fdba74;stroke-width:2}.c3{fill:#f5f3ff;stroke:#c4b5fd;stroke-width:2}.gate{fill:#fff1f2;stroke:#fca5a5;stroke-width:2}
+  </style>
+  <rect width="960" height="520" rx="24" fill="#fbfaf7"/>
+  <text class="h" x="40" y="42">90-Day Validation Plan</text>
+  <text class="b" x="40" y="66" fill="#64748b">Validate before building. Evidence over intuition. Decision gates over hope.</text>
+
+  <rect class="c1" x="40" y="88" width="880" height="100" rx="18"/>
+  <text class="t" x="60" y="116">Days 1-30: Validate Problem, ICP, Pain, Access</text>
+  <text class="b" x="60" y="140">10-15 interviews + risk map</text>
+  <text class="b" x="60" y="160">Is the problem real, urgent, and felt? Can we reach them? Is there a buying process?</text>
+
+  <rect class="c2" x="40" y="208" width="880" height="100" rx="18"/>
+  <text class="t" x="60" y="236">Days 31-60: Run MVP / Pilot Test</text>
+  <text class="b" x="60" y="260">3 trials + behaviour signals</text>
+  <text class="b" x="60" y="280">Does the solution work in practice? Do they pay, use, and refer — or just say it is interesting?</text>
+
+  <rect class="c3" x="40" y="328" width="880" height="100" rx="18"/>
+  <text class="t" x="60" y="356">Days 61-90: Business Model Evidence</text>
+  <text class="b" x="60" y="380">Paid pilot / partner / kill rule</text>
+  <text class="b" x="60" y="400">Is there a business model — or just a feature? Do we have revenue evidence or just an assumption?</text>
+
+  <rect class="gate" x="40" y="448" width="880" height="64" rx="18"/>
+  <text class="t" x="60" y="478">Decision gate: Continue, pivot, pause or stop — based on evidence, not founder emotion.</text>
+</svg>

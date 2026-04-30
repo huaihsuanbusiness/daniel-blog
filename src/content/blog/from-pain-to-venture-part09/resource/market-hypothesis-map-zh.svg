@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 560" role="img" aria-labelledby="title desc">
+  <title id="title">Market Hypothesis Map 市場假設地圖</title>
+  <desc id="desc">過度建設之前，先確認市場的五個維度：顧客區隔、市場規模、競爭、定位與核心問題。</desc>
+  <style>
+text{font-family:'Noto Sans TC',Arial,sans-serif;fill:#1f2937}.bg{fill:#fbfaf7}.h{font-size:28px;font-weight:700;fill:#1e293b}.t{font-size:18px;font-weight:700;fill:#1e293b}.b{font-size:14px}.box{fill:#fff;stroke:#d1d5db;stroke-width:2;rx:16}.blue{fill:#eff6ff;stroke:#93c5fd;stroke-width:2}.yellow{fill:#fff7ed;stroke:#fdba74;stroke-width:2}.red{fill:#fff1f2;stroke:#fca5a5;stroke-width:2}.green{fill:#f0fdf4;stroke:#86efac;stroke-width:2}
+  </style>
+  <rect width="960" height="560" rx="24" fill="#fbfaf7"/>
+  <text class="h" x="40" y="42">Market Hypothesis Map 市場假設地圖</text>
+  <text class="b" x="40" y="66" fill="#64748b">過度建設之前，先確認市場的五個維度。</text>
+
+  <rect class="blue" x="40" y="88" width="420" height="120" rx="18"/>
+  <text class="t" x="60" y="120">Customer Segments 顧客區隔</text>
+  <text class="b" x="60" y="146">誰有緊急的任務？哪些購買因素最重要？</text>
+  <text class="b" x="60" y="168">專注 SOM，不是 TAM。誰會第一批行動？</text>
+
+  <rect class="yellow" x="480" y="88" width="420" height="120" rx="18"/>
+  <text class="t" x="500" y="120">Market Scale 市場規模</text>
+  <text class="b" x="500" y="146">TAM / SAM / SOM · 成長 · 時機</text>
+  <text class="b" x="500" y="168">TAM 是野心。SOM 是第一座山。早期 SOM 最關鍵。</text>
+
+  <rect class="red" x="40" y="228" width="420" height="120" rx="18"/>
+  <text class="t" x="60" y="260">Competition 競爭</text>
+  <text class="b" x="60" y="286">直接 · 間接 · 替代品 · 現狀 · 工作代方案</text>
+  <text class="b" x="60" y="308">最可怕的競爭對手往往是現狀。</text>
+
+  <rect class="green" x="480" y="228" width="420" height="120" rx="18"/>
+  <text class="t" x="500" y="260">Positioning 定位</text>
+  <text class="b" x="500" y="286">類別 · 差異化 · 為什麼是現在？</text>
+  <text class="b" x="500" y="308">定位不是口號，是顧客腦中占據的那個位置。</text>
+
+  <rect class="box" x="40" y="368" width="880" height="100" rx="18" fill="#f5f3ff" stroke="#c4b5fd" stroke-width="2"/>
+  <text class="t" x="60" y="402">核心問題</text>
+  <text class="b" x="60" y="424">我們是否正在進入一個可觸及、有成長、有預算，且顧客有理由現在轉向的市場？</text>
+  <text class="b" x="60" y="446">五個維度中任何一個還不確定——就先回到驗證，不要建設。</text>
+</svg>

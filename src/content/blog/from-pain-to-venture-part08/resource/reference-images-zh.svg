@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 540" role="img" aria-labelledby="title desc">
+  <title id="title">從痛點到事業 – Part 08 參考圖</title>
+  <desc id="desc">Part 08 的參考圖：Business Model Canvas Validation 商業模式九宮格驗證，以及 Pricing and Unit Economics 定價與單元經濟學。</desc>
+  <style>
+text{font-family:'Noto Sans TC',Arial,sans-serif;fill:#1f2937}.title{font-size:22px;font-weight:700;fill:#1e293b}.h{font-size:15px;font-weight:700;fill:#1e293b}.b{font-size:12px;fill:#6b7280}.box{fill:#fff;stroke:#d1d5db;stroke-width:2;rx:12}.bg{fill:#fbfaf7}
+  </style>
+  <rect width="960" height="540" fill="#fbfaf7"/>
+  <text x="40" y="38" class="title">從痛點到事業 – Part 08 參考圖</text>
+  <rect x="40" y="62" width="860" height="445" class="box" rx="16"/>
+  <text x="60" y="95" class="h">1. Business Model Canvas Validation 商業模式九宮格驗證</text>
+  <text x="60" y="118" class="b">九格：Customer Segments · Value Propositions · Channels ·</text>
+  <text x="60" y="138" class="b">Customer Relationships · Revenue Streams · Key Resources ·</text>
+  <text x="60" y="158" class="b">Key Activities · Key Partnerships · Cost Structure</text>
+  <text x="60" y="180" class="b">每格都是假設——不是填完就結束。</text>
+  <text x="60" y="210" class="h">2. Pricing and Unit Economics 定價與單元經濟學</text>
+  <text x="60" y="234" class="b">五個維度：付費意願 · 營收模式 · 單元經濟學 · 風險</text>
+  <text x="60" y="254" class="b">定價不是財務問題，是價值問題。</text>
+  <text x="60" y="284" class="h">3. Part 08 核心原則</text>
+  <text x="60" y="308" class="b">• 解決問題，不等於能賺錢</text>
+  <text x="60" y="326" class="b">• 先補產業與市場背景，不要只看自己的產品</text>
+  <text x="60" y="344" class="b">• 大不大、可不可接觸、會不會動——是三件不同的事</text>
+  <text x="60" y="362" class="b">• 四個確認問題：問題 → 解法 → 營運模式 → 上市</text>
+  <text x="60" y="380" class="b">• Unit Economics：不要太晚才發現越做越虧</text>
+  <text x="60" y="404" class="h">4. 商業問題</text>
+  <text x="60" y="428" class="b">「這件事能不能成為一套跑得動、活得下去、</text>
+  <text x="60" y="446" class="b">承受得住風險，而且能持續學習的事業系統？」</text>
+  <text x="60" y="470" class="b">來源：Strategyzer Business Model Canvas</text>
+  <text x="60" y="488" class="b">https://www.strategyzer.com/library/business-model-canvas</text>
+</svg>

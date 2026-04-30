@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 500" role="img" aria-labelledby="title desc">
+  <title id="title">From Pain to Venture – Part 07 Reference Images</title>
+  <desc id="desc">Reference images for Part 07: Learning Logbook Prototype MVP and MVP Types Map.</desc>
+  <style>
+text{font-family:Arial,sans-serif;fill:#1f2937}.title{font-size:22px;font-weight:700;fill:#1e293b}.h{font-size:15px;font-weight:700;fill:#1e293b}.b{font-size:12px;fill:#6b7280}.box{fill:#fff;stroke:#d1d5db;stroke-width:2;rx:12}.bg{fill:#fbfaf7}
+  </style>
+  <rect width="960" height="500" fill="#fbfaf7"/>
+  <text x="40" y="38" class="title">From Pain to Venture – Part 07 Reference Images</text>
+  <rect x="40" y="62" width="860" height="405" class="box" rx="16"/>
+  <text x="60" y="95" class="h">1. Learning Logbook Prototype MVP</text>
+  <text x="60" y="118" class="b">Not only run experiments — preserve the learning.</text>
+  <text x="60" y="138" class="b">A Logbook records: hypothesis → experiment design →</text>
+  <text x="60" y="156" class="b">execution → observed result → revised hypothesis.</text>
+  <text x="60" y="186" class="h">2. MVP Types Map</text>
+  <text x="60" y="210" class="b">Eight MVP types, each testing a different assumption:</text>
+  <text x="60" y="230" class="b">Landing Page · Concierge MVP · Wizard-of-Oz · Fake Door</text>
+  <text x="60" y="250" class="b">Paid Pilot · Demo-first · Spreadsheet MVP · Community-first</text>
+  <text x="60" y="280" class="h">3. Key principles from Part 07</text>
+  <text x="60" y="304" class="b">• The purpose of an MVP is not launch — it is learning</text>
+  <text x="60" y="322" class="b">• Prototype, MVP, Product, and Business are not the same thing</text>
+  <text x="60" y="340" class="b">• During the test: watch behaviour, not compliments</text>
+  <text x="60" y="358" class="b">• Success and failure criteria must be written before the test</text>
+  <text x="60" y="376" class="b">• Build-Measure-Learn: not a loop, but less self-deception each round</text>
+  <text x="60" y="400" class="b">Rule: A good MVP is not the smallest product. It is the cheapest</text>
+  <text x="60" y="418" class="b">credible way to learn the thing that matters most.</text>
+</svg>

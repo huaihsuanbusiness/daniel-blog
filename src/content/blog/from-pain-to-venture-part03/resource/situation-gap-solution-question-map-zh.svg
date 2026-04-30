@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 620" role="img" aria-labelledby="title desc">
+  <title id="title">Situation、Gap 與 Solution 預備問題地圖</title>
+  <desc id="desc">訪談前預備問題順序：先確認情境與任務，再看現有解法與後果，最後才談可能的解法方向。</desc>
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#475569"/></marker>
+    <style>
+      text{font-family:'Noto Sans TC',Arial,sans-serif;fill:#1f2937}.bg{fill:#fbfaf7}.box{fill:#fff;stroke:#d1d5db;stroke-width:2}.abox{fill:#eff6ff;stroke:#93c5fd;stroke-width:2}.bbox{fill:#fff7ed;stroke:#fdba74;stroke-width:2}.cbox{fill:#f5f3ff;stroke:#c4b5fd;stroke-width:2}.h{font-size:22px;font-weight:700}.t{font-size:15px}.small{font-size:13px;fill:#64748b}.tag{font-size:12px;fill:#fff;font-weight:700}.arrow{stroke:#475569;stroke-width:2;fill:none;marker-end:url(#arr)}
+    </style>
+  </defs>
+  <rect class="bg" x="0" y="0" width="960" height="620" rx="24"/>
+  <text class="h" x="40" y="40">Situation、Gap 與 Solution 預備問題地圖</text>
+  <text class="small" x="40" y="62">訪談前先排問題順序：先看情境，再看落差，最後才談解法。</text>
+
+  <rect class="abox" x="40" y="85" width="880" height="150" rx="20"/>
+  <rect class="tag" x="50" y="95" width="50" height="22" rx="6" fill="#1e5fc4"/><text x="60" y="112" font-size="12px" fill="#fff" font-weight="700">A. 情境</text>
+  <text class="t" x="110" y="112" font-weight="700">1. 當事人（顧客）的情境是什麼？</text>
+  <text class="small" x="50" y="138">2. 情境下當事人關切的事情，涉及的期待與糾結是什麼？</text>
+  <text class="small" x="50" y="158">3. 在這個情境下，他要完成什麼工作？（JTBD）</text>
+  <text class="small" x="50" y="178">4. 就他想完成的事，他的理想狀況是什麼？期待結果是什麼？</text>
+  <text class="small" x="50" y="198">5. 在這些期待的結果裡，有什麼重要且未被滿足的落差？</text>
+  <text class="small" x="50" y="218">6. 針對這個落差，他做了什麼卻沒有效？</text>
+
+  <path class="arrow" d="M480 235 L480 255"/>
+
+  <rect class="bbox" x="40" y="255" width="880" height="120" rx="20"/>
+  <rect class="tag" x="50" y="265" width="50" height="22" rx="6" fill="#fdba74"/><text x="60" y="282" font-size="12px" fill="#1f2937" font-weight="700">B. Gap</text>
+  <text class="small" x="110" y="282">7. 因無法完成而付出的後果與代價是什麼？</text>
+  <text class="small" x="50" y="305">8. 人們都怎麼談論這件事？</text>
+  <text class="small" x="50" y="325">9. 目前現有的解決方案是什麼？令人不滿意的地方是什麼？為什麼仍無法解決問題？</text>
+
+  <path class="arrow" d="M480 375 L480 395"/>
+
+  <rect class="cbox" x="40" y="395" width="880" height="100" rx="20"/>
+  <rect class="tag" x="50" y="405" width="50" height="22" rx="6" fill="#8b5cf6"/><text x="60" y="422" font-size="12px" fill="#1f2937" font-weight="700">C. Solution</text>
+  <text class="small" x="110" y="422">10. 必須面對哪些挑戰？</text>
+  <text class="small" x="50" y="445">11. 提供什麼走向理想？帶來什麼根本改變？</text>
+  <text class="small" x="50" y="465">12. 關鍵突破是什麼？KPI / MVP / 驗證？</text>
+
+  <rect class="box" x="40" y="510" width="880" height="70" rx="18"/>
+  <text class="small" x="60" y="538">原則：不要用訪談替 solution 找背書。先確認情境與 Gap 是否站得住，再談 solution 和 MVP。</text>
+</svg>

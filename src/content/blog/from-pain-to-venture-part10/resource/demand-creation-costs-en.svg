@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 520" role="img" aria-labelledby="title desc">
+  <title id="title">Demand Creation reduces three costs</title>
+  <desc id="desc">Demand creation reduces three costs: understanding cost, trust cost, and action cost.</desc>
+  <style>
+text{font-family:Arial,sans-serif;fill:#1f2937}.bg{fill:#fbfaf7}.h{font-size:28px;font-weight:700;fill:#1e293b}.t{font-size:20px;font-weight:700;fill:#1e293b}.b{font-size:14px}.box{fill:#fff;stroke:#d1d5db;stroke-width:2;rx:16}.a{fill:#eff6ff;stroke:#93c5fd;stroke-width:2}.b{fill:#fff7ed;stroke:#fdba74;stroke-width:2}.c{fill:#f5f3ff;stroke:#c4b5fd;stroke-width:2}
+  </style>
+  <rect width="960" height="520" rx="24" fill="#fbfaf7"/>
+  <text class="h" x="40" y="42">Demand Creation reduces three costs</text>
+  <text class="b" x="40" y="66" fill="#64748b">The goal is not more content. The goal is lower cost to switch, decide, and act.</text>
+
+  <rect class="a" x="40" y="88" width="880" height="120" rx="20"/>
+  <text class="t" x="60" y="120">1. Understanding Cost</text>
+  <text class="b" x="60" y="146">They do not understand what problem you solve.</text>
+  <text class="b" x="60" y="168">You reduce it by making the problem specific, the situation concrete, and the gap measurable.</text>
+
+  <rect class="b" x="40" y="228" width="880" height="120" rx="20"/>
+  <text class="t" x="60" y="260">2. Trust Cost</text>
+  <text class="b" x="60" y="286">They do not yet believe you can deliver.</text>
+  <text class="b" x="60" y="308">You reduce it by showing evidence before asking for commitment — social proof, trial, data, or referral.</text>
+
+  <rect class="c" x="40" y="368" width="880" height="120" rx="20"/>
+  <text class="t" x="60" y="400">3. Action Cost</text>
+  <text class="b" x="60" y="426">Change feels too hard or not urgent enough.</text>
+  <text class="b" x="60" y="448">You reduce it by lowering the first step, making the desired outcome tangible, and reducing the perceived risk of trying.</text>
+</svg>

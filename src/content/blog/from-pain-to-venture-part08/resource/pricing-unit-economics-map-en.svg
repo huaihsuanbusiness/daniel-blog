@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 560" role="img" aria-labelledby="title desc">
+  <title id="title">Pricing and Unit Economics</title>
+  <desc id="desc">Five dimensions of pricing and unit economics for early ventures.</desc>
+  <style>
+text{font-family:Arial,sans-serif;fill:#1f2937}.bg{fill:#fbfaf7}.h{font-size:28px;font-weight:700;fill:#1e293b}.t{font-size:18px;font-weight:700;fill:#1e293b}.b{font-size:14px}.box{fill:#fff;stroke:#d1d5db;stroke-width:2;rx:14}.green{fill:#f0fdf4;stroke:#86efac;stroke-width:2}.yellow{fill:#fff7ed;stroke:#fdba74;stroke-width:2}.red{fill:#fff1f2;stroke:#fca5a5;stroke-width:2}.blue{fill:#eff6ff;stroke:#93c5fd;stroke-width:2}.purple{fill:#f5f3ff;stroke:#c4b5fd;stroke-width:2}
+  </style>
+  <rect width="960" height="560" rx="24" fill="#fbfaf7"/>
+  <text class="h" x="40" y="42">Pricing and Unit Economics</text>
+  <text class="b" x="40" y="66" fill="#64748b">Pricing is not a finance question. It is a value question. Five things to answer before you set a number.</text>
+
+  <rect class="blue" x="40" y="88" width="420" height="120" rx="18"/>
+  <text class="t" x="60" y="120">Willingness to Pay</text>
+  <text class="b" x="60" y="144">What do they pay now? Who pays vs benefits without paying?</text>
+  <text class="b" x="60" y="166">What is the full cost of the current workaround?</text>
+
+  <rect class="green" x="480" y="88" width="420" height="120" rx="18"/>
+  <text class="t" x="500" y="120">Revenue Model</text>
+  <text class="b" x="500" y="144">Subscription / usage / setup / success / hybrid</text>
+  <text class="b" x="500" y="166">Which model aligns revenue with delivered value?</text>
+
+  <rect class="yellow" x="40" y="228" width="420" height="120" rx="18"/>
+  <text class="t" x="60" y="260">Unit Economics</text>
+  <text class="b" x="60" y="284">CAC, LTV, gross margin, payback period, churn, retention</text>
+  <text class="b" x="60" y="306">Is the unit economics story credible and testable?</text>
+
+  <rect class="red" x="480" y="228" width="420" height="120" rx="18"/>
+  <text class="t" x="500" y="260">Risk</text>
+  <text class="b" x="500" y="284">Can it scale? Where does cost explode? What breaks at growth?</text>
+  <text class="b" x="500" y="306">Is the price sustainable across customer segments and volumes?</text>
+
+  <rect class="purple" x="40" y="368" width="880" height="100" rx="18" fill="#f5f3ff" stroke="#c4b5fd" stroke-width="2"/>
+  <text class="t" x="60" y="402">Business question</text>
+  <text class="b" x="60" y="424">Can we repeatedly create, deliver, and capture value — without the cost structure eating the business?</text>
+  <text class="b" x="60" y="446">Pricing question: Are we charging enough to cover delivery, acquire customers, and still generate margin?</text>
+</svg>

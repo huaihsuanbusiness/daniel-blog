@@ -128,7 +128,7 @@ It asks:
 
 > How far has the pain progressed?
 
-![Suffering Triangle](./resource/suffering-triangle.svg)
+![Suffering Triangle](./resource/suffering-triangle-en.svg)
 
 The original English levels are worth keeping because the order matters.
 
@@ -204,7 +204,7 @@ For example: independent hotels struggle with direct booking.
 
 But the real work is to understand how that expectation gap forms over time.
 
-![Gap origin analysis map](./resource/gap-origin-analysis-map.svg)
+![Gap origin analysis map](./resource/gap-origin-analysis-map-en.svg)
 
 I would break it into four layers:
 
@@ -337,3 +337,5 @@ It is to find the place where someone has already paid a cost, tried to solve th
 That is where opportunity is more likely to form.
 
 ---
+
+![Reference Images](./resource/reference-images-en.svg)

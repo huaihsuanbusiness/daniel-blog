@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 540" role="img" aria-labelledby="title desc">
+  <title id="title">從痛點到事業 – Part 06 參考圖</title>
+  <desc id="desc">Part 06 的參考圖：Solution Concept Generation 解法發想流程圖，以及七個從瓶頸反推的問題。</desc>
+  <style>
+text{font-family:'Noto Sans TC',Arial,sans-serif;fill:#1f2937}.title{font-size:22px;font-weight:700;fill:#1e293b}.h{font-size:15px;font-weight:700;fill:#1e293b}.b{font-size:12px;fill:#6b7280}.box{fill:#fff;stroke:#d1d5db;stroke-width:2;rx:12}.bg{fill:#fbfaf7}
+  </style>
+  <rect width="960" height="540" fill="#fbfaf7"/>
+  <text x="40" y="38" class="title">從痛點到事業 – Part 06 參考圖</text>
+  <rect x="40" y="62" width="860" height="440" class="box" rx="16"/>
+  <text x="60" y="95" class="h">1. Solution Concept Generation 解法發想流程</text>
+  <text x="60" y="118" class="b">Bottleneck → root cause → solution concept → assumption test</text>
+  <text x="60" y="140" class="b">從瓶頸反推，不是從點子反推。</text>
+  <text x="60" y="170" class="h">2. 七個從瓶頸反推的問題</text>
+  <text x="60" y="194" class="b">1. 這個解法解決什麼瓶頸？</text>
+  <text x="60" y="212" class="b">2. 這個瓶頸的根本原因是什麼？</text>
+  <text x="60" y="230" class="b">3. 這個解法做了什麼假設？</text>
+  <text x="60" y="248" class="b">4. 測試這個關鍵假設，最便宜的方式是什麼？</text>
+  <text x="60" y="266" class="b">5. 什麼會讓這個解法不成立？</text>
+  <text x="60" y="284" class="b">6. 這個實驗的「完成」看起來是什麼樣子？</text>
+  <text x="60" y="302" class="b">7. 在這個實驗之後，下一個實驗是什麼？</text>
+  <text x="60" y="330" class="h">3. Part 06 核心原則</text>
+  <text x="60" y="354" class="b">• 解法是一包假設，不是靈感</text>
+  <text x="60" y="372" class="b">• 解法發想可以參考成功案例，但不能抄襲</text>
+  <text x="60" y="390" class="b">• 先測最危險的假設，不是最好做的</text>
+  <text x="60" y="408" class="b">• 不要太早產品化——讓實驗引導方向</text>
+</svg>

@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 500" role="img" aria-labelledby="title desc">
+  <title id="title">From Pain to Venture – Part 05 Reference Images</title>
+  <desc id="desc">Reference images for Part 05: Task Measurement map and Early Adopter Scorecard.</desc>
+  <style>
+text{font-family:Arial,sans-serif;fill:#1f2937}.title{font-size:22px;font-weight:700;fill:#1e293b}.h{font-size:15px;font-weight:700;fill:#1e293b}.b{font-size:12px;fill:#6b7280}.box{fill:#fff;stroke:#d1d5db;stroke-width:2;rx:12}.bg{fill:#fbfaf7}
+  </style>
+  <rect width="960" height="500" fill="#fbfaf7"/>
+  <text x="40" y="38" class="title">From Pain to Venture – Part 05 Reference Images</text>
+  <rect x="40" y="62" width="860" height="405" class="box" rx="16"/>
+  <text x="60" y="95" class="h">1. Task Measurement Map</text>
+  <text x="60" y="118" class="b">Four dimensions: Importance × Frequency × Performance × Price</text>
+  <text x="60" y="138" class="b">Not just "is it painful?" but "is it worth doing?"</text>
+  <text x="60" y="160" class="b">Source: Clayton Christensen's Jobs to be Done framework</text>
+  <text x="60" y="190" class="h">2. Early Adopter Scorecard</text>
+  <text x="60" y="214" class="b">Score: urgency × budget × access × stability × growth potential</text>
+  <text x="60" y="234" class="b">Score segments by total, not by individual attribute.</text>
+  <text x="60" y="264" class="h">3. Key principles from Part 05</text>
+  <text x="60" y="288" class="b">• You are not looking for a market. You are looking for an entry point.</text>
+  <text x="60" y="306" class="b">• Early adopter is not someone who likes new things —</text>
+  <text x="60" y="324" class="b">  it is someone who has the problem, the budget, and the authority to move</text>
+  <text x="60" y="342" class="b">• ICP is not demographics. It is pain structure.</text>
+  <text x="60" y="360" class="b">• In B2B, the customer is rarely one person — map the decision unit</text>
+  <text x="60" y="384" class="b">Source: Clayton Christensen, Competing Against Luck</text>
+</svg>

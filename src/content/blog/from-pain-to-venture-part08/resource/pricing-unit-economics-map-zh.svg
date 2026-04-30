@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 560" role="img" aria-labelledby="title desc">
+  <title id="title">Pricing and Unit Economics 定價與單元經濟學</title>
+  <desc id="desc">早期創業定價與單元經濟學的五個維度。</desc>
+  <style>
+text{font-family:'Noto Sans TC',Arial,sans-serif;fill:#1f2937}.bg{fill:#fbfaf7}.h{font-size:28px;font-weight:700;fill:#1e293b}.t{font-size:18px;font-weight:700;fill:#1e293b}.b{font-size:14px}.box{fill:#fff;stroke:#d1d5db;stroke-width:2;rx:14}.green{fill:#f0fdf4;stroke:#86efac;stroke-width:2}.yellow{fill:#fff7ed;stroke:#fdba74;stroke-width:2}.red{fill:#fff1f2;stroke:#fca5a5;stroke-width:2}.blue{fill:#eff6ff;stroke:#93c5fd;stroke-width:2}.purple{fill:#f5f3ff;stroke:#c4b5fd;stroke-width:2}
+  </style>
+  <rect width="960" height="560" rx="24" fill="#fbfaf7"/>
+  <text class="h" x="40" y="42">Pricing and Unit Economics 定價與單元經濟學</text>
+  <text class="b" x="40" y="66" fill="#64748b">定價不是財務問題，是價值問題。設數字之前，先回答五件事。</text>
+
+  <rect class="blue" x="40" y="88" width="420" height="120" rx="18"/>
+  <text class="t" x="60" y="120">Willingness to Pay 付費意願</text>
+  <text class="b" x="60" y="144">他們現在付多少？誰付錢誰受益但沒付費？</text>
+  <text class="b" x="60" y="166">目前替代方案的全部成本是多少？</text>
+
+  <rect class="green" x="480" y="88" width="420" height="120" rx="18"/>
+  <text class="t" x="500" y="120">Revenue Model 營收模式</text>
+  <text class="b" x="500" y="144">訂閱 / 使用量 / 一次性 / 成果收費 / 混合</text>
+  <text class="b" x="500" y="166">哪種模式能讓營收與交付的價值對齊？</text>
+
+  <rect class="yellow" x="40" y="228" width="420" height="120" rx="18"/>
+  <text class="t" x="60" y="260">Unit Economics 單元經濟學</text>
+  <text class="b" x="60" y="284">CAC、LTV、毛利、回本期、流失率、留存率</text>
+  <text class="b" x="60" y="306">單元經濟學故事是否可信且可測試？</text>
+
+  <rect class="red" x="480" y="228" width="420" height="120" rx="18"/>
+  <text class="t" x="500" y="260">Risk 風險</text>
+  <text class="b" x="500" y="284">能規模化嗎？成本在哪裡爆炸？成長時什麼環節會斷？</text>
+  <text class="b" x="500" y="306">價格在跨顧客區隔和跨量級時是否可持續？</text>
+
+  <rect class="purple" x="40" y="368" width="880" height="100" rx="18" fill="#f5f3ff" stroke="#c4b5fd" stroke-width="2"/>
+  <text class="t" x="60" y="402">商業問題</text>
+  <text class="b" x="60" y="424">能否持續地創造、交付、並 capture 價值——而不讓成本結構吃掉商業本身？</text>
+  <text class="b" x="60" y="446">定價問題：我們收的費用，能否覆蓋交付成本、顧客獲取成本，同時還有利潤空間？</text>
+</svg>

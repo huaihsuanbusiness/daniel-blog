@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 500" role="img" aria-labelledby="title desc">
+  <title id="title">從痛點到事業 – Part 07 參考圖</title>
+  <desc id="desc">Part 07 的參考圖：Learning Logbook Prototype MVP 學習實驗紀錄本，以及 MVP Types Map MVP類型圖。</desc>
+  <style>
+text{font-family:'Noto Sans TC',Arial,sans-serif;fill:#1f2937}.title{font-size:22px;font-weight:700;fill:#1e293b}.h{font-size:15px;font-weight:700;fill:#1e293b}.b{font-size:12px;fill:#6b7280}.box{fill:#fff;stroke:#d1d5db;stroke-width:2;rx:12}.bg{fill:#fbfaf7}
+  </style>
+  <rect width="960" height="500" fill="#fbfaf7"/>
+  <text x="40" y="38" class="title">從痛點到事業 – Part 07 參考圖</text>
+  <rect x="40" y="62" width="860" height="405" class="box" rx="16"/>
+  <text x="60" y="95" class="h">1. Learning Logbook Prototype MVP 學習實驗紀錄本</text>
+  <text x="60" y="118" class="b">不要只做實驗，要留下學習紀錄。</text>
+  <text x="60" y="138" class="b">Logbook 記錄：假設 → 實驗設計 →</text>
+  <text x="60" y="156" class="b">執行 → 觀察到的結果 → 修訂假設。</text>
+  <text x="60" y="186" class="h">2. MVP Types Map MVP類型圖</text>
+  <text x="60" y="210" class="b">八種 MVP 類型，每種測試不同的假設：</text>
+  <text x="60" y="230" class="b">Landing Page · Concierge MVP · Wizard-of-Oz · Fake Door</text>
+  <text x="60" y="250" class="b">Paid Pilot · Demo-first · Spreadsheet MVP · Community-first</text>
+  <text x="60" y="280" class="h">3. Part 07 核心原則</text>
+  <text x="60" y="304" class="b">• MVP 的目的不是發布，而是學習</text>
+  <text x="60" y="322" class="b">• Prototype、MVP、Product、Business 不是同一件事</text>
+  <text x="60" y="340" class="b">• 執行測試時：看行為，不要只聽意見</text>
+  <text x="60" y="358" class="b">• 成功與失敗標準要先寫</text>
+  <text x="60" y="376" class="b">• Build-Measure-Learn：不是繞圈，是每次都少一點自我催眠</text>
+  <text x="60" y="400" class="b">原則：好的 MVP 不是最小產品。它是驗證最重要假設的</text>
+  <text x="60" y="418" class="b">最便宜、最可信的方式。</text>
+</svg>

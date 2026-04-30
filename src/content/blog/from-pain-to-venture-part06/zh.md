@@ -121,7 +121,7 @@ Starbucks 做會員，所以旅宿也做會員。
 
 真正要問的是：那些成功案例到底化解了什麼本質挑戰？那個挑戰，在我的題目裡是否真的存在？條件是否相似？如果不相似，要修正什麼？
 
-![Solution Concept Generation 解法發想流程](./resource/solution-concept-generation-map.svg)
+![Solution Concept Generation 解法發想流程](./resource/solution-concept-generation-map-zh.svg)
 
 可以用六個問題來走：
 
@@ -320,3 +320,5 @@ Starbucks 做會員，所以旅宿也做會員。
 如果這三個成果都做不出來，代表 solution 還太像想像，還沒變成可以驗證的東西。
 
 ---
+
+![參考圖](./resource/reference-images-zh.svg)

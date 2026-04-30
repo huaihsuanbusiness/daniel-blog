@@ -40,7 +40,7 @@ Business Model Canvas 把商業模式拆成九個 building blocks，其中包含
 
 因為它提醒你：真正的事業不是單一產品，而是一套可以重複運作的價值系統。
 
-![Venture System Map](./resource/venture-system-map.svg)
+![Venture System Map](./resource/venture-system-map-zh.svg)
 
 可以先用一個簡單區分：
 
@@ -328,7 +328,7 @@ Founder-Market Fit 不是履歷漂亮而已。
 
 創業財務不用一開始就寫成會計課，但創辦人不能只看 revenue。還要看現金流、成本結構、毛利、回本、runway、資金使用效率。
 
-![Financial Soundness Map](./resource/financial-soundness-map.svg)
+![Financial Soundness Map](./resource/financial-soundness-map-zh.svg)
 
 最基本要問：
 
@@ -513,7 +513,7 @@ Runway 的基本算法很簡單：
 
 它是把「可能會殺死這件事的東西」提早說出來。
 
-![Risk Register Map](./resource/risk-register-map.svg)
+![Risk Register Map](./resource/risk-register-map-zh.svg)
 
 一張基本 Risk Register 可以這樣做：
 
@@ -554,7 +554,7 @@ Runway 的基本算法很簡單：
 
 可以把它縮成 90 天驗證計畫。
 
-![90-Day Validation Plan](./resource/ninety-day-validation-plan.svg)
+![90-Day Validation Plan](./resource/ninety-day-validation-plan-zh.svg)
 
 ### Days 1–30：問題與顧客驗證
 
@@ -725,6 +725,8 @@ Runway 的基本算法很簡單：
 
 ---
 
+
+![參考圖](./resource/reference-images-zh.svg)
 ## 這一篇真正要留下來的東西
 
 讀完這篇，至少要完成四個輸出物。

@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 560">
+<style>
+text{font-family:'Noto Sans TC',Arial,sans-serif;fill:#1f2937}.title{font-size:28px;font-weight:700}.sub{font-size:16px;fill:#64748b}.box{fill:#fff;stroke:#d1d5db;stroke-width:2}.head{font-size:19px;font-weight:700}.body{font-size:14px;fill:#374151}.small{font-size:13px;fill:#6b7280}
+</style>
+<rect width="960" height="560" rx="24" fill="#fbfaf7"/>
+<text class="title" x="40" y="44">How the Gap Took Place</text>
+<text class="sub" x="40" y="66">Break the expectation gap into process, cause, demand-side root, and supply-side root.</text>
+<rect class="box" x="40" y="88" width="880" height="52" rx="14"/>
+<text class="head" x="60" y="120">Analysis Layers</text>
+<rect class="box" x="40" y="155" width="280" height="330" rx="18"/>
+<text class="head" x="60" y="185">發生過程</text>
+<text class="small" x="60" y="208">Structure or process that led to the problem</text>
+<text class="body" x="60" y="238">OTA 新客</text>
+<text class="body" x="60" y="260">新客主要來自 OTA</text>
+<text class="body" x="60" y="282">短期最有效</text>
+<rect class="box" x="340" y="155" width="280" height="330" rx="18"/>
+<text class="head" x="360" y="185">原因</text>
+<text class="small" x="360" y="208">Causes that created the problem</text>
+<text class="body" x="360" y="238">需要穩定訂單</text>
+<text class="body" x="360" y="260">平台解交易</text>
+<text class="body" x="360" y="282">關係斷點</text>
+<rect class="box" x="640" y="155" width="280" height="330" rx="18"/>
+<text class="head" x="660" y="185">根本問題（供給面）</text>
+<text class="small" x="660" y="208">Demand-side root</text>
+<text class="body" x="660" y="238">入住退房後斷線</text>
+<text class="body" x="660" y="260">沒有自然導流</text>
+<text class="body" x="660" y="282">人力能力有限</text>
+<text class="body" x="660" y="304">缺持續路徑</text>
+<rect class="box" x="40" y="485" width="880" height="68" rx="16" fill="#fff7ed" stroke="#fdba74" stroke-width="2"/>
+<text class="body" x="60" y="512">施力點：用低摩擦、有旅客誘因、可跨旅宿累積的方式，在入住與退房場景建立可持續的顧客關係入口。</text>
+</svg>

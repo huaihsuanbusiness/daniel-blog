@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 560" role="img" aria-labelledby="title desc">
+  <title id="title">Learning Logbook · Prototype · MVP</title>
+  <desc id="desc">A structured logbook format for preserving experiment learning, and a four-step MVP test flow.</desc>
+  <style>text{font-family:Arial,sans-serif;fill:#1f2937}.title{font-size:30px;font-weight:700}.h{font-size:18px;font-weight:700}.b{font-size:14px}.box{fill:#fff;stroke:#cbd5e1;stroke-width:2;rx:14}.green{fill:#f0fdf4;stroke:#86efac;stroke-width:2}.blue{fill:#eff6ff;stroke:#93c5fd;stroke-width:2}.yellow{fill:#fff7ed;stroke:#fdba74;stroke-width:2}.pink{fill:#fff1f2;stroke:#fca5a5;stroke-width:2}</style>
+  <rect width="960" height="560" rx="24" fill="#fbfaf7"/>
+  <text class="title" x="40" y="44">Learning Logbook｜Prototype｜MVP</text>
+  <text class="b" x="40" y="68" fill="#64748b">Do not only run experiments. Preserve the learning.</text>
+
+  <rect class="green" x="40" y="90" width="200" height="80" rx="14"/>
+  <text class="h" x="52" y="122">Action</text><text class="b" x="52" y="146">What did we do?</text>
+
+  <rect class="blue" x="260" y="90" width="200" height="80" rx="14"/>
+  <text class="h" x="272" y="122">Observation</text><text class="b" x="272" y="146">What happened? What facts?</text>
+
+  <rect class="yellow" x="480" y="90" width="200" height="80" rx="14"/>
+  <text class="h" x="492" y="122">Interpretation</text><text class="b" x="492" y="146">What does it mean? Issue?</text>
+
+  <rect class="pink" x="700" y="90" width="220" height="80" rx="14"/>
+  <text class="h" x="712" y="122">Decision</text><text class="b" x="712" y="146">Persevere, pivot, or kill? Next?</text>
+
+  <rect class="box" x="40" y="190" width="880" height="310" rx="18"/>
+  <text class="h" x="60" y="222">MVP Test Flow</text>
+  <rect class="green" x="60" y="238" width="820" height="54" rx="12"/>
+  <text class="b" x="80" y="268">1. Clarify the core concept and the key question to validate.</text>
+  <rect class="blue" x="60" y="302" width="820" height="54" rx="12"/>
+  <text class="b" x="80" y="332">2. Design the simplest testable MVP and choose the test audience.</text>
+  <rect class="yellow" x="60" y="366" width="820" height="54" rx="12"/>
+  <text class="b" x="80" y="396">3. Observe behaviour, not just opinions.</text>
+  <rect class="pink" x="60" y="430" width="820" height="54" rx="12"/>
+  <text class="b" x="80" y="460">4. Read the evidence, revise the concept, and move to the next experiment.</text>
+</svg>

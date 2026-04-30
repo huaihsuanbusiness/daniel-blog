@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1180 540" role="img" aria-labelledby="title desc">
+  <title id="title">Positioning: Not a Slogan, but a Place in the Customer's Mind</title>
+  <desc id="desc">Five positioning dimensions – Category, Problem, Difference, Trust, and Template – form the backbone of a positioning framework.</desc>
+  <style>
+text{font-family:Arial,sans-serif;fill:#1f2937}.title{font-size:28px;font-weight:700;fill:#1e293b}.h{font-size:18px;font-weight:700;fill:#1e293b}.b{font-size:14px;fill:#6b7280}.box{fill:#fff;stroke:#d1d5db;stroke-width:2;rx:16}.soft{fill:#f8fafc}.bg{fill:#fbfaf7}
+  </style>
+  <rect width="1180" height="540" fill="#fbfaf7"/>
+  <text x="40" y="50" class="title">Positioning: Not a Slogan, but a Place in the Customer's Mind</text>
+  <rect x="60" y="90" width="210" height="120" class="box soft"/><text x="80" y="130" class="h">Category</text><text x="80" y="160" class="b">What are you?</text>
+  <rect x="300" y="90" width="210" height="120" class="box"/><text x="320" y="130" class="h">Problem</text><text x="320" y="160" class="b">What do you solve?</text>
+  <rect x="540" y="90" width="210" height="120" class="box soft"/><text x="560" y="130" class="h">Difference</text><text x="560" y="160" class="b">Why not alternatives?</text>
+  <rect x="780" y="90" width="210" height="120" class="box"/><text x="800" y="130" class="h">Trust</text><text x="800" y="160" class="b">Why believe you?</text>
+  <rect x="420" y="300" width="640" height="110" class="box soft" fill="#eff6ff" stroke="#93c5fd" stroke-width="2"/>
+  <text x="445" y="340" class="h">Template</text>
+  <text x="445" y="375" class="b">For ___, we are ___; unlike ___, we provide ___, because ___.</text>
+</svg>

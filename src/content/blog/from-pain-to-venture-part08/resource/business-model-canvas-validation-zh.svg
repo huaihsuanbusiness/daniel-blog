@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 680" role="img" aria-labelledby="title desc">
+  <title id="title">Business Model Canvas Validation 商業模式九宮格驗證</title>
+  <desc id="desc">商業模式九宮格每格都有市場能回答的驗證問題。</desc>
+  <defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#475569"/></marker></defs>
+  <style>
+text{font-family:'Noto Sans TC',Arial,sans-serif;fill:#1f2937}.bg{fill:#fbfaf7}.h{font-size:26px;font-weight:700;fill:#1e293b}.sub{font-size:14px;fill:#64748b}.box{fill:#fff;stroke:#d1d5db;stroke-width:2;rx:14}.key{font-size:14px;font-weight:700;fill:#1e293b}.val{font-size:12px;fill:#64748b}.q{font-size:12px;fill:#475569}.arrow{stroke:#718096;stroke-width:2;fill:none;marker-end:url(#a)}.sep{stroke:#e2e8f0;stroke-width:1;stroke-dasharray:4 4}
+  </style>
+  <rect width="960" height="680" rx="24" fill="#fbfaf7"/>
+  <text class="h" x="40" y="40">Business Model Canvas Validation 商業模式九宮格驗證</text>
+  <text class="sub" x="40" y="62">九宮格每格都有一個市場能回答的問題，在過度建設之前先確認。</text>
+  <rect class="box" x="40" y="80" width="880" height="50" rx="14" fill="#f0fdf4" stroke="#86efac" stroke-width="2"/>
+  <text class="q" x="60" y="108">核心問題：這個商業模式能否持續地創造、交付、並 capture 價值——而不讓商業模式自己吃掉自己？</text>
+
+  <rect class="box" x="40" y="148" width="240" height="100" rx="14"/>
+  <text class="key" x="52" y="172">Key Partners 關鍵夥伴</text>
+  <text class="val" x="52" y="194">誰必須幫忙？為什麼？</text>
+  <text class="q" x="52" y="216">他們會合作嗎？什麼降低他們的合作成本？</text>
+
+  <rect class="box" x="300" y="148" width="240" height="100" rx="14"/>
+  <text class="key" x="312" y="172">Key Activities 關鍵活動</text>
+  <text class="val" x="312" y="194">銷售、交付、產品、數據</text>
+  <text class="q" x="312" y="216">哪些不能外包？哪些需要深度專業？</text>
+
+  <rect class="box" x="560" y="148" width="360" height="100" rx="14" fill="#f5f3ff" stroke="#c4b5fd" stroke-width="2"/>
+  <text class="key" x="572" y="172">Value Propositions 價值主張</text>
+  <text class="val" x="572" y="194">為什麼顧客要在意？核心承諾是什麼？</text>
+  <text class="q" x="572" y="216">這個承諾夠具體嗎？失敗的話可以測量嗎？</text>
+
+  <rect class="box" x="40" y="268" width="240" height="100" rx="14"/>
+  <text class="key" x="52" y="292">Customer Relationships 顧客關係</text>
+  <text class="val" x="52" y="314">如何獲取、保持、擴大顧客？</text>
+  <text class="q" x="52" y="336">留住顧客實際上是什麼樣子？如何衡量？</text>
+
+  <rect class="box" x="300" y="268" width="240" height="100" rx="14"/>
+  <text class="key" x="312" y="292">Revenue Streams 營收模式</text>
+  <text class="val" x="312" y="314">訂閱 / 使用量 / 一次性 / 成果收費 / 混合</text>
+  <text class="q" x="312" y="336">哪個是主要營收流？能覆蓋整體成本結構嗎？</text>
+
+  <rect class="box" x="40" y="388" width="240" height="100" rx="14" fill="#eff6ff" stroke="#93c5fd" stroke-width="2"/>
+  <text class="key" x="52" y="412">Customer Segments 顧客區隔</text>
+  <text class="val" x="52" y="434">誰付錢？誰受益但沒有付費？</text>
+  <text class="q" x="52" y="456">ICP 是否經過問題發現驗證了？</text>
+
+  <rect class="box" x="300" y="388" width="240" height="100" rx="14" fill="#fff7ed" stroke="#fdba74" stroke-width="2"/>
+  <text class="key" x="312" y="412">Key Resources 關鍵資源</text>
+  <text class="val" x="312" y="434">人、資金、數據、品牌、技術</text>
+  <text class="q" x="312" y="456">我們實際控制什麼？什麼最有防御性？</text>
+
+  <rect class="box" x="560" y="268" width="360" height="220" rx="14"/>
+  <text class="key" x="572" y="292">Channels 通路</text>
+  <text class="val" x="572" y="314">如何接觸和交付？</text>
+  <text class="q" x="572" y="340">沒有品牌或聲譽時，能接觸到早期顧客嗎？</text>
+  <text class="key" x="572" y="380">Cost Structure 成本結構</text>
+  <text class="val" x="572" y="402">固定 vs 變動 | 規模曲線 | 利潤率輪廓</text>
+  <text class="q" x="572" y="428">規模擴大時成本在哪裡爆發？主要營收流的邊際利潤是多少？</text>
+
+  <rect class="box" x="40" y="510" width="880" height="60" rx="14" fill="#fff1f2" stroke="#fca5a5" stroke-width="2"/>
+  <text class="q" x="60" y="538">驗證順序：顧客 → 價值 → 通 路 → 營收 → 成本 → 夥伴 → 決策規則</text>
+</svg>

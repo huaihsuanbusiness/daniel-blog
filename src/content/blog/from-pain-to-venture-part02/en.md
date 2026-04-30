@@ -209,7 +209,7 @@ That is not failure.
 
 That is the work.
 
-![CPS Validation and Four D Loop](./resource/cps-validation-4d-loop.svg)
+![CPS Validation and Four D Loop](./resource/cps-validation-4d-loop-en.svg)
 
 ---
 
@@ -508,6 +508,8 @@ The real problem is never truly knowing what problem you were solving.
 
 ---
 
+
+![Reference Images](./resource/reference-images-en.svg)
 ## References and image notes
 
 ### Design Thinking / Double Diamond

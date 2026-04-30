@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 560">
+<style>
+text{font-family:Arial,sans-serif;fill:#1f2937}.title{font-size:28px;font-weight:700}.sub{font-size:16px;fill:#64748b}.box{fill:#fff;stroke:#d1d5db;stroke-width:2}.head{font-size:19px;font-weight:700}.body{font-size:14px;fill:#374151}.small{font-size:13px;fill:#6b7280}
+</style>
+<rect width="960" height="560" rx="24" fill="#fbfaf7"/>
+<text class="title" x="40" y="44">How the Gap Took Place</text>
+<text class="sub" x="40" y="66">Break the expectation gap into process, cause, demand-side root, and supply-side root.</text>
+<rect class="box" x="40" y="88" width="880" height="52" rx="14"/>
+<text class="head" x="60" y="120">Analysis Layers</text>
+<rect class="box" x="40" y="155" width="280" height="330" rx="18"/>
+<text class="head" x="60" y="185">Process</text>
+<text class="small" x="60" y="208">Structure or process that led to the problem</text>
+<text class="body" x="60" y="238">OTA new guests</text>
+<text class="body" x="60" y="260">Short-term most effective</text>
+<rect class="box" x="340" y="155" width="280" height="330" rx="18"/>
+<text class="head" x="360" y="185">Causes</text>
+<text class="small" x="360" y="208">What created the problem</text>
+<text class="body" x="360" y="238">Need stable bookings</text>
+<text class="body" x="360" y="260">Platform handles transactions</text>
+<text class="body" x="360" y="282">Relationship break point</text>
+<rect class="box" x="640" y="155" width="280" height="330" rx="18"/>
+<text class="head" x="660" y="185">Supply-side Root</text>
+<text class="small" x="660" y="208">What the supply side failed to provide</text>
+<text class="body" x="660" y="238">No natural referral path after check-out</text>
+<text class="body" x="660" y="260">人力能力有限</text>
+<text class="body" x="660" y="282">缺持續路徑</text>
+<text class="body" x="660" y="304">導入成本高</text>
+<rect class="box" x="40" y="485" width="880" height="68" rx="16" fill="#eff6ff" stroke="#93c5fd" stroke-width="1.5"/>
+<text class="body" x="60" y="512">Leverage point: Build a sustainable guest relationship entry point at check-in / check-out using low friction, traveller incentives, and cross-hotel accumulation.</text>
+</svg>

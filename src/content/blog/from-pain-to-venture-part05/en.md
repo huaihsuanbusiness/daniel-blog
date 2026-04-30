@@ -190,7 +190,7 @@ Once you have found people in pain, do not rush.
 
 A task is worth pursuing only if it matters, can be executed, carries meaning, and has some economic support.
 
-![Task Measurement map](./resource/task-measurement-map.svg)
+![Task Measurement map](./resource/task-measurement-map-en.svg)
 
 I would assess it through four lenses:
 
@@ -260,3 +260,5 @@ The early market is not the prettiest customer group in your imagination.
 It is the group already in enough pain to help you uncover the truth.
 
 ---
+
+![Reference Images](./resource/reference-images-en.svg)

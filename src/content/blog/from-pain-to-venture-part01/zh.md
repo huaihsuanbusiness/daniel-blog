@@ -426,6 +426,8 @@ MVP 是實驗，不是縮水版理想。
 
 ---
 
+
+![參考圖](./resource/reference-images-zh.svg)
 ## 參考圖與說明
 
 - **Value Proposition Canvas（官方模板）**：  

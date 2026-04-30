@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1180 620" role="img" aria-labelledby="title desc">
+  <title id="title">MVP Types – Choose the Test That Matches the Assumption</title>
+  <desc id="desc">Eight MVP types mapped across two rows: Landing Page, Concierge MVP, Wizard-of-Oz, Fake Door in the first row; Paid Pilot, Demo-first, Spreadsheet MVP, Community-first in the second row. Each type tests a different assumption.</desc>
+  <style>
+text{font-family:Arial,sans-serif;fill:#1f2937}.title{font-size:28px;font-weight:700;fill:#1e293b}.h{font-size:17px;font-weight:700;fill:#1e293b}.b{font-size:13px;fill:#6b7280}.box{fill:#fff;stroke:#d1d5db;stroke-width:2;rx:14}.soft{fill:#f8fafc}.bg{fill:#fbfaf7}.rule-box{fill:#fff1f2;stroke:#fca5a5;stroke-width:2}
+  </style>
+  <rect width="1180" height="620" fill="#fbfaf7"/>
+  <text x="40" y="48" class="title">MVP Types – Choose the Test That Matches the Assumption</text>
+  <rect x="55" y="88" width="245" height="108" class="box soft"/><text x="75" y="125" class="h">Landing Page</text><text x="75" y="155" class="b">Demand / message test</text>
+  <rect x="325" y="88" width="245" height="108" class="box"/><text x="345" y="125" class="h">Concierge MVP</text><text x="345" y="155" class="b">Manual value delivery</text>
+  <rect x="595" y="88" width="245" height="108" class="box soft"/><text x="615" y="125" class="h">Wizard-of-Oz</text><text x="615" y="155" class="b">Looks automated, run manually</text>
+  <rect x="865" y="88" width="245" height="108" class="box"/><text x="885" y="125" class="h">Fake Door</text><text x="885" y="155" class="b">Measure behavioural intent</text>
+  <rect x="55" y="220" width="245" height="108" class="box"/><text x="75" y="257" class="h">Paid Pilot</text><text x="75" y="287" class="b">Willingness to pay</text>
+  <rect x="325" y="220" width="245" height="108" class="box soft"/><text x="345" y="257" class="h">Demo-first</text><text x="345" y="287" class="b">Comprehension / sales signal</text>
+  <rect x="595" y="220" width="245" height="108" class="box"/><text x="615" y="257" class="h">Spreadsheet MVP</text><text x="615" y="287" class="b">Operations before software</text>
+  <rect x="865" y="220" width="245" height="108" class="box soft"/><text x="885" y="257" class="h">Community-first</text><text x="885" y="287" class="b">Audience and trust first</text>
+  <rect x="100" y="400" width="960" height="115" class="rule-box" rx="16"/>
+  <text x="125" y="440" class="h">Rule</text>
+  <text x="125" y="475" class="b">A good MVP is not the smallest product.</text>
+  <text x="125" y="500" class="b">It is the cheapest credible way to learn the thing that matters most.</text>
+</svg>

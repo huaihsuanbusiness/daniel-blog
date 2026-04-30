@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 560" role="img" aria-labelledby="title desc">
+  <title id="title">Channel Testing Plan</title>
+  <desc id="desc">Six channels to test in the first 90 days with expected reach, conversion quality, and risk.</desc>
+  <style>
+text{font-family:Arial,sans-serif;fill:#1f2937}.bg{fill:#fbfaf7}.h{font-size:28px;font-weight:700;fill:#1e293b}.t{font-size:18px;font-weight:700;fill:#1e293b}.b{font-size:14px}.box{fill:#fff;stroke:#d1d5db;stroke-width:2;rx:14}.a{fill:#eff6ff;stroke:#93c5fd;stroke-width:2}.b{fill:#fff7ed;stroke:#fdba74;stroke-width:2}.c{fill:#f5f3ff;stroke:#c4b5fd;stroke-width:2}.d{fill:#f0fdf4;stroke:#86efac;stroke-width:2}.e{fill:#fff1f2;stroke:#fca5a5;stroke-width:2}
+  </style>
+  <rect width="960" height="560" rx="24" fill="#fbfaf7"/>
+  <text class="h" x="40" y="42">Channel Testing Plan</text>
+  <text class="b" x="40" y="66" fill="#64748b">Six channels to test in the first 90 days.</text>
+
+  <rect class="a" x="40" y="88" width="280" height="120" rx="16"/>
+  <text class="t" x="52" y="120">SEO</text>
+  <text class="b" x="52" y="144">Intent capture</text>
+  <text class="b" x="52" y="166">High intent, but slow to build.</text>
+
+  <rect class="b" x="340" y="88" width="280" height="120" rx="16"/>
+  <text class="t" x="352" y="120">LinkedIn</text>
+  <text class="b" x="352" y="144">Decision makers</text>
+  <text class="b" x="352" y="166">Good for B2B, requires content investment.</text>
+
+  <rect class="c" x="640" y="88" width="280" height="120" rx="16"/>
+  <text class="t" x="652" y="120">Cold Email</text>
+  <text class="b" x="652" y="144">Outbound test</text>
+  <text class="b" x="652" y="166">Fast signal, but low trust without warm context.</text>
+
+  <rect class="d" x="40" y="228" width="280" height="120" rx="16"/>
+  <text class="t" x="52" y="260">Referral</text>
+  <text class="b" x="52" y="284">Trust transfer</text>
+  <text class="b" x="52" y="306">Highest conversion, requires existing happy customers.</text>
+
+  <rect class="e" x="340" y="228" width="280" height="120" rx="16"/>
+  <text class="t" x="352" y="260">Partners</text>
+  <text class="b" x="352" y="284">Association / vendors</text>
+  <text class="b" x="352" y="306">Access to existing customer base, but dependency risk.</text>
+
+  <rect class="a" x="640" y="228" width="280" height="120" rx="16"/>
+  <text class="t" x="652" y="260">Events</text>
+  <text class="b" x="652" y="284">High context sales</text>
+  <text class="b" x="652" y="306">Expensive, but fastest trust-building for complex sales.</text>
+
+  <rect class="box" x="40" y="368" width="880" height="100" rx="18" fill="#f5f3ff" stroke="#c4b5fd" stroke-width="2"/>
+  <text class="t" x="60" y="402">Channel sequence</text>
+  <text class="b" x="60" y="424">Reach → reply → qualified → demo → paid → referral</text>
+  <text class="b" x="60" y="446">Rule: Do not scale a channel until you have a repeatable, profitable acquisition loop.</text>
+</svg>

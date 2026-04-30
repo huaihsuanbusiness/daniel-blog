@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 540" role="img" aria-labelledby="title desc">
+  <title id="title">From Pain to Venture – Part 03 Reference Images</title>
+  <desc id="desc">Reference images for Part 03: Situation, Gap and Solution question map, plus the normal vs abnormal system concept.</desc>
+  <style>
+text{font-family:Arial,sans-serif;fill:#1f2937}.title{font-size:22px;font-weight:700;fill:#1e293b}.h{font-size:15px;font-weight:700;fill:#1e293b}.b{font-size:12px;fill:#6b7280}.box{fill:#fff;stroke:#d1d5db;stroke-width:2;rx:12}.bg{fill:#fbfaf7}
+  </style>
+  <rect width="960" height="540" fill="#fbfaf7"/>
+  <text x="40" y="38" class="title">From Pain to Venture – Part 03 Reference Images</text>
+  <rect x="40" y="62" width="860" height="440" class="box" rx="16"/>
+  <text x="60" y="95" class="h">1. Situation, Gap and Solution Question Map</text>
+  <text x="60" y="118" class="b">A pre-interview route map: Situation → Gap → Solution hypothesis</text>
+  <text x="60" y="138" class="b">Use this before the interview to stay grounded in real data.</text>
+  <text x="60" y="168" class="h">2. Normal vs Abnormal Systems</text>
+  <text x="60" y="192" class="b">Before diagnosing a problem, understand how things are supposed to work.</text>
+  <text x="60" y="212" class="b">When normal operations break down, abnormal signals appear.</text>
+  <text x="60" y="240" class="b">These abnormal signals are the real data — not what users say they want.</text>
+  <text x="60" y="280" class="h">3. Key principles from Part 03</text>
+  <text x="60" y="304" class="b">• People hire ways through jobs, not products</text>
+  <text x="60" y="322" class="b">• Situation comes before persona — it is harder to fake</text>
+  <text x="60" y="340" class="b">• Outcome Expectation: the job is not the action, but the desired result</text>
+  <text x="60" y="358" class="b">• Six-part chain must be complete: situation → actor → job → outcome → gap → bottleneck</text>
+  <text x="60" y="376" class="b">• Users are poor at designing solutions, but very good at revealing reality</text>
+  <text x="60" y="394" class="b">• Interview routing: use Situation &amp; Gap &amp; Solution Pre-planned Questions</text>
+  <text x="60" y="418" class="h">4. Key quote</text>
+  <text x="60" y="442" class="b">"A good interview is not a test of the user's intelligence.</text>
+  <text x="60" y="460" class="b">It is an observation of the gap between expectation and reality."</text>
+</svg>

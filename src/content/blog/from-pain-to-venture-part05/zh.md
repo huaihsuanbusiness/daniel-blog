@@ -194,7 +194,7 @@ B2B 題目最容易犯的錯，是把「使用者」當成「客戶」。
 
 一個任務要不要往下做，至少要看四件事：它的價值是否夠大、技術是否可行、故事是否有共鳴、經濟上是否撐得起來。
 
-![Task Measurement 四個判斷面向](./resource/task-measurement-map.svg)
+![Task Measurement 四個判斷面向](./resource/task-measurement-map-zh.svg)
 
 | 面向 | 要問的問題 |
 |---|---|
@@ -260,3 +260,5 @@ B2B 題目最容易犯的錯，是把「使用者」當成「客戶」。
 而是那群已經痛到願意跟你一起把問題挖出來的人。
 
 ---
+
+![參考圖](./resource/reference-images-zh.svg)

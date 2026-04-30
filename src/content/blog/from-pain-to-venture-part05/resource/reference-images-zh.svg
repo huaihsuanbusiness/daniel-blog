@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 500" role="img" aria-labelledby="title desc">
+  <title id="title">從痛點到事業 – Part 05 參考圖</title>
+  <desc id="desc">Part 05 的參考圖：Task Measurement 四個判斷面向圖與 Early Adopter Scorecard 早期採用者計分卡。</desc>
+  <style>
+text{font-family:'Noto Sans TC',Arial,sans-serif;fill:#1f2937}.title{font-size:22px;font-weight:700;fill:#1e293b}.h{font-size:15px;font-weight:700;fill:#1e293b}.b{font-size:12px;fill:#6b7280}.box{fill:#fff;stroke:#d1d5db;stroke-width:2;rx:12}.bg{fill:#fbfaf7}
+  </style>
+  <rect width="960" height="500" fill="#fbfaf7"/>
+  <text x="40" y="38" class="title">從痛點到事業 – Part 05 參考圖</text>
+  <rect x="40" y="62" width="860" height="405" class="box" rx="16"/>
+  <text x="60" y="95" class="h">1. Task Measurement 四個判斷面向</text>
+  <text x="60" y="118" class="b">四個維度：重要性 × 頻率 × 績效 × 價格</text>
+  <text x="60" y="138" class="b">不是只問「痛不痛」，也要問「值不值得做」</text>
+  <text x="60" y="160" class="b">來源：Clayton Christensen 的 Jobs to be Done 框架</text>
+  <text x="60" y="190" class="h">2. Early Adopter Scorecard 早期採用者計分卡</text>
+  <text x="60" y="214" class="b">評分維度：急迫性 × 預算 × 接觸途徑 × 穩定性 × 成長潛力</text>
+  <text x="60" y="234" class="b">用總分評估區隔，不是用單一屬性。</text>
+  <text x="60" y="264" class="h">3. Part 05 核心原則</text>
+  <text x="60" y="288" class="b">• 你要找的不是市場，而是入口</text>
+  <text x="60" y="306" class="b">• Early adopter 不是喜歡新東西的人——</text>
+  <text x="60" y="324" class="b">  是有問題、有預算、有權限行動的人</text>
+  <text x="60" y="342" class="b">• ICP 不是人口統計，而是痛點結構</text>
+  <text x="60" y="360" class="b">• B2B 裡，客戶通常不是一個人——要畫出決策單位</text>
+  <text x="60" y="384" class="b">來源：Clayton Christensen, Competing Against Luck</text>
+</svg>

@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 560" role="img" aria-labelledby="title desc">
+  <title id="title">從痛點到事業 – Part 09 參考圖</title>
+  <desc id="desc">Part 09 的參考圖：Market Hypothesis Map 市場假設地圖、Competitive Matrix 競爭矩陣、Positioning Template 定位範本。</desc>
+  <style>
+text{font-family:'Noto Sans TC',Arial,sans-serif;fill:#1f2937}.title{font-size:22px;font-weight:700;fill:#1e293b}.h{font-size:15px;font-weight:700;fill:#1e293b}.b{font-size:12px;fill:#6b7280}.box{fill:#fff;stroke:#d1d5db;stroke-width:2;rx:12}.bg{fill:#fbfaf7}
+  </style>
+  <rect width="960" height="560" fill="#fbfaf7"/>
+  <text x="40" y="38" class="title">從痛點到事業 – Part 09 參考圖</text>
+  <rect x="40" y="62" width="860" height="462" class="box" rx="16"/>
+  <text x="60" y="95" class="h">1. Market Hypothesis Map 市場假設地圖</text>
+  <text x="60" y="118" class="b">五個維度：顧客區隔 · 市場規模 · 競爭 · 定位 · 核心問題</text>
+  <text x="60" y="138" class="b">TAM 是野心。SOM 是第一座山。</text>
+  <text x="60" y="160" class="b">早期 SOM 最關鍵。</text>
+  <text x="60" y="190" class="h">2. Competitive Matrix 競爭矩陣（獨立旅宿案例）</text>
+  <text x="60" y="214" class="b">軸：顧客關係所有權 × 營運複雜度</text>
+  <text x="60" y="234" class="b">競爭者：OTA · Booking Engine · CRM/Email · 飯店連鎖會員 ·</text>
+  <text x="60" y="254" class="b">Google Sheet/LINE · Independent Stay Alliance</text>
+  <text x="60" y="284" class="h">3. Positioning Template 定位範本</text>
+  <text x="60" y="308" class="b">範本：對於＿＿＿，我們是＿＿＿，不同於＿＿＿，</text>
+  <text x="60" y="328" class="b">我們提供＿＿＿，因為＿＿＿。</text>
+  <text x="60" y="348" class="b">定位不是 slogan，是顧客腦中的位置。</text>
+  <text x="60" y="378" class="h">4. Part 09 核心原則</text>
+  <text x="60" y="402" class="b">• 市場不是大就好，還要可接觸、可辨識、可轉換</text>
+  <text x="60" y="420" class="b">• 競爭者包含人工作業、Excel、顧問和不改變現狀</text>
+  <text x="60" y="438" class="b">• 選對軸很重要——選錯軸，分析會變成自我安慰</text>
+  <text x="60" y="456" class="b">• 競爭優勢：做出別人即使看到也難以完整複製的事</text>
+  <text x="60" y="480" class="b">來源：Strategyzer, Geoffrey Moore Crossing the Chasm</text>
+</svg>

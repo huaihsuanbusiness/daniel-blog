@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 620" role="img" aria-labelledby="title desc">
+  <title id="title">Situation, Gap and Solution Question Map</title>
+  <desc id="desc">Pre-planned question sequence for customer interviews: start with situation and job, then examine existing solutions, then move to possible solutions.</desc>
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#475569"/></marker>
+    <style>
+      text{font-family:Arial,sans-serif;fill:#1f2937}.bg{fill:#fbfaf7}.box{fill:#fff;stroke:#d1d5db;stroke-width:2}.abox{fill:#eff6ff;stroke:#93c5fd;stroke-width:2}.bbox{fill:#fff7ed;stroke:#fdba74;stroke-width:2}.cbox{fill:#f5f3ff;stroke:#c4b5fd;stroke-width:2}.h{font-size:22px;font-weight:700}.t{font-size:15px}.small{font-size:13px;fill:#64748b}.tag{font-size:12px;fill:#fff;font-weight:700}.arrow{stroke:#475569;stroke-width:2;fill:none;marker-end:url(#arr)}
+    </style>
+  </defs>
+  <rect class="bg" x="0" y="0" width="960" height="620" rx="24"/>
+  <text class="h" x="40" y="40">Situation, Gap and Solution Question Map</text>
+  <text class="small" x="40" y="62">Map the route before the interview: situation first, then gap, then solution — not the other way around.</text>
+
+  <rect class="abox" x="40" y="85" width="880" height="150" rx="20"/>
+  <rect class="tag" x="50" y="95" width="50" height="22" rx="6"/><text x="60" y="112" font-size="12px" fill="#fff" font-weight="700">A. Situation</text>
+  <text class="t" x="110" y="112" font-weight="700">1. What is the actor's situation?</text>
+  <text class="small" x="50" y="138">2. In this situation, what matters to them? What expectations and tensions are involved?</text>
+  <text class="small" x="50" y="158">3. What job are they trying to complete? (JTBD)</text>
+  <text class="small" x="50" y="178">4. Given that job, what is the ideal state? What is the expected outcome?</text>
+  <text class="small" x="50" y="198">5. Which important expectation remains unmet?</text>
+  <text class="small" x="50" y="218">6. What have they tried, but without effect?</text>
+
+  <path class="arrow" d="M480 235 L480 255"/>
+
+  <rect class="bbox" x="40" y="255" width="880" height="120" rx="20"/>
+  <rect class="tag" x="50" y="265" width="50" height="22" rx="6" fill="#fdba74"/><text x="60" y="282" font-size="12px" fill="#1f2937" font-weight="700">B. Gap</text>
+  <text class="small" x="110" y="282">7. What cost or consequence appears because the job cannot be completed?</text>
+  <text class="small" x="50" y="305">8. How do people talk about this issue?</text>
+  <text class="small" x="50" y="325">9. What current solutions exist? What is unsatisfactory about them? Why do they still fail?</text>
+
+  <path class="arrow" d="M480 375 L480 395"/>
+
+  <rect class="cbox" x="40" y="395" width="880" height="100" rx="20"/>
+  <rect class="tag" x="50" y="405" width="50" height="22" rx="6" fill="#c4b5fd"/><text x="60" y="422" font-size="12px" fill="#1f2937" font-weight="700">C. Solution</text>
+  <text class="small" x="110" y="422">10. What challenges must be faced to solve it?</text>
+  <text class="small" x="50" y="445">11. What solution direction is possible? What fundamental change does it bring?</text>
+  <text class="small" x="50" y="465">12. What is the key breakthrough? What KPI / MVP / validation?</text>
+
+  <rect class="box" x="40" y="510" width="880" height="70" rx="18"/>
+  <text class="small" x="60" y="538">Rule: Do not use the interview to get endorsement for your solution. First confirm that the situation and gap are valid, then discuss solution and MVP.</text>
+</svg>

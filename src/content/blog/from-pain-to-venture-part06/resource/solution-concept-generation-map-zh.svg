@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 560" role="img" aria-labelledby="title desc">
+  <title id="title">Solution Concept Generation</title>
+  <desc id="desc">Work backwards from the bottleneck to generate solution hypotheses: driving source, challenge nature, pathway, comparable case, and adapted solution.</desc>
+  <defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#475569"/></marker></defs>
+  <style>text{font-family:Arial,sans-serif;fill:#1f2937}.title{font-size:28px;font-weight:700}.h{font-size:18px;font-weight:700}.b{font-size:14px}.box{fill:#fff;stroke:#d1d5db;stroke-width:2;rx:16}.arrow{stroke:#718096;stroke-width:2.5;fill:none;marker-end:url(#a)}</style>
+  <rect width="960" height="560" rx="24" fill="#fbfaf7"/>
+  <text class="title" x="40" y="44">Solution Concept Generation 解法發想流程</text>
+  <text class="b" x="40" y="68" fill="#64748b">Bottleneck → Driving Source → Challenge Nature → Pathway → Comparable Case → Adapted Solution</text>
+
+  <rect class="box" x="40" y="100" width="160" height="80" rx="16" fill="#fff7ed" stroke="#fdba74" stroke-width="2"/>
+  <text class="h" x="52" y="132">Bottleneck</text><text class="b" x="52" y="156">Where is the lever?</text>
+
+  <path class="arrow" d="M200 140 H230"/>
+  <rect class="box" x="230" y="100" width="160" height="80" rx="16"/>
+  <text class="h" x="242" y="132">Driving Source</text><text class="b" x="242" y="156">Why does it persist?</text>
+
+  <path class="arrow" d="M390 140 H420"/>
+  <rect class="box" x="420" y="100" width="160" height="80" rx="16"/>
+  <text class="h" x="432" y="132">Challenge Nature</text><text class="b" x="432" y="156">What must be overcome?</text>
+
+  <path class="arrow" d="M580 140 H610"/>
+  <rect class="box" x="610" y="100" width="160" height="80" rx="16"/>
+  <text class="h" x="622" y="132">Pathway</text><text class="b" x="622" y="156">How to dissolve it?</text>
+
+  <path class="arrow" d="M770 140 H800"/>
+  <rect class="box" x="800" y="100" width="120" height="80" rx="16" fill="#f5f3ff" stroke="#c4b5fd" stroke-width="2"/>
+  <text class="h" x="812" y="132">Comparable Case</text><text class="b" x="812" y="156">What worked elsewhere?</text>
+
+  <path class="arrow" d="M480 180 V210"/>
+  <rect class="box" x="320" y="210" width="320" height="60" rx="16" fill="#eff6ff" stroke="#93c5fd" stroke-width="2"/>
+  <text class="h" x="340" y="242">Adapted Solution 調整後的解法</text><text class="b" x="340" y="260">What must be modified to fit this context?</text>
+
+  <rect class="box" x="40" y="300" width="880" height="200" rx="18"/>
+  <text class="h" x="60" y="332">Before Hypotheses 先假設之前，先做三種 research</text>
+  <text class="b" x="60" y="358">1. Database analysis · Consumer behaviour research · Comparable case study</text>
+  <text class="b" x="60" y="382">2. Market supply analysis · Successful case research · Comparison with existing supply</text>
+  <text class="b" x="60" y="406">3. Database analysis, data analysis, and segment analysis</text>
+  <text class="b" x="60" y="436">Test the most dangerous assumption first — do not productise too early.</text>
+  <text class="b" x="60" y="460">最危險的假設先測，不要太早把東西產品化。</text>
+</svg>

@@ -202,7 +202,7 @@ An interview is not a questionnaire to be read aloud.
 
 But without a map, it is too easy to drift back towards your own solution. A sequence that moves from situation, to Gap, to solution can keep the conversation honest.
 
-![Situation, Gap and Solution question map](./resource/situation-gap-solution-question-map.svg)
+![Situation, Gap and Solution question map](./resource/situation-gap-solution-question-map-en.svg)
 
 ### A. Start with situation and job.
 
@@ -332,3 +332,5 @@ If these three outputs cannot be produced yet, do not ask users what they want.
 Their answer may only be the echo of your own solution.
 
 ---
+
+![Reference Images](./resource/reference-images-en.svg)

@@ -207,7 +207,7 @@ Double Diamond 是比較乾淨的流程地圖。
 
 這才是正常。
 
-![CPS Validation and Four D Loop](./resource/cps-validation-4d-loop.svg)
+![CPS Validation and Four D Loop](./resource/cps-validation-4d-loop-zh.svg)
 
 ---
 
@@ -507,6 +507,8 @@ MVP 的型態，應該跟你要驗證的假設綁在一起。
 
 ---
 
+
+![參考圖](./resource/reference-images-zh.svg)
 ## 參考圖與說明
 
 ### Design Thinking / Double Diamond

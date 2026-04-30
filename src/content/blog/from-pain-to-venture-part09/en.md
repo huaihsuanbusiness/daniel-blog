@@ -63,7 +63,7 @@ Front-desk execution does not mean travellers will act.
 
 Market analysis has to examine whether the whole chain can move.
 
-![Market Hypothesis Map](./resource/market-hypothesis-map.svg)
+![Market Hypothesis Map](./resource/market-hypothesis-map-en.svg)
 
 ---
 
@@ -285,7 +285,7 @@ It should compare:
 - geographic coverage;
 - ability to cross the adoption chasm.
 
-![Competitive Matrix](./resource/competitive-matrix-independent-hospitality.svg)
+![Competitive Matrix](./resource/competitive-matrix-independent-hospitality-en.svg)
 
 ---
 
@@ -422,7 +422,7 @@ Positioning can be split into two layers: what you do, and what result you want 
 | Provide a reason to buy | Explain why adoption is worth considering now |
 | Guide marketing and product activities | Keep messaging, channels, and product decisions consistent |
 
-![Positioning Template](./resource/positioning-template-map.svg)
+![Positioning Template](./resource/positioning-template-map-en.svg)
 
 A useful template:
 
@@ -474,6 +474,8 @@ You are teaching the customer a new way to understand the problem.
 
 ---
 
+
+![Reference Images](./resource/reference-images-en.svg)
 ## What this part should leave behind
 
 By the end, three outputs should be clear.

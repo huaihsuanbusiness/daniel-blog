@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 540" role="img" aria-labelledby="title desc">
+  <title id="title">從痛點到事業 – Part 01 參考圖</title>
+  <desc id="desc">Part 01 的參考圖：C-P-S Fit 框架圖與 Launch Ladder 起始階梯圖。</desc>
+  <style>
+text{font-family:'Noto Sans TC',Arial,sans-serif;fill:#1f2937}.title{font-size:22px;font-weight:700;fill:#1e293b}.h{font-size:15px;font-weight:700;fill:#1e293b}.b{font-size:12px;fill:#6b7280}.box{fill:#fff;stroke:#d1d5db;stroke-width:2;rx:12}.bg{fill:#fbfaf7}
+  </style>
+  <rect width="960" height="540" fill="#fbfaf7"/>
+  <text x="40" y="40" class="title">從痛點到事業 – Part 01 參考圖</text>
+  <rect x="40" y="65" width="860" height="440" class="box" rx="16"/>
+  <text x="65" y="100" class="h">1. C-P-S Fit 框架</text>
+  <text x="65" y="122" class="b">從有感現象到顧客情境、問題缺口、解法假設、MVP 驗證與 C-P-S Fit 的</text>
+  <text x="65" y="140" class="b">結構地圖。來源：Strategyzer。</text>
+  <text x="65" y="168" class="b">核心概念：目標不是有解法，而是確認 C-P-S Fit——情境、問題、</text>
+  <text x="65" y="186" class="b">解法三者在正確的 context 下對齊。</text>
+  <text x="65" y="218" class="h">2. Launch Ladder 起始階梯</text>
+  <text x="65" y="240" class="b">七個步驟：有感現象 → 顧客情境 → 問題缺口 → 解法假設 →</text>
+  <text x="65" y="258" class="b">MVP → 驗證 → C-P-S Fit。上市前，題目必須能回答：誰的缺口、</text>
+  <text x="65" y="276" class="b">如何形成、面對什麼挑戰、解法是什麼、成功指標、創造什麼價值。</text>
+  <text x="65" y="320" class="h">主要參考工具</text>
+  <text x="65" y="344" class="b">• C-P-S Fit（Strategyzer）——情境、問題、解法的對齊</text>
+  <text x="65" y="362" class="b">• 假設 Logbook——記錄假設與證據</text>
+  <text x="65" y="380" class="b">• 發布前六題檢查清單——驗證閘門</text>
+  <text x="65" y="398" class="b">• JTBD（要完成的任務）——當事人真正想完成的任務</text>
+  <text x="65" y="416" class="b">• Important Unfulfilled——顯示創業機會存在的訊號</text>
+  <text x="65" y="434" class="b">• MVP 定義——測試關鍵假設的最便宜、最可信方式</text>
+  <text x="65" y="452" class="b">• Build-Measure-Learn——每輪減少自我催眠的迴圈</text>
+  <text x="65" y="476" class="b">來源：Strategyzer Value Proposition Canvas &amp; Business Model Canvas</text>
+  <text x="65" y="492" class="b">https://www.strategyzer.com/library/the-value-proposition-canvas</text>
+</svg>

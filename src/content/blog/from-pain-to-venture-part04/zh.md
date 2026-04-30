@@ -122,7 +122,7 @@ seriesOrder: 4
 
 > 他痛到哪一層了？
 
-![Suffering Triangle 痛苦指數三角形](./resource/suffering-triangle.svg)
+![Suffering Triangle 痛苦指數三角形](./resource/suffering-triangle-zh.svg)
 
 先保留這個工具原本的中英文層級，因為它的判斷順序本身就很重要。
 
@@ -206,7 +206,7 @@ seriesOrder: 4
 
 但真正要看的，是這個重大期許落差怎麼一步一步發生。
 
-![重大期許落差形成分析圖](./resource/gap-origin-analysis-map.svg)
+![重大期許落差形成分析圖](./resource/gap-origin-analysis-map-zh.svg)
 
 我會把它拆成四層：
 
@@ -337,3 +337,5 @@ seriesOrder: 4
 那裡才比較可能長出機會。
 
 ---
+
+![參考圖](./resource/reference-images-zh.svg)

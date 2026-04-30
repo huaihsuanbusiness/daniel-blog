@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 600" role="img" aria-labelledby="title desc">
+  <title id="title">Launch Thesis 階梯</title>
+  <desc id="desc">從特定情境、重大期許落差，到專門解法與根本改變的六步階梯。</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#475569"/>
+    </marker>
+    <style>
+      .bg{fill:#fbfaf7}.step{fill:#eff6ff;stroke:#93c5fd;stroke-width:2}.step_dark{fill:#f5f3ff;stroke:#c4b5fd;stroke-width:2}.num{font:700 22px 'Noto Sans TC',Arial,sans-serif;fill:#1e293b}.title{font:700 16px 'Noto Sans TC',Arial,sans-serif;fill:#1e293b}.body{font:14px 'Noto Sans TC',Arial,sans-serif;fill:#475569}.arrow{stroke:#475569;stroke-width:2.5;fill:none;marker-end:url(#arrow)}
+    </style>
+  </defs>
+  <rect class="bg" x="0" y="0" width="960" height="600" rx="24"/>
+  <text class="title" x="40" y="44" font-size="22px" font-weight="700" fill="#1e293b">Launch Thesis 階梯</text>
+  <text class="body" x="40" y="70" font-size="14px">從特定情境、重大期許落差，到專門解法與根本改變。</text>
+
+  <rect class="step" x="40" y="100" width="880" height="64" rx="16"/>
+  <text class="num" x="60" y="136">1</text>
+  <text class="title" x="100" y="125">情境 Situation</text>
+  <text class="body" x="100" y="145">當事人在什麼特定情境下，要完成什麼事情？</text>
+
+  <path class="arrow" d="M480 164 V188"/>
+
+  <rect class="step" x="40" y="188" width="880" height="64" rx="16"/>
+  <text class="num" x="60" y="224">2</text>
+  <text class="title" x="100" y="213">期許落差 Expectation Gap</text>
+  <text class="body" x="100" y="233">未能滿足的重大期許是什麼？</text>
+
+  <path class="arrow" d="M480 252 V276"/>
+
+  <rect class="step" x="40" y="276" width="880" height="64" rx="16"/>
+  <text class="num" x="60" y="312">3</text>
+  <text class="title" x="100" y="301">代價與後果 Cost &amp; Consequence</text>
+  <text class="body" x="100" y="321">這個期許落差沒有被滿足時，當事人付出什麼代價，承擔什麼後果？</text>
+
+  <path class="arrow" d="M480 340 V364"/>
+
+  <rect class="step" x="40" y="364" width="880" height="64" rx="16"/>
+  <text class="num" x="60" y="400">4</text>
+  <text class="title" x="100" y="389">創造的價值 Value Created</text>
+  <text class="body" x="100" y="409">如果落差被處理，會創造什麼價值？後續可能發展出什麼意圖？</text>
+
+  <path class="arrow" d="M480 428 V452"/>
+
+  <rect class="step" x="40" y="452" width="880" height="64" rx="16"/>
+  <text class="num" x="60" y="488">5</text>
+  <text class="title" x="100" y="477">專門解法 Focused Solution</text>
+  <text class="body" x="100" y="497">哪一種專門解決方案，能化解背後落差，讓重大期許落差不再存在？</text>
+
+  <path class="arrow" d="M480 516 V540"/>
+
+  <rect class="step_dark" x="40" y="540" width="880" height="48" rx="16"/>
+  <text class="num" x="60" y="570">6</text>
+  <text class="title" x="100" y="562">根本改變 Fundamental Change</text>
+  <text class="body" x="100" y="580">當事人或環境在哪個層面產生根本改變？</text>
+</svg>

@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 620" role="img" aria-labelledby="title desc">
+  <title id="title">Normal System vs. Abnormal System</title>
+  <desc id="desc">Map the normal system first, then diagnose how the abnormal system formed.</desc>
+  <style>
+    text{font-family:Arial,sans-serif;fill:#1f2937}.bg{fill:#fbfaf7}.box{fill:#fff;stroke:#d1d5db;stroke-width:2}.head{font-size:22px;font-weight:700}.body{font-size:15px}.small{font-size:13px;fill:#6b7280}.normal-box{fill:#eff6ff;stroke:#93c5fd;stroke-width:2}.abnormal-box{fill:#fff1f2;stroke:#fca5a5;stroke-width:2}
+  </style>
+  <rect class="bg" x="0" y="0" width="960" height="620" rx="24"/>
+  <text class="head" x="40" y="44">Normal System vs. Abnormal System</text>
+  <text class="small" x="40" y="68">Understand how things are supposed to work, before diagnosing how they broke.</text>
+
+  <rect class="normal-box" x="40" y="90" width="420" height="230" rx="20"/>
+  <text class="head" x="60" y="122">Normal System</text>
+  <text class="body" x="60" y="148">Hotels can acquire new guests and, after check-in,</text>
+  <text class="body" x="60" y="168">accumulate trust, data, relationships and return visits.</text>
+  <text class="body" x="60" y="195">OTA is one channel,</text>
+  <text class="body" x="60" y="215">but not the only guest entry point.</text>
+  <text class="head" x="60" y="248" fill="#1e293b">Questions:</text>
+  <text class="small" x="60" y="270">・What is the normal system?</text>
+  <text class="small" x="60" y="290">・What is its function?</text>
+  <text class="small" x="60" y="310">・Who benefits from it?</text>
+
+  <rect class="abnormal-box" x="480" y="90" width="440" height="230" rx="20"/>
+  <text class="head" x="500" y="122">Abnormal System</text>
+  <text class="body" x="500" y="148">Hotels get bookings,</text>
+  <text class="body" x="500" y="168">but customer relationships are mainly held by the platform.</text>
+  <text class="body" x="500" y="195">After checkout,</text>
+  <text class="body" x="500" y="215">it is hard to become return visits, referrals, or brand relationships.</text>
+  <text class="head" x="500" y="248" fill="#1e293b">Questions:</text>
+  <text class="small" x="500" y="270">・How did the abnormal system form?</text>
+  <text class="small" x="500" y="290">・What cost or consequence does it create?</text>
+  <text class="small" x="500" y="310">・Why are current solutions insufficient?</text>
+
+  <rect class="box" x="40" y="340" width="880" height="70" rx="18"/>
+  <text class="body" x="60" y="370">Goal: Not just saying "the hotel wants to reduce OTA dependency" — see how the customer relationship system became unbalanced.</text>
+</svg>

@@ -42,7 +42,7 @@ That matters.
 
 It reminds us that a real venture is not a single product. It is a repeatable value system.
 
-![Venture System Map](./resource/venture-system-map.svg)
+![Venture System Map](./resource/venture-system-map-en.svg)
 
 A simple distinction helps:
 
@@ -323,7 +323,7 @@ One line from the notes is worth enlarging:
 
 Startup finance does not need to become an accounting lecture. But founders cannot look only at revenue. They need to understand cash flow, cost structure, gross margin, payback, runway, and capital efficiency.
 
-![Financial Soundness Map](./resource/financial-soundness-map.svg)
+![Financial Soundness Map](./resource/financial-soundness-map-en.svg)
 
 At minimum, ask:
 
@@ -506,7 +506,7 @@ Risk management is not pessimism.
 
 It is saying the dangerous things early.
 
-![Risk Register Map](./resource/risk-register-map.svg)
+![Risk Register Map](./resource/risk-register-map-en.svg)
 
 A basic Risk Register can look like this:
 
@@ -547,7 +547,7 @@ The progress questions are simple:
 
 For execution, compress this into a 90-day validation plan.
 
-![90-Day Validation Plan](./resource/ninety-day-validation-plan.svg)
+![90-Day Validation Plan](./resource/ninety-day-validation-plan-en.svg)
 
 ### Days 1–30: problem and customer validation
 
@@ -718,6 +718,8 @@ It should be a venture system that can be tested.
 
 ---
 
+
+![Reference Images](./resource/reference-images-en.svg)
 ## What this part should leave behind
 
 By the end, four outputs should be clear.

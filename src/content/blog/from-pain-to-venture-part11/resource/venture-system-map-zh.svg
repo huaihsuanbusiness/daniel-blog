@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 640" role="img" aria-labelledby="title desc">
+  <title id="title">Venture System Map 事業系統圖</title>
+  <desc id="desc">七個相互嵌合的事業構面：價值主張、關鍵活動、關鍵資源、關鍵夥伴、團隊與文化、財務、風險與停止條件。</desc>
+  <defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#475569"/></marker></defs>
+  <style>
+text{font-family:'Noto Sans TC',Arial,sans-serif;fill:#1f2937}.bg{fill:#fbfaf7}.h{font-size:28px;font-weight:700;fill:#1e293b}.t{font-size:15px;font-weight:700;fill:#1e293b}.b{font-size:13px;fill:#475569}.box{fill:#fff;stroke:#d1d5db;stroke-width:2;rx:14}.blue{fill:#eff6ff;stroke:#93c5fd;stroke-width:2}.orange{fill:#fff7ed;stroke:#fdba74;stroke-width:2}.purple{fill:#f5f3ff;stroke:#c4b5fd;stroke-width:2}.green{fill:#f0fdf4;stroke:#86efac;stroke-width:2}.red{fill:#fff1f2;stroke:#fca5a5;stroke-width:2}.arrow{stroke:#718096;stroke-width:2;fill:none;marker-end:url(#a)}
+  </style>
+  <rect width="960" height="640" rx="24" fill="#fbfaf7"/>
+  <text class="h" x="40" y="42">Venture System Map 事業系統圖</text>
+  <text class="b" x="40" y="66">產品不是事業。事業是一個系統。七個構面必須同時協作。</text>
+
+  <rect class="blue" x="360" y="88" width="240" height="90" rx="18"/>
+  <text class="t" x="380" y="118">Value Proposition 價值主張</text>
+  <text class="b" x="380" y="142">什麼樣的承諾必須被兌現？</text>
+
+  <rect class="orange" x="40" y="200" width="210" height="130" rx="18"/>
+  <text class="t" x="60" y="228">Key Activities 關鍵活動</text>
+  <text class="b" x="60" y="252">銷售、交付、產品、數據、客服</text>
+  <path class="arrow" d="M250 265 H360"/>
+
+  <rect class="blue" x="710" y="200" width="210" height="130" rx="18"/>
+  <text class="t" x="730" y="228">Key Resources 關鍵資源</text>
+  <text class="b" x="730" y="252">人、資金、數據、品牌、技術</text>
+  <path class="arrow" d="M710 265 H600"/>
+
+  <rect class="purple" x="40" y="400" width="210" height="130" rx="18"/>
+  <text class="t" x="60" y="428">Key Partners 關鍵夥伴</text>
+  <text class="b" x="60" y="452">誰的參與是讓整個模式跑起來的必要條件？</text>
+  <path class="arrow" d="M250 465 H360"/>
+
+  <rect class="green" x="360" y="360" width="240" height="130" rx="18"/>
+  <text class="t" x="380" y="388">Team &amp; Culture 團隊與文化</text>
+  <text class="b" x="380" y="412">誰能夠學習和執行？</text>
+  <text class="b" x="380" y="432">團隊聽到壞消息時會如何反應？</text>
+
+  <rect class="orange" x="710" y="400" width="210" height="130" rx="18"/>
+  <text class="t" x="730" y="428">Finance 財務</text>
+  <text class="b" x="730" y="452">現金流、利潤率、跑道、回本期</text>
+  <path class="arrow" d="M710 465 H600"/>
+
+  <rect class="red" x="360" y="520" width="240" height="70" rx="18"/>
+  <text class="t" x="380" y="548">Risk &amp; Kill Criteria 風險與停止條件</text>
+  <text class="b" x="380" y="572">什麼可能讓整個系統崩潰？什麼時候果斷停損？</text>
+
+  <rect class="box" x="40" y="84" width="880" height="520" rx="20"/>
+  <text class="h" x="60" y="620">系統問題：這家事業能否持續地創造、交付、並 capture 價值——而不讓系統崩潰？</text>
+</svg>

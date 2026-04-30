@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 560" role="img" aria-labelledby="title desc">
+  <title id="title">從痛點到事業 – Part 02 參考圖</title>
+  <desc id="desc">Part 02 的參考圖：CPS Validation 與 Four D Loop，以及設計思考、Double Diamond、Value Proposition Canvas 等關鍵框架。</desc>
+  <style>
+text{font-family:'Noto Sans TC',Arial,sans-serif;fill:#1f2937}.title{font-size:20px;font-weight:700;fill:#1e293b}.h{font-size:14px;font-weight:700;fill:#1e293b}.b{font-size:12px;fill:#6b7280}.box{fill:#fff;stroke:#d1d5db;stroke-width:2;rx:12}.bg{fill:#fbfaf7}
+  </style>
+  <rect width="960" height="560" fill="#fbfaf7"/>
+  <text x="40" y="38" class="title">從痛點到事業 – Part 02 參考圖</text>
+  <rect x="40" y="62" width="860" height="460" class="box" rx="16"/>
+  <text x="60" y="95" class="h">1. CPS Validation 與 Four D Loop</text>
+  <text x="60" y="118" class="b">Discover → Define → Develop → Deliver。每次迭代都要更精準地判斷。</text>
+  <text x="60" y="138" class="b">每次迭代後，CPS Fit 都要重新確認。</text>
+  <text x="60" y="168" class="h">2. 主要參考框架</text>
+  <text x="60" y="192" class="b">• Design Thinking——延後武斷，不是腦力激盪</text>
+  <text x="60" y="210" class="b">• Double Diamond——先進入問題空間，再進解法空間</text>
+  <text x="60" y="228" class="b">• Four D Process——Discover、Define、Develop、Deliver（現場版）</text>
+  <text x="60" y="246" class="b">• Value Proposition Canvas——把想像的價值拉回使用者現場</text>
+  <text x="60" y="264" class="b">• Empathy Map / Journey Map / Stakeholder Map</text>
+  <text x="60" y="282" class="b">• 5 Whys 與 Assumption Map——不要讓團隊太快相信自己</text>
+  <text x="60" y="300" class="b">• C-P-S Fit——不是口號，是需要持續重新確認的對齊</text>
+  <text x="60" y="318" class="b">• MVP 要接在假設後面，不要接在熱血後面</text>
+  <text x="60" y="348" class="h">3. Iteration 與重做的差別</text>
+  <text x="60" y="372" class="b">Iteration 不是重複同樣的工作。每輪都應該把判斷變得更銳利——</text>
+  <text x="60" y="390" class="b">每個迴圈都應該降低不確定性，而不是只是重做失敗的東西。</text>
+  <text x="60" y="418" class="h">4. 核心原則</text>
+  <text x="60" y="442" class="b">工具不會替你判斷，但會讓你比較難逃避判斷。</text>
+  <text x="60" y="470" class="b">來源：Strategyzer Value Proposition Canvas</text>
+  <text x="60" y="488" class="b">https://www.strategyzer.com/library/the-value-proposition-canvas</text>
+</svg>

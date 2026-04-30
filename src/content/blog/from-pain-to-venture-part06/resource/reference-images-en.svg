@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 540" role="img" aria-labelledby="title desc">
+  <title id="title">From Pain to Venture – Part 06 Reference Images</title>
+  <desc id="desc">Reference images for Part 06: Solution Concept Generation map and seven backward-design questions.</desc>
+  <style>
+text{font-family:Arial,sans-serif;fill:#1f2937}.title{font-size:22px;font-weight:700;fill:#1e293b}.h{font-size:15px;font-weight:700;fill:#1e293b}.b{font-size:12px;fill:#6b7280}.box{fill:#fff;stroke:#d1d5db;stroke-width:2;rx:12}.bg{fill:#fbfaf7}
+  </style>
+  <rect width="960" height="540" fill="#fbfaf7"/>
+  <text x="40" y="38" class="title">From Pain to Venture – Part 06 Reference Images</text>
+  <rect x="40" y="62" width="860" height="440" class="box" rx="16"/>
+  <text x="60" y="95" class="h">1. Solution Concept Generation Map</text>
+  <text x="60" y="118" class="b">Bottleneck → root cause → solution concept → assumption test</text>
+  <text x="60" y="140" class="b">Work backwards from the bottleneck, not from the idea.</text>
+  <text x="60" y="170" class="h">2. Seven backward-design questions</text>
+  <text x="60" y="194" class="b">1. What bottleneck does this solve?</text>
+  <text x="60" y="212" class="b">2. What is the root cause of the bottleneck?</text>
+  <text x="60" y="230" class="b">3. What assumptions does this solution make?</text>
+  <text x="60" y="248" class="b">4. What is the cheapest way to test the key assumption?</text>
+  <text x="60" y="266" class="b">5. What would make this solution wrong?</text>
+  <text x="60" y="284" class="b">6. What does "done" look like in this experiment?</text>
+  <text x="60" y="302" class="b">7. What is the next experiment after this one?</text>
+  <text x="60" y="330" class="h">3. Key principles from Part 06</text>
+  <text x="60" y="354" class="b">• A solution is a bundle of assumptions, not an inspiration</text>
+  <text x="60" y="372" class="b">• Concept generation borrows from successful cases but does not copy them</text>
+  <text x="60" y="390" class="b">• Test the most dangerous assumption first, not the easiest</text>
+  <text x="60" y="408" class="b">• Do not productise too early — let the experiment guide the direction</text>
+</svg>

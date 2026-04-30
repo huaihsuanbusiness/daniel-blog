@@ -90,7 +90,7 @@ MVP 最怕的是做了很多，但沒留下判斷。
 
 你的 Logbook 可以長得很簡單：
 
-![Learning Logbook Prototype MVP](./resource/logbook-prototype-mvp.svg)
+![Learning Logbook Prototype MVP](./resource/logbook-prototype-mvp-zh.svg)
 
 | 欄位 | 要記什麼 |
 |---|---|
@@ -211,7 +211,7 @@ MVP 執行時，最容易被「好聽的話」騙。
 
 MVP 的形狀，應該由你要測的假設決定。
 
-![MVP Types Map](./resource/mvp-types-map.svg)
+![MVP Types Map](./resource/mvp-types-map-zh.svg)
 
 | MVP 類型 | 適合驗證什麼 | 獨立旅宿例子 |
 |---|---|---|
@@ -323,3 +323,5 @@ MVP 不是迷你產品。
 如果它沒有讓你更接近真相，它就不夠 MVP。
 
 ---
+
+![參考圖](./resource/reference-images-zh.svg)

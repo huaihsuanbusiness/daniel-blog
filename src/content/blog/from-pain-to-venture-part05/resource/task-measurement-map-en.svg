@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 560" role="img" aria-labelledby="title desc">
+  <title id="title">Task Measurement</title>
+  <desc id="desc">Four dimensions for evaluating a task: Value Shock, Technical Feasibility, Story Resonance, and Economic Support.</desc>
+  <style>
+text{font-family:Arial,sans-serif;fill:#1f2937}.title{font-size:28px;font-weight:700}.h{font-size:20px;font-weight:700}.b{font-size:15px}.box{fill:#fff;stroke:#d1d5db;stroke-width:2;rx:18}.c1{fill:#eff6ff;stroke:#93c5fd;stroke-width:2}.c2{fill:#fff7ed;stroke:#fdba74;stroke-width:2}.c3{fill:#f5f3ff;stroke:#c4b5fd;stroke-width:2}.c4{fill:#f0fdf4;stroke:#86efac;stroke-width:2}
+  </style>
+  <rect width="960" height="560" rx="24" fill="#fbfaf7"/>
+  <text class="title" x="40" y="44">Task Measurement</text>
+  <text class="b" x="40" y="68" fill="#64748b">Not just "is it painful?" — but "is it worth doing?"</text>
+  <rect class="c1" x="40" y="90" width="420" height="200" rx="20"/>
+  <text class="h" x="60" y="126">Value Shock</text>
+  <text class="b" x="60" y="154">Impact, growth, pain, cost of inaction</text>
+  <rect class="c2" x="480" y="90" width="420" height="200" rx="20"/>
+  <text class="h" x="500" y="126">Technical Feasibility</text>
+  <text class="b" x="500" y="154">Technology, access, conditions, logic</text>
+  <rect class="c3" x="40" y="310" width="420" height="200" rx="20"/>
+  <text class="h" x="60" y="346">Story Resonance</text>
+  <text class="b" x="60" y="374">Meaning, change, why it matters</text>
+  <rect class="c4" x="480" y="310" width="420" height="200" rx="20"/>
+  <text class="h" x="500" y="346">Economic Support</text>
+  <text class="b" x="500" y="374">Resources, revenue, KPIs, viability</text>
+</svg>

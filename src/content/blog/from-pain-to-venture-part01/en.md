@@ -447,6 +447,8 @@ Used well, they make it harder to pretend you already have.
 
 ---
 
+
+![Reference Images](./resource/reference-images-en.svg)
 ## References and image notes
 
 - **Value Proposition Canvas**  

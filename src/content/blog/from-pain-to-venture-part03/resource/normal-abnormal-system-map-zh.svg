@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 620" role="img" aria-labelledby="title desc">
+  <title id="title">Normal System vs. Abnormal System</title>
+  <desc id="desc">Map the normal system first, then diagnose how the abnormal system formed.</desc>
+  <style>
+    text{font-family:'Noto Sans TC',Arial,sans-serif;fill:#1f2937}.bg{fill:#fbfaf7}.box{fill:#fff;stroke:#d1d5db;stroke-width:2}.head{font-size:22px;font-weight:700}.body{font-size:15px}.small{font-size:13px;fill:#6b7280}.normal-box{fill:#eff6ff;stroke:#93c5fd;stroke-width:2}.abnormal-box{fill:#fff1f2;stroke:#fca5a5;stroke-width:2}
+  </style>
+  <rect class="bg" x="0" y="0" width="960" height="620" rx="24"/>
+  <text class="head" x="40" y="44">Normal System vs. Abnormal System</text>
+  <text class="small" x="40" y="68">Understand how things are supposed to work, before diagnosing how they broke.</text>
+
+  <rect class="normal-box" x="40" y="90" width="420" height="230" rx="20"/>
+  <text class="head" x="60" y="122">Normal System</text>
+  <text class="body" x="60" y="148">旅宿能獲得新客，也能在入住後</text>
+  <text class="body" x="60" y="168">累積信任、資料、關係與回訪機會。</text>
+  <text class="body" x="60" y="195">OTA 是通路之一，</text>
+  <text class="body" x="60" y="215">但不是唯一的顧客入口。</text>
+  <text class="head" x="60" y="248" fill="#1e293b">Questions:</text>
+  <text class="small" x="60" y="270">・What is the normal system?</text>
+  <text class="small" x="60" y="290">・What is its function?</text>
+  <text class="small" x="60" y="310">・Who benefits from it?</text>
+
+  <rect class="abnormal-box" x="480" y="90" width="440" height="230" rx="20"/>
+  <text class="head" x="500" y="122">Abnormal System</text>
+  <text class="body" x="500" y="148">旅宿拿到訂單，</text>
+  <text class="body" x="500" y="168">但顧客關係主要被平台掌握。</text>
+  <text class="body" x="500" y="195">旅客退房後，</text>
+  <text class="body" x="500" y="215">很難變成回訪、推薦或品牌關係。</text>
+  <text class="head" x="500" y="248" fill="#1e293b">Questions:</text>
+  <text class="small" x="500" y="270">・How did the abnormal system form?</text>
+  <text class="small" x="500" y="290">・What cost or consequence does it create?</text>
+  <text class="small" x="500" y="310">・Why are current solutions insufficient?</text>
+
+  <rect class="box" x="40" y="340" width="880" height="70" rx="18"/>
+  <text class="body" x="60" y="370">Goal: Not just saying "the hotel wants to reduce OTA dependency" — see how the customer relationship system became unbalanced.</text>
+  <text class="body" x="60" y="396">目標：不是只說「旅宿想降低 OTA 依賴」，而是看見顧客關係系統如何失衡。</text>
+</svg>

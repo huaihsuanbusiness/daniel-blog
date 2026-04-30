@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 560" role="img" aria-labelledby="title desc">
+  <title id="title">Financial Soundness Map 財務健康圖</title>
+  <desc id="desc">早期事業財務健康的四個維度：經濟可行性、自由現金流、利潤中心視角、新事業經濟學。</desc>
+  <style>
+text{font-family:'Noto Sans TC',Arial,sans-serif;fill:#1f2937}.bg{fill:#fbfaf7}.h{font-size:28px;font-weight:700;fill:#1e293b}.t{font-size:18px;font-weight:700;fill:#1e293b}.b{font-size:14px}.box{fill:#fff;stroke:#d1d5db;stroke-width:2;rx:16}.green{fill:#f0fdf4;stroke:#86efac;stroke-width:2}.blue{fill:#eff6ff;stroke:#93c5fd;stroke-width:2}.yellow{fill:#fff7ed;stroke:#fdba74;stroke-width:2}.red{fill:#fff1f2;stroke:#fca5a5;stroke-width:2}
+  </style>
+  <rect width="960" height="560" rx="24" fill="#fbfaf7"/>
+  <text class="h" x="40" y="44">Financial Soundness 財務健康圖</text>
+  <text class="b" x="40" y="68" fill="#64748b">現金是事業的命脈。趁還不需要钱的時候，先把四個維度看清楚。</text>
+
+  <rect class="green" x="40" y="90" width="420" height="200" rx="20"/>
+  <text class="t" x="60" y="124">Economic Viability 經濟可行性</text>
+  <text class="b" x="60" y="150">這個模式能否產生利潤？</text>
+  <text class="b" x="60" y="172">毛利 · 回本期 · LTV · CAC</text>
+  <text class="b" x="60" y="194">有沒有可行的單元經濟學故事？</text>
+  <text class="b" x="60" y="216">營收模式：訂閱 / 使用量 / 一次性 / 成果收費 / 混合</text>
+
+  <rect class="blue" x="480" y="90" width="420" height="200" rx="20"/>
+  <text class="t" x="500" y="124">Free Cash Flow 自由現金流</text>
+  <text class="b" x="500" y="150">早收晚付？</text>
+  <text class="b" x="500" y="172">現金轉換週期——從支付供應商到收到顧客付款，需要多少天？</text>
+  <text class="b" x="500" y="194">營運資金需求</text>
+  <text class="b" x="500" y="216">現金卡在哪個環節？</text>
+
+  <rect class="yellow" x="40" y="310" width="420" height="200" rx="20"/>
+  <text class="t" x="60" y="344">Profit-Centric View 利潤中心視角</text>
+  <text class="b" x="60" y="370">每筆交易或每個 cohort 的毛利</text>
+  <text class="b" x="60" y="392">流失率及其成本影響</text>
+  <text class="b" x="60" y="414">顧客獲取成本 vs 顧客終身價值</text>
+  <text class="b" x="60" y="436">成長是靠現金支撐，還是靠利潤支撐？</text>
+
+  <rect class="red" x="480" y="310" width="420" height="200" rx="20"/>
+  <text class="t" x="500" y="344">New Venture Economics 新事業經濟學</text>
+  <text class="b" x="500" y="370">跑道——現金還能撐幾個月</text>
+  <text class="b" x="500" y="392">消耗率隨著成長如何變化</text>
+  <text class="b" x="500" y="414">下一個里程碑需要的資金</text>
+  <text class="b" x="500" y="436">預設存活（Default Alive）還是預設死亡（Default Dead）？</text>
+
+  <rect class="box" x="40" y="520" width="880" height="38" rx="14" fill="#eff6ff" stroke="#93c5fd" stroke-width="1.5"/>
+  <text class="b" x="60" y="544">Founder question：我們知道現金實際上花去哪裡了嗎？能否追踪每一分錢？</text>
+</svg>

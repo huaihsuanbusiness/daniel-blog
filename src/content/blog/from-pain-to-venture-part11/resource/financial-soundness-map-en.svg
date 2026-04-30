@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 560" role="img" aria-labelledby="title desc">
+  <title id="title">Financial Soundness Map</title>
+  <desc id="desc">Four dimensions of financial health for an early venture: economic viability, free cash flow, profit-centric view, and new venture economics.</desc>
+  <style>
+text{font-family:Arial,sans-serif;fill:#1f2937}.bg{fill:#fbfaf7}.h{font-size:28px;font-weight:700;fill:#1e293b}.t{font-size:18px;font-weight:700;fill:#1e293b}.b{font-size:14px}.box{fill:#fff;stroke:#d1d5db;stroke-width:2;rx:16}.green{fill:#f0fdf4;stroke:#86efac;stroke-width:2}.blue{fill:#eff6ff;stroke:#93c5fd;stroke-width:2}.yellow{fill:#fff7ed;stroke:#fdba74;stroke-width:2}.red{fill:#fff1f2;stroke:#fca5a5;stroke-width:2}
+  </style>
+  <rect width="960" height="560" rx="24" fill="#fbfaf7"/>
+  <text class="h" x="40" y="44">Financial Soundness</text>
+  <text class="b" x="40" y="68" fill="#64748b">Cash is the lifeblood of the venture. Four dimensions to understand it before you need it.</text>
+
+  <rect class="green" x="40" y="90" width="420" height="200" rx="20"/>
+  <text class="t" x="60" y="124">Economic Viability</text>
+  <text class="b" x="60" y="150">Can the model create profit at all?</text>
+  <text class="b" x="60" y="172">Gross margin · payback period · LTV · CAC</text>
+  <text class="b" x="60" y="194">Is there a unit economics story that works?</text>
+  <text class="b" x="60" y="216">Revenue model: subscription / usage / setup / success / hybrid</text>
+
+  <rect class="blue" x="480" y="90" width="420" height="200" rx="20"/>
+  <text class="t" x="500" y="124">Free Cash Flow</text>
+  <text class="b" x="500" y="150">Collect early, pay later?</text>
+  <text class="b" x="500" y="172">Cash conversion cycle — how many days between paying suppliers and receiving from customers?</text>
+  <text class="b" x="500" y="194">Working capital requirements</text>
+  <text class="b" x="500" y="216">Where does cash get stuck?</text>
+
+  <rect class="yellow" x="40" y="310" width="420" height="200" rx="20"/>
+  <text class="t" x="60" y="344">Profit-Centric View</text>
+  <text class="b" x="60" y="370">Gross margin per transaction or cohort</text>
+  <text class="b" x="60" y="392">Churn rate and its cost impact</text>
+  <text class="b" x="60" y="414">Customer acquisition cost vs lifetime value</text>
+  <text class="b" x="60" y="436">Is growth funded by cash or by margin?</text>
+
+  <rect class="red" x="480" y="310" width="420" height="200" rx="20"/>
+  <text class="t" x="500" y="344">New Venture Economics</text>
+  <text class="b" x="500" y="370">Runway — months of cash left</text>
+  <text class="b" x="500" y="392">Burn rate and how it changes with growth</text>
+  <text class="b" x="500" y="414">Funding need for next milestone</text>
+  <text class="b" x="500" y="436">Default Alive or Default Dead by when?</text>
+
+  <rect class="box" x="40" y="520" width="880" height="38" rx="14" fill="#eff6ff" stroke="#93c5fd" stroke-width="1.5"/>
+  <text class="b" x="60" y="544">Founder question: Do we know where the cash actually goes? Can we trace every dollar?</text>
+</svg>

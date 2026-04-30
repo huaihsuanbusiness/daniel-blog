@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 760" role="img" aria-labelledby="title desc">
+  <title id="title">Competitive Matrix – Independent Hospitality Example 競爭矩陣｜獨立旅宿案例</title>
+  <desc id="desc">以顧客關係所有權與營運複雜度為軸，把獨立旅宿生態中的各種方案定位在四象限裡，包含 OTA、Booking Engine、CRM/Email、Hotel Chain Loyalty、Google Sheet/LINE 以及 Independent Stay Alliance。</desc>
+  <style>
+text{font-family:'Noto Sans TC',Arial,sans-serif;fill:#1f2937}.title{font-size:26px;font-weight:700;fill:#1e293b}.axis{font-size:17px;font-weight:700;fill:#374151}.b{font-size:13px;fill:#6b7280}.dot{stroke:#334155;stroke-width:2}.label{font-size:14px;font-weight:700;fill:#1e293b}.bg{fill:#fbfaf7}
+  </style>
+  <rect width="980" height="760" fill="#fbfaf7"/>
+  <text x="40" y="42" class="title">Competitive Matrix 競爭矩陣｜Independent Hospitality 獨立旅宿案例</text>
+  <line x1="100" y1="680" x2="900" y2="680" stroke="#334155" stroke-width="3"/>
+  <line x1="100" y1="680" x2="100" y2="80" stroke="#334155" stroke-width="3"/>
+  <text x="400" y="720" class="axis">顧客關係所有權越高 →</text>
+  <text x="20" y="390" class="axis" transform="rotate(-90 20 390)">營運複雜度越高 →</text>
+  <circle cx="240" cy="560" r="16" fill="#e2e8f0" stroke="#94a3b8" stroke-width="2"/><text x="262" y="565" class="label">OTA</text>
+  <circle cx="340" cy="490" r="16" fill="#e2e8f0" stroke="#94a3b8" stroke-width="2"/><text x="362" y="495" class="label">Booking Engine</text>
+  <circle cx="560" cy="440" r="16" fill="#e2e8f0" stroke="#94a3b8" stroke-width="2"/><text x="582" y="445" class="label">CRM / Email 行銷</text>
+  <circle cx="720" cy="310" r="16" fill="#e2e8f0" stroke="#94a3b8" stroke-width="2"/><text x="742" y="315" class="label">飯店連鎖會員忠誠計畫</text>
+  <circle cx="460" cy="555" r="16" fill="#e2e8f0" stroke="#94a3b8" stroke-width="2"/><text x="482" y="560" class="label">Google Sheet / LINE</text>
+  <circle cx="670" cy="490" r="16" fill="#60a5fa" stroke="#3b82f6" stroke-width="3"/><text x="694" y="495" class="label">Independent Stay Alliance</text>
+  <text x="120" y="700" class="b">低所有權</text><text x="755" y="700" class="b">高所有權</text>
+  <text x="108" y="100" class="b">高複雜度</text><text x="108" y="672" class="b">低複雜度</text>
+</svg>

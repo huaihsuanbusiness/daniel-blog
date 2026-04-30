@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 540" role="img" aria-labelledby="title desc">
+  <title id="title">從痛點到事業 – Part 03 參考圖</title>
+  <desc id="desc">Part 03 的參考圖：Situation, Gap and Solution 訪談預備問題地圖，以及正常系統與不正常系統的概念。</desc>
+  <style>
+text{font-family:'Noto Sans TC',Arial,sans-serif;fill:#1f2937}.title{font-size:22px;font-weight:700;fill:#1e293b}.h{font-size:15px;font-weight:700;fill:#1e293b}.b{font-size:12px;fill:#6b7280}.box{fill:#fff;stroke:#d1d5db;stroke-width:2;rx:12}.bg{fill:#fbfaf7}
+  </style>
+  <rect width="960" height="540" fill="#fbfaf7"/>
+  <text x="40" y="38" class="title">從痛點到事業 – Part 03 參考圖</text>
+  <rect x="40" y="62" width="860" height="440" class="box" rx="16"/>
+  <text x="60" y="95" class="h">1. Situation, Gap and Solution 訪談預備問題地圖</text>
+  <text x="60" y="118" class="b">訪談前的路線圖：Situation → Gap → Solution hypothesis</text>
+  <text x="60" y="138" class="b">在訪談前使用，保持在真實數據上。</text>
+  <text x="60" y="168" class="h">2. 正常系統 vs 不正常系統</text>
+  <text x="60" y="192" class="b">在診斷問題之前，先搞懂事情應該怎麼運作。</text>
+  <text x="60" y="212" class="b">正常運作出現故障時，不正常訊號就會出現。</text>
+  <text x="60" y="240" class="b">這些不正常訊號才是真正的數據——不是用戶說他們想要什麼。</text>
+  <text x="60" y="280" class="h">3. Part 03 核心原則</text>
+  <text x="60" y="304" class="b">• 人雇用的是完成任務的方式，不是產品</text>
+  <text x="60" y="322" class="b">• 情境比 persona 更早，也更難造假</text>
+  <text x="60" y="340" class="b">• Outcome Expectation：任務不是動作，而是期待達到的結果</text>
+  <text x="60" y="358" class="b">• 六段鏈要完整：情境 → 當事人 → 任務 → 結果 → 缺口 → 瓶頸</text>
+  <text x="60" y="376" class="b">• 使用者不擅長設計解法，但很擅長暴露現實</text>
+  <text x="60" y="394" class="b">• 訪談路由：使用 Situation &amp; Gap &amp; Solution 預備問題</text>
+  <text x="60" y="418" class="h">4. 核心語錄</text>
+  <text x="60" y="442" class="b">「好的訪談不是在測試使用者的智商。</text>
+  <text x="60" y="460" class="b">而是在觀察期待與現實之間的落差。」</text>
+</svg>

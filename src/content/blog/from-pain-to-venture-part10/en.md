@@ -67,7 +67,7 @@ It means the message has not yet clarified the problem, value, risk, and next st
 
 Demand creation can be viewed through three costs.
 
-![Demand Creation Costs](./resource/demand-creation-costs.svg)
+![Demand Creation Costs](./resource/demand-creation-costs-en.svg)
 
 | Cost | Meaning | What needs to happen |
 |---|---|---|
@@ -158,7 +158,7 @@ A useful extension is AIDAR:
 | Action | How do they take the next step? |
 | Referral | How do they recommend it? |
 
-![AIDAR Demand Path](./resource/aidar-demand-path.svg)
+![AIDAR Demand Path](./resource/aidar-demand-path-en.svg)
 
 In the independent hospitality case:
 
@@ -329,7 +329,7 @@ But do not judge a channel by exposure.
 
 Judge it by behaviour.
 
-![Channel Testing Plan](./resource/channel-testing-plan.svg)
+![Channel Testing Plan](./resource/channel-testing-plan-en.svg)
 
 | Channel | First test | Good signal | Bad signal |
 |---|---|---|---|
@@ -424,6 +424,8 @@ Each step has a message, a channel, and a next action.
 
 ---
 
+
+![Reference Images](./resource/reference-images-en.svg)
 ## What this part should leave behind
 
 By the end, three outputs should be clear.

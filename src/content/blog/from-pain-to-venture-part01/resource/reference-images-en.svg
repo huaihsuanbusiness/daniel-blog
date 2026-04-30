@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 540" role="img" aria-labelledby="title desc">
+  <title id="title">From Pain to Venture – Part 01 Reference Images</title>
+  <desc id="desc">Reference images for Part 01: C-P-S Fit framework and Launch Ladder.</desc>
+  <style>
+text{font-family:Arial,sans-serif;fill:#1f2937}.title{font-size:22px;font-weight:700;fill:#1e293b}.h{font-size:15px;font-weight:700;fill:#1e293b}.b{font-size:12px;fill:#6b7280}.box{fill:#fff;stroke:#d1d5db;stroke-width:2;rx:12}.bg{fill:#fbfaf7}
+  </style>
+  <rect width="960" height="540" fill="#fbfaf7"/>
+  <text x="40" y="40" class="title">From Pain to Venture – Part 01 Reference Images</text>
+  <rect x="40" y="65" width="860" height="440" class="box" rx="16"/>
+  <text x="65" y="100" class="h">1. C-P-S Fit Framework</text>
+  <text x="65" y="122" class="b">A structured map from felt phenomenon to customer context, problem gap,</text>
+  <text x="65" y="140" class="b">solution hypothesis, MVP and CPS fit. Source: Strategyzer.</text>
+  <text x="65" y="168" class="b">Key concept: The goal is not to have a solution, but to confirm C-P-S Fit —</text>
+  <text x="65" y="186" class="b">Context, Problem, and Solution alignment in the right context.</text>
+  <text x="65" y="218" class="h">2. Launch Ladder</text>
+  <text x="65" y="240" class="b">Seven steps: Felt Phenomenon → Customer Context → Problem Gap → Solution</text>
+  <text x="65" y="258" class="b">Hypothesis → MVP → Validation → C-P-S Fit. Before launch, the idea must</text>
+  <text x="65" y="276" class="b">answer: whose gap, how formed, challenges, solution, success indicators, value.</text>
+  <text x="65" y="320" class="h">Key tools referenced</text>
+  <text x="65" y="344" class="b">• C-P-S Fit (Strategyzer) – alignment of Context, Problem, Solution</text>
+  <text x="65" y="362" class="b">• Hypothesis Logbook – document assumptions and evidence</text>
+  <text x="65" y="380" class="b">• Six Question Checklist – pre-launch validation gate</text>
+  <text x="65" y="398" class="b">• JTBD (Jobs to be Done) – what the actor is trying to get done</text>
+  <text x="65" y="416" class="b">• Important Unfulfilled – signal that a venture opportunity exists</text>
+  <text x="65" y="434" class="b">• MVP Definition – cheapest credible way to test the key assumption</text>
+  <text x="65" y="452" class="b">• Build-Measure-Learn – loop that reduces self-deception each round</text>
+  <text x="65" y="476" class="b">Source: Strategyzer Value Proposition Canvas &amp; Business Model Canvas</text>
+  <text x="65" y="492" class="b">https://www.strategyzer.com/library/the-value-proposition-canvas</text>
+</svg>

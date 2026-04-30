@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 560" role="img" aria-labelledby="title desc">
+  <title id="title">從痛點到事業 – Part 11 參考圖</title>
+  <desc id="desc">Part 11 的參考圖：Venture System Map 事業系統圖、Risk Register 風險登記表、90天驗證計畫。</desc>
+  <style>
+text{font-family:'Noto Sans TC',Arial,sans-serif;fill:#1f2937}.title{font-size:22px;font-weight:700;fill:#1e293b}.h{font-size:15px;font-weight:700;fill:#1e293b}.b{font-size:12px;fill:#6b7280}.box{fill:#fff;stroke:#d1d5db;stroke-width:2;rx:12}.bg{fill:#fbfaf7}
+  </style>
+  <rect width="960" height="560" fill="#fbfaf7"/>
+  <text x="40" y="38" class="title">從痛點到事業 – Part 11 參考圖</text>
+  <rect x="40" y="62" width="860" height="465" class="box" rx="16"/>
+  <text x="60" y="95" class="h">1. Venture System Map 事業系統圖</text>
+  <text x="60" y="118" class="b">七個構面：價值主張 · 關鍵活動 · 關鍵資源 · 關鍵夥伴 ·</text>
+  <text x="60" y="138" class="b">團隊與文化 · 財務 · 風險登記表</text>
+  <text x="60" y="160" class="b">產品不是事業，事業是一套系統。</text>
+  <text x="60" y="190" class="h">2. Risk Register 風險登記表</text>
+  <text x="60" y="214" class="b">八個類別：市場 · 產品 · 通路 · 營收 · 交付 ·</text>
+  <text x="60" y="234" class="b">團隊 · 法遵資料 · 財務</text>
+  <text x="60" y="256" class="b">風險 = 觸發條件 · 可能性 · 影響 · 早期警示 · 負責人 · 緩解方式 · 決策規則</text>
+  <text x="60" y="286" class="h">3. 90天驗證計畫</text>
+  <text x="60" y="310" class="b">Day 1–30：問題與顧客驗證 · Day 31–60：MVP/pilot ·</text>
+  <text x="60" y="330" class="b">Day 61–90：商業模式與停損判斷</text>
+  <text x="60" y="360" class="h">4. Part 11 核心原則</text>
+  <text x="60" y="384" class="b">• 現金是事業的命脈</text>
+  <text x="60" y="402" class="b">• 護城河不是第一天就有的牆，是慢慢挖出的地形</text>
+  <text x="60" y="420" class="b">• 法務資料風險：如果資料是價值來源，也是風險來源</text>
+  <text x="60" y="438" class="b">• Kill Criteria：不是讓放棄變得容易，是讓自己不要一直騙自己</text>
+  <text x="60" y="462" class="b">創業需要信念。但信念要被系統保護，也要被證據約束。</text>
+  <text x="60" y="480" class="b">否則它就會變成自我催眠。</text>
+</svg>

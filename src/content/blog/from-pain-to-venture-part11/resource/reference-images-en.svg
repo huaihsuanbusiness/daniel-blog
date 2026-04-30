@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 560" role="img" aria-labelledby="title desc">
+  <title id="title">From Pain to Venture – Part 11 Reference Images</title>
+  <desc id="desc">Reference images for Part 11: Venture System Map, Risk Register, and 90-Day Validation Plan.</desc>
+  <style>
+text{font-family:Arial,sans-serif;fill:#1f2937}.title{font-size:22px;font-weight:700;fill:#1e293b}.h{font-size:15px;font-weight:700;fill:#1e293b}.b{font-size:12px;fill:#6b7280}.box{fill:#fff;stroke:#d1d5db;stroke-width:2;rx:12}.bg{fill:#fbfaf7}
+  </style>
+  <rect width="960" height="560" fill="#fbfaf7"/>
+  <text x="40" y="38" class="title">From Pain to Venture – Part 11 Reference Images</text>
+  <rect x="40" y="62" width="860" height="465" class="box" rx="16"/>
+  <text x="60" y="95" class="h">1. Venture System Map</text>
+  <text x="60" y="118" class="b">Seven components: Value Proposition · Key Activities · Key Resources ·</text>
+  <text x="60" y="138" class="b">Key Partners · Team &amp; Culture · Finance · Risk Register</text>
+  <text x="60" y="160" class="b">A product is not a venture. A venture is a system.</text>
+  <text x="60" y="190" class="h">2. Risk Register</text>
+  <text x="60" y="214" class="b">Eight categories: Market · Product · Channel · Revenue · Delivery ·</text>
+  <text x="60" y="234" class="b">Team · Legal/Data · Financial</text>
+  <text x="60" y="256" class="b">Risk = trigger · likelihood · impact · early warning · owner · mitigation · decision rule</text>
+  <text x="60" y="286" class="h">3. 90-Day Validation Plan</text>
+  <text x="60" y="310" class="b">Days 1–30: problem &amp; customer · Days 31–60: MVP/pilot ·</text>
+  <text x="60" y="330" class="b">Days 61–90: business model &amp; stop-loss decision</text>
+  <text x="60" y="360" class="h">4. Key principles from Part 11</text>
+  <text x="60" y="384" class="b">• Cash is the lifeblood of the venture</text>
+  <text x="60" y="402" class="b">• Moat: not usually a wall on Day 1 — it is terrain carved over time</text>
+  <text x="60" y="420" class="b">• Ethics / Legal / Data Risk: if data is a source of value, it is also a source of risk</text>
+  <text x="60" y="438" class="b">• Kill Criteria: not to make quitting easy, but to stop self-deception</text>
+  <text x="60" y="462" class="b">Startups need belief. But belief must be protected by systems and</text>
+  <text x="60" y="480" class="b">constrained by evidence. Otherwise it becomes self-hypnosis.</text>
+</svg>

@@ -97,7 +97,7 @@ If those are not recorded, a few weeks later everything turns into vague memory.
 
 A Learning Logbook can stay very simple:
 
-![Learning Logbook Prototype MVP](./resource/logbook-prototype-mvp.svg)
+![Learning Logbook Prototype MVP](./resource/logbook-prototype-mvp-en.svg)
 
 | Field | What to record |
 |---|---|
@@ -221,7 +221,7 @@ Not every MVP should look like a product.
 
 The shape of the MVP should follow the assumption being tested.
 
-![MVP Types Map](./resource/mvp-types-map.svg)
+![MVP Types Map](./resource/mvp-types-map-en.svg)
 
 | MVP type | Best for testing | Independent hospitality example |
 |---|---|---|
@@ -335,3 +335,5 @@ It is a small, cheap, honest learning machine.
 If it does not move you closer to the truth, it is not MVP enough.
 
 ---
+
+![Reference Images](./resource/reference-images-en.svg)

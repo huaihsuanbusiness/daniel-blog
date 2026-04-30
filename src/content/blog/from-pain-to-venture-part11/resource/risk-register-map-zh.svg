@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 560" role="img" aria-labelledby="title desc">
+  <title id="title">Risk Register 風險登記表</title>
+  <desc id="desc">八個風險類別，每個都需要回答觸發條件、可能性、影響、早期警示、負責人、緩解方式、決策規則。</desc>
+  <style>
+text{font-family:'Noto Sans TC',Arial,sans-serif;fill:#1f2937}.bg{fill:#fbfaf7}.h{font-size:28px;font-weight:700;fill:#1e293b}.t{font-size:16px;font-weight:700;fill:#1e293b}.b{font-size:13px}.box{fill:#fff;stroke:#d1d5db;stroke-width:2;rx:14}.r1{fill:#eff6ff;stroke:#93c5fd;stroke-width:2}.r2{fill:#fff7ed;stroke:#fdba74;stroke-width:2}.r3{fill:#f5f3ff;stroke:#c4b5fd;stroke-width:2}.r4{fill:#f0fdf4;stroke:#86efac;stroke-width:2}
+  </style>
+  <rect width="960" height="560" rx="24" fill="#fbfaf7"/>
+  <text class="h" x="40" y="42">Risk Register 風險登記表</text>
+  <text class="b" x="40" y="66" fill="#64748b">八個風險類別。每個都需要：觸發條件 · 可能性 · 影響 · 早期警示 · 負責人 · 緩解方式 · 決策規則。</text>
+
+  <rect class="r1" x="40" y="88" width="280" height="80" rx="14"/>
+  <text class="t" x="52" y="114">Market Risk 市場風險</text>
+  <text class="b" x="52" y="134">現在有人需要這個嗎？</text>
+
+  <rect class="r2" x="340" y="88" width="280" height="80" rx="14"/>
+  <text class="t" x="352" y="114">Product Risk 產品風險</text>
+  <text class="b" x="352" y="134">解決方案有效嗎？</text>
+
+  <rect class="r3" x="640" y="88" width="280" height="80" rx="14"/>
+  <text class="t" x="652" y="114">Channel Risk 通路風險</text>
+  <text class="b" x="652" y="134">我們能接觸到顧客嗎？</text>
+
+  <rect class="r4" x="40" y="188" width="280" height="80" rx="14"/>
+  <text class="t" x="52" y="214">Revenue Risk 營收風險</text>
+  <text class="b" x="52" y="234">錢會進來嗎？</text>
+
+  <rect class="r1" x="340" y="188" width="280" height="80" rx="14"/>
+  <text class="t" x="352" y="214">Delivery Risk 交付風險</text>
+  <text class="b" x="352" y="234">能持續交付嗎？</text>
+
+  <rect class="r2" x="640" y="188" width="280" height="80" rx="14"/>
+  <text class="t" x="652" y="214">Team Risk 團隊風險</text>
+  <text class="b" x="652" y="234">這個團隊能做到嗎？</text>
+
+  <rect class="r3" x="40" y="288" width="280" height="80" rx="14"/>
+  <text class="t" x="52" y="314">Legal / Data Risk 法遵資料風險</text>
+  <text class="b" x="52" y="334">同意、 合規、誤用</text>
+
+  <rect class="r4" x="340" y="288" width="580" height="80" rx="14"/>
+  <text class="t" x="352" y="314">Financial Risk 財務風險</text>
+  <text class="b" x="352" y="334">現金會燒完嗎？有 Default Alive 計畫嗎？</text>
+
+  <rect class="box" x="40" y="388" width="880" height="110" rx="18" fill="#fff1f2" stroke="#fca5a5" stroke-width="2"/>
+  <text class="t" x="60" y="420">決策規則範本</text>
+  <text class="b" x="60" y="444">若 [觸發條件] 出現，且 [可能性] 為 [高/中/低]，且 [影響] 為 [高/中/低]：</text>
+  <text class="b" x="60" y="466">則 [負責人] 將 [透過做 X 來緩解]，於 [日期] 前完成。若 [停止日期] 前未解決，則停止。</text>
+</svg>

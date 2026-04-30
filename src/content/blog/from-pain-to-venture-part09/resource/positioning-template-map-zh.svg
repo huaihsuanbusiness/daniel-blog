@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1180 540" role="img" aria-labelledby="title desc">
+  <title id="title">Positioning Template 定位範本｜不是在顧客腦中塞口號，而是找到一個具體位置</title>
+  <desc id="desc">定位的五個維度——Category（品類）、Problem（問題）、Difference（差異）、Trust（信任），加上 Template（陳述範本），構成一個完整的定位框架。</desc>
+  <style>
+text{font-family:'Noto Sans TC',Arial,sans-serif;fill:#1f2937}.title{font-size:28px;font-weight:700;fill:#1e293b}.h{font-size:18px;font-weight:700;fill:#1e293b}.b{font-size:14px;fill:#6b7280}.box{fill:#fff;stroke:#d1d5db;stroke-width:2;rx:16}.soft{fill:#f8fafc}.bg{fill:#fbfaf7}
+  </style>
+  <rect width="1180" height="540" fill="#fbfaf7"/>
+  <text x="40" y="50" class="title">Positioning 定位｜不是在顧客腦中塞口號，而是找到一個具體位置</text>
+  <rect x="60" y="90" width="210" height="120" class="box soft"/><text x="80" y="130" class="h">Category 品類</text><text x="80" y="160" class="b">你是什麼？</text>
+  <rect x="300" y="90" width="210" height="120" class="box"/><text x="320" y="130" class="h">Problem 問題</text><text x="320" y="160" class="b">你解決什麼？</text>
+  <rect x="540" y="90" width="210" height="120" class="box soft"/><text x="560" y="130" class="h">Difference 差異</text><text x="560" y="160" class="b">為什麼不是替代方案？</text>
+  <rect x="780" y="90" width="210" height="120" class="box"/><text x="800" y="130" class="h">Trust 信任</text><text x="800" y="160" class="b">為什麼要相信你？</text>
+  <rect x="420" y="300" width="640" height="110" class="box soft" fill="#eff6ff" stroke="#93c5fd" stroke-width="2"/>
+  <text x="445" y="340" class="h">Template 範本</text>
+  <text x="445" y="375" class="b">對於＿＿＿，我們是＿＿＿，不同於＿＿＿，我們提供＿＿＿，因為＿＿＿。</text>
+</svg>

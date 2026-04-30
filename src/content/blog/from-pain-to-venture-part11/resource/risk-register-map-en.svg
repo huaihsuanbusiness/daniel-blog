@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 560" role="img" aria-labelledby="title desc">
+  <title id="title">Risk Register</title>
+  <desc id="desc">Eight risk categories, each with a question the founder must answer.</desc>
+  <style>
+text{font-family:Arial,sans-serif;fill:#1f2937}.bg{fill:#fbfaf7}.h{font-size:28px;font-weight:700;fill:#1e293b}.t{font-size:16px;font-weight:700;fill:#1e293b}.b{font-size:13px}.box{fill:#fff;stroke:#d1d5db;stroke-width:2;rx:14}.r1{fill:#eff6ff;stroke:#93c5fd;stroke-width:2}.r2{fill:#fff7ed;stroke:#fdba74;stroke-width:2}.r3{fill:#f5f3ff;stroke:#c4b5fd;stroke-width:2}.r4{fill:#f0fdf4;stroke:#86efac;stroke-width:2}
+  </style>
+  <rect width="960" height="560" rx="24" fill="#fbfaf7"/>
+  <text class="h" x="40" y="42">Risk Register</text>
+  <text class="b" x="40" y="66" fill="#64748b">Eight risk categories. Each needs: trigger · likelihood · impact · early warning · owner · mitigation · decision rule.</text>
+
+  <rect class="r1" x="40" y="88" width="280" height="80" rx="14"/>
+  <text class="t" x="52" y="114">Market Risk</text>
+  <text class="b" x="52" y="134">Does anyone need this now?</text>
+
+  <rect class="r2" x="340" y="88" width="280" height="80" rx="14"/>
+  <text class="t" x="352" y="114">Product Risk</text>
+  <text class="b" x="352" y="134">Does the solution work?</text>
+
+  <rect class="r3" x="640" y="88" width="280" height="80" rx="14"/>
+  <text class="t" x="652" y="114">Channel Risk</text>
+  <text class="b" x="652" y="134">Can we reach customers?</text>
+
+  <rect class="r4" x="40" y="188" width="280" height="80" rx="14"/>
+  <text class="t" x="52" y="214">Revenue Risk</text>
+  <text class="b" x="52" y="234">Will money come in?</text>
+
+  <rect class="r1" x="340" y="188" width="280" height="80" rx="14"/>
+  <text class="t" x="352" y="214">Delivery Risk</text>
+  <text class="b" x="352" y="234">Can we fulfil repeatedly?</text>
+
+  <rect class="r2" x="640" y="188" width="280" height="80" rx="14"/>
+  <text class="t" x="652" y="214">Team Risk</text>
+  <text class="b" x="652" y="234">Can this team do it?</text>
+
+  <rect class="r3" x="40" y="288" width="280" height="80" rx="14"/>
+  <text class="t" x="52" y="314">Legal / Data Risk</text>
+  <text class="b" x="52" y="334">Consent, compliance, misuse</text>
+
+  <rect class="r4" x="340" y="288" width="580" height="80" rx="14"/>
+  <text class="t" x="352" y="314">Financial Risk</text>
+  <text class="b" x="352" y="334">Will cash last? Do we have a default alive plan?</text>
+
+  <rect class="box" x="40" y="388" width="880" height="110" rx="18" fill="#fff1f2" stroke="#fca5a5" stroke-width="2"/>
+  <text class="t" x="60" y="420">Decision rule template</text>
+  <text class="b" x="60" y="444">If [trigger] occurs and [likelihood] is [high/medium/low] and [impact] is [high/medium/low]:</text>
+  <text class="b" x="60" y="466">then [owner] will [mitigate by doing X] by [date]. If not resolved by [kill date], we stop.</text>
+</svg>

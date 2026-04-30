@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1180 620" role="img" aria-labelledby="title desc">
+  <title id="title">MVP Types – Choose the Test That Matches the Assumption MVP類型</title>
+  <desc id="desc">八種MVP類型——Landing Page、Concierge MVP、Wizard-of-Oz、Fake Door、Paid Pilot、Demo-first、Spreadsheet MVP、Community-first——每一種都對應一組不同的假設驗證。</desc>
+  <style>
+text{font-family:'Noto Sans TC',Arial,sans-serif;fill:#1f2937}.title{font-size:28px;font-weight:700;fill:#1e293b}.h{font-size:17px;font-weight:700;fill:#1e293b}.b{font-size:13px;fill:#6b7280}.box{fill:#fff;stroke:#d1d5db;stroke-width:2;rx:14}.soft{fill:#f8fafc}.bg{fill:#fbfaf7}.rule-box{fill:#fff1f2;stroke:#fca5a5;stroke-width:2}
+  </style>
+  <rect width="1180" height="620" fill="#fbfaf7"/>
+  <text x="40" y="48" class="title">MVP Types MVP類型｜選擇能驗證假設的測試方式</text>
+  <rect x="55" y="88" width="245" height="108" class="box soft"/><text x="75" y="125" class="h">Landing Page 登陸頁</text><text x="75" y="155" class="b">測試需求 / 訊息</text>
+  <rect x="325" y="88" width="245" height="108" class="box"/><text x="345" y="125" class="h">Concierge MVP 禮賓式 MVP</text><text x="345" y="155" class="b">手動交付價值</text>
+  <rect x="595" y="88" width="245" height="108" class="box soft"/><text x="615" y="125" class="h">Wizard-of-Oz 綠野仙蹤</text><text x="615" y="155" class="b">看起來自動化，實際手動</text>
+  <rect x="865" y="88" width="245" height="108" class="box"/><text x="885" y="125" class="h">Fake Door 假的入口</text><text x="885" y="155" class="b">測量行為意圖</text>
+  <rect x="55" y="220" width="245" height="108" class="box"/><text x="75" y="257" class="h">Paid Pilot 付費 Pilot</text><text x="75" y="287" class="b">測試付費意願</text>
+  <rect x="325" y="220" width="245" height="108" class="box soft"/><text x="345" y="257" class="h">Demo-first 先示範</text><text x="345" y="287" class="b">測試理解程度與銷售訊號</text>
+  <rect x="595" y="220" width="245" height="108" class="box"/><text x="615" y="257" class="h">Spreadsheet MVP 試算表 MVP</text><text x="615" y="287" class="b">先驗營運邏輯，再做軟體</text>
+  <rect x="865" y="220" width="245" height="108" class="box soft"/><text x="885" y="257" class="h">Community-first 社群優先</text><text x="885" y="287" class="b">先建立觀眾與信任</text>
+  <rect x="100" y="400" width="960" height="115" class="rule-box" rx="16"/>
+  <text x="125" y="440" class="h">原則</text>
+  <text x="125" y="475" class="b">好的 MVP 不是最小產品。</text>
+  <text x="125" y="500" class="b">而是驗證最重要假設的最便宜、最可信的方式。</text>
+</svg>
