@@ -1,86 +1,35 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1428 798" role="img" aria-labelledby="title desc">
-  <title id="title">Design Thinking – Five-Stage and Six-Stage Versions</title>
-  <desc id="desc">A comparison of the Stanford D-School five-stage Design Thinking model and the HPI D-School six-stage version, showing Empathise, Define, Ideate, Prototype, Test versus Empathise, Define, Ideate, Prototype, Test, and Launch/Implement.</desc>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 240" role="img" aria-labelledby="title desc">
+  <title id="title">Design Thinking – Six Stages</title>
+  <desc id="desc">The six-stage Design Thinking process: Empathise, Define, Ideate, Prototype, Test, Launch.</desc>
   <style>
-text{font-family:Arial,sans-serif;fill:#1f2937}.title{font-size:26px;font-weight:700;fill:#1e293b}.label{font-size:14px;font-weight:700;fill:#1e293b}.stage{font-size:15px;font-weight:700;fill:#fff}.arrow{stroke:#94a3b8;stroke-width:2.5;fill:none;marker-end:url(#arr)}.bg{fill:#fbfaf7}
+text{font-family:Arial,sans-serif;fill:#1f2937}.title{font-size:22px;font-weight:700;fill:#1e293b}.stage{font-size:16px;font-weight:700;fill:#fff}.arrow{stroke:#94a3b8;stroke-width:3;fill:none;marker-end:url(#arr)}.bg{fill:#fbfaf7}
   </style>
-  <rect width="1428" height="798" fill="#fbfaf7"/>
+  <rect width="1200" height="240" fill="#fbfaf7"/>
   <defs>
     <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#94a3b8"/></marker>
   </defs>
-  <text x="40" y="42" class="title">Design Thinking – Common Stage Versions</text>
+  <text x="40" y="38" class="title">Design Thinking</text>
 
-  <!-- Five-stage version -->
-  <rect x="40" y="68" width="250" height="56" rx="14" fill="#3b82f6"/>
-  <text x="165" y="103" class="stage" text-anchor="middle">Stanford D-School</text>
-  <text x="165" y="122" class="stage" text-anchor="middle" font-size="13px" fill="#bfdbfe">Five-Stage Version</text>
+  <rect x="40" y="60" width="168" height="68" rx="18" fill="#5b21b6"/>
+  <text x="124" y="102" class="stage" text-anchor="middle">Empathise</text>
 
-  <rect x="330" y="68" width="175" height="56" rx="16" fill="#1d4ed8"/>
-  <text x="417" y="103" class="stage" text-anchor="middle">Empathise</text>
+  <path d="M208 94 H248" class="arrow"/>
+  <rect x="248" y="60" width="168" height="68" rx="18" fill="#5b21b6"/>
+  <text x="332" y="102" class="stage" text-anchor="middle">Define</text>
 
-  <path d="M505 96 H545" class="arrow"/>
-  <rect x="545" y="68" width="175" height="56" rx="16" fill="#1d4ed8"/>
-  <text x="632" y="103" class="stage" text-anchor="middle">Define</text>
+  <path d="M416 94 H456" class="arrow"/>
+  <rect x="456" y="60" width="168" height="68" rx="18" fill="#5b21b6"/>
+  <text x="540" y="102" class="stage" text-anchor="middle">Ideate</text>
 
-  <path d="M720 96 H760" class="arrow"/>
-  <rect x="760" y="68" width="175" height="56" rx="16" fill="#1d4ed8"/>
-  <text x="847" y="103" class="stage" text-anchor="middle">Ideate</text>
+  <path d="M624 94 H664" class="arrow"/>
+  <rect x="664" y="60" width="168" height="68" rx="18" fill="#5b21b6"/>
+  <text x="748" y="102" class="stage" text-anchor="middle">Prototype</text>
 
-  <path d="M935 96 H975" class="arrow"/>
-  <rect x="975" y="68" width="175" height="56" rx="16" fill="#1d4ed8"/>
-  <text x="1062" y="103" class="stage" text-anchor="middle">Prototype</text>
+  <path d="M832 94 H872" class="arrow"/>
+  <rect x="872" y="60" width="168" height="68" rx="18" fill="#5b21b6"/>
+  <text x="956" y="102" class="stage" text-anchor="middle">Test</text>
 
-  <path d="M1150 96 H1190" class="arrow"/>
-  <rect x="1190" y="68" width="175" height="56" rx="16" fill="#1d4ed8"/>
-  <text x="1277" y="103" class="stage" text-anchor="middle">Test</text>
-
-  <!-- Six-stage version -->
-  <rect x="40" y="178" width="250" height="56" rx="14" fill="#7c3aed"/>
-  <text x="165" y="213" class="stage" text-anchor="middle">HPI D-School</text>
-  <text x="165" y="232" class="stage" text-anchor="middle" font-size="13px" fill="#ddd6fe">Six-Stage Version</text>
-
-  <rect x="330" y="178" width="155" height="56" rx="16" fill="#5b21b6"/>
-  <text x="407" y="213" class="stage" text-anchor="middle">Empathise</text>
-
-  <path d="M485 206 H515" class="arrow"/>
-  <rect x="515" y="178" width="155" height="56" rx="16" fill="#5b21b6"/>
-  <text x="592" y="213" class="stage" text-anchor="middle">Define</text>
-
-  <path d="M670 206 H700" class="arrow"/>
-  <rect x="700" y="178" width="155" height="56" rx="16" fill="#5b21b6"/>
-  <text x="777" y="213" class="stage" text-anchor="middle">Ideate</text>
-
-  <path d="M855 206 H885" class="arrow"/>
-  <rect x="885" y="178" width="155" height="56" rx="16" fill="#5b21b6"/>
-  <text x="962" y="213" class="stage" text-anchor="middle">Prototype</text>
-
-  <path d="M1040 206 H1070" class="arrow"/>
-  <rect x="1070" y="178" width="155" height="56" rx="16" fill="#5b21b6"/>
-  <text x="1147" y="213" class="stage" text-anchor="middle">Test</text>
-
-  <path d="M1225 206 H1255" class="arrow"/>
-  <rect x="1255" y="178" width="130" height="56" rx="16" fill="#5b21b6"/>
-  <text x="1320" y="213" class="stage" text-anchor="middle">Launch</text>
-
-  <!-- Description -->
-  <rect x="40" y="270" width="1340" height="100" rx="16" fill="#fff" stroke="#e5e7eb" stroke-width="2"/>
-  <text x="60" y="302" class="label">Five-Stage (Stanford D-School)</text>
-  <text x="60" y="326" font-size="14px" fill="#6b7280">Empathise → Define → Ideate → Prototype → Test</text>
-  <text x="60" y="348" font-size="13px" fill="#9ca3af">The most widely cited version. Widely used in business and UX. Emphasises human-centred iteration.</text>
-
-  <rect x="40" y="390" width="1340" height="120" rx="16" fill="#fff" stroke="#e5e7eb" stroke-width="2"/>
-  <text x="60" y="422" class="label">Six-Stage (HPI D-School, Germany)</text>
-  <text x="60" y="446" font-size="14px" fill="#6b7280">Empathise → Define → Ideate → Prototype → Test → Launch/Implement</text>
-  <text x="60" y="470" font-size="13px" fill="#9ca3af">Adds a Launch or Implement stage. More structured, better suited for longer projects in enterprise settings.</text>
-  <text x="60" y="492" font-size="13px" fill="#9ca3af">Less "breakthrough" feel but provides better continuity between validation and delivery.</text>
-
-  <!-- Context note -->
-  <rect x="40" y="540" width="1340" height="90" rx="16" fill="#eff6ff" stroke="#93c5fd" stroke-width="2"/>
-  <text x="60" y="574" class="label" fill="#1e40af">Important note</text>
-  <text x="60" y="600" font-size="14px" fill="#1e40af">Design Thinking is not a fixed formula. The stages and their names vary by institution.</text>
-  <text x="60" y="622" font-size="13px" fill="#3b82f6">What matters is the underlying discipline: observe, define the real problem, diverge,</text>
-
-  <!-- Source -->
-  <text x="60" y="676" font-size="13px" fill="#9ca3af">Source: Strategyzer, Stanford D-School, HPI D-School</text>
-
+  <path d="M1040 94 H1080" class="arrow"/>
+  <rect x="1080" y="60" width="130" height="68" rx="18" fill="#5b21b6"/>
+  <text x="1145" y="102" class="stage" text-anchor="middle">Launch</text>
 </svg>
