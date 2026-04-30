@@ -334,9 +334,9 @@ import SurveyLayout from '../../../../layouts/SurveyLayout.astro';
   const inviteUrl = urlParams.get('invite') || '';
   const articleUrl = 'https://www.danielcanfly.com/zh/blog/ai-companion-survey';
   const isMobileBrowser = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-  // 如果是從 ref 連結進來的家屬版，則跳過第一個專屬分享 panel
+  // 如果是從 ref 連結進來的家屬版或長輩版，則跳過第一個專屬分享 panel
   const hasRefInvite = inviteUrl.includes('ref=');
-  const showFirstPanel = !(role === 'caregiver' && hasRefInvite);
+  const showFirstPanel = !(role === 'caregiver' && hasRefInvite) && !(role === 'elder' && hasRefInvite);
 
   const panel = document.getElementById('share-panel');
   const linkEl = document.getElementById('share-link');

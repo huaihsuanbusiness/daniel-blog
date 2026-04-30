@@ -329,7 +329,7 @@ export class GoogleSheet {
       return {
         success: true,
         familyId: newFid,
-        inviteLink: `${site}/zh/survey/elder?ref=${newFid}`,
+        inviteLink: `${site}/zh/campaign/ai-companion/elder?ref=${newFid}`,
       };
     }
 
