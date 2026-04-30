@@ -426,19 +426,11 @@ MVP 是實驗，不是縮水版理想。
 
 ---
 
-![Value Proposition Canvas 官方參考圖](./resource/official-vpc-strategyzer.png)
-
-*來源圖：Strategyzer — The Value Proposition Canvas。*
-
-![Double Diamond 官方參考圖](./resource/official-double-diamond-design-council.png)
-
-*來源圖：Design Council — The Double Diamond（CC BY 4.0）。*
-
 ## 參考圖與說明
 
 - **Value Proposition Canvas（官方模板）**：  
   https://www.strategyzer.com/library/the-value-proposition-canvas  
-  本文現在已放入一張本地參考圖供解說使用，但若要看完整原始框架，仍建議回到官方來源。
+  建議引用官方來源，或自行重繪教學版示意圖，避免直接重發官方版權素材。
 
 - **Double Diamond（Design Council）**：  
   https://www.designcouncil.org.uk/our-resources/the-double-diamond/  

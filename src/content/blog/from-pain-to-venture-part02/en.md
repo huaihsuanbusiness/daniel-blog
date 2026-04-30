@@ -78,9 +78,9 @@ The value of Design Thinking is not that it makes you more creative.
 
 It slows down premature certainty.
 
-![Design Thinking five-stage reference](./resource/design-thinking-5-stage-coach-chiao.png)
+![Design Thinking reference figure](./resource/design-thinking-figure-02.png)
 
-*Reference image from Coach Chiao’s article on common Design Thinking stage variants.*
+*Reference image used for the Design Thinking section (Daniel-specified figure 2).* 
 
 ### Empathise: not collecting emotions, but understanding situations.
 
@@ -166,9 +166,9 @@ The Design Council version is commonly described as:
 
 Its power is not in the four words.
 
-![Official Double Diamond reference](./resource/official-double-diamond-design-council.png)
+![Double Diamond reference figure](./resource/double-diamond-figure-01.png)
 
-*Source image: Design Council — The Double Diamond (CC BY 4.0).* 
+*Reference image used for the Double Diamond section (Daniel-specified figure 1).* 
 
 It is in the two diamonds:
 
@@ -256,9 +256,9 @@ But a full canvas is not the same as fit.
 
 The tool matters because it forces the customer side and the offer side to meet.
 
-![Official Value Proposition Canvas reference](./resource/official-vpc-strategyzer.png)
+![Value Proposition Canvas reference figure](./resource/value-proposition-canvas-figure-03.png)
 
-*Source image: Strategyzer — The Value Proposition Canvas.*
+*Reference image used for the Value Proposition Canvas section (Daniel-specified figure 3).* 
 
 ### Customer Profile
 
