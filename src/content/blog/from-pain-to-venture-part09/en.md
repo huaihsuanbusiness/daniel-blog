@@ -472,6 +472,10 @@ The direction matters: you are not only selling features.
 
 You are teaching the customer a new way to understand the problem.
 
+---
+
+
+![Reference Images](./resource/reference-images-en.svg)
 ## What this part should leave behind
 
 By the end, three outputs should be clear.
@@ -500,3 +504,5 @@ Include direct competitors, substitutes, manual work, and doing nothing. Then ch
 If this sentence is not clear, do not rush into marketing.
 
 The market may not yet know how to understand you.
+
+---

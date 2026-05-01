@@ -302,3 +302,7 @@ A founder’s job is not to find the place with the most complaints.
 It is to find the place where someone has already paid a cost, tried to solve the problem, and still remains stuck.
 
 That is where opportunity is more likely to form.
+
+---
+
+![Reference Images](./resource/reference-images-en.svg)

@@ -333,3 +333,7 @@ This part should leave behind three outputs:
 If these outputs cannot be produced, the solution is still mostly imagination.
 
 It is not yet something you can test.
+
+---
+
+![Reference Images](./resource/reference-images-en.svg)

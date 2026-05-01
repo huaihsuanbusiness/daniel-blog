@@ -422,6 +422,10 @@ This table turns demand creation from vague “marketing” into a testable path
 
 Each step has a message, a channel, and a next action.
 
+---
+
+
+![Reference Images](./resource/reference-images-en.svg)
 ## What this part should leave behind
 
 By the end, three outputs should be clear.
@@ -450,3 +454,5 @@ Connect Attention, Interest, Desire, Action, and Referral into one measurable pa
 A finished product is only the beginning.
 
 Demand creation helps the market understand, believe, and take the next step.
+
+---

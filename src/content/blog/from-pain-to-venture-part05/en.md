@@ -123,6 +123,8 @@ A stage-4 actor moves because the old way has already become unsustainable.
 For venture validation, you want the second type.  
 The first type can mislead you into chasing enthusiasm instead of real pain.
 
+![Reference Images](./resource/reference-images-en.svg)
+
 ## The Suffering Triangle: how far has the pain progressed?
 
 Pain is not binary. It has stages.
@@ -294,3 +296,7 @@ It should leave behind three working outputs:
 The early market is not the prettiest customer group in your imagination.
 
 It is the group already in enough pain to help you uncover the truth.
+
+---
+
+![Reference Images](./resource/reference-images-en.svg)

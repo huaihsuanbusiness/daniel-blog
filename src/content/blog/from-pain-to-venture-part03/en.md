@@ -330,3 +330,7 @@ Do not only prepare feature questions. Prepare questions that reveal situation, 
 If these three outputs cannot be produced yet, do not ask users what they want.
 
 Their answer may only be the echo of your own solution.
+
+---
+
+![Reference Images](./resource/reference-images-en.svg)
