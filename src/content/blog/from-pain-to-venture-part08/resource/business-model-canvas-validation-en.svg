@@ -1,65 +1,95 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 680" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1040 860" role="img" aria-labelledby="title desc">
   <title id="title">Business Model Canvas Validation</title>
-  <desc id="desc">Nine blocks of the Business Model Canvas, each with a validation checkpoint question.</desc>
-  <defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#475569"/></marker></defs>
+  <desc id="desc">Nine Business Model Canvas blocks, each separated into its own card with readable validation questions.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#64748b"/>
+    </marker>
+  </defs>
   <style>
-text{font-family:Arial,sans-serif;fill:#1f2937}.bg{fill:#fbfaf7}.h{font-size:26px;font-weight:700;fill:#1e293b}.sub{font-size:14px;fill:#64748b}.box{fill:#fff;stroke:#d1d5db;stroke-width:2;rx:14}.key{font-size:14px;font-weight:700;fill:#1e293b}.val{font-size:12px;fill:#64748b}.q{font-size:12px;fill:#475569}.arrow{stroke:#718096;stroke-width:2;fill:none;marker-end:url(#a)}.sep{stroke:#e2e8f0;stroke-width:1;stroke-dasharray:4 4}
+    text { font-family: Arial, sans-serif; fill: #1f2937; }
+    .title { font-size: 28px; font-weight: 700; fill: #1e293b; }
+    .sub { font-size: 14px; fill: #64748b; }
+    .box { fill: #ffffff; stroke: #d1d5db; stroke-width: 2; rx: 16; }
+    .key { font-size: 16px; font-weight: 700; fill: #1e293b; }
+    .val { font-size: 13px; fill: #475569; }
+    .q { font-size: 12px; fill: #475569; }
+    .arrowLine { stroke: #94a3b8; stroke-width: 2; fill: none; marker-end: url(#arrow); }
   </style>
-  <rect width="960" height="680" rx="24" fill="#fbfaf7"/>
-  <text class="h" x="40" y="40">Business Model Canvas Validation</text>
-  <text class="sub" x="40" y="62">Nine blocks, each with a question the market can answer before you overbuild.</text>
-  <rect class="box" x="40" y="80" width="880" height="50" rx="14" fill="#f0fdf4" stroke="#86efac" stroke-width="2"/>
-  <text class="q" x="60" y="108">Central question: Can this venture repeatedly create, deliver, and capture value — without the model eating itself?</text>
 
-  <rect class="box" x="40" y="148" width="240" height="100" rx="14"/>
-  <text class="key" x="52" y="172">Key Partners</text>
-  <text class="val" x="52" y="194">Who must help? Why?</text>
-  <text class="q" x="52" y="216">Will they partner? What reduces their cost to collaborate?</text>
+  <rect width="1040" height="860" rx="28" fill="#fbfaf7"/>
 
-  <rect class="box" x="300" y="148" width="240" height="100" rx="14"/>
-  <text class="key" x="312" y="172">Key Activities</text>
-  <text class="val" x="312" y="194">Sales, delivery, product, data</text>
-  <text class="q" x="312" y="216">Which ones can we not外包? Which require deep expertise?</text>
+  <text class="title" x="40" y="48">Business Model Canvas Validation</text>
+  <text class="sub" x="40" y="72">Nine blocks, each with a question the market must answer before you overbuild.</text>
 
-  <rect class="box" x="560" y="148" width="360" height="100" rx="14" fill="#f5f3ff" stroke="#c4b5fd" stroke-width="2"/>
-  <text class="key" x="572" y="172">Value Propositions</text>
-  <text class="val" x="572" y="194">Why should customers care? What is the core promise?</text>
-  <text class="q" x="572" y="216">Is the promise specific enough that failure is measurable?</text>
+  <rect class="box" x="40" y="92" width="960" height="72" fill="#f0fdf4" stroke="#86efac"/>
+  <text class="q" x="60" y="122">Central question: Can this venture repeatedly create, deliver, and capture value</text>
+  <text class="q" x="60" y="142">without the model eating itself?</text>
 
-  <rect class="box" x="40" y="268" width="240" height="100" rx="14"/>
-  <text class="key" x="52" y="292">Customer Relationships</text>
-  <text class="val" x="52" y="314">How do we get, keep, grow?</text>
-  <text class="q" x="52" y="336">What does retention actually look like? How measured?</text>
+  <rect class="box" x="40" y="188" width="250" height="128"/>
+  <text class="key" x="58" y="214">Key Partners</text>
+  <text class="val" x="58" y="238">Who must help? Why them?</text>
+  <text class="q" x="58" y="264">Will they partner?</text>
+  <text class="q" x="58" y="284">What reduces their cost to collaborate?</text>
 
-  <rect class="box" x="300" y="268" width="240" height="100" rx="14"/>
-  <text class="key" x="312" y="292">Revenue Streams</text>
-  <text class="val" x="312" y="314">Subscription / usage / setup / success / hybrid</text>
-  <text class="q" x="312" y="336">Which stream is primary? Can it cover full cost structure?</text>
+  <rect class="box" x="315" y="188" width="250" height="128"/>
+  <text class="key" x="333" y="214">Key Activities</text>
+  <text class="val" x="333" y="238">Sales, delivery, product, data</text>
+  <text class="q" x="333" y="264">Which activities cannot be outsourced?</text>
+  <text class="q" x="333" y="284">Which ones require deep expertise?</text>
 
-  <rect class="box" x="40" y="388" width="240" height="100" rx="14" fill="#eff6ff" stroke="#93c5fd" stroke-width="2"/>
-  <text class="key" x="52" y="412">Customer Segments</text>
-  <text class="val" x="52" y="434">Who pays? Who benefits without paying?</text>
-  <text class="q" x="52" y="456">Is the ICP confirmed through problem discovery?</text>
+  <rect class="box" x="590" y="188" width="410" height="128" fill="#f5f3ff" stroke="#c4b5fd"/>
+  <text class="key" x="608" y="214">Value Propositions</text>
+  <text class="val" x="608" y="238">Why should customers care?</text>
+  <text class="val" x="608" y="256">What is the core promise?</text>
+  <text class="q" x="608" y="282">Is the promise specific enough</text>
+  <text class="q" x="608" y="300">that success or failure is measurable?</text>
 
-  <rect class="box" x="300" y="388" width="240" height="100" rx="14" fill="#fff7ed" stroke="#fdba74" stroke-width="2"/>
-  <text class="key" x="312" y="412">Key Resources</text>
-  <text class="val" x="312" y="434">People, capital, data, brand, tech</text>
-  <text class="q" x="312" y="456">What do we actually control? What is most defensible?</text>
+  <rect class="box" x="40" y="342" width="250" height="142"/>
+  <text class="key" x="58" y="368">Customer Relationships</text>
+  <text class="val" x="58" y="392">How do we get, keep, and grow?</text>
+  <text class="q" x="58" y="418">What does retention actually look like?</text>
+  <text class="q" x="58" y="438">How will we measure it?</text>
 
-  <rect class="box" x="560" y="268" width="360" height="220" rx="14"/>
-  <text class="key" x="572" y="292">Channels</text>
-  <text class="val" x="572" y="314">How do we reach and deliver?</text>
-  <text class="q" x="572" y="340">Can we reach early customers without brand or reputation?</text>
-  <text class="key" x="572" y="380">Cost Structure</text>
-  <text class="val" x="572" y="402">Fixed vs variable | Scale curve | Margin profile</text>
-  <text class="q" x="572" y="428">Where does cost explode as we scale? What is the margin on primary stream?</text>
+  <rect class="box" x="315" y="342" width="250" height="142"/>
+  <text class="key" x="333" y="368">Revenue Streams</text>
+  <text class="val" x="333" y="392">Subscription / usage / setup / success / hybrid</text>
+  <text class="q" x="333" y="418">Which stream is primary?</text>
+  <text class="q" x="333" y="438">Can it cover the full cost structure?</text>
 
-  <line x1="280" y1="198" x2="300" y2="198" class="arrow"/>
-  <line x1="540" y1="198" x2="560" y2="198" class="arrow"/>
-  <line x1="540" y1="318" x2="560" y2="318" class="arrow"/>
-  <line x1="280" y1="438" x2="300" y2="438" class="arrow"/>
-  <line x1="280" y1="318" x2="300" y2="318" class="arrow"/>
+  <rect class="box" x="590" y="342" width="410" height="128" fill="#eef6ff" stroke="#93c5fd"/>
+  <text class="key" x="608" y="368">Channels</text>
+  <text class="val" x="608" y="392">Reach, onboarding, and delivery</text>
+  <text class="q" x="608" y="418">Can we reach early customers</text>
+  <text class="q" x="608" y="438">without brand, reputation, or heavy sales cost?</text>
 
-  <rect class="box" x="40" y="510" width="880" height="60" rx="14" fill="#fff1f2" stroke="#fca5a5" stroke-width="2"/>
-  <text class="q" x="60" y="538">Validation sequence: Customer → Value → Channel → Revenue → Cost → Partners → Decision rule</text>
+  <rect class="box" x="40" y="510" width="250" height="142" fill="#eff6ff" stroke="#93c5fd"/>
+  <text class="key" x="58" y="536">Customer Segments</text>
+  <text class="val" x="58" y="560">Who pays? Who benefits without paying?</text>
+  <text class="q" x="58" y="586">Is the ICP confirmed</text>
+  <text class="q" x="58" y="606">through problem discovery?</text>
+
+  <rect class="box" x="315" y="510" width="250" height="142" fill="#fff7ed" stroke="#fdba74"/>
+  <text class="key" x="333" y="536">Key Resources</text>
+  <text class="val" x="333" y="560">People, capital, data, brand, tech</text>
+  <text class="q" x="333" y="586">What do we actually control?</text>
+  <text class="q" x="333" y="606">What is most defensible?</text>
+
+  <rect class="box" x="590" y="496" width="410" height="156" fill="#fff8ef" stroke="#fdba74"/>
+  <text class="key" x="608" y="524">Cost Structure</text>
+  <text class="val" x="608" y="548">Fixed vs variable | scale curve | margin profile</text>
+  <text class="q" x="608" y="574">Where does cost explode as we scale?</text>
+  <text class="q" x="608" y="594">What is the margin on the primary revenue stream?</text>
+
+  <line class="arrowLine" x1="290" y1="252" x2="315" y2="252"/>
+  <line class="arrowLine" x1="565" y1="252" x2="590" y2="252"/>
+  <line class="arrowLine" x1="290" y1="413" x2="315" y2="413"/>
+  <line class="arrowLine" x1="565" y1="413" x2="590" y2="413"/>
+  <line class="arrowLine" x1="290" y1="581" x2="315" y2="581"/>
+  <line class="arrowLine" x1="565" y1="581" x2="590" y2="581"/>
+
+  <rect class="box" x="40" y="684" width="960" height="92" fill="#fff1f2" stroke="#fca5a5"/>
+  <text class="key" x="60" y="716">Validation sequence</text>
+  <text class="q" x="60" y="742">Customer → Value → Channel → Revenue → Cost → Partners</text>
+  <text class="q" x="60" y="762">→ Decision rule</text>
 </svg>

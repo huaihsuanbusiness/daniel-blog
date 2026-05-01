@@ -173,6 +173,8 @@ Strategyzer describes the Business Model Canvas as a strategic management and en
 
 ![Business Model Canvas Validation](./resource/business-model-canvas-validation-en.svg)
 
+<img src="/images/from-pain-to-venture-part08/business-model-canvas-validation-reference.png" alt="Business Model Canvas validation reference" loading="lazy" decoding="async" style="max-width:100%;height:auto;display:block;margin:1.25rem 0;" />
+
 The nine blocks can be asked this way:
 
 | Block | Question |

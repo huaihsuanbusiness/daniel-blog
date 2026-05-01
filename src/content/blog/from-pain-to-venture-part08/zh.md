@@ -169,6 +169,8 @@ Strategyzer 把 Business Model Canvas 定義為一個可以描述、設計、挑
 
 ![Business Model Canvas Validation](./resource/business-model-canvas-validation-zh.svg)
 
+<img src="/images/from-pain-to-venture-part08/business-model-canvas-validation-reference.png" alt="Business Model Canvas validation reference" loading="lazy" decoding="async" style="max-width:100%;height:auto;display:block;margin:1.25rem 0;" />
+
 九格可以這樣問：
 
 | 區塊 | 問題 |
