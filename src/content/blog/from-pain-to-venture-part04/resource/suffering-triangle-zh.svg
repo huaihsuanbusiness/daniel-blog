@@ -1,34 +1,46 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 520" role="img" aria-labelledby="title desc">
-  <title id="title">痛苦三角形</title>
-  <desc id="desc">痛苦不是有或沒有，而是看對方痛到哪一層。優先找第 4～5 層：已經自己拼解法，或有能力投入資源的人。</desc>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 720" role="img" aria-labelledby="title desc">
+  <title id="title">Suffering Triangle｜痛苦三角形</title>
+  <desc id="desc">五層痛苦三角形：從有問題，到意識到問題、尋找解法、自己拼 workaround，最後到能投入資源或取得預算。</desc>
   <style>
-    text{font-family:'Noto Sans TC',Arial,sans-serif;fill:#1f2937}.bg{fill:#fbfaf7}.box{fill:#fff;stroke:#d1d5db;stroke-width:2}.h{font-size:26px;font-weight:700}.t{font-size:16px;font-weight:700}.b{font-size:14px;fill:#475569}.small{font-size:12px;fill:#64748b}
+    text{font-family:'Noto Sans TC',Arial,sans-serif;fill:#1f2937}
+    .bg{fill:#fbfaf7}
+    .title{font-size:34px;font-weight:700;fill:#1e293b}
+    .stage{font-size:25px;font-weight:700;fill:#9a3412}
+    .note{font-size:24px;fill:#166534}
+    .line{stroke:#1e3a8a;stroke-width:3;fill:none}
   </style>
-  <rect class="bg" x="0" y="0" width="800" height="520" rx="24"/>
-  <text class="h" x="40" y="44">痛苦三角形</text>
-  <text class="b" x="40" y="68">痛苦不是有或沒有，而是看對方痛到哪一層。</text>
+  <rect class="bg" x="0" y="0" width="1200" height="720" rx="28"/>
+  <text class="title" x="340" y="68">Suffering Triangle｜痛苦三角形</text>
 
-  <polygon points="400,70 620,440 180,440" fill="none" stroke="#fdba74" stroke-width="2.5"/>
-  <polygon points="400,130 560,420 240,420" fill="none" stroke="#fdba74" stroke-width="2"/>
-  <polygon points="400,190 500,400 300,400" fill="none" stroke="#fdba74" stroke-width="1.5"/>
+  <!-- outer triangle -->
+  <polygon points="340,160 900,640 40,640" class="line"/>
 
-  <rect class="box" x="150" y="100" width="500" height="44" rx="14"/>
-  <text class="t" x="170" y="128">1. Has a problem｜有這個問題</text>
+  <!-- inner separators -->
+  <line x1="120" y1="544" x2="820" y2="544" class="line"/>
+  <line x1="196" y1="448" x2="744" y2="448" class="line"/>
+  <line x1="270" y1="352" x2="670" y2="352" class="line"/>
+  <line x1="344" y1="256" x2="596" y2="256" class="line"/>
 
-  <rect class="box" x="130" y="180" width="540" height="44" rx="14"/>
-  <text class="t" x="150" y="208">2. Is aware of having a problem｜已經知道有這個問題</text>
+  <!-- labels inside triangle -->
+  <text class="stage" x="110" y="605">1. Has a problem｜有問題</text>
+  <text class="stage" x="162" y="510">2. Is aware of having a problem｜知道有問題</text>
+  <text class="stage" x="212" y="414">3. Actively looking for a solution｜積極找解法</text>
+  <text class="stage" x="276" y="318">4. Assembled a homegrown solution｜自己拼 workaround</text>
+  <text class="stage" x="348" y="222">5. Has or can acquire a budget｜能投入資源</text>
 
-  <rect class="box" x="110" y="260" width="580" height="44" rx="14"/>
-  <text class="t" x="130" y="288">3. Actively looking for a solution｜積極在找解法</text>
+  <!-- notes on right -->
+  <text class="note" x="955" y="222">願意投入真實資源，</text>
+  <text class="note" x="955" y="258">或已能合理取得預算。</text>
 
-  <rect class="box" x="90" y="340" width="620" height="44" rx="14" fill="#fff7ed" stroke="#fdba74" stroke-width="2"/>
-  <text class="t" x="110" y="368">4. Assembled a homegrown solution｜已經自己拼湊了解法</text>
-  <text class="b" x="720" y="368" fill="#fdba74">⚡</text>
+  <text class="note" x="955" y="320">對現成方案不夠信任，</text>
+  <text class="note" x="955" y="356">因此自己拼出補救作法。</text>
 
-  <rect class="box" x="70" y="420" width="660" height="44" rx="14" fill="#fff7ed" stroke="#fdba74" stroke-width="2"/>
-  <text class="t" x="90" y="448">5. Has or can acquire budget｜有能力投入資源</text>
-  <text class="b" x="740" y="448" fill="#fdba74">💰</text>
+  <text class="note" x="955" y="416">已經開始針對自己的問題</text>
+  <text class="note" x="955" y="452">探索具體解法。</text>
 
-  <rect class="box" x="40" y="480" width="720" height="36" rx="12" fill="#eff6ff" stroke="#93c5fd" stroke-width="1.5"/>
-  <text class="b" x="60" y="504">早期市場優先找第 4～5 層：已經自己拼解法，或有能力投入資源的人。</text>
+  <text class="note" x="955" y="512">已經意識到有問題，</text>
+  <text class="note" x="955" y="548">但還沒有真正採取行動。</text>
+
+  <text class="note" x="955" y="608">問題存在，</text>
+  <text class="note" x="955" y="644">但自己還不會把它當成問題。</text>
 </svg>

@@ -130,69 +130,36 @@ It asks:
 
 ![Suffering Triangle](./resource/suffering-triangle-en.svg)
 
-The original English levels are worth keeping because the order matters.
+The five levels matter because they describe behaviour, not emotion.
 
-| Level | Original wording | Explanation |
+| Level | Original wording | What it means in practice |
 |---|---|---|
-| 1 | Has a problem | There is a problem, but they may not yet recognise it as such |
-| 2 | Is aware of having a problem | They know the problem exists, but have not acted |
-| 3 | Actively looking for a solution | They are actively looking for ways to solve it |
-| 4 | Assembled a homegrown solution | They have patched together their own workaround |
-| 5 | Has or can acquire a budget | They have budget, or can find resources |
-
-Put back into independent hospitality:
-
-### 1. Has a problem
-
-The property is highly dependent on OTAs, but sees it as simply how the industry works.
-
-### 2. Is aware of having a problem
-
-The operator knows the lack of guest data is risky, and that direct booking is weak, but has not yet acted.
-
-### 3. Actively looking for a solution
-
-They start researching websites, booking engines, memberships, LINE, CRM, remarketing tools, or asking other hotels how they handle it.
-
-### 4. Assembled a homegrown solution
-
-They use Google Sheets to track repeat guests, manually send offers, broadcast through LINE, tidy up stay lists by hand, or track sources in a fragile way.
-
-This is a strong signal.
-
-People only build ugly workarounds when the problem has become annoying enough.
-
-### 5. Has or can acquire a budget
-
-They have budget, or can create access to budget.
-
-Budget does not only mean money. It can mean time, staff attention, workflow change, or decision authority.
-
-When a property is ready to put resources into the problem, it has moved beyond “this is irritating”. It has become operationally important.
+| 1 | Has a problem | The problem exists, but the actor does not really name it as a problem yet |
+| 2 | Is aware of having a problem | The actor knows the problem exists, but still has not taken action |
+| 3 | Actively looking for a solution | The actor has begun exploring concrete ways to solve it |
+| 4 | Assembled a homegrown solution | The actor does not trust off-the-shelf options enough and has built a workaround |
+| 5 | Has or can acquire a budget | The actor can now commit real resources, or justify a formal budget |
 
 ### Applied to independent hotels
 
-| Pain level | Independent hotel behaviour |
-|---|---|
-| 1 | Thinks OTA commission is high, but does not seriously treat it as a problem |
-| 2 | Realises lack of guest data and repeat-guest mechanism creates long-term risk |
-| 3 | Researches websites, CRM, memberships, LINE, remarketing and direct-booking strategy |
-| 4 | Uses forms, LINE, Google Sheets or manual voucher codes as a temporary workaround |
-| 5 | Will spend budget, change front-desk process, or seek outside help to build direct-booking capability |
+| Level | Independent hotel signal | Why it matters |
+|---|---|---|
+| 1 | Complains that OTA commissions are high, but treats it as normal industry reality | Pain exists, but behaviour has not changed |
+| 2 | Knows weak direct booking and weak guest data are dangerous, but still has no active response | Awareness exists, but not yet commitment |
+| 3 | Starts comparing websites, booking engines, CRM, LINE, memberships, and remarketing options | The problem has become active enough to search for alternatives |
+| 4 | Uses Google Sheets, LINE broadcasts, manual guest tags, voucher codes, or patched flows | This is a strong signal: they are already paying the pain with labour |
+| 5 | Is willing to spend money, time, workflow change, staff attention, or decision authority | The pain has become operationally important enough to deserve resources |
 
-The tool helps separate:
+The most useful early-adopter layers are usually 4 and 5.
 
-- people who merely have a problem
-- people who know they have a problem
-- people actively looking
-- people already patching something together
-- people ready to commit resources
+Stage 4 tells you the actor no longer believes the status quo is sufficient.  
+Stage 5 tells you the actor is now ready to move resources, not just words.
 
-For early ventures, the last two layers are usually the most useful.
+That is why the triangle is useful.
 
-They will not just talk.
+It does not only tell you who hurts.
 
-They may move.
+It tells you whose pain has already changed behaviour.
 
 ---
 
