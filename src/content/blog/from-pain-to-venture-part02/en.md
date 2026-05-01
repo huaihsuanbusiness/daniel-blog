@@ -515,21 +515,3 @@ The real problem is not changing your mind.
 
 The real problem is never truly knowing what problem you were solving.
 
----
-
-## References and image notes
-
-### Design Thinking / Double Diamond
-
-- Design Council｜The Double Diamond  
-  https://www.designcouncil.org.uk/our-resources/the-double-diamond/  
-  The official page marks the Double Diamond diagram as CC BY 4.0.
-
-- Coach Chiao｜雙菱型、發散、收斂、同理、定義、發想、雛形、測試五階段  
-  https://coach-chiao.medium.com/%E9%9B%99%E8%8F%B1%E5%9E%8B-%E7%99%BC%E6%95%A3-%E6%94%B6%E6%96%82-%E5%90%8C%E7%90%86-%E5%AE%9A%E7%BE%A9-%E7%99%BC%E6%83%B3-%E9%9B%9B%E5%BD%A2-%E6%B8%AC%E8%A9%A6%E4%BA%94%E9%9A%8E%E6%AE%B5-%E5%93%AA%E4%B8%80%E5%80%8B%E6%89%8D%E6%98%AF%E8%83%BD%E6%9C%89%E5%B9%AB%E5%8A%A9%E7%9A%84-%E8%A8%AD%E8%A8%88%E6%80%9D%E8%80%83-6bb12043b4e4
-
-### Value Proposition Canvas
-
-- Strategyzer｜The Value Proposition Canvas  
-  https://www.strategyzer.com/library/the-value-proposition-canvas  
-  This article now includes a local reference image for commentary context, while the official source remains the best place to inspect the original framework in full.

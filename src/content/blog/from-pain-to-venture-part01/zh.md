@@ -424,14 +424,3 @@ MVP 是實驗，不是縮水版理想。
 
 但用得好，會讓你比較難假裝自己已經想清楚。
 
----
-
-## 參考圖與說明
-
-- **Value Proposition Canvas（官方模板）**：  
-  https://www.strategyzer.com/library/the-value-proposition-canvas  
-  建議引用官方來源，或自行重繪教學版示意圖，避免直接重發官方版權素材。
-
-- **Double Diamond（Design Council）**：  
-  https://www.designcouncil.org.uk/our-resources/the-double-diamond/  
-  Design Council 官方頁面標示該圖為 CC BY 4.0，可依授權註記使用。

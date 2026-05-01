@@ -445,14 +445,3 @@ They will not think for you.
 
 Used well, they make it harder to pretend you already have.
 
----
-
-## References and image notes
-
-- **Value Proposition Canvas**  
-  https://www.strategyzer.com/library/the-value-proposition-canvas  
-  Best used via official reference or redrawn as an educational diagram, rather than re-hosting copyrighted official assets.
-
-- **Double Diamond by Design Council**  
-  https://www.designcouncil.org.uk/our-resources/the-double-diamond/  
-  The Design Council page marks the Double Diamond diagram as CC BY 4.0.
