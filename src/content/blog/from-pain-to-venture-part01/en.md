@@ -28,6 +28,9 @@ They rush towards the solution before understanding the problem.
 
 ## Essence
 
+As you read these 11 essays, keep the following passage in view.
+It is the core thinking principle I have relied on for years when solving problems. It works like an overall map, helping you understand what this entire series is doing: not discussing tools in fragments, but taking you step by step from discovering a problem, to understanding it, to analysing it, and finally to forming a solution.
+
 ### 1. Aspiration
 
 We intend, for ① which people in ② which specific situation, to provide ③ what products and services, so that they may reverse the current condition of ④ what major unmet expectation gap in the process of trying to get something done, enabling them to accomplish ⑤ what important job they want to get done, while also undergoing ⑥ what subtle but fundamental change, and thereby creating ⑦ what kind of situation, value, and further meaning for the people involved.
