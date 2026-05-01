@@ -85,6 +85,44 @@ Action leaks pain.
 
 ---
 
+## The Diffusion Curve: this is related, but it is not the same thing
+
+Everett Rogers published *Diffusion of Innovations* in 1962.  
+The model divides adopters into five groups:
+
+| Category | Share | Behaviour |
+|---|---|---|
+| Innovators | 2.5% | Will try anything early, regardless of pain |
+| Early Adopters | 13.5% | Move ahead of the crowd, often driven by a specific problem they want solved |
+| Early Majority | 34% | Follow once evidence is visible |
+| Late Majority | 34% | Resistant until peer pressure is strong |
+| Laggards | 16% | Last to move, if ever |
+
+![Diffusion of Innovations](./resource/diffusion-of-innovations-en.svg)
+
+Here is the important distinction for early-market work:
+
+The Rogers model is descriptive. It tells you what happened across the full adoption curve in retrospect.
+
+The suffering triangle is diagnostic. It tells you who among the people in front of you right now is most likely to move first.
+
+You are not trying to predict which category someone falls into over the full product lifecycle.
+
+You are trying to answer a simpler, more urgent question:
+
+> Given this person's current pain, workaround, and urgency — will they move before I run out of resources?
+
+The Rogers early adopter and the suffering-triangle stage-4 actor are not the same person.
+
+A Rogers early adopter may move because they like novelty.
+
+A stage-4 actor moves because the old way has already become unsustainable.
+
+For venture validation, you want the second type.  
+The first type can mislead you into chasing enthusiasm instead of real pain.
+
+![Reference Images](./resource/reference-images-en.svg)
+
 ## The Suffering Triangle: how far has the pain progressed?
 
 Pain is not binary. It has stages.

@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 600" role="img" aria-labelledby="title desc">
+  <title id="title">創新擴散理論</title>
+  <desc id="desc">羅杰斯創新擴散曲線，顯示各類採用者與累積採用率隨時間的變化。</desc>
+  <style>
+    text{font-family:Arial,sans-serif;fill:#1f2937}
+    .bg{fill:#fbfaf7}
+    .axis-label{font-size:13px;fill:#374151}
+    .category{font-size:16px;font-weight:700;fill:#1e3a8a}
+    .pct{font-size:13px;fill:#64748b}
+    .title-text{font-size:22px;font-weight:700;fill:#1e293b}
+    .subtitle{font-size:14px;fill:#6b7280}
+    .line{stroke:#1e3a8a;stroke-width:2.5;fill:none}
+    .sline{stroke:#b45309;stroke-width:3;fill:none}
+  </style>
+  <rect class="bg" x="0" y="0" width="860" height="600" rx="24"/>
+
+  <!-- Title -->
+  <text class="title-text" x="430" y="38" text-anchor="middle">創新擴散理論</text>
+  <text class="subtitle" x="430" y="60" text-anchor="middle">Everett M. Rogers, 1962</text>
+
+  <!-- Left chart: Bell curve (distribution) -->
+  <text class="axis-label" x="20" y="105" font-weight="700">採用者</text>
+  <text class="axis-label" x="20" y="123" font-weight="700">分布</text>
+
+  <!-- Bell curve path -->
+  <path d="M 40,510 C 55,510 70,505 85,490 C 105,460 130,355 160,250 C 190,145 230,80 270,70 C 310,60 355,80 400,115 C 445,150 490,230 530,330 C 565,420 595,480 630,500 C 655,510 675,513 700,514" 
+        stroke="#1e3a8a" stroke-width="3" fill="none"/>
+
+  <!-- Fill under bell curve -->
+  <path d="M 40,510 C 55,510 70,505 85,490 C 105,460 130,355 160,250 C 190,145 230,80 270,70 C 310,60 355,80 400,115 C 445,150 490,230 530,330 C 565,420 595,480 630,500 C 655,510 675,513 700,514 L 700,515 L 40,515 Z" 
+        fill="#1e3a8a" opacity="0.15"/>
+
+  <!-- Baseline -->
+  <line x1="35" y1="515" x2="705" y2="515" stroke="#d1d5db" stroke-width="2"/>
+
+  <!-- Category labels (Chinese) -->
+  <text class="category" x="70" y="540">創新者</text>
+  <text class="pct" x="70" y="560">2.5%</text>
+
+  <text class="category" x="180" y="540">早期</text>
+  <text class="category" x="180" y="560">採用者</text>
+  <text class="pct" x="180" y="580">13.5%</text>
+
+  <text class="category" x="330" y="540">早期</text>
+  <text class="category" x="330" y="560">大多數</text>
+  <text class="pct" x="330" y="580">34%</text>
+
+  <text class="category" x="485" y="540">晚期</text>
+  <text class="category" x="485" y="560">大多數</text>
+  <text class="pct" x="485" y="580">34%</text>
+
+  <text class="category" x="625" y="540">落後者</text>
+  <text class="pct" x="625" y="560">16%</text>
+
+  <!-- Divider -->
+  <line x1="740" y1="90" x2="740" y2="520" stroke="#d1d5db" stroke-width="1.5" stroke-dasharray="6,4"/>
+
+  <!-- Right chart: S-curve (cumulative) -->
+  <text class="axis-label" x="755" y="105" font-weight="700">累積</text>
+  <text class="axis-label" x="755" y="123" font-weight="700">採用率</text>
+
+  <!-- S-curve path -->
+  <path d="M 755,510 C 755,508 757,502 760,492 C 765,472 772,432 780,385 C 788,335 800,270 815,200 C 828,130 840,70 850,35 L 850,35" 
+        stroke="#b45309" stroke-width="3" fill="none"/>
+
+  <!-- dots on S-curve at each category threshold -->
+  <circle cx="775" cy="485" r="5" fill="#b45309"/>
+  <circle cx="800" cy="430" r="5" fill="#b45309"/>
+  <circle cx="822" cy="355" r="5" fill="#b45309"/>
+  <circle cx="836" cy="265" r="5" fill="#b45309"/>
+  <circle cx="846" cy="175" r="5" fill="#b45309"/>
+
+  <!-- Y-axis labels for S-curve -->
+  <text class="pct" x="748" y="510" text-anchor="end">0%</text>
+  <text class="pct" x="748" y="430" text-anchor="end">25%</text>
+  <text class="pct" x="748" y="355" text-anchor="end">50%</text>
+  <text class="pct" x="748" y="280" text-anchor="end">75%</text>
+  <text class="pct" x="748" y="200" text-anchor="end">84%</text>
+  <text class="pct" x="748" y="120" text-anchor="end">97.5%</text>
+  <text class="pct" x="748" y="38" text-anchor="end">100%</text>
+
+  <!-- Baseline for S-curve -->
+  <line x1="755" y1="515" x2="852" y2="515" stroke="#d1d5db" stroke-width="2"/>
+  <line x1="755" y1="35" x2="755" y2="515" stroke="#d1d5db" stroke-width="2"/>
+
+  <!-- Legend -->
+  <rect x="35" y="590" width="16" height="3" fill="#1e3a8a"/>
+  <text class="subtitle" x="57" y="594">採用者人數</text>
+  <rect x="200" y="590" width="20" height="3" fill="#b45309"/>
+  <text class="subtitle" x="226" y="594">累積採用率</text>
+</svg>
