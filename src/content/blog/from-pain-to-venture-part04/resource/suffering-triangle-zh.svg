@@ -1,27 +1,44 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 760" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 760" role="img" aria-labelledby="title desc">
   <title id="title">Suffering Triangle｜痛苦三角形</title>
-  <desc id="desc">A five-level suffering triangle.</desc>
+  <desc id="desc">A five-level triangle showing how pain progresses from having a problem to investing substantial effort and cost.</desc>
   <style>
     text{font-family:Arial,sans-serif;fill:#1f2937}
     .bg{fill:#fbfaf7}
     .title{font-size:34px;font-weight:700;fill:#1e293b}
     .stage{font-size:22px;font-weight:700;fill:#9a3412}
+    .note{font-size:19px;fill:#166534}
     .line{stroke:#1e3a8a;stroke-width:3;fill:none}
   </style>
-  <rect class="bg" x="0" y="0" width="900" height="760" rx="28"/>
-  <text class="title" x="205" y="62">Suffering Triangle｜痛苦三角形</text>
+  <rect class="bg" x="0" y="0" width="1400" height="760" rx="28"/>
+  <text class="title" x="350" y="62">Suffering Triangle｜痛苦三角形</text>
 
   <!-- centered triangle -->
-  <polygon points="450,120 790,640 110,640" class="line"/>
-  <line x1="382" y1="224" x2="518" y2="224" class="line"/>
-  <line x1="314" y1="328" x2="586" y2="328" class="line"/>
-  <line x1="246" y1="432" x2="654" y2="432" class="line"/>
-  <line x1="178" y1="536" x2="722" y2="536" class="line"/>
+  <polygon points="420,120 760,640 80,640" class="line"/>
+  <line x1="352" y1="224" x2="488" y2="224" class="line"/>
+  <line x1="284" y1="328" x2="556" y2="328" class="line"/>
+  <line x1="216" y1="432" x2="624" y2="432" class="line"/>
+  <line x1="148" y1="536" x2="692" y2="536" class="line"/>
 
-  <!-- keep only English labels inside triangle -->
-  <text class="stage" x="450" y="186" text-anchor="middle">5. Has or can acquire a budget</text>
-  <text class="stage" x="450" y="290" text-anchor="middle">4. Assembled a homegrown solution</text>
-  <text class="stage" x="450" y="394" text-anchor="middle">3. Actively looking for a solution</text>
-  <text class="stage" x="450" y="498" text-anchor="middle">2. Is aware of having a problem</text>
-  <text class="stage" x="450" y="602" text-anchor="middle">1. Has a problem</text>
+  <!-- stage labels -->
+  <text class="stage" x="420" y="186" text-anchor="middle">5. Has or can acquire a budget</text>
+  <text class="stage" x="420" y="290" text-anchor="middle">4. Assembled a homegrown solution</text>
+  <text class="stage" x="420" y="394" text-anchor="middle">3. Actively looking for a solution</text>
+  <text class="stage" x="420" y="498" text-anchor="middle">2. Is aware of having a problem</text>
+  <text class="stage" x="420" y="602" text-anchor="middle">1. Has a problem</text>
+
+  <!-- notes in Chinese -->
+  <text class="note" x="830" y="182">付出大量心力與代價，</text>
+  <text class="note" x="830" y="210">並產生與常人不同的慣性。</text>
+
+  <text class="note" x="830" y="286">對現成方案不滿，</text>
+  <text class="note" x="830" y="314">因而開始自行製作解決方案。</text>
+
+  <text class="note" x="830" y="390">有針對自己的問題</text>
+  <text class="note" x="830" y="418">探索解決方案。</text>
+
+  <text class="note" x="830" y="494">意識到問題</text>
+  <text class="note" x="830" y="522">但沒有採取作為。</text>
+
+  <text class="note" x="830" y="598">有問題，</text>
+  <text class="note" x="830" y="626">但自己不這麼認為。</text>
 </svg>
