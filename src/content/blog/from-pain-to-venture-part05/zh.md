@@ -98,7 +98,9 @@ Everett Rogers 在 1962 年提出**創新擴散理論**（*Diffusion of Innovati
 | 晚期大多數（Late Majority） | 34% | 除非同儕壓力夠強，否則抗拒改變 |
 | 落後者（Laggards） | 16% | 最晚行動，或永遠不動 |
 
-![Diffusion of Innovations](./resource/diffusion-of-innovations-zh.svg)
+![Diffusion of Innovations](./resource/diffusion-of-innovations-reference.png)
+
+*參考資料：Diffusion of innovations 圖。DOI:10.1108/17581184201000012*
 
 對早期市場工作來說，這裡有一個很重要的區分：
 
