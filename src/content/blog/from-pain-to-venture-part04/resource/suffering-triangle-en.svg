@@ -1,46 +1,44 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 720" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 760" role="img" aria-labelledby="title desc">
   <title id="title">Suffering Triangle</title>
-  <desc id="desc">A five-level triangle showing how pain progresses from having a problem to investing significant effort and cost.</desc>
+  <desc id="desc">A five-level triangle showing how pain progresses from having a problem to investing substantial effort and cost.</desc>
   <style>
     text{font-family:Arial,sans-serif;fill:#1f2937}
     .bg{fill:#fbfaf7}
     .title{font-size:34px;font-weight:700;fill:#1e293b}
-    .stage{font-size:26px;font-weight:700;fill:#9a3412}
-    .note{font-size:24px;fill:#166534}
+    .stage{font-size:22px;font-weight:700;fill:#9a3412}
+    .note{font-size:19px;fill:#166534}
     .line{stroke:#1e3a8a;stroke-width:3;fill:none}
   </style>
-  <rect class="bg" x="0" y="0" width="1200" height="720" rx="28"/>
-  <text class="title" x="395" y="68">Suffering Triangle</text>
+  <rect class="bg" x="0" y="0" width="1400" height="760" rx="28"/>
+  <text class="title" x="430" y="62">Suffering Triangle</text>
 
-  <!-- outer triangle -->
-  <polygon points="340,160 900,640 40,640" class="line"/>
+  <!-- centered triangle -->
+  <polygon points="420,120 760,640 80,640" class="line"/>
+  <line x1="352" y1="224" x2="488" y2="224" class="line"/>
+  <line x1="284" y1="328" x2="556" y2="328" class="line"/>
+  <line x1="216" y1="432" x2="624" y2="432" class="line"/>
+  <line x1="148" y1="536" x2="692" y2="536" class="line"/>
 
-  <!-- inner separators -->
-  <line x1="120" y1="544" x2="820" y2="544" class="line"/>
-  <line x1="196" y1="448" x2="744" y2="448" class="line"/>
-  <line x1="270" y1="352" x2="670" y2="352" class="line"/>
-  <line x1="344" y1="256" x2="596" y2="256" class="line"/>
+  <!-- stage labels -->
+  <text class="stage" x="420" y="186" text-anchor="middle">5. Has or can acquire a budget</text>
+  <text class="stage" x="420" y="290" text-anchor="middle">4. Assembled a homegrown solution</text>
+  <text class="stage" x="420" y="394" text-anchor="middle">3. Actively looking for a solution</text>
+  <text class="stage" x="420" y="498" text-anchor="middle">2. Is aware of having a problem</text>
+  <text class="stage" x="420" y="602" text-anchor="middle">1. Has a problem</text>
 
-  <!-- labels inside triangle -->
-  <text class="stage" x="132" y="605">1. Has a problem.</text>
-  <text class="stage" x="188" y="510">2. Is aware of having a problem</text>
-  <text class="stage" x="248" y="414">3. Actively looking for a solution</text>
-  <text class="stage" x="312" y="318">4. Assembled a homegrown solution</text>
-  <text class="stage" x="372" y="222">5. Has or can acquire a budget</text>
+  <!-- notes kept inside canvas -->
+  <text class="note" x="830" y="182">Has invested substantial effort and cost,</text>
+  <text class="note" x="830" y="210">and developed inertia different from most people.</text>
 
-  <!-- notes on right -->
-  <text class="note" x="955" y="222">Has invested substantial effort and cost,</text>
-  <text class="note" x="955" y="258">and developed inertia different from most people.</text>
+  <text class="note" x="830" y="286">Is dissatisfied with existing options,</text>
+  <text class="note" x="830" y="314">and therefore starts building their own solution.</text>
 
-  <text class="note" x="955" y="320">Is dissatisfied with existing options,</text>
-  <text class="note" x="955" y="356">and therefore starts building their own solution.</text>
+  <text class="note" x="830" y="390">Has explored solutions</text>
+  <text class="note" x="830" y="418">for their own problem.</text>
 
-  <text class="note" x="955" y="416">Has explored solutions</text>
-  <text class="note" x="955" y="452">for their own problem.</text>
+  <text class="note" x="830" y="494">Is aware of the problem</text>
+  <text class="note" x="830" y="522">but has not taken action.</text>
 
-  <text class="note" x="955" y="512">Is aware of the problem</text>
-  <text class="note" x="955" y="548">but has not taken action.</text>
-
-  <text class="note" x="955" y="608">Has a problem,</text>
-  <text class="note" x="955" y="644">but does not see it that way.</text>
+  <text class="note" x="830" y="598">Has a problem,</text>
+  <text class="note" x="830" y="626">but does not see it that way.</text>
 </svg>
