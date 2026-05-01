@@ -98,9 +98,9 @@ The model divides adopters into five groups:
 | Late Majority | 34% | Resistant until peer pressure is strong |
 | Laggards | 16% | Last to move, if ever |
 
-<img src="./resource/diffusion-of-innovations-reference.png" alt="Diffusion of Innovations" loading="lazy" decoding="async" style="max-width:100%;height:auto;display:block;margin:1.5rem 0;" />
+<img src="/images/from-pain-to-venture-part05/diffusion-of-innovations-spec-training.png" alt="Diffusion of Innovations" loading="lazy" decoding="async" style="max-width:100%;height:auto;display:block;margin:1.5rem 0;" />
 
-*Reference: Diffusion of innovations chart. DOI:10.1108/17581184201000012*
+<span style="font-size:12px;color:#64748b;">*Diffusion of innovations chart. DOI:10.1108/17581184201000012*</span>
 
 Here is the important distinction for early-market work:
 

@@ -1,58 +1,104 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 520" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1040 720" role="img" aria-labelledby="title desc">
   <title id="title">AIDAR Demand Path</title>
   <desc id="desc">Five stages of demand creation: Attention, Interest, Desire, Action, Referral.</desc>
-  <defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#475569"/></marker></defs>
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#94a3b8"/>
+    </marker>
+  </defs>
   <style>
-text{font-family:Arial,sans-serif;fill:#1f2937}.bg{fill:#fbfaf7}.h{font-size:28px;font-weight:700;fill:#1e293b}.t{font-size:18px;font-weight:700;fill:#1e293b}.b{font-size:14px;fill:#475569}.box{fill:#fff;stroke:#d1d5db;stroke-width:2;rx:16}.a1{fill:#eff6ff;stroke:#93c5fd;stroke-width:2}.a2{fill:#f0fdf4;stroke:#86efac;stroke-width:2}.a3{fill:#fff7ed;stroke:#fdba74;stroke-width:2}.a4{fill:#f5f3ff;stroke:#c4b5fd;stroke-width:2}.a5{fill:#fff1f2;stroke:#fca5a5;stroke-width:2}
+    text { font-family: Arial, sans-serif; }
+    .h { font-size: 28px; font-weight: 700; fill: #1e293b; }
+    .sub { font-size: 15px; fill: #64748b; }
+    .stage-title { font-size: 18px; font-weight: 700; fill: #1e293b; }
+    .stage-sub { font-size: 14px; fill: #64748b; }
+    .stage-body { font-size: 14px; fill: #1e293b; }
+    .rule-h { font-size: 18px; font-weight: 700; fill: #1e293b; }
+    .rule-body { font-size: 15px; fill: #1e293b; }
+    .rule-muted { font-size: 14px; fill: #64748b; }
+    .box { fill: #fff; stroke: #d1d5db; stroke-width: 2; rx: 16; }
+    .a1 { fill: #eff6ff; stroke: #93c5fd; stroke-width: 2; }
+    .a2 { fill: #f0fdf4; stroke: #86efac; stroke-width: 2; }
+    .a3 { fill: #fff7ed; stroke: #fdba74; stroke-width: 2; }
+    .a4 { fill: #f5f3ff; stroke: #c4b5fd; stroke-width: 2; }
+    .a5 { fill: #fff1f2; stroke: #fca5a5; stroke-width: 2; }
   </style>
-  <rect width="960" height="520" rx="24" fill="#fbfaf7"/>
-  <text class="h" x="40" y="40">AIDAR Demand Path</text>
-  <text class="b" x="40" y="64">Demand creation reduces three costs: understanding cost, trust cost, and action cost.</text>
 
-  <rect class="a1" x="40" y="88" width="160" height="140" rx="18"/>
-  <text class="t" x="52" y="116">Attention</text>
-  <text class="b" x="52" y="138">Notice the issue</text>
-  <text class="b" x="52" y="158">How do customers notice?</text>
-  <text class="b" x="52" y="178">Make the problem visible.</text>
+  <rect width="1040" height="720" rx="28" fill="#fbfaf7"/>
 
-  <path d="M200 158 L225 158" stroke="#475569" stroke-width="2.5" fill="none" marker-end="url(#arr)"/>
+  <text class="h" x="40" y="44">AIDAR Demand Path</text>
+  <text class="sub" x="40" y="68">Each stage has a different job. One pitch cannot do all five.</text>
 
-  <rect class="a2" x="225" y="88" width="160" height="140" rx="18"/>
-  <text class="t" x="237" y="116">Interest</text>
-  <text class="b" x="237" y="138">Feel it is relevant</text>
-  <text class="b" x="237" y="158">How do they feel it is relevant?</text>
-  <text class="b" x="237" y="178">Make it specific to their situation.</text>
+  <!-- Stage 1: Attention -->
+  <rect class="a1" x="40" y="88" width="170" height="160" rx="18"/>
+  <text class="stage-title" x="56" y="116">Attention</text>
+  <text class="stage-sub" x="56" y="138">Notice the issue</text>
+  <text class="stage-body" x="56" y="162">How do customers</text>
+  <text class="stage-body" x="56" y="182">notice?</text>
+  <text class="stage-body" x="56" y="206">Make the problem</text>
+  <text class="stage-body" x="56" y="226">visible.</text>
 
-  <path d="M385 158 L410 158" stroke="#475569" stroke-width="2.5" fill="none" marker-end="url(#arr)"/>
+  <!-- Arrow 1→2 -->
+  <line x1="210" y1="168" x2="232" y2="168" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#arr)"/>
 
-  <rect class="a3" x="410" y="88" width="160" height="140" rx="18"/>
-  <text class="t" x="422" y="116">Desire</text>
-  <text class="b" x="422" y="138">Want the outcome</text>
-  <text class="b" x="422" y="158">How do they start wanting the outcome?</text>
-  <text class="b" x="422" y="178">Make the future state concrete.</text>
+  <!-- Stage 2: Interest -->
+  <rect class="a2" x="232" y="88" width="170" height="160" rx="18"/>
+  <text class="stage-title" x="248" y="116">Interest</text>
+  <text class="stage-sub" x="248" y="138">Feel it is relevant</text>
+  <text class="stage-body" x="248" y="162">How do they feel</text>
+  <text class="stage-body" x="248" y="182">it is relevant?</text>
+  <text class="stage-body" x="248" y="206">Make it specific</text>
+  <text class="stage-body" x="248" y="226">to their situation.</text>
 
-  <path d="M570 158 L595 158" stroke="#475569" stroke-width="2.5" fill="none" marker-end="url(#arr)"/>
+  <!-- Arrow 2→3 -->
+  <line x1="402" y1="168" x2="424" y2="168" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#arr)"/>
 
-  <rect class="a4" x="595" y="88" width="160" height="140" rx="18"/>
-  <text class="t" x="607" y="116">Action</text>
-  <text class="b" x="607" y="138">Take the next step</text>
-  <text class="b" x="607" y="158">How do they take the next step?</text>
-  <text class="b" x="607" y="178">Lower the action cost.</text>
+  <!-- Stage 3: Desire -->
+  <rect class="a3" x="424" y="88" width="170" height="160" rx="18"/>
+  <text class="stage-title" x="440" y="116">Desire</text>
+  <text class="stage-sub" x="440" y="138">Want the outcome</text>
+  <text class="stage-body" x="440" y="162">How do they start</text>
+  <text class="stage-body" x="440" y="182">wanting the outcome?</text>
+  <text class="stage-body" x="440" y="206">Make the future</text>
+  <text class="stage-body" x="440" y="226">state concrete.</text>
 
-  <path d="M755 158 L780 158" stroke="#475569" stroke-width="2.5" fill="none" marker-end="url(#arr)"/>
+  <!-- Arrow 3→4 -->
+  <line x1="594" y1="168" x2="616" y2="168" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#arr)"/>
 
-  <rect class="a5" x="780" y="88" width="140" height="140" rx="18"/>
-  <text class="t" x="792" y="116">Referral</text>
-  <text class="b" x="792" y="138">Invite others</text>
-  <text class="b" x="792" y="158">After proof, how do they recommend it?</text>
-  <text class="b" x="792" y="178">Ask after evidence is clear.</text>
+  <!-- Stage 4: Action -->
+  <rect class="a4" x="616" y="88" width="170" height="160" rx="18"/>
+  <text class="stage-title" x="632" y="116">Action</text>
+  <text class="stage-sub" x="632" y="138">Take the next step</text>
+  <text class="stage-body" x="632" y="162">How do they take</text>
+  <text class="stage-body" x="632" y="182">the next step?</text>
+  <text class="stage-body" x="632" y="206">Lower the</text>
+  <text class="stage-body" x="632" y="226">action cost.</text>
 
-  <rect class="box" x="40" y="260" width="880" height="220" rx="18"/>
-  <text class="h" x="60" y="294">Rule: Each step needs a different message, different proof, and a different action cost.</text>
-  <text class="b" x="60" y="322">Demand creation is not pushing customers down a funnel.</text>
-  <text class="b" x="60" y="344">It is giving each step enough reason to continue.</text>
-  <text class="b" x="60" y="372">Three costs it reduces:</text>
-  <text class="b" x="60" y="396">1. Understanding cost — they do not understand what problem you solve.</text>
-  <text class="b" x="60" y="418">2. Trust cost — they do not yet believe you can deliver.</text>
-  <text class="b" x="60" y="440">3. Action cost — change feels too hard or not urgent enough.</text>
+  <!-- Arrow 4→5 -->
+  <line x1="786" y1="168" x2="808" y2="168" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#arr)"/>
+
+  <!-- Stage 5: Referral -->
+  <rect class="a5" x="808" y="88" width="172" height="160" rx="18"/>
+  <text class="stage-title" x="824" y="116">Referral</text>
+  <text class="stage-sub" x="824" y="138">Invite others</text>
+  <text class="stage-body" x="824" y="162">After proof, how</text>
+  <text class="stage-body" x="824" y="182">do they recommend?</text>
+  <text class="stage-body" x="824" y="206">Ask after</text>
+  <text class="stage-body" x="824" y="226">evidence is clear.</text>
+
+  <!-- Bottom Rule Section -->
+  <rect class="box" x="40" y="280" width="940" height="380" rx="20"/>
+  <text class="rule-h" x="64" y="320">Rule: Each step needs a different message, different proof, and a different action cost reduction.</text>
+  <text class="rule-body" x="64" y="352">Demand creation is not pushing customers down a funnel.</text>
+  <text class="rule-body" x="64" y="378">It is giving each step enough reason to continue.</text>
+
+  <text class="rule-muted" x="64" y="414">Three costs it reduces:</text>
+  <text class="rule-body" x="64" y="442">1. Understanding cost — they do not understand what problem you solve.</text>
+  <text class="rule-body" x="64" y="468">2. Trust cost — they do not yet believe you can deliver.</text>
+  <text class="rule-body" x="64" y="494">3. Action cost — change feels too hard or not urgent enough.</text>
+
+  <text class="rule-muted" x="64" y="538">Demand creation connects to:</text>
+  <text class="rule-body" x="64" y="566">• Pain (Part04) — the customer has an important unmet Gap</text>
+  <text class="rule-body" x="64" y="592">• Value Proposition (Part08) — your solution creates specific value</text>
+  <text class="rule-body" x="64" y="618">• Positioning (Part09) — compared to alternatives, you occupy a clear place</text>
 </svg>

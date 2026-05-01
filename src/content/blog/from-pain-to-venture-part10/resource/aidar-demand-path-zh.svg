@@ -1,58 +1,104 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 520" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1040 720" role="img" aria-labelledby="title desc">
   <title id="title">AIDAR 需求建立路徑</title>
   <desc id="desc">需求建立的五個階段：注意、興趣、欲望、行動、推薦。</desc>
-  <defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#475569"/></marker></defs>
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#94a3b8"/>
+    </marker>
+  </defs>
   <style>
-text{font-family:'Noto Sans TC',Arial,sans-serif;fill:#1f2937}.bg{fill:#fbfaf7}.h{font-size:28px;font-weight:700;fill:#1e293b}.t{font-size:18px;font-weight:700;fill:#1e293b}.b{font-size:14px;fill:#475569}.box{fill:#fff;stroke:#d1d5db;stroke-width:2;rx:16}.a1{fill:#eff6ff;stroke:#93c5fd;stroke-width:2}.a2{fill:#f0fdf4;stroke:#86efac;stroke-width:2}.a3{fill:#fff7ed;stroke:#fdba74;stroke-width:2}.a4{fill:#f5f3ff;stroke:#c4b5fd;stroke-width:2}.a5{fill:#fff1f2;stroke:#fca5a5;stroke-width:2}
+    text { font-family: 'Noto Sans TC', Arial, sans-serif; }
+    .h { font-size: 28px; font-weight: 700; fill: #1e293b; }
+    .sub { font-size: 15px; fill: #64748b; }
+    .stage-title { font-size: 18px; font-weight: 700; fill: #1e293b; }
+    .stage-sub { font-size: 14px; fill: #64748b; }
+    .stage-body { font-size: 14px; fill: #1e293b; }
+    .rule-h { font-size: 18px; font-weight: 700; fill: #1e293b; }
+    .rule-body { font-size: 15px; fill: #1e293b; }
+    .rule-muted { font-size: 14px; fill: #64748b; }
+    .box { fill: #fff; stroke: #d1d5db; stroke-width: 2; rx: 16; }
+    .a1 { fill: #eff6ff; stroke: #93c5fd; stroke-width: 2; }
+    .a2 { fill: #f0fdf4; stroke: #86efac; stroke-width: 2; }
+    .a3 { fill: #fff7ed; stroke: #fdba74; stroke-width: 2; }
+    .a4 { fill: #f5f3ff; stroke: #c4b5fd; stroke-width: 2; }
+    .a5 { fill: #fff1f2; stroke: #fca5a5; stroke-width: 2; }
   </style>
-  <rect width="960" height="520" rx="24" fill="#fbfaf7"/>
-  <text class="h" x="40" y="40">AIDAR 需求建立路徑</text>
-  <text class="b" x="40" y="64">需求建立可以降低三種成本：理解成本、信任成本、行動成本。</text>
 
-  <rect class="a1" x="40" y="88" width="160" height="140" rx="18"/>
-  <text class="t" x="52" y="116">Attention 注意</text>
-  <text class="b" x="52" y="138">注意到問題的存在</text>
-  <text class="b" x="52" y="158">如何讓顧客注意到？</text>
-  <text class="b" x="52" y="178">讓問題變得可見。</text>
+  <rect width="1040" height="720" rx="28" fill="#fbfaf7"/>
 
-  <path d="M200 158 L225 158" stroke="#475569" stroke-width="2.5" fill="none" marker-end="url(#arr)"/>
+  <text class="h" x="40" y="44">AIDAR 需求建立路徑</text>
+  <text class="sub" x="40" y="68">每個階段有不同的任務。一段 pitch 無法完成所有五個階段的工作。</text>
 
-  <rect class="a2" x="225" y="88" width="160" height="140" rx="18"/>
-  <text class="t" x="237" y="116">Interest 興趣</text>
-  <text class="b" x="237" y="138">感覺到與自己相關</text>
-  <text class="b" x="237" y="158">如何讓他們感受到這跟自己有關？</text>
-  <text class="b" x="237" y="178">讓它具體到他們的情境。</text>
+  <!-- Stage 1: Attention -->
+  <rect class="a1" x="40" y="88" width="170" height="160" rx="18"/>
+  <text class="stage-title" x="56" y="116">Attention 注意</text>
+  <text class="stage-sub" x="56" y="138">注意到問題的存在</text>
+  <text class="stage-body" x="56" y="162">如何讓顧客</text>
+  <text class="stage-body" x="56" y="182">注意到？</text>
+  <text class="stage-body" x="56" y="206">讓問題變得</text>
+  <text class="stage-body" x="56" y="226">可見。</text>
 
-  <path d="M385 158 L410 158" stroke="#475569" stroke-width="2.5" fill="none" marker-end="url(#arr)"/>
+  <!-- Arrow 1→2 -->
+  <line x1="210" y1="168" x2="232" y2="168" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#arr)"/>
 
-  <rect class="a3" x="410" y="88" width="160" height="140" rx="18"/>
-  <text class="t" x="422" y="116">Desire 欲望</text>
-  <text class="b" x="422" y="138">開始想要那個結果</text>
-  <text class="b" x="422" y="158">如何讓他們開始渴望這個結果？</text>
-  <text class="b" x="422" y="178">讓未來狀態具體可想像。</text>
+  <!-- Stage 2: Interest -->
+  <rect class="a2" x="232" y="88" width="170" height="160" rx="18"/>
+  <text class="stage-title" x="248" y="116">Interest 興趣</text>
+  <text class="stage-sub" x="248" y="138">感覺到與自己相關</text>
+  <text class="stage-body" x="248" y="162">如何讓他們感受</text>
+  <text class="stage-body" x="248" y="182">到這跟自己有關？</text>
+  <text class="stage-body" x="248" y="206">讓它具體到</text>
+  <text class="stage-body" x="248" y="226">他們的情境。</text>
 
-  <path d="M570 158 L595 158" stroke="#475569" stroke-width="2.5" fill="none" marker-end="url(#arr)"/>
+  <!-- Arrow 2→3 -->
+  <line x1="402" y1="168" x2="424" y2="168" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#arr)"/>
 
-  <rect class="a4" x="595" y="88" width="160" height="140" rx="18"/>
-  <text class="t" x="607" y="116">Action 行動</text>
-  <text class="b" x="607" y="138">採取下一步</text>
-  <text class="b" x="607" y="158">他們如何邁出這一步？</text>
-  <text class="b" x="607" y="178">降低行動的成本。</text>
+  <!-- Stage 3: Desire -->
+  <rect class="a3" x="424" y="88" width="170" height="160" rx="18"/>
+  <text class="stage-title" x="440" y="116">Desire 欲望</text>
+  <text class="stage-sub" x="440" y="138">開始想要那個結果</text>
+  <text class="stage-body" x="440" y="162">如何讓他們開始</text>
+  <text class="stage-body" x="440" y="182">渴望這個結果？</text>
+  <text class="stage-body" x="440" y="206">讓未來狀態</text>
+  <text class="stage-body" x="440" y="226">具體可想像。</text>
 
-  <path d="M755 158 L780 158" stroke="#475569" stroke-width="2.5" fill="none" marker-end="url(#arr)"/>
+  <!-- Arrow 3→4 -->
+  <line x1="594" y1="168" x2="616" y2="168" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#arr)"/>
 
-  <rect class="a5" x="780" y="88" width="140" height="140" rx="18"/>
-  <text class="t" x="792" y="116">Referral 推薦</text>
-  <text class="b" x="792" y="138">邀請其他人</text>
-  <text class="b" x="792" y="158">有了證據之後，如何讓他們推薦？</text>
-  <text class="b" x="792" y="178">等證據清楚了再提出請求。</text>
+  <!-- Stage 4: Action -->
+  <rect class="a4" x="616" y="88" width="170" height="160" rx="18"/>
+  <text class="stage-title" x="632" y="116">Action 行動</text>
+  <text class="stage-sub" x="632" y="138">採取下一步</text>
+  <text class="stage-body" x="632" y="162">他們如何</text>
+  <text class="stage-body" x="632" y="182">邁出這一步？</text>
+  <text class="stage-body" x="632" y="206">降低行動的</text>
+  <text class="stage-body" x="632" y="226">成本。</text>
 
-  <rect class="box" x="40" y="260" width="880" height="220" rx="18"/>
-  <text class="h" x="60" y="294">原則：每個階段需要不同的訊息、不同的證據、不同的行動成本降低方式。</text>
-  <text class="b" x="60" y="322">需求建立不是把顧客推下漏斗。</text>
-  <text class="b" x="60" y="344">而是每一步都給予足夠的理由，讓他們繼續前進。</text>
-  <text class="b" x="60" y="372">它能降低的三種成本：</text>
-  <text class="b" x="60" y="396">1. 理解成本 — 他們不理解你解決的是什麼問題。</text>
-  <text class="b" x="60" y="418">2. 信任成本 — 他們還不相信你能交付。</text>
-  <text class="b" x="60" y="440">3. 行動成本 — 改變感覺太難，或不夠緊急。</text>
+  <!-- Arrow 4→5 -->
+  <line x1="786" y1="168" x2="808" y2="168" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#arr)"/>
+
+  <!-- Stage 5: Referral -->
+  <rect class="a5" x="808" y="88" width="172" height="160" rx="18"/>
+  <text class="stage-title" x="824" y="116">Referral 推薦</text>
+  <text class="stage-sub" x="824" y="138">邀請其他人</text>
+  <text class="stage-body" x="824" y="162">有了證據之後，</text>
+  <text class="stage-body" x="824" y="182">如何讓他們推薦？</text>
+  <text class="stage-body" x="824" y="206">等證據清楚了</text>
+  <text class="stage-body" x="824" y="226">再提出請求。</text>
+
+  <!-- Bottom Rule Section -->
+  <rect class="box" x="40" y="280" width="940" height="380" rx="20"/>
+  <text class="rule-h" x="64" y="320">原則：每個階段需要不同的訊息、不同的證據、不同的行動成本降低方式。</text>
+  <text class="rule-body" x="64" y="352">需求建立不是把顧客推下漏斗。</text>
+  <text class="rule-body" x="64" y="378">而是每一步都給予足夠的理由，讓他們繼續前進。</text>
+
+  <text class="rule-muted" x="64" y="414">它能降低的三種成本：</text>
+  <text class="rule-body" x="64" y="442">1. 理解成本 — 他們不理解你解決的是什麼問題。</text>
+  <text class="rule-body" x="64" y="468">2. 信任成本 — 他們還不相信你能交付。</text>
+  <text class="rule-body" x="64" y="494">3. 行動成本 — 改變感覺太難，或不夠緊急。</text>
+
+  <text class="rule-muted" x="64" y="538">需求建立與以下幾篇相連：</text>
+  <text class="rule-body" x="64" y="566">• 痛點（Part04）— 顧客有重要且未滿足的 Gap</text>
+  <text class="rule-body" x="64" y="592">• 價值主張（Part08）— 你的解法能創造什麼具體價值</text>
+  <text class="rule-body" x="64" y="618">• 定位（Part09）— 與替代方案相比，你站在哪裡</text>
 </svg>

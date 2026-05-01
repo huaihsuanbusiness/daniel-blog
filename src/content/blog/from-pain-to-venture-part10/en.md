@@ -160,6 +160,8 @@ A useful extension is AIDAR:
 
 ![AIDAR Demand Path](./resource/aidar-demand-path-en.svg)
 
+<img src="/images/from-pain-to-venture-part10/behavior-funnel-spec-training.png" alt="Behavior funnel" loading="lazy" decoding="async" style="max-width:100%;height:auto;display:block;margin:1.5rem 0;" />
+
 In the independent hospitality case:
 
 ### Attention
