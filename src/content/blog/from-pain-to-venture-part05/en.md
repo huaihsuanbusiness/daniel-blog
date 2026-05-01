@@ -95,36 +95,34 @@ Some are already looking for a solution.
 Some have built an ugly workaround.  
 At the top, some have budget, or at least access to resources.
 
-| Level | Original wording | Explanation |
+| Level | Original wording | What it means in practice |
 |---|---|---|
-| 1 | Has a problem | There is a problem, but they may not yet recognise it as such |
-| 2 | Is aware of having a problem | They know the problem exists, but have not acted |
-| 3 | Actively looking for a solution | They are actively looking for ways to solve it |
-| 4 | Assembled a homegrown solution | They have patched together their own workaround |
-| 5 | Has or can acquire a budget | They have budget, or can find resources |
+| 1 | Has a problem | Has a problem, but does not see it that way |
+| 2 | Is aware of having a problem | Is aware of the problem but has not taken action |
+| 3 | Actively looking for a solution | Has explored solutions for their own problem |
+| 4 | Assembled a homegrown solution | Is dissatisfied with existing options, and therefore starts building their own solution |
+| 5 | Has or can acquire a budget | Has invested substantial effort and cost, and developed inertia different from most people |
 
-For early validation, Level 3 to Level 5 are usually the most useful.
+### Applied to independent hotels
 
-Level 1 and 2 can matter, but you will spend much of your energy educating the market.  
-Level 3 gives you real demand.  
-Level 4 reveals the workaround.  
-Level 5 begins to look commercially viable.
-
-Applied to independent hotels:
-
-| Level | Property behaviour | Best way to engage |
+| Level | Independent hotel signal | Why it matters |
 |---|---|---|
-| Level 1 | Complains about OTA commission, but accepts it | Observe. Do not sell too early. |
-| Level 2 | Realises lack of guest data is risky | Use examples and test whether the pain is rising |
-| Level 3 | Researches websites, CRM, LINE, memberships | Good for interviews and problem tests |
-| Level 4 | Uses Google Sheets, LINE broadcasts, manual guest tags | Strong candidate for prototypes or concierge MVPs |
-| Level 5 | Will commit budget or change workflow | Suitable for paid pilots or partnership tests |
+| 1 | Complains that OTA commissions are high, but treats it as normal industry reality | Pain exists, but behaviour has not changed |
+| 2 | Knows weak direct booking and weak guest data are dangerous, but still has no active response | Awareness exists, but not yet commitment |
+| 3 | Starts comparing websites, booking engines, CRM, LINE, memberships, and remarketing options | The problem has become active enough to search for alternatives |
+| 4 | Uses Google Sheets, LINE broadcasts, manual guest tags, voucher codes, or patched flows | This is a strong signal: they are already paying the pain with labour |
+| 5 | Is willing to spend money, time, workflow change, staff attention, or decision authority | The pain has become operationally important enough to deserve resources |
 
-The triangle stops you from selling to a Level 1 customer as if they were already at Level 5.
+The most useful early-adopter layers are usually 4 and 5.
 
-That mistake is exhausting.
+Stage 4 tells you the actor is no longer satisfied with existing options and has already started building something of their own.  
+Stage 5 tells you the actor has already paid substantial effort and cost, and now behaves with a very different kind of inertia from ordinary users.
 
-And it makes the market look worse than it is.
+That is why the triangle is useful.
+
+It does not only tell you who hurts.
+
+It tells you whose pain has already become costly enough to reshape behaviour.
 
 ---
 

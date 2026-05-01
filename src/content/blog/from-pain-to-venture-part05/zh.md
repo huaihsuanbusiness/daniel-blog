@@ -96,37 +96,34 @@ seriesOrder: 5
 再往上，有些人已經自己拼了一個很醜、但勉強能活的替代方案。  
 最上面那群人，已經有預算，或至少能拿到資源。
 
-| Level | Original wording | 中文說明 |
+| 層級 | Original wording | 實際上代表什麼 |
 |---|---|---|
-| 1 | Has a problem | 有問題，但自己不一定這麼認為 |
-| 2 | Is aware of having a problem | 意識到有問題，但還沒有採取作為 |
-| 3 | Actively looking for a solution | 正在主動尋找解法 |
-| 4 | Assembled a homegrown solution | 已經自己拼湊出土法煉鋼的解法 |
-| 5 | Has or can acquire a budget | 有預算，或有能力取得預算 |
+| 1 | Has a problem | 有問題，但自己不這麼認為 |
+| 2 | Is aware of having a problem | 意識到問題但沒有採取作為 |
+| 3 | Actively looking for a solution | 有針對自己的問題探索解決方案 |
+| 4 | Assembled a homegrown solution | 對現成方案不滿，因而開始自行製作解決方案 |
+| 5 | Has or can acquire a budget | 付出大量心力與代價，並產生與常人不同的慣性 |
 
-早期驗證最值得找的，通常是 Level 3 到 Level 5。
+### 套到獨立旅宿
 
-Level 1 和 Level 2 不是沒有價值，但你會花很多力氣教育市場。  
-Level 3 開始有真實需求。  
-Level 4 會暴露 workaround 的結構。  
-Level 5 才開始靠近商業可行性。
-
-套到獨立旅宿：
-
-| 層級 | 旅宿狀態 | 適合怎麼互動 |
+| 層級 | 獨立旅宿會出現的訊號 | 為什麼重要 |
 |---|---|---|
-| Level 1 | 覺得 OTA 抽成高，但還能接受 | 不急著賣，先觀察問題是否真的有重量 |
-| Level 2 | 意識到沒有顧客資料很危險 | 用案例教育，確認痛點是否升級 |
-| Level 3 | 主動研究官網、會員、LINE、CRM | 適合訪談與 problem test |
-| Level 4 | 自己用 Google Sheet、LINE 群發、手動標記回訪客 | 非常適合 prototype / concierge MVP |
-| Level 5 | 願意投入預算或調整流程 | 適合 paid pilot / partnership test |
+| 1 | 抱怨 OTA 抽成高，但仍把它視為產業常態 | 有痛，但行為沒有改變 |
+| 2 | 知道直訂弱、顧客資料弱很危險，但還沒有真正行動 | 有認知，但還沒有承諾 |
+| 3 | 開始比較官網、訂房引擎、CRM、LINE、會員、再行銷等方案 | 問題已經活化到足以驅動搜尋 |
+| 4 | 已經用 Google Sheet、LINE 群發、手動標記旅客、手動優惠碼去補洞 | 這是強訊號：他們已經在用人力替問題買單 |
+| 5 | 願意投入金錢、時間、流程調整、人力注意力，甚至決策權 | 問題已經升級成經營優先級 |
 
-這個三角形最有用的地方，是它會提醒你：  
-不要把還在第一層的人，當成第五層的人來賣。
+早期創業最值得優先找的，通常是第 4 與第 5 層。
 
-那會很累。
+第 4 層代表：當事人已經不滿於現成方案，並開始自己做。  
+第 5 層代表：當事人已經付出大量心力與代價，並形成不同於常人的慣性。
 
-而且很容易誤判市場。
+這也是這個三角形最有價值的地方。
+
+它不是只告訴你誰有痛。
+
+它告訴你：誰的痛，已經昂貴到足以改變他的行為。
 
 ---
 
