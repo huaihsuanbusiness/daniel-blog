@@ -270,12 +270,12 @@ Demand creation 不是把顧客推下漏斗。
 - 在目標顧客的心智中找到一個適當的位置。
 - 設計公司的產品和形象，在目標顧客心智中占據那個適當的位置。
 
-### What outcomes 期望什麼結果
+### 期望什麼結果
 
-- Occupies a distinct and valued place in the target customer mind.
-- The target customer would think about the offering in a logical and desired way.
-- Clarifies what the brand is about, how it is unique, how it is similar to competitive brands, and why customers should purchase and use it.
-- Guides the business and marketing activities / programs of the brand.
+- 在目標顧客心中占據一個清楚、可辨識、而且有價值的位置。
+- 讓目標顧客以一種合乎邏輯、也是你希望的方式去理解這個 offering。
+- 說清楚這個品牌到底是什麼、它獨特在哪裡、它和競品有哪些相似與差異，以及顧客為什麼應該購買與使用。
+- 引導品牌的商業與行銷活動 / 計畫往同一個方向收斂。
 
 換成比較直白的說法:
 
@@ -286,7 +286,7 @@ Demand creation 不是把顧客推下漏斗。
 如果顧客知道你是什麼,但不知道你和替代方案差在哪,他也不會買。
 如果顧客知道差異,但不知道為什麼現在要動,他還是不會買。
 
-Messaging 要連到定位。
+訊息要連到定位。
 
 不是只連到功能。
 
