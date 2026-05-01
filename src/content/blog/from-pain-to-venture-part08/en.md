@@ -353,10 +353,6 @@ A business model is not only revenue streams.
 
 It is cost structure, execution risk, partner risk, and adoption risk.
 
----
-
-
-![Reference Images](./resource/reference-images-en.svg)
 ## What this part should leave behind
 
 By the end, three outputs should be clear:
@@ -377,5 +373,3 @@ But a business must also work through delivery, pricing, cost, retention, channe
 That is what makes business models painful.
 
 And interesting.
-
----

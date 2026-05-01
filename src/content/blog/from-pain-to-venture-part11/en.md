@@ -716,10 +716,6 @@ At the end, what remains should not be a slogan.
 
 It should be a venture system that can be tested.
 
----
-
-
-![Reference Images](./resource/reference-images-en.svg)
 ## What this part should leave behind
 
 By the end, four outputs should be clear.
@@ -770,5 +766,3 @@ Startups need belief.
 But belief should be protected by systems and constrained by evidence.
 
 Otherwise it becomes self-hypnosis.
-
----

@@ -318,7 +318,3 @@ Starbucks 做會員，所以旅宿也做會員。
    - Paid Pilot：找已經有 Level 4 suffering 的旅宿，測試是否願意為 direct guest relationship pilot 付費
 
 如果這三個成果都做不出來，代表 solution 還太像想像，還沒變成可以驗證的東西。
-
----
-
-![參考圖](./resource/reference-images-zh.svg)

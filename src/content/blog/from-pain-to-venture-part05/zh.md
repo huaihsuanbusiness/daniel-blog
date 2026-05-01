@@ -122,8 +122,6 @@ Rogers 的早期採用者，可能因為喜歡新東西而行動。
 
 創業驗證要的是第二種。第一種會誤導你：讓你追逐熱情，而不是真正的痛。
 
-![Reference Images](./resource/reference-images-zh.svg)
-
 ## Suffering Triangle：痛苦走到哪一層了？
 
 痛苦不是有或沒有。痛苦有層次。
@@ -293,7 +291,3 @@ B2B 題目最容易犯的錯，是把「使用者」當成「客戶」。
 
 早期市場不是你想像中最完美的客群。  
 而是那群已經痛到願意跟你一起把問題挖出來的人。
-
----
-
-![參考圖](./resource/reference-images-zh.svg)

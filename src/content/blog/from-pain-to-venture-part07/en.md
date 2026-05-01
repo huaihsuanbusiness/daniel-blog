@@ -333,7 +333,3 @@ An MVP is not a miniature product.
 It is a small, cheap, honest learning machine.
 
 If it does not move you closer to the truth, it is not MVP enough.
-
----
-
-![Reference Images](./resource/reference-images-en.svg)

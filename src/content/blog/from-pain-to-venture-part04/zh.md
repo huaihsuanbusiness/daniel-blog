@@ -294,7 +294,3 @@ seriesOrder: 4
 而是那個有人已經開始付出代價、卻仍然沒能解好的地方。
 
 那裡才比較可能長出機會。
-
----
-
-![參考圖](./resource/reference-images-zh.svg)
