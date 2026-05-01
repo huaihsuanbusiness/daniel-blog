@@ -26,6 +26,24 @@ They rush towards the solution before understanding the problem.
 
 ---
 
+## Essence
+
+### 1. Aspiration
+
+We intend, for ① which people in ② which specific situation, to provide ③ what products and services, so that they may reverse the current condition of ④ what major unmet expectation gap in the process of trying to get something done, enabling them to accomplish ⑤ what important job they want to get done, while also undergoing ⑥ what subtle but fundamental change, and thereby creating ⑦ what kind of situation, value, and further meaning for the people involved.
+
+### 2. Opportunity
+
+Within ① what group, what proportion of people are in ② what specific situation (please describe with insight and evidence), trying to accomplish ③ what important job to be done (please describe with insight and evidence), yet encountering ④ what major unmet expectation gap. Although these people have tried ⑤ what existing solutions in order to solve the problem, they still cannot get the result they want, and so must keep paying ⑥ what costs and consequences because the expectation gap remains unresolved.
+
+### 3. Solution
+
+After studying ① what evidence, cases, research, and investigations, we believe the real problem lies in ② what leverage point: if it is resolved, the problem can be solved. ③ Why, based on the evidence or research you discussed, can this leverage point be inferred?
+
+Therefore, based on ④ what path for dissolving the core bottleneck (please describe the insight you gained from the evidence), we will build ⑤ what products and services, so that in the process the people involved can ⑥ undergo what fundamental change (please explain what can happen, and on what reasoning this claim stands), and ultimately, once the major expectation gap is fulfilled, arrive at ⑦ what ideal end state.
+
+---
+
 ## Many people do not lack solutions. They have them too early.
 
 Plenty of early venture conversations start like this:
