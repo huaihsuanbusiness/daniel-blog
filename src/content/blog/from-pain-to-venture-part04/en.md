@@ -208,17 +208,17 @@ Supply tells you why the market has not solved it yet.
 
 These six questions are worth returning to:
 
-> 需求面：當事人的期待為什麼無法滿足？當事人為什麼無法自行解決問題？  
+> Demand side: Why is the actor’s expectation not being met? Why can the actor not solve the problem alone?  
 >
-> 供給面：能夠 / 必須解決問題的人，為何無法解決？為何不出手解決？  
+> Supply side: Why can the people who could or should solve the problem not solve it? Why are they not stepping in to solve it?  
 >
-> 辯證需求面與供給面的罩門所造成當事人的期許落差所在。  
+> Where exactly does the expectation gap come from, when the demand-side and supply-side bottlenecks interact?  
 >
-> 什麼根本的驅動力導致問題的發生？  
+> What underlying driver causes this problem to happen in the first place?  
 >
-> 針對罩門、判讀罩門的時空環境及本質，提出可化解罩門的途徑。  
+> Given the bottleneck, its context, and its underlying nature, what path could dissolve it?  
 >
-> 為什麼這樣做可以化解罩門？
+> Why would that path actually dissolve the bottleneck?
 
 For independent hotels:
 
