@@ -100,7 +100,7 @@ Everett Rogers 在 1962 年提出**創新擴散理論**（*Diffusion of Innovati
 
 <img src="/images/from-pain-to-venture-part05/diffusion-of-innovations-spec-training.png" alt="Diffusion of Innovations" loading="lazy" decoding="async" style="max-width:100%;height:auto;display:block;margin:1.5rem 0;" />
 
-<span style="font-size:12px;color:#64748b;">*參考資料：Diffusion of innovations 圖。DOI:10.1108/17581184201000012*</span>
+<span style="font-size:12px;color:#64748b;">*參考資料：SpecTraining*</span>
 
 對早期市場工作來說，這裡有一個很重要的區分：
 

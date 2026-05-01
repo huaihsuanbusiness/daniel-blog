@@ -1,45 +1,74 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 560" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1040 720" role="img" aria-labelledby="title desc">
   <title id="title">Channel Testing Plan 通路測試計畫</title>
-  <desc id="desc">初期 90 天要測試的六條通路，以及各自的觸及、轉換品質與風險。</desc>
+  <desc id="desc">前 90 天值得測試的六條通路，以及各自的角色、優勢與限制。</desc>
   <style>
-text{font-family:'Noto Sans TC',Arial,sans-serif;fill:#1f2937}.bg{fill:#fbfaf7}.h{font-size:28px;font-weight:700;fill:#1e293b}.t{font-size:18px;font-weight:700;fill:#1e293b}.b{font-size:14px}.box{fill:#fff;stroke:#d1d5db;stroke-width:2;rx:14}.a{fill:#eff6ff;stroke:#93c5fd;stroke-width:2}.b{fill:#fff7ed;stroke:#fdba74;stroke-width:2}.c{fill:#f5f3ff;stroke:#c4b5fd;stroke-width:2}.d{fill:#f0fdf4;stroke:#86efac;stroke-width:2}.e{fill:#fff1f2;stroke:#fca5a5;stroke-width:2}
+    text { font-family: 'Noto Sans TC', Arial, sans-serif; }
+    .title { font-size: 28px; font-weight: 700; fill: #1e293b; }
+    .sub { font-size: 16px; fill: #64748b; }
+    .card-title { font-size: 18px; font-weight: 700; fill: #1e293b; }
+    .card-sub { font-size: 14px; fill: #64748b; }
+    .card-body { font-size: 15px; fill: #1e293b; }
+    .note-title { font-size: 18px; font-weight: 700; fill: #1e293b; }
+    .note-body { font-size: 15px; fill: #1e293b; }
+    .box { fill: #fff; stroke: #d1d5db; stroke-width: 2; rx: 18; }
+    .blue { fill: #eff6ff; stroke: #93c5fd; stroke-width: 2; }
+    .orange { fill: #fff7ed; stroke: #fdba74; stroke-width: 2; }
+    .purple { fill: #f5f3ff; stroke: #c4b5fd; stroke-width: 2; }
+    .green { fill: #f0fdf4; stroke: #86efac; stroke-width: 2; }
+    .red { fill: #fff1f2; stroke: #fca5a5; stroke-width: 2; }
   </style>
-  <rect width="960" height="560" rx="24" fill="#fbfaf7"/>
-  <text class="h" x="40" y="42">Channel Testing Plan 通路測試計畫</text>
-  <text class="b" x="40" y="66" fill="#64748b">初期 90 天要測試的六條通路。</text>
 
-  <rect class="a" x="40" y="88" width="280" height="120" rx="16"/>
-  <text class="t" x="52" y="120">SEO 搜尋引擎優化</text>
-  <text class="b" x="52" y="144">意圖明確時捕獲流量</text>
-  <text class="b" x="52" y="166">意圖高，但建立速度慢。</text>
+  <rect width="1040" height="720" rx="28" fill="#fbfaf7"/>
+  <text class="title" x="40" y="46">Channel Testing Plan 通路測試計畫</text>
+  <text class="sub" x="40" y="72">少量通路，認真測試。不要把曝光誤認成可重複的獲客路徑。</text>
 
-  <rect class="b" x="340" y="88" width="280" height="120" rx="16"/>
-  <text class="t" x="352" y="120">LinkedIn</text>
-  <text class="b" x="352" y="144">決策者</text>
-  <text class="b" x="352" y="166">B2B 適用，需要內容投資。</text>
+  <rect class="blue" x="40" y="96" width="300" height="140" rx="18"/>
+  <text class="card-title" x="60" y="126">SEO</text>
+  <text class="card-sub" x="60" y="148">捕捉既有意圖</text>
+  <text class="card-body" x="60" y="176">當顧客已經在搜尋問題或解法時，</text>
+  <text class="card-body" x="60" y="198">這條通路能接住高意圖流量。</text>
+  <text class="card-body" x="60" y="220">品質高，但建立速度慢。</text>
 
-  <rect class="c" x="640" y="88" width="280" height="120" rx="16"/>
-  <text class="t" x="652" y="120">Cold Email 陌生開發信</text>
-  <text class="b" x="652" y="144">外向測試</text>
-  <text class="b" x="652" y="166">信號快，但沒有信任基礎轉換率低。</text>
+  <rect class="orange" x="370" y="96" width="300" height="140" rx="18"/>
+  <text class="card-title" x="390" y="126">LinkedIn</text>
+  <text class="card-sub" x="390" y="148">接觸決策者</text>
+  <text class="card-body" x="390" y="176">適合 B2B 建立可信度與能見度，</text>
+  <text class="card-body" x="390" y="198">尤其是創辦人、營運者與採購者。</text>
+  <text class="card-body" x="390" y="220">前提是持續產出內容。</text>
 
-  <rect class="d" x="40" y="228" width="280" height="120" rx="16"/>
-  <text class="t" x="52" y="260">Referral 推薦</text>
-  <text class="b" x="52" y="284">信任轉移</text>
-  <text class="b" x="52" y="306">轉換率最高，但需要先有滿意的顧客。</text>
+  <rect class="purple" x="700" y="96" width="300" height="140" rx="18"/>
+  <text class="card-title" x="720" y="126">Cold Email</text>
+  <text class="card-sub" x="720" y="148">快速測試外向訊號</text>
+  <text class="card-body" x="720" y="176">能快速測反應與反對點，</text>
+  <text class="card-body" x="720" y="198">但沒有暖場時信任通常偏弱。</text>
+  <text class="card-body" x="720" y="220">適合學習，不是魔法捷徑。</text>
 
-  <rect class="e" x="340" y="228" width="280" height="120" rx="16"/>
-  <text class="t" x="352" y="260">Partners 合作夥伴</text>
-  <text class="b" x="352" y="284">協會 / 廠商</text>
-  <text class="b" x="352" y="306">能接觸現有顧客庫，但有依賴風險。</text>
+  <rect class="green" x="40" y="264" width="300" height="140" rx="18"/>
+  <text class="card-title" x="60" y="294">Referral 推薦</text>
+  <text class="card-sub" x="60" y="316">信任轉移</text>
+  <text class="card-body" x="60" y="344">通常是轉換率最高的通路，</text>
+  <text class="card-body" x="60" y="366">因為借來的信任會大幅降低摩擦。</text>
+  <text class="card-body" x="60" y="388">前提是先有滿意顧客或夥伴。</text>
 
-  <rect class="a" x="640" y="228" width="280" height="120" rx="16"/>
-  <text class="t" x="652" y="260">Events 實體活動</text>
-  <text class="b" x="652" y="284">高情境銷售</text>
-  <text class="b" x="652" y="306">昂貴，但複雜銷售最快建立信任。</text>
+  <rect class="red" x="370" y="264" width="300" height="140" rx="18"/>
+  <text class="card-title" x="390" y="294">Partners 合作夥伴</text>
+  <text class="card-sub" x="390" y="316">協會 / 廠商 / 生態系</text>
+  <text class="card-body" x="390" y="344">比起從零開始，這條路可能更快打開</text>
+  <text class="card-body" x="390" y="366">既有顧客群。</text>
+  <text class="card-body" x="390" y="388">但要小心依賴與誘因不一致。</text>
 
-  <rect class="box" x="40" y="368" width="880" height="100" rx="18" fill="#f5f3ff" stroke="#c4b5fd" stroke-width="2"/>
-  <text class="t" x="60" y="402">通路順序</text>
-  <text class="b" x="60" y="424">觸及 → 回覆 → qualified → demo → 付費 → 推薦</text>
-  <text class="b" x="60" y="446">原則：在有可重複、有利潤的顧客獲取迴路之前，不要擴大任何一條通路。</text>
+  <rect class="blue" x="700" y="264" width="300" height="140" rx="18"/>
+  <text class="card-title" x="720" y="294">Events 實體活動</text>
+  <text class="card-sub" x="720" y="316">高情境對話</text>
+  <text class="card-body" x="720" y="344">成本高，但在複雜銷售裡，</text>
+  <text class="card-body" x="720" y="366">很適合快速建立信任。</text>
+  <text class="card-body" x="720" y="388">也有助於現場學反對意見。</text>
+
+  <rect class="box" x="40" y="434" width="960" height="220" rx="20" fill="#ffffff"/>
+  <text class="note-title" x="64" y="468">通路順序</text>
+  <text class="note-body" x="64" y="496">觸及 → 回覆 → Qualified → Demo → 付費 → 推薦</text>
+  <text class="note-body" x="64" y="528">原則 1：在可接受的 CAC 下，先證明轉換路徑能重複，再談放大。</text>
+  <text class="note-body" x="64" y="558">原則 2：看見你，不代表通路有效。</text>
+  <text class="note-body" x="64" y="588">原則 3：除了 lead 量，也要追蹤學習品質。</text>
+  <text class="note-body" x="64" y="618">重點不是你能出現在哪裡，而是有動機的買方會不會真的往前走。</text>
 </svg>

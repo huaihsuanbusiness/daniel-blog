@@ -155,8 +155,6 @@ AIDA 是很老的行銷模型,但仍然有用,因為它提醒你:顧客不是看
 
 ![AIDAR Demand Path](./resource/aidar-demand-path-zh.svg)
 
-<img src="/images/from-pain-to-venture-part10/behavior-funnel-spec-training.png" alt="Behavior funnel" loading="lazy" decoding="async" style="max-width:100%;height:auto;display:block;margin:1.5rem 0;" />
-
 獨立旅宿案例可以這樣看:
 
 ### Attention

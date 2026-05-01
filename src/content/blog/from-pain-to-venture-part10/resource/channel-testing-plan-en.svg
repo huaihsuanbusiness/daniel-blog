@@ -1,45 +1,74 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 560" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1040 700" role="img" aria-labelledby="title desc">
   <title id="title">Channel Testing Plan</title>
-  <desc id="desc">Six channels to test in the first 90 days with expected reach, conversion quality, and risk.</desc>
+  <desc id="desc">Six channels to test in the first 90 days, with their role, strengths, and constraints.</desc>
   <style>
-text{font-family:Arial,sans-serif;fill:#1f2937}.bg{fill:#fbfaf7}.h{font-size:28px;font-weight:700;fill:#1e293b}.t{font-size:18px;font-weight:700;fill:#1e293b}.b{font-size:14px}.box{fill:#fff;stroke:#d1d5db;stroke-width:2;rx:14}.a{fill:#eff6ff;stroke:#93c5fd;stroke-width:2}.b{fill:#fff7ed;stroke:#fdba74;stroke-width:2}.c{fill:#f5f3ff;stroke:#c4b5fd;stroke-width:2}.d{fill:#f0fdf4;stroke:#86efac;stroke-width:2}.e{fill:#fff1f2;stroke:#fca5a5;stroke-width:2}
+    text { font-family: Arial, sans-serif; }
+    .title { font-size: 28px; font-weight: 700; fill: #1e293b; }
+    .sub { font-size: 16px; fill: #64748b; }
+    .card-title { font-size: 18px; font-weight: 700; fill: #1e293b; }
+    .card-sub { font-size: 14px; fill: #64748b; }
+    .card-body { font-size: 15px; fill: #1e293b; }
+    .note-title { font-size: 18px; font-weight: 700; fill: #1e293b; }
+    .note-body { font-size: 15px; fill: #1e293b; }
+    .box { fill: #fff; stroke: #d1d5db; stroke-width: 2; rx: 18; }
+    .blue { fill: #eff6ff; stroke: #93c5fd; stroke-width: 2; }
+    .orange { fill: #fff7ed; stroke: #fdba74; stroke-width: 2; }
+    .purple { fill: #f5f3ff; stroke: #c4b5fd; stroke-width: 2; }
+    .green { fill: #f0fdf4; stroke: #86efac; stroke-width: 2; }
+    .red { fill: #fff1f2; stroke: #fca5a5; stroke-width: 2; }
   </style>
-  <rect width="960" height="560" rx="24" fill="#fbfaf7"/>
-  <text class="h" x="40" y="42">Channel Testing Plan</text>
-  <text class="b" x="40" y="66" fill="#64748b">Six channels to test in the first 90 days.</text>
 
-  <rect class="a" x="40" y="88" width="280" height="120" rx="16"/>
-  <text class="t" x="52" y="120">SEO</text>
-  <text class="b" x="52" y="144">Intent capture</text>
-  <text class="b" x="52" y="166">High intent, but slow to build.</text>
+  <rect width="1040" height="700" rx="28" fill="#fbfaf7"/>
+  <text class="title" x="40" y="46">Channel Testing Plan</text>
+  <text class="sub" x="40" y="72">Test a few channels seriously. Do not confuse exposure with a repeatable acquisition path.</text>
 
-  <rect class="b" x="340" y="88" width="280" height="120" rx="16"/>
-  <text class="t" x="352" y="120">LinkedIn</text>
-  <text class="b" x="352" y="144">Decision makers</text>
-  <text class="b" x="352" y="166">Good for B2B, requires content investment.</text>
+  <rect class="blue" x="40" y="96" width="300" height="140" rx="18"/>
+  <text class="card-title" x="60" y="126">SEO</text>
+  <text class="card-sub" x="60" y="148">Intent capture</text>
+  <text class="card-body" x="60" y="176">High-intent traffic when customers are already</text>
+  <text class="card-body" x="60" y="198">searching for the problem or solution.</text>
+  <text class="card-body" x="60" y="220">Strong quality, but slow to build.</text>
 
-  <rect class="c" x="640" y="88" width="280" height="120" rx="16"/>
-  <text class="t" x="652" y="120">Cold Email</text>
-  <text class="b" x="652" y="144">Outbound test</text>
-  <text class="b" x="652" y="166">Fast signal, but low trust without warm context.</text>
+  <rect class="orange" x="370" y="96" width="300" height="140" rx="18"/>
+  <text class="card-title" x="390" y="126">LinkedIn</text>
+  <text class="card-sub" x="390" y="148">Decision-maker reach</text>
+  <text class="card-body" x="390" y="176">Useful for B2B trust-building and visibility</text>
+  <text class="card-body" x="390" y="198">with founders, operators, and buyers.</text>
+  <text class="card-body" x="390" y="220">Works best with consistent content.</text>
 
-  <rect class="d" x="40" y="228" width="280" height="120" rx="16"/>
-  <text class="t" x="52" y="260">Referral</text>
-  <text class="b" x="52" y="284">Trust transfer</text>
-  <text class="b" x="52" y="306">Highest conversion, requires existing happy customers.</text>
+  <rect class="purple" x="700" y="96" width="300" height="140" rx="18"/>
+  <text class="card-title" x="720" y="126">Cold Email</text>
+  <text class="card-sub" x="720" y="148">Outbound signal test</text>
+  <text class="card-body" x="720" y="176">Fast way to test response and objections,</text>
+  <text class="card-body" x="720" y="198">but trust is weak without warm context.</text>
+  <text class="card-body" x="720" y="220">Good for learning, not magic.</text>
 
-  <rect class="e" x="340" y="228" width="280" height="120" rx="16"/>
-  <text class="t" x="352" y="260">Partners</text>
-  <text class="b" x="352" y="284">Association / vendors</text>
-  <text class="b" x="352" y="306">Access to existing customer base, but dependency risk.</text>
+  <rect class="green" x="40" y="264" width="300" height="140" rx="18"/>
+  <text class="card-title" x="60" y="294">Referral</text>
+  <text class="card-sub" x="60" y="316">Trust transfer</text>
+  <text class="card-body" x="60" y="344">Usually the highest-conversion channel,</text>
+  <text class="card-body" x="60" y="366">because borrowed trust lowers friction.</text>
+  <text class="card-body" x="60" y="388">Requires satisfied users or partners first.</text>
 
-  <rect class="a" x="640" y="228" width="280" height="120" rx="16"/>
-  <text class="t" x="652" y="260">Events</text>
-  <text class="b" x="652" y="284">High context sales</text>
-  <text class="b" x="652" y="306">Expensive, but fastest trust-building for complex sales.</text>
+  <rect class="red" x="370" y="264" width="300" height="140" rx="18"/>
+  <text class="card-title" x="390" y="294">Partners</text>
+  <text class="card-sub" x="390" y="316">Associations / vendors / ecosystems</text>
+  <text class="card-body" x="390" y="344">Can open an existing customer base faster</text>
+  <text class="card-body" x="390" y="366">than starting from zero.</text>
+  <text class="card-body" x="390" y="388">Watch dependency and incentive mismatch.</text>
 
-  <rect class="box" x="40" y="368" width="880" height="100" rx="18" fill="#f5f3ff" stroke="#c4b5fd" stroke-width="2"/>
-  <text class="t" x="60" y="402">Channel sequence</text>
-  <text class="b" x="60" y="424">Reach → reply → qualified → demo → paid → referral</text>
-  <text class="b" x="60" y="446">Rule: Do not scale a channel until you have a repeatable, profitable acquisition loop.</text>
+  <rect class="blue" x="700" y="264" width="300" height="140" rx="18"/>
+  <text class="card-title" x="720" y="294">Events</text>
+  <text class="card-sub" x="720" y="316">High-context conversations</text>
+  <text class="card-body" x="720" y="344">Expensive, but strong when the sale is</text>
+  <text class="card-body" x="720" y="366">complex and trust must be built quickly.</text>
+  <text class="card-body" x="720" y="388">Useful for learning live objections.</text>
+
+  <rect class="box" x="40" y="434" width="960" height="200" rx="20" fill="#ffffff"/>
+  <text class="note-title" x="64" y="468">Channel sequence</text>
+  <text class="note-body" x="64" y="496">Reach → Reply → Qualified → Demo → Paid → Referral</text>
+  <text class="note-body" x="64" y="528">Rule 1: Do not scale a channel until you can repeat the conversion path with acceptable CAC.</text>
+  <text class="note-body" x="64" y="556">Rule 2: A channel is not “working” just because people saw you.</text>
+  <text class="note-body" x="64" y="584">Rule 3: Track learning quality as well as lead volume.</text>
+  <text class="note-body" x="64" y="612">The question is not where you can appear. The question is where motivated buyers actually move.</text>
 </svg>

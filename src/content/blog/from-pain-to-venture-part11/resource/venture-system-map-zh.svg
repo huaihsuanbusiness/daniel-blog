@@ -1,47 +1,92 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 640" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 920" role="img" aria-labelledby="title desc">
   <title id="title">Venture System Map 事業系統圖</title>
-  <desc id="desc">七個相互嵌合的事業構面：價值主張、關鍵活動、關鍵資源、關鍵夥伴、團隊與文化、財務、風險與停止條件。</desc>
-  <defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#475569"/></marker></defs>
+  <desc id="desc">把事業系統拆成八個協同層次：Product、Operation、Resources、Partners、Team and Culture、Finance、Risk、Decision Rule。</desc>
   <style>
-text{font-family:'Noto Sans TC',Arial,sans-serif;fill:#1f2937}.bg{fill:#fbfaf7}.h{font-size:28px;font-weight:700;fill:#1e293b}.t{font-size:15px;font-weight:700;fill:#1e293b}.b{font-size:13px;fill:#475569}.box{fill:#fff;stroke:#d1d5db;stroke-width:2;rx:14}.blue{fill:#eff6ff;stroke:#93c5fd;stroke-width:2}.orange{fill:#fff7ed;stroke:#fdba74;stroke-width:2}.purple{fill:#f5f3ff;stroke:#c4b5fd;stroke-width:2}.green{fill:#f0fdf4;stroke:#86efac;stroke-width:2}.red{fill:#fff1f2;stroke:#fca5a5;stroke-width:2}.arrow{stroke:#718096;stroke-width:2;fill:none;marker-end:url(#a)}
+    text { font-family: 'Noto Sans TC', Arial, sans-serif; }
+    .title { font-size: 30px; font-weight: 700; fill: #1e293b; }
+    .sub { font-size: 16px; fill: #64748b; }
+    .card-title { font-size: 18px; font-weight: 700; fill: #1e293b; }
+    .card-body { font-size: 15px; fill: #1e293b; }
+    .center-title { font-size: 22px; font-weight: 700; fill: #1e293b; }
+    .center-body { font-size: 15px; fill: #1e293b; }
+    .footer { font-size: 16px; fill: #1e293b; }
+    .card { fill: #fff; stroke: #d1d5db; stroke-width: 2; rx: 18; }
+    .blue { fill: #eff6ff; stroke: #93c5fd; }
+    .green { fill: #f0fdf4; stroke: #86efac; }
+    .orange { fill: #fff7ed; stroke: #fdba74; }
+    .purple { fill: #f5f3ff; stroke: #c4b5fd; }
+    .red { fill: #fff1f2; stroke: #fca5a5; }
+    .line { stroke: #94a3b8; stroke-width: 2.5; }
   </style>
-  <rect width="960" height="640" rx="24" fill="#fbfaf7"/>
-  <text class="h" x="40" y="42">Venture System Map 事業系統圖</text>
-  <text class="b" x="40" y="66">產品不是事業。事業是一個系統。七個構面必須同時協作。</text>
 
-  <rect class="blue" x="360" y="88" width="240" height="90" rx="18"/>
-  <text class="t" x="380" y="118">Value Proposition 價值主張</text>
-  <text class="b" x="380" y="142">什麼樣的承諾必須被兌現？</text>
+  <rect width="1100" height="920" rx="30" fill="#fbfaf7"/>
+  <text class="title" x="40" y="48">Venture System Map 事業系統圖</text>
+  <text class="sub" x="40" y="74">產品只是看得見的部分。事業是背後那套能長期運轉的系統。</text>
 
-  <rect class="orange" x="40" y="200" width="210" height="130" rx="18"/>
-  <text class="t" x="60" y="228">Key Activities 關鍵活動</text>
-  <text class="b" x="60" y="252">銷售、交付、產品、數據、客服</text>
-  <path class="arrow" d="M250 265 H360"/>
+  <!-- top row -->
+  <rect class="card blue" x="70" y="110" width="280" height="130" rx="18"/>
+  <text class="card-title" x="92" y="142">Product 產品</text>
+  <text class="card-body" x="92" y="172">顧客實際看見、使用、</text>
+  <text class="card-body" x="92" y="194">並直接評價的是什麼？</text>
 
-  <rect class="blue" x="710" y="200" width="210" height="130" rx="18"/>
-  <text class="t" x="730" y="228">Key Resources 關鍵資源</text>
-  <text class="b" x="730" y="252">人、資金、數據、品牌、技術</text>
-  <path class="arrow" d="M710 265 H600"/>
+  <rect class="card orange" x="390" y="110" width="320" height="130" rx="18"/>
+  <text class="card-title" x="412" y="142">Operation 營運</text>
+  <text class="card-body" x="412" y="172">每天必須穩定發生哪些事，</text>
+  <text class="card-body" x="412" y="194">價值才能真的被交付？</text>
 
-  <rect class="purple" x="40" y="400" width="210" height="130" rx="18"/>
-  <text class="t" x="60" y="428">Key Partners 關鍵夥伴</text>
-  <text class="b" x="60" y="452">誰的參與是讓整個模式跑起來的必要條件？</text>
-  <path class="arrow" d="M250 465 H360"/>
+  <rect class="card purple" x="750" y="110" width="280" height="130" rx="18"/>
+  <text class="card-title" x="772" y="142">Resources 資源</text>
+  <text class="card-body" x="772" y="172">需要哪些人、錢、數據、工具、</text>
+  <text class="card-body" x="772" y="194">品牌與信任，系統才撐得住？</text>
 
-  <rect class="green" x="360" y="360" width="240" height="130" rx="18"/>
-  <text class="t" x="380" y="388">Team &amp; Culture 團隊與文化</text>
-  <text class="b" x="380" y="412">誰能夠學習和執行？</text>
-  <text class="b" x="380" y="432">團隊聽到壞消息時會如何反應？</text>
+  <!-- middle -->
+  <rect class="card green" x="70" y="320" width="280" height="140" rx="18"/>
+  <text class="card-title" x="92" y="354">Partners 夥伴</text>
+  <text class="card-body" x="92" y="384">哪些外部合作能降低成本、</text>
+  <text class="card-body" x="92" y="406">提高觸達，或補上交付能力？</text>
 
-  <rect class="orange" x="710" y="400" width="210" height="130" rx="18"/>
-  <text class="t" x="730" y="428">Finance 財務</text>
-  <text class="b" x="730" y="452">現金流、利潤率、跑道、回本期</text>
-  <path class="arrow" d="M710 465 H600"/>
+  <rect class="card" x="360" y="290" width="380" height="200" rx="22" fill="#ffffff"/>
+  <text class="center-title" x="385" y="336">Venture System 事業系統</text>
+  <text class="center-body" x="385" y="370">這不是單一產品，而是一整套會持續創造、</text>
+  <text class="center-body" x="385" y="394">交付、捕獲價值的機器。</text>
+  <text class="center-body" x="385" y="428">只要其中一層斷掉，產品表面上可能還在，</text>
+  <text class="center-body" x="385" y="452">但整個事業已經變得脆弱。</text>
 
-  <rect class="red" x="360" y="520" width="240" height="70" rx="18"/>
-  <text class="t" x="380" y="548">Risk &amp; Kill Criteria 風險與停止條件</text>
-  <text class="b" x="380" y="572">什麼可能讓整個系統崩潰？什麼時候果斷停損？</text>
+  <rect class="card blue" x="750" y="320" width="280" height="140" rx="18"/>
+  <text class="card-title" x="772" y="354">Finance 財務</text>
+  <text class="card-body" x="772" y="384">現金流、毛利、回本週期、</text>
+  <text class="card-body" x="772" y="406">runway 會怎麼變化？</text>
 
-  <rect class="box" x="40" y="84" width="880" height="520" rx="20"/>
-  <text class="h" x="60" y="620">系統問題：這家事業能否持續地創造、交付、並 capture 價值——而不讓系統崩潰？</text>
+  <!-- lower row -->
+  <rect class="card orange" x="70" y="550" width="300" height="150" rx="18"/>
+  <text class="card-title" x="92" y="584">Team / Culture 團隊與文化</text>
+  <text class="card-body" x="92" y="614">誰來做這些事？</text>
+  <text class="card-body" x="92" y="636">團隊如何學習、協作，</text>
+  <text class="card-body" x="92" y="658">以及在現實打臉時怎麼反應？</text>
+
+  <rect class="card red" x="400" y="550" width="300" height="150" rx="18"/>
+  <text class="card-title" x="422" y="584">Risk 風險</text>
+  <text class="card-body" x="422" y="614">哪些依賴、瓶頸或失敗模式，</text>
+  <text class="card-body" x="422" y="636">會讓整套模式突然斷裂？</text>
+  <text class="card-body" x="422" y="658">哪些地方必須持續監控？</text>
+
+  <rect class="card purple" x="730" y="550" width="300" height="150" rx="18"/>
+  <text class="card-title" x="752" y="584">Decision Rule 決策規則</text>
+  <text class="card-body" x="752" y="614">什麼時候應該 continue、pivot、</text>
+  <text class="card-body" x="752" y="636">pause 或 stop？</text>
+  <text class="card-body" x="752" y="658">哪些證據會改變下一步？</text>
+
+  <!-- connector lines -->
+  <line class="line" x1="350" y1="175" x2="390" y2="175"/>
+  <line class="line" x1="710" y1="175" x2="750" y2="175"/>
+  <line class="line" x1="350" y1="390" x2="360" y2="390"/>
+  <line class="line" x1="740" y1="390" x2="750" y2="390"/>
+  <line class="line" x1="370" y1="625" x2="400" y2="625"/>
+  <line class="line" x1="700" y1="625" x2="730" y2="625"/>
+  <line class="line" x1="550" y1="240" x2="550" y2="290"/>
+  <line class="line" x1="550" y1="490" x2="550" y2="550"/>
+
+  <rect class="card" x="70" y="760" width="960" height="100" rx="20" fill="#ffffff"/>
+  <text class="footer" x="94" y="800">系統問題：這個事業能不能持續地創造、交付、並捕獲價值，而不讓整個系統崩潰？</text>
+  <text class="sub" x="94" y="830">產品也許能先吸引注意，但能不能活下來，取決於這套事業系統是否真的跑得動。</text>
 </svg>
