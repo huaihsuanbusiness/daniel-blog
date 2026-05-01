@@ -259,6 +259,24 @@ const currentSeriesIndex = seriesPosts.findIndex(p => p.id === post.id);
       img.removeAttribute('sizes');
     } catch {}
   });
+
+  document.querySelectorAll('.post-content table').forEach((table) => {
+    if (!(table instanceof HTMLTableElement)) return;
+    if (table.parentElement?.classList.contains('table-scroll')) return;
+
+    const maxCols = Array.from(table.rows).reduce((max, row) => Math.max(max, row.cells.length), 0);
+    const wrapper = document.createElement('div');
+    wrapper.className = 'table-scroll';
+
+    if (maxCols <= 4) {
+      wrapper.classList.add('table-scroll--compact');
+    } else {
+      wrapper.classList.add('table-scroll--wide');
+    }
+
+    table.parentNode?.insertBefore(wrapper, table);
+    wrapper.appendChild(table);
+  });
 </script>
 
 
@@ -577,18 +595,30 @@ const currentSeriesIndex = seriesPosts.findIndex(p => p.id === post.id);
     font-style: italic;
   }
 
-  .post-content :global(table) {
+  .post-content :global(.table-scroll) {
     width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    margin: var(--space-5) 0;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .post-content :global(.table-scroll > table) {
     border-collapse: separate;
     border-spacing: 0;
-    margin: var(--space-5) 0;
     border: 1px solid var(--color-border);
     border-radius: 14px;
     background: color-mix(in srgb, var(--color-surface) 96%, transparent);
-    display: block;
-    overflow-x: auto;
-    overflow-y: auto;
-    max-height: 520px;
+    table-layout: auto;
+    width: max-content;
+    min-width: 100%;
+    margin: 0;
+  }
+
+  .post-content :global(.table-scroll--compact > table) {
+    width: fit-content;
+    min-width: min(100%, 34rem);
+    max-width: 100%;
   }
 
   .post-content :global(thead) {
@@ -597,31 +627,33 @@ const currentSeriesIndex = seriesPosts.findIndex(p => p.id === post.id);
 
   .post-content :global(th),
   .post-content :global(td) {
-    min-width: 160px;
+    min-width: 0;
+    max-width: 28ch;
     padding: 14px 18px;
     text-align: left;
     vertical-align: top;
     border-bottom: 1px solid var(--color-border);
     line-height: 1.7;
+    white-space: normal;
+    word-break: normal;
+    overflow-wrap: anywhere;
+    hyphens: auto;
   }
 
-  .post-content :global(table) {
-    table-layout: fixed;
-    width: 100%;
-    border-collapse: collapse;
-    margin: var(--space-3) 0;
+  .post-content :global(th + th),
+  .post-content :global(td + td) {
+    border-left: 1px solid var(--color-border);
   }
 
-  .post-content :global(th),
+  .post-content :global(th) {
+    font-family: var(--font-display);
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-text);
+  }
+
   .post-content :global(td) {
-    min-width: 80px;
-    padding: 14px 18px;
-    text-align: left;
-    vertical-align: top;
-    border-bottom: 1px solid var(--color-border);
-    line-height: 1.7;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
+    color: var(--color-text);
   }
 
   .post-content :global(tbody tr:nth-child(even)) {
