@@ -134,11 +134,11 @@ The five levels matter because they describe behaviour, not emotion.
 
 | Level | Original wording | What it means in practice |
 |---|---|---|
-| 1 | Has a problem | The problem exists, but the actor does not really name it as a problem yet |
-| 2 | Is aware of having a problem | The actor knows the problem exists, but still has not taken action |
-| 3 | Actively looking for a solution | The actor has begun exploring concrete ways to solve it |
-| 4 | Assembled a homegrown solution | The actor does not trust off-the-shelf options enough and has built a workaround |
-| 5 | Has or can acquire a budget | The actor can now commit real resources, or justify a formal budget |
+| 1 | Has a problem | Has a problem, but does not see it that way |
+| 2 | Is aware of having a problem | Is aware of the problem but has not taken action |
+| 3 | Actively looking for a solution | Has explored solutions for their own problem |
+| 4 | Assembled a homegrown solution | Is dissatisfied with existing options, and therefore starts building their own solution |
+| 5 | Has or can acquire a budget | Has invested substantial effort and cost, and developed inertia different from most people |
 
 ### Applied to independent hotels
 
@@ -152,14 +152,14 @@ The five levels matter because they describe behaviour, not emotion.
 
 The most useful early-adopter layers are usually 4 and 5.
 
-Stage 4 tells you the actor no longer believes the status quo is sufficient.  
-Stage 5 tells you the actor is now ready to move resources, not just words.
+Stage 4 tells you the actor is no longer satisfied with existing options and has already started building something of their own.  
+Stage 5 tells you the actor has already paid substantial effort and cost, and now behaves with a very different kind of inertia from ordinary users.
 
 That is why the triangle is useful.
 
 It does not only tell you who hurts.
 
-It tells you whose pain has already changed behaviour.
+It tells you whose pain has already become costly enough to reshape behaviour.
 
 ---
 

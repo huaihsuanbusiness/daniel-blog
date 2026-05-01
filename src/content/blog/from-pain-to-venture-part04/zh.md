@@ -128,11 +128,11 @@ seriesOrder: 4
 
 | 層級 | Original wording | 實際上代表什麼 |
 |---|---|---|
-| 1 | Has a problem | 問題存在，但當事人還不會真的把它當成問題 |
-| 2 | Is aware of having a problem | 已經知道有問題，但還沒有真正採取行動 |
-| 3 | Actively looking for a solution | 已經開始針對這個問題探索具體解法 |
-| 4 | Assembled a homegrown solution | 對現成方案不夠信任，因此自己拼出 workaround |
-| 5 | Has or can acquire a budget | 已經能投入真實資源，或合理取得預算 |
+| 1 | Has a problem | 有問題，但自己不這麼認為 |
+| 2 | Is aware of having a problem | 意識到問題但沒有採取作為 |
+| 3 | Actively looking for a solution | 有針對自己的問題探索解決方案 |
+| 4 | Assembled a homegrown solution | 對現成方案不滿，因而開始自行製作解決方案 |
+| 5 | Has or can acquire a budget | 付出大量心力與代價，並產生與常人不同的慣性 |
 
 ### 套到獨立旅宿
 
@@ -146,14 +146,14 @@ seriesOrder: 4
 
 早期創業最值得優先找的，通常是第 4 與第 5 層。
 
-第 4 層代表：當事人已經不再相信現狀夠用了。  
-第 5 層代表：當事人已經準備好搬動資源，而不只是講講而已。
+第 4 層代表：當事人已經不滿於現成方案，並開始自己做。  
+第 5 層代表：當事人已經付出大量心力與代價，並形成不同於常人的慣性。
 
 這也是這個三角形最有價值的地方。
 
 它不是只告訴你誰有痛。
 
-它告訴你：誰的痛，已經開始改變他的行為。
+它告訴你：誰的痛，已經昂貴到足以改變他的行為。
 
 ---
 

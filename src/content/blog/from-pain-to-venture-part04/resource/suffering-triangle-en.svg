@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 720" role="img" aria-labelledby="title desc">
   <title id="title">Suffering Triangle</title>
-  <desc id="desc">A five-level triangle showing how pain progresses from having a problem to being able to commit budget.</desc>
+  <desc id="desc">A five-level triangle showing how pain progresses from having a problem to investing significant effort and cost.</desc>
   <style>
     text{font-family:Arial,sans-serif;fill:#1f2937}
     .bg{fill:#fbfaf7}
@@ -29,18 +29,18 @@
   <text class="stage" x="372" y="222">5. Has or can acquire a budget</text>
 
   <!-- notes on right -->
-  <text class="note" x="955" y="222">Willing to commit real resources</text>
-  <text class="note" x="955" y="258">or can justify a formal budget.</text>
+  <text class="note" x="955" y="222">Has invested substantial effort and cost,</text>
+  <text class="note" x="955" y="258">and developed inertia different from most people.</text>
 
-  <text class="note" x="955" y="320">Does not trust existing options enough</text>
-  <text class="note" x="955" y="356">and has built a workaround.</text>
+  <text class="note" x="955" y="320">Is dissatisfied with existing options,</text>
+  <text class="note" x="955" y="356">and therefore starts building their own solution.</text>
 
-  <text class="note" x="955" y="416">Already exploring solutions for</text>
-  <text class="note" x="955" y="452">this specific problem.</text>
+  <text class="note" x="955" y="416">Has explored solutions</text>
+  <text class="note" x="955" y="452">for their own problem.</text>
 
-  <text class="note" x="955" y="512">Knows the problem exists, but has</text>
-  <text class="note" x="955" y="548">not yet taken action.</text>
+  <text class="note" x="955" y="512">Is aware of the problem</text>
+  <text class="note" x="955" y="548">but has not taken action.</text>
 
-  <text class="note" x="955" y="608">The problem exists, but the actor</text>
-  <text class="note" x="955" y="644">does not really name it yet.</text>
+  <text class="note" x="955" y="608">Has a problem,</text>
+  <text class="note" x="955" y="644">but does not see it that way.</text>
 </svg>
