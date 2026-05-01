@@ -334,9 +334,11 @@ import SurveyLayout from '../../../../layouts/SurveyLayout.astro';
   const inviteUrl = urlParams.get('invite') || '';
   const articleUrl = 'https://www.danielcanfly.com/zh/blog/ai-companion-survey';
   const isMobileBrowser = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-  // 如果是從 ref 連結進來的家屬版或長輩版，則跳過第一個專屬分享 panel
-  const hasRefInvite = inviteUrl.includes('ref=');
-  const showFirstPanel = !(role === 'caregiver' && hasRefInvite) && !(role === 'elder' && hasRefInvite);
+  // 判斷是否要顯示第一個專屬分享 panel：
+  // - 有 URL ref 參數（表示是從別人的分享連結進來的）→ 隱藏第一 panel，避免重複邀請
+  // - 無 URL ref 參數（表示是自己填完後過來的）→ 顯示第一 panel，邀請另一方
+  const urlHasRef = new URLSearchParams(window.location.search).has('ref');
+  const showFirstPanel = !urlHasRef;
 
   const panel = document.getElementById('share-panel');
   const linkEl = document.getElementById('share-link');
