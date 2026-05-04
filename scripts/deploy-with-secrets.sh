@@ -31,21 +31,50 @@ if [ "$SKIP_BUILD" != "1" ]; then
   npm run build
 fi
 
-# Patch SESSION KV namespace id into dist/server/wrangler.json
-# This fixes: "a namespace with this account ID and title already exists" (code 10014)
-python3 - <<'PY'
-import json, os
-path = os.path.join(os.environ['ROOT_DIR'], 'dist/server/wrangler.json')
+# Ensure dist/server/wrangler.json contains the existing SESSION KV namespace id.
+# Source of truth lives in repo root wrangler.jsonc.
+python3 - "$ROOT_DIR/wrangler.jsonc" "$ROOT_DIR/dist/server/wrangler.json" <<'PY'
+import json, sys
+src_path, out_path = sys.argv[1], sys.argv[2]
+with open(src_path) as f:
+    src = json.load(f)
+session = None
+for kv in src.get('kv_namespaces', []):
+    if kv.get('binding') == 'SESSION':
+        session = kv
+        break
+if not session or not session.get('id'):
+    raise SystemExit('[deploy-with-secrets] Missing SESSION kv_namespaces.id in wrangler.jsonc')
+session_id = session['id']
+with open(out_path) as f:
+    out = json.load(f)
+found = False
+for kv in out.get('kv_namespaces', []):
+    if kv.get('binding') == 'SESSION':
+        kv['id'] = session_id
+        found = True
+        break
+if not found:
+    out.setdefault('kv_namespaces', []).append({
+        'binding': 'SESSION',
+        'id': session_id,
+    })
+with open(out_path, 'w') as f:
+    json.dump(out, f, indent=2)
+print(f'[deploy-with-secrets] Ensured SESSION KV namespace id in dist/server/wrangler.json: {session_id}')
+PY
+
+python3 - "$ROOT_DIR/dist/server/wrangler.json" <<'PY'
+import json, sys
+path = sys.argv[1]
 with open(path) as f:
     d = json.load(f)
-# Add id to SESSION binding if missing
-kv_list = d.get('kv_namespaces', [])
-for kv in kv_list:
-    if kv.get('binding') == 'SESSION' and 'id' not in kv:
-        kv['id'] = '1259cd31278c4af08e8765a9f61cc5ab'
-with open(path, 'w') as f:
-    json.dump(d, f, indent=2)
-print('[deploy-with-secrets] Patched SESSION KV namespace id into dist/server/wrangler.json')
+for kv in d.get('kv_namespaces', []):
+    if kv.get('binding') == 'SESSION' and kv.get('id'):
+        print(f"[deploy-with-secrets] Verified SESSION binding id: {kv['id']}")
+        break
+else:
+    raise SystemExit('[deploy-with-secrets] SESSION binding id missing after patch')
 PY
 
 TMP_SECRETS_FILE="$(mktemp "${TMPDIR:-/tmp}/daniel-blog-secrets.XXXXXX")"

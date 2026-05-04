@@ -95,6 +95,27 @@ This script:
 The repo workflow `.github/workflows/deploy.yml` now uses the same script.
 That means pushes to `main` should deploy through the version-upload-with-secrets path instead of the old broken flow.
 
+### SESSION KV namespace requirement (critical)
+`wrangler.jsonc` must explicitly bind the existing SESSION KV namespace **by id**:
+
+```json
+"kv_namespaces": [
+  {
+    "binding": "SESSION",
+    "id": "1259cd31278c4af08e8765a9f61cc5ab"
+  }
+]
+```
+
+Reason:
+- if the generated `dist/server/wrangler.json` contains `{"binding":"SESSION"}` without `id`,
+  Wrangler will try to provision a new namespace;
+- if a namespace with the same title already exists, deploy fails with Cloudflare error `code: 10014`.
+
+Current standard protection:
+- `scripts/deploy-with-secrets.sh` now patches `dist/server/wrangler.json` from `wrangler.jsonc`
+- the script also verifies the SESSION binding id before upload
+
 ### Emergency fallback only
 If the live site is already broken and you need to repair production manually, use the version-secret rebind flow:
 
@@ -150,7 +171,17 @@ ssh -T git@github.com
 ```bash
 cat package.json
 npm run build
+python3 - <<'PY'
+import json
+with open('dist/server/wrangler.json') as f:
+    d = json.load(f)
+print(d.get('kv_namespaces'))
+PY
 ```
+
+Expected:
+- `dist/server/wrangler.json` includes `{"binding": "SESSION", "id": "1259cd31278c4af08e8765a9f61cc5ab"}`
+- not just `{"binding": "SESSION"}`
 
 ### Production reachability
 ```bash

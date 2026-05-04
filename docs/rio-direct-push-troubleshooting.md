@@ -52,17 +52,37 @@ If Rio still cannot act directly after config recovery:
 - retry a small real repo change
 
 ## daniel-blog specific Cloudflare caveat
-If the blog repo can push normally but the survey backend breaks with:
+If the blog repo can push normally but deploy / survey backend breaks, it is often **deployment binding state**, not repo connectivity.
+
+### Failure mode A — missing Google survey secrets
+If production breaks with:
 ```text
 Error: GOOGLE_SHEET_ID is not set
 ```
-that is **not** usually a repo connectivity problem.
-
-For `daniel-blog`, that symptom can mean Cloudflare promoted a fresh Worker version without the three Google survey secrets bound to the live production version.
+that can mean Cloudflare promoted a fresh Worker version without the three Google survey secrets bound to the live production version.
 
 Current standard fix:
 - use `npm run deploy:cloudflare`
 - or let `.github/workflows/deploy.yml` deploy via `scripts/deploy-with-secrets.sh`
+
+### Failure mode B — SESSION KV namespace reprovisioning (`code: 10014`)
+If deploy fails with:
+```text
+a namespace with this account ID and title already exists [code: 10014]
+```
+that means the generated `dist/server/wrangler.json` has a SESSION binding without `id`, so Wrangler tries to create a duplicate KV namespace.
+
+Current permanent fix:
+- `wrangler.jsonc` stores the existing SESSION namespace id
+- `scripts/deploy-with-secrets.sh` copies that id into `dist/server/wrangler.json` after build
+- the script fails fast if the SESSION id is still missing
+
+### Failure mode C — bad deploy-script patching
+If CI fails with:
+```text
+KeyError: 'ROOT_DIR'
+```
+that means the deploy script referenced a shell variable inside Python without passing it through. The current script has been fixed to pass file paths as explicit CLI args.
 
 See:
 - `/Users/daniel/daniel-blog/docs/deploy-sop.md`
