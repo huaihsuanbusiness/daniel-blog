@@ -31,6 +31,23 @@ if [ "$SKIP_BUILD" != "1" ]; then
   npm run build
 fi
 
+# Patch SESSION KV namespace id into dist/server/wrangler.json
+# This fixes: "a namespace with this account ID and title already exists" (code 10014)
+python3 - <<'PY'
+import json, os
+path = os.path.join(os.environ['ROOT_DIR'], 'dist/server/wrangler.json')
+with open(path) as f:
+    d = json.load(f)
+# Add id to SESSION binding if missing
+kv_list = d.get('kv_namespaces', [])
+for kv in kv_list:
+    if kv.get('binding') == 'SESSION' and 'id' not in kv:
+        kv['id'] = '1259cd31278c4af08e8765a9f61cc5ab'
+with open(path, 'w') as f:
+    json.dump(d, f, indent=2)
+print('[deploy-with-secrets] Patched SESSION KV namespace id into dist/server/wrangler.json')
+PY
+
 TMP_SECRETS_FILE="$(mktemp "${TMPDIR:-/tmp}/daniel-blog-secrets.XXXXXX")"
 TMP_UPLOAD_LOG="$(mktemp "${TMPDIR:-/tmp}/daniel-blog-upload.XXXXXX")"
 trap 'rm -f "$TMP_SECRETS_FILE" "$TMP_UPLOAD_LOG"' EXIT
