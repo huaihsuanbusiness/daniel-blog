@@ -24,6 +24,38 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script is:inline>
+      // Replace Cloudflare Image Resizing _image?f=svg URLs with direct SVG href
+      // f=svg is not supported by Cloudflare Images (returns 400)
+      // This must run before any <img> tags are parsed to avoid failed requests
+      document.addEventListener('DOMNodeInserted', function handler(e) {
+        var el = e.target;
+        if (!el || !(el instanceof HTMLElement)) return;
+        if (el.tagName === 'IMG') {
+          fixImg(el);
+        }
+        var imgs = el.querySelectorAll && el.querySelectorAll('img');
+        if (imgs) imgs.forEach(fixImg);
+      });
+      function fixImg(img) {
+        try {
+          var src = img.getAttribute('src');
+          if (!src) return;
+          var url;
+          try { url = new URL(src, window.location.origin); } catch { return; }
+          if (url.pathname !== '/_image') return;
+          var href = url.searchParams.get('href');
+          if (!href || !/\.svg(?:[?#].*)?$/i.test(href)) return;
+          img.src = href;
+          img.removeAttribute('srcset');
+          img.removeAttribute('sizes');
+        } catch {}
+      }
+      // Fix any already-parsed imgs immediately
+      if (typeof document !== 'undefined') {
+        document.querySelectorAll && document.querySelectorAll('img').forEach(fixImg);
+      }
+    </script>
+    <script is:inline>
       if (
         typeof window !== 'undefined' &&
         window.location.protocol === 'http:' &&
