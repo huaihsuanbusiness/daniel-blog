@@ -255,32 +255,33 @@ const c = content[lang as 'en' | 'zh'];
     display: block;
   }
 
-  .social-link--linkedin {
+  .social-link--linkedin .social-icon {
     color: #0A66C2;
   }
 
-  .social-link--whatsapp {
+  .social-link--whatsapp .social-icon {
     color: #25D366;
   }
 
   .social-link:hover {
     transform: translateY(-1px);
+    color: var(--color-text);
   }
 
   .social-link--linkedin:hover {
     border-color: #0A66C2;
     background: rgba(10, 102, 194, 0.08);
-    color: #0A66C2;
+    color: var(--color-text);
   }
 
   .social-link--whatsapp:hover {
     border-color: #25D366;
     background: rgba(37, 211, 102, 0.08);
-    color: #25D366;
+    color: var(--color-text);
   }
 
   .social-link--line:hover {
     border-color: var(--color-accent);
-    color: var(--color-accent);
+    color: var(--color-text);
   }
 </style>
