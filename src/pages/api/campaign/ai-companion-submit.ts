@@ -27,10 +27,14 @@ export const POST: APIRoute = async ({ request }) => {
       SITE: env.SITE ?? 'https://danielcanfly.com',
     };
 
+    const hasContact = !!(answers.contact_email || answers.contact_line);
     const sheet = new GoogleSheet(googleEnv);
     const result = await sheet.appendRow({ role, familyId, answers, locale });
 
-    return new Response(JSON.stringify(result), {
+    return new Response(JSON.stringify({
+      ...result,
+      contactSubmitted: answers.contact_willing === '願意' && hasContact,
+    }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' },
     });

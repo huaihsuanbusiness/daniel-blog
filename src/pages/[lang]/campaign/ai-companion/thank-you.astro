@@ -8,8 +8,8 @@ import SurveyLayout from '../../../../layouts/SurveyLayout.astro';
 
 <SurveyLayout
   title="感謝填寫"
-  description="AI 陪伴服務上線問卷填寫中！邀請您一起填寫 填寫問卷，服務上線後有機會獲得至少一個月免費試用！"
-  ogTitle="AI 陪伴服務上線問卷填寫中！邀請您一起填寫 填寫問卷，服務上線後有機會獲得至少一個月免費試用！"
+  description="AI 陪伴服務上線問卷填寫中！填寫問卷，服務上線後有機會獲得三個月免費試用（價值 $900）！"
+  ogTitle="AI 陪伴服務上線問卷填寫中！填寫問卷，服務上線後有機會獲得三個月免費試用（價值 $900）！"
 >
   <div class="thankyou-block">
 
@@ -44,6 +44,23 @@ import SurveyLayout from '../../../../layouts/SurveyLayout.astro';
             <span class="fb-label">複製文案並分享到Facebook</span>
           </a>
         </div>
+      </div>
+    </div>
+
+    <!-- 甜頭揭露（contact=1 URL param 控制） -->
+    <div id="reward-block" style="display:none">
+      <div class="share-panel">
+        <p class="panel-label">🎁 完成獎勵</p>
+        <p class="prompt-line">恭喜您完成問卷！</p>
+        <p class="reward-body">
+          您已留下聯絡方式。<br/>
+          我們將在 AI 夥伴服務正式上線前，依報名順序寄送
+          <strong>3 個月免費試用邀請</strong>（價值 $900）
+          給符合資格的參與者。
+        </p>
+        <p class="reward-note">
+          詳細兌換方式將於服務上線時透過您留下的電子郵件或 LINE 與您聯絡。
+        </p>
       </div>
     </div>
 
@@ -309,6 +326,21 @@ import SurveyLayout from '../../../../layouts/SurveyLayout.astro';
     color: #fff;
     border-color: #fff;
   }
+  .reward-body {
+    font-size: 0.92rem;
+    color: #333;
+    line-height: 1.7;
+    margin: 0 0 10px;
+  }
+  .reward-body strong {
+    color: #4f46e5;
+  }
+  .reward-note {
+    font-size: 0.82rem;
+    color: #888;
+    line-height: 1.6;
+    margin: 0;
+  }
 </style>
 
 <script>
@@ -353,28 +385,35 @@ import SurveyLayout from '../../../../layouts/SurveyLayout.astro';
   const btnFbArticle = document.getElementById('btn-fb-article');
   const shareToast = document.getElementById('share-toast');
 
+  // 甜頭揭露（contact=1 URL param 控制）
+  const contactParam = urlParams.get('contact');
+  const rewardBlock = document.getElementById('reward-block');
+  if (contactParam === '1' && rewardBlock) {
+    rewardBlock.style.display = 'block';
+  }
+
   // 個人邀請連結（如果是從 ref 連結進來的家屬版，則跳過此 panel）
   if (showFirstPanel && role === 'caregiver') {
     document.getElementById('caregiver-prompt').style.display = 'block';
     if (inviteUrl) {
       panel.style.display = 'block';
-      linkEl.textContent = 'AI 陪伴服務上線問卷填寫中！邀請您一起填寫\n填寫問卷，服務上線後有機會獲得至少一個月免費試用！ ' + inviteUrl;
+      linkEl.textContent = 'AI 陪伴服務上線問卷填寫中！\n填寫問卷，服務上線後有機會獲得三個月免費試用（價值 $900）！ ' + inviteUrl;
     }
   } else if (showFirstPanel && role === 'elder') {
     document.getElementById('elder-prompt').style.display = 'block';
     if (inviteUrl) {
       panel.style.display = 'block';
-      linkEl.textContent = 'AI 陪伴服務上線問卷填寫中！邀請您一起填寫\n填寫問卷，服務上線後有機會獲得至少一個月免費試用！ ' + inviteUrl;
+      linkEl.textContent = 'AI 陪伴服務上線問卷填寫中！\n填寫問卷，服務上線後有機會獲得三個月免費試用（價值 $900）！ ' + inviteUrl;
     }
   }
 
   // 文章連結（固定，永遠顯示）
   if (articleLinkEl) {
-    articleLinkEl.textContent = 'AI 陪伴服務上線問卷填寫中！邀請您一起填寫\n填寫問卷，服務上線後有機會獲得至少一個月免費試用！ ' + articleUrl;
+    articleLinkEl.textContent = 'AI 陪伴服務上線問卷填寫中！\n填寫問卷，服務上線後有機會獲得三個月免費試用（價值 $900）！ ' + articleUrl;
   }
 
   // ─── 分享區域 ───
-  var TRIGGER = 'AI 陪伴服務上線問卷填寫中！邀請您一起填寫\n填寫問卷，服務上線後有機會獲得至少一個月免費試用！';
+  var TRIGGER = 'AI 陪伴服務上線問卷填寫中！\n填寫問卷，服務上線後有機會獲得三個月免費試用（價值 $900）！';
 
   // LINE 個人連結（只有第一個 panel 需要，skip if role=caregiver with ref）
   if (btnLine && inviteUrl && showFirstPanel) {

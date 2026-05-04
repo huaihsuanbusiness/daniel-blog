@@ -240,7 +240,7 @@ const refParam = '';
       <div class="section-label">聯絡與後續參與意願</div>
       <div class="question-text">感謝您完成問卷。<br />如果您願意留下聯絡方式，後續有機會：</div>
       <ul class="contact-list">
-        <li>優先參與至少 1 個月免費試用</li>
+        <li>優先參與 3 個月免費試用（價值 $900 元）</li>
         <li>接受 15–30 分鐘深度訪談邀請</li>
         <li>參與後續產品測試或研究回訪</li>
       </ul>
@@ -663,11 +663,18 @@ const refParam = '';
       safeSession.set('survey_inviteLink', inviteLink);
       safeSession.set('survey_role', 'elder');
       clearDraft();
+
+      // Determine if contact info was submitted
+      const emailVal = (document.querySelector('input[name="contact_email"]') as HTMLInputElement)?.value.trim() || '';
+      const lineVal = (document.querySelector('input[name="contact_line"]') as HTMLInputElement)?.value.trim() || '';
+      const contactSubmitted = contactWilling === '願意' && !!(emailVal || lineVal);
+
       const lang2 = window.location.pathname.split('/').filter(Boolean)[0] || 'zh';
       const fullInvite = inviteLink.startsWith('http')
         ? inviteLink
         : window.location.origin + inviteLink;
-      window.location.href = `/${lang2}/campaign/ai-companion/thank-you?role=elder&invite=${encodeURIComponent(fullInvite)}`;
+      const contactParam = contactSubmitted ? '&contact=1' : '';
+      window.location.href = `/${lang2}/campaign/ai-companion/thank-you?role=elder&invite=${encodeURIComponent(fullInvite)}${contactParam}`;
     } catch (err) {
       errorContainer.innerHTML = `<div class="error-msg">送出失敗：${err.message}</div>`;
       submitBtn.disabled = false;
