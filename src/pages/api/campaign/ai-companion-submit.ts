@@ -1,7 +1,13 @@
-export const prerender = false;
-import type { APIRoute } from 'astro';
+import { env } from "cloudflare:workers";
 import { GoogleSheet } from '../../../utils/googleSheet';
-import { getWorkersEnv } from '../../../utils/workersEnv';
+
+export const prerender = false;
+
+type GoogleSheetEnv = {
+  GOOGLE_PRIVATE_KEY?: string;
+  GOOGLE_SHEET_ID?: string;
+  SITE?: string;
+};
 
 export const POST: APIRoute = async ({ request }) => {
   try {
@@ -14,8 +20,6 @@ export const POST: APIRoute = async ({ request }) => {
         { status: 400, headers: { 'Content-Type': 'application/json' } }
       );
     }
-
-    const env = await getWorkersEnv();
 
     const googleEnv = {
       GOOGLE_PRIVATE_KEY: env.GOOGLE_PRIVATE_KEY ?? '',

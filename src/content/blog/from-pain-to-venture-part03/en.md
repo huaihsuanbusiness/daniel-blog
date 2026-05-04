@@ -142,12 +142,12 @@ Before thinking about the product, test whether the problem has enough weight.
 
 The chain looks like this:
 
-1. 當事人在特定情境下
-2. 意圖完成某件重大事情（JTBD）
-3. 抱著某重大期許（Outcome Expectation）
-4. 就其重大未滿足的期許落差（Gap）
-5. 採取許多作為卻沒有效果
-6. 因而付出代價、承擔後果
+1. The actor is in a specific situation
+2. They intend to accomplish something significant (JTBD)
+3. They hold a major expectation (Outcome Expectation)
+4. There is a significant unsatisfied expectation gap (Gap)
+5. They take many actions but nothing works
+6. As a result, they pay a cost and bear the consequences
 
 It is a plain filter, but a useful one.
 
