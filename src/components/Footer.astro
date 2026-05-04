@@ -31,7 +31,7 @@ const year = new Date().getFullYear();
       {socialLinks.map(link => (
         <a
           href={link.href}
-          class="social-link"
+          class={`social-link social-link--${link.name.toLowerCase()}`}
           target="_blank"
           rel="noopener noreferrer"
           aria-label={link.name}
@@ -86,10 +86,33 @@ const year = new Date().getFullYear();
     transition: all var(--transition-fast);
   }
 
+  .social-link--linkedin {
+    color: #0A66C2;
+  }
+
+  .social-link--whatsapp {
+    color: #25D366;
+  }
+
   .social-link:hover {
+    transform: translateY(-2px);
+  }
+
+  .social-link--linkedin:hover {
+    border-color: #0A66C2;
+    background: rgba(10, 102, 194, 0.08);
+    color: #0A66C2;
+  }
+
+  .social-link--whatsapp:hover {
+    border-color: #25D366;
+    background: rgba(37, 211, 102, 0.08);
+    color: #25D366;
+  }
+
+  .social-link--line:hover {
     border-color: var(--color-accent);
     color: var(--color-accent);
-    transform: translateY(-2px);
   }
 
   @media (max-width: 640px) {
