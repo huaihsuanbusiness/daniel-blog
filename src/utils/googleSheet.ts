@@ -140,7 +140,7 @@ export class GoogleSheet {
 
   constructor(env: GoogleSheetEnv) {
     this.env = env;
-    this.sheetId = env.GOOGLE_SHEET_ID || '';
+    this.sheetId = (env.GOOGLE_SHEET_ID || '').trim();
     if (!this.sheetId) throw new Error('GOOGLE_SHEET_ID is not set');
   }
 
