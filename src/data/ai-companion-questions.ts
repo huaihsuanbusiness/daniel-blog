@@ -310,7 +310,7 @@ export const caregiverGroups: Record<string, QuestionGroup> = {
         code: 'B3',
         text: '這位長輩目前主要和誰一起住？',
         type: 'radio',
-        options: ['自己一個人住', '和配��住', '和子女住', '和看護／照顧者住', '其他']
+        options: ['自己一個人住', '和配偶住', '和子女住', '和看護／照顧者住', '其他']
       },
       {
         code: 'B4',

@@ -265,6 +265,21 @@ const sectionTitle = currentSectionData.section;
     safeSession.set('survey_answers', JSON.stringify(data));
   }
 
+  // Find question block by code
+  function findQuestionBlock(code) {
+    // Handle matrix row codes like B10__0
+    if (code.startsWith('B10__')) {
+      return document.querySelector('.question-block:has(.matrix-table)');
+    }
+    const byName = document.querySelector(`.question-block input[name="${code}"]`)?.closest('.question-block');
+    if (byName) return byName;
+    const byCode = Array.from(document.querySelectorAll('.question-block')).find(block => {
+      const codeEl = block.querySelector('.question-code');
+      return codeEl?.textContent?.trim() === code;
+    });
+    return byCode || null;
+  }
+
   // Required codes for this section
   const requiredCodes = currentSectionData.questions.filter(q => q.type !== 'textarea').map(q => q.type === 'matrix' ? q.code + '__0' : q.code);
 
@@ -333,6 +348,23 @@ const sectionTitle = currentSectionData.section;
     btn.addEventListener('click', () => {
       const target = btn.getAttribute('data-section');
       const isContact = btn.getAttribute('data-action') === 'contact';
+      
+      // Validate BEFORE navigating
+      const missing = validateSection();
+      if (missing && missing.length > 0) {
+        // Show error
+        errorContainer.innerHTML = `<div class="error-msg">還有 ${missing.length} 題未填（請滑到紫色標記的題目）</div>`;
+        // Scroll to first missing
+        const firstMissing = missing[0];
+        const targetBlock = findQuestionBlock(firstMissing);
+        if (targetBlock) {
+          targetBlock.classList.add('question-missing');
+          targetBlock.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        return; // Stop - don't navigate
+      }
+      
+      // Only navigate if validation passes
       saveAnswers();
       sessionStorage.setItem('survey_section', section);
       const lng = window.location.pathname.split('/').filter(Boolean)[0] || 'zh';
