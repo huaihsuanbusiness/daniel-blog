@@ -1088,25 +1088,33 @@ function renderQuestion(q: typeof questions[0], qIndex: number) {
     }
   });
 
-  // NEW: Add section navigation bar at top
-  const sections = ['B1', 'B5', 'B10', 'B13', 'B14', 'B16', 'B20', 'B23', 'B30', 'B33'];
-  const navHtml = '<div class="section-nav-bar"><ul>' + 
-    sections.map(s => `<li><a href="#sec-${s}" class="nav-dot" data-target="#sec-${s}"></a></li>`).join('') + 
-    '</ul></div>';
-  
-  // Insert nav bar after progress bar
-  const progressBar = document.querySelector('.progress-bar');
-  if (progressBar) {
-    progressBar.insertAdjacentHTML('afterend', navHtml);
-  }
-  
-  // Add click handlers for smooth scroll
-  document.querySelectorAll('.nav-dot').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      e.preventDefault();
-      const target = btn.getAttribute('data-target');
-      const el = document.querySelector(target as string);
-      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    });
+  // Find actual section labels and create navigation
+  const sectionLabels = Array.from(document.querySelectorAll('.section-label')).filter(el => {
+    const text = el.textContent || '';
+    return text.startsWith('B-1') || text.startsWith('B-2') || text.startsWith('B-3') || 
+           text.startsWith('B-4') || text.startsWith('B-5') || text.startsWith('B-6') ||
+           text.startsWith('B-7') || text.startsWith('B-8') || text.startsWith('B-9');
   });
+  
+  if (sectionLabels.length > 0) {
+    const navHtml = '<div class="section-nav-bar"><ul>' + 
+      sectionLabels.map((el, i) => `<li><a href="#sec-${i}" class="nav-dot" data-target="#sec-${i}"></a></li>`).join('') + 
+      '</ul></div>';
+    
+    const progressBar = document.querySelector('.progress-bar');
+    if (progressBar) {
+      progressBar.insertAdjacentHTML('afterend', navHtml);
+      // Now add IDs to actual sections
+      sectionLabels.forEach((el, i) => el.id = 'sec-' + i);
+    }
+    
+    document.querySelectorAll('.nav-dot').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const target = btn.getAttribute('data-target');
+        const el = document.querySelector(target as string);
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
+  }
 </script>
