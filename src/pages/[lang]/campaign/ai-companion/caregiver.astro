@@ -727,34 +727,36 @@ function renderQuestion(q: typeof questions[0], qIndex: number) {
   }
   /* Section navigation bar */
   :global(.section-nav-bar) {
+    position: -webkit-sticky;
     position: sticky;
     top: 60px;
     background: var(--bg-page);
-    padding: 8px 12px;
+    padding: 10px 16px;
     z-index: 9;
     border-bottom: 1px solid var(--border-color);
-    overflow-x: auto;
+    display: flex;
+    justify-content: center;
   }
   :global(.section-nav-bar ul) {
     display: flex;
     list-style: none;
     margin: 0;
     padding: 0;
-    gap: 8px;
-    justify-content: center;
+    gap: 12px;
   }
   :global(.nav-dot) {
     display: block;
-    width: 12px;
-    height: 12px;
+    width: 14px;
+    height: 14px;
     border-radius: 50%;
     background: var(--border-color);
     cursor: pointer;
-    transition: background 0.2s;
+    transition: all 0.2s;
   }
   :global(.nav-dot:hover),
   :global(.nav-dot.active) {
     background: var(--accent);
+    transform: scale(1.2);
   }
 </style>
 
@@ -1088,7 +1090,7 @@ function renderQuestion(q: typeof questions[0], qIndex: number) {
     }
   });
 
-  // Find actual section labels and create navigation
+  // Section navigation - find section labels and create navigation dots
   const sectionLabels = Array.from(document.querySelectorAll('.section-label')).filter(el => {
     const text = el.textContent || '';
     return text.startsWith('B-1') || text.startsWith('B-2') || text.startsWith('B-3') || 
@@ -1100,14 +1102,11 @@ function renderQuestion(q: typeof questions[0], qIndex: number) {
     const navHtml = '<div class="section-nav-bar"><ul>' + 
       sectionLabels.map((el, i) => `<li><a href="#sec-${i}" class="nav-dot" data-target="#sec-${i}"></a></li>`).join('') + 
       '</ul></div>';
-    
-    const progressBar = document.querySelector('.progress-bar');
-    if (progressBar) {
-      progressBar.insertAdjacentHTML('afterend', navHtml);
-      // Now add IDs to actual sections
+    const surveyHeader = document.querySelector('.survey-header');
+    if (surveyHeader) {
+      surveyHeader.insertAdjacentHTML('afterend', navHtml);
       sectionLabels.forEach((el, i) => el.id = 'sec-' + i);
     }
-    
     document.querySelectorAll('.nav-dot').forEach(btn => {
       btn.addEventListener('click', (e) => {
         e.preventDefault();
@@ -1118,4 +1117,3 @@ function renderQuestion(q: typeof questions[0], qIndex: number) {
     });
   }
 </script>
-<!-- force deploy -->
