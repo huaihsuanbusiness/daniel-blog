@@ -897,6 +897,11 @@ function renderQuestion(q: typeof questions[0], qIndex: number) {
   setupMaxSelectLimits();
 
   function findQuestionBlock(questionCode: string) {
+    // Handle matrix row codes like B10__0 → find the matrix block
+    if (questionCode.startsWith('B10__')) {
+      const block = document.querySelector('.question-block:has(.matrix-table)')?.closest('.question-block');
+      return block || null;
+    }
     const byName = document.querySelector(`.question-block input[name="${questionCode}"]`)?.closest('.question-block');
     if (byName) return byName;
 
@@ -971,6 +976,9 @@ function renderQuestion(q: typeof questions[0], qIndex: number) {
     // Validate required fields
     const requiredQuestions = [
       'B1','B2','B3','B4','B5','B6','B7','B8','B9',
+      // B10 is a matrix: each row must have exactly one radio selected (B10__0 … B10__7)
+      'B10__0','B10__1','B10__2','B10__3','B10__4','B10__5','B10__6','B10__7',
+      'B11','B12',
       'B13','B14','B15','B16','B17','B18','B19',
       'B21','B22','B23','B25','B26','B27','B28','B29',
       'B30','B31','B32','contact_willing'

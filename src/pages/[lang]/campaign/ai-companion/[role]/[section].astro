@@ -1,0 +1,345 @@
+---
+export const prerender = true;
+export function getStaticPaths() {
+  // Generate paths for all section pages
+  const paths = [];
+  const roles = ['elder', 'caregiver'];
+  const sections = {
+    elder: ['a1', 'a2', 'a3', 'a4', 'a5', 'a6', 'a7', 'a8'],
+    caregiver: ['b1', 'b2', 'b3', 'b4', 'b5', 'b6', 'b7', 'b8', 'b9']
+  };
+  const langs = ['en', 'zh'];
+  
+  for (const lang of langs) {
+    for (const role of roles) {
+      for (const section of sections[role as 'elder' | 'caregiver']) {
+        paths.push({ params: { lang, role, section } });
+      }
+    }
+  }
+  return paths;
+}
+const { lang, role, section } = Astro.params;
+import SurveyLayout from '../../../../../layouts/SurveyLayout.astro';
+import { elderGroups, caregiverGroups, getNextSection, getPrevSection, getSectionTitle } from '../../../../../data/ai-companion-questions';
+
+const groups = role === 'elder' ? elderGroups : caregiverGroups;
+const currentSectionData = groups[section as string];
+const NEXT = getNextSection(role as 'elder' | 'caregiver', section as string);
+const PREV = getPrevSection(role as 'elder' | 'caregiver', section as string);
+const TOTAL = role === 'elder' ? 8 : 9;
+const currentIndex = role === 'elder' 
+  ? ['a1','a2','a3','a4','a5','a6','a7','a8'].indexOf(section as string) + 1
+  : ['b1','b2','b3','b4','b5','b6','b7','b8','b9'].indexOf(section as string) + 1;
+
+if (!currentSectionData) {
+  return Astro.redirect(`/${lang}/campaign/ai-companion/role`);
+}
+
+function renderQuestion(q: typeof currentSectionData.questions[0]) {
+  const isRequired = q.type !== 'textarea';
+  const reqAttr = isRequired ? 'required' : '';
+
+  if (q.type === 'radio') {
+    return `
+  <div class="question-block">
+    ${q.section ? `<div class="section-label">${q.section}</div>` : ''}
+    <div class="question-code">${q.code}</div>
+    <div class="question-text">${q.text}</div>
+    <ul class="options-list">
+      ${q.options!.map((opt) => `
+      <li>
+        <label class="option-label">
+          <input type="radio" name="${q.code}" value="${opt}" ${reqAttr} />
+          <span>${opt}</span>
+        </label>
+        ${opt === '其他' ? `<div class="other-reveal" id="other-reveal-${q.code}"><input type="text" class="other-text-input" name="${q.code}_other" placeholder="請說明（選填）" autocomplete="off" /></div>` : ''}
+      </li>`).join('')}
+    </ul>
+  </div>`;
+  }
+
+  if (q.type === 'checkbox') {
+    return `
+  <div class="question-block" ${q.maxSelect ? `data-max-select="${q.maxSelect}"` : ''}>
+    ${q.section ? `<div class="section-label">${q.section}</div>` : ''}
+    <div class="question-code">${q.code}</div>
+    <div class="question-text">${q.text}</div>
+    <ul class="options-list">
+      ${q.options!.map((opt) => `
+      <li>
+        <label class="option-label">
+          <input type="checkbox" name="${q.code}" value="${opt}" />
+          <span>${opt}</span>
+        </label>
+        ${opt === '其他' ? `<div class="other-reveal" id="other-reveal-${q.code}"><input type="text" class="other-text-input" name="${q.code}_other" placeholder="請說明（選填）" autocomplete="off" /></div>` : ''}
+      </li>`).join('')}
+    </ul>
+  </div>`;
+  }
+
+  if (q.type === 'textarea') {
+    return `
+  <div class="question-block">
+    ${q.section ? `<div class="section-label">${q.section}</div>` : ''}
+    <div class="question-code">${q.code}</div>
+    <div class="question-text">${q.text}</div>
+    <textarea class="text-input" name="${q.code}" rows="4" placeholder="請填寫（選填）"></textarea>
+  </div>`;
+  }
+
+  if (q.type === 'matrix') {
+    return `
+  <div class="question-block">
+    ${q.section ? `<div class="section-label">${q.section}</div>` : ''}
+    <div class="question-code">${q.code}</div>
+    <div class="question-text">${q.text}</div>
+    <div class="matrix-table-wrap">
+      <table class="matrix-table">
+        <colgroup>
+          <col class="matrix-col-label" />
+          ${q.cols!.map(() => `<col class="matrix-col-option" />`).join('')}
+        </colgroup>
+        <thead>
+          <tr>
+            <th class="matrix-corner"></th>
+            ${q.cols!.map(c => `<th>${c}</th>`).join('')}
+          </tr>
+        </thead>
+        <tbody>
+          ${q.rows!.map((row, rowIndex) => `
+          <tr>
+            <td class="row-label">${row}</td>
+            ${q.cols!.map(col => `
+            <td data-col-label="${col}">
+              <label class="matrix-choice">
+                <input type="radio" name="${q.code}__${rowIndex}" value="${row}|${col}" required />
+                <span class="matrix-choice-label">${col}</span>
+              </label>
+            </td>`).join('')}
+          </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>
+  </div>`;
+  }
+
+  if (q.type === 'slider') {
+    return `
+  <div class="question-block">
+    ${q.section ? `<div class="section-label">${q.section}</div>` : ''}
+    <div class="question-code">${q.code}</div>
+    <div class="question-text">${q.text}</div>
+    <div class="slider-block">
+      <div class="slider-value" id="${q.code}-value">5</div>
+      <div class="slider-track-shell">
+        <div class="slider-ticks" aria-hidden="true">${q.options!.map(() => '<span></span>').join('')}</div>
+        <input type="range" name="${q.code}" min="0" max="10" step="1" value="5" class="range-input" data-range-output="${q.code}-value" required />
+      </div>
+      <div class="slider-labels">
+        <span>${q.scaleLabels![0]}</span>
+        <span>${q.scaleLabels![1]}</span>
+      </div>
+    </div>
+  </div>`;
+  }
+
+  return '';
+}
+
+const sectionTitle = currentSectionData.section;
+---
+
+<SurveyLayout title={`${sectionTitle}｜${role === 'elder' ? '長輩' : '家屬'}版`} description="請根據您的實際情況填寫" size={role === 'elder' ? 'elder' : 'normal'}>
+  <!-- Progress Bar -->
+  <div class="progress-bar">
+    <div class="progress-track">
+      <div class="progress-fill" style={`width: ${(currentIndex / TOTAL) * 100}%`}></div>
+    </div>
+    <div class="progress-text">{currentIndex} / {TOTAL} · {sectionTitle}</div>
+  </div>
+
+  <form id="section-form">
+    {currentSectionData.questions.map((q) => (
+      <Fragment set:html={renderQuestion(q)} />
+    ))}
+  </form>
+
+  <!-- Navigation Bar -->
+  <div class="section-nav">
+    {PREV ? (
+      <button type="button" class="nav-btn nav-prev" data-section={PREV}>← 上一頁</button>
+    ) : <div></div>}
+    <span class="nav-indicator">{currentIndex} / {TOTAL}</span>
+    {NEXT ? (
+      <button type="button" class="nav-btn nav-next" data-section={NEXT}>下一頁 →</button>
+    ) : (
+      <button type="button" class="nav-btn nav-next" data-action="contact">下一頁 →</button>
+    )}
+  </div>
+
+  <div id="error-container"></div>
+</SurveyLayout>
+
+<style>
+  .progress-bar{position:sticky;top:0;background:var(--bg-page);padding:12px 16px;z-index:10;border-bottom:1px solid var(--border-color)}
+  .progress-track{height:4px;background:var(--border-color);border-radius:2px;overflow:hidden}
+  .progress-fill{height:100%;background:var(--accent);transition:width .3s}
+  .progress-text{font-size:.8rem;color:var(--text-secondary);margin-top:6px;text-align:center}
+  .section-nav{position:fixed;bottom:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:12px 16px;padding-bottom:calc(12px + env(safe-area-inset-bottom));background:var(--bg-card);border-top:1px solid var(--border-color);z-index:20}
+  .nav-btn{appearance:none;padding:12px 24px;border-radius:999px;font-size:1rem;font-weight:600;cursor:pointer;transition:all .15s}
+  .nav-prev{background:transparent;color:var(--text-secondary);border:1px solid var(--border-color)}
+  .nav-next{background:var(--accent);color:#fff;border:1px solid var(--accent)}
+  .nav-indicator{font-size:.9rem;color:var(--text-muted)}
+  .error-msg{background:var(--error-bg);border:1px solid var(--error-border);border-radius:8px;padding:12px 16px;color:var(--error-text);font-size:.95rem;margin-bottom:16px}
+  @media(max-width:480px){
+    .section-nav{padding:10px 12px;padding-bottom:calc(10px + env(safe-area-inset-bottom))}
+    .nav-btn{padding:10px 16px;font-size:.95rem}
+  }
+  /* Matrix styles */
+  :global(.matrix-table-wrap){overflow-x:visible;width:100%;margin-top:12px;border:1px solid color-mix(in srgb, var(--border-color) 88%, transparent);border-radius:16px;background:color-mix(in srgb, var(--bg-page) 60%, transparent);padding:4px}
+  :global(.matrix-table){width:100%;min-width:0;border-collapse:separate;border-spacing:0;font-size:.98rem;table-layout:fixed}
+  :global(.matrix-table th),:global(.matrix-table td){padding:16px 14px;text-align:center;vertical-align:middle;border-bottom:1px solid color-mix(in srgb, var(--border-color) 84%, transparent);background:transparent}
+  :global(.matrix-table th){font-size:.9rem;color:var(--text-secondary);font-weight:700;white-space:nowrap;background:color-mix(in srgb, var(--bg-card) 74%, var(--bg-page))}
+  :global(.matrix-table .matrix-col-label){width:46%}
+  :global(.matrix-table .matrix-col-option){width:18%}
+  :global(.matrix-table .row-label){text-align:left;font-weight:500;padding:18px 18px 18px 20px;color:var(--text-primary);line-height:1.7;white-space:normal;word-break:break-word;background:color-mix(in srgb, var(--bg-card) 58%, var(--bg-page))}
+  :global(.matrix-choice){display:flex;align-items:center;justify-content:center;gap:0;width:100%;min-height:44px;padding:10px 0;box-sizing:border-box;cursor:pointer}
+  :global(.matrix-choice-label){display:none}
+  :global(.matrix-table input[type=checkbox),:global(.matrix-table input[type=radio]){accent-color:var(--accent);width:20px;height:20px}
+  :global(.matrix-table td:has(input:checked)){background:color-mix(in srgb, var(--accent) 14%, var(--bg-page))}
+  /* Slider styles */
+  :global(.slider-block){display:grid;grid-template-columns:minmax(0,1fr);gap:14px;margin-top:10px;width:100%;max-width:100%}
+  :global(.slider-value){justify-self:center;min-width:52px;padding:8px 14px;border-radius:999px;background:color-mix(in srgb,var(--accent)14%,var(--bg-page));color:var(--text-primary);font-weight:700;font-size:1.05rem;text-align:center}
+  :global(.slider-track-shell){position:relative;width:100%;padding:8px 0}
+  :global(.slider-track-shell::before){content:'';position:absolute;left:12px;right:12px;top:50%;height:8px;transform:translateY(-50%);border-radius:999px;background:color-mix(in srgb,var(--accent)28%,var(--bg-page));box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--accent)24%,transparent)}
+  :global(.slider-ticks){position:absolute;left:12px;right:12px;top:50%;transform:translateY(-50%);display:flex;justify-content:space-between;align-items:center;pointer-events:none;z-index:1}
+  :global(.slider-ticks span){width:2px;height:10px;border-radius:999px;background:color-mix(in srgb,var(--accent)56%,transparent)}
+  :global(.range-input){position:relative;z-index:2;display:block;width:100%;min-width:100%;margin:0;background:transparent;accent-color:var(--accent);-webkit-appearance:none;appearance:none}
+  :global(.range-input::-webkit-slider-thumb){-webkit-appearance:none;appearance:none;width:24px;height:24px;border-radius:999px;background:color-mix(in srgb,var(--accent)88%,#fff 12%);border:2px solid #fff;box-shadow:0 4px 12px rgba(100,76,255,0.35);margin-top:-8px;cursor:grab}
+  :global(.slider-labels){display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;font-size:.92rem;color:var(--text-secondary)}
+  :global(.slider-labels span:last-child){text-align:right}
+</style>
+
+<script define:vars={{ role, section }}>
+  const SUFFIX = role === 'elder' ? 'a' : 'b';
+  const form = document.getElementById('section-form');
+  const errorContainer = document.getElementById('error-container');
+  const safeSession = {
+    get(k) { try { return sessionStorage.getItem(k); } catch { return null; } },
+    set(k, v) { try { sessionStorage.setItem(k, v); } catch {} },
+    getJSON(k) { try { const r = this.get(k); return r ? JSON.parse(r) : {}; } catch { return {}; } }
+  };
+
+  // Restore
+  function restoreDraft() {
+    const stored = safeSession.getJSON('survey_answers');
+    if (!stored) return;
+    Object.entries(stored).forEach(([k, v]) => {
+      if (Array.isArray(v)) { v.forEach(val => { const f = form.querySelector(`[name="${k}"][value="${val}"]`); if (f) f.checked = true; }); }
+      else { const f = form.querySelector(`[name="${k}"][value="${v}"]`); if (f) f.checked = true;
+            const tf = form.querySelector(`[name="${k}"]`); if (tf && !['radio','checkbox'].includes(tf.type)) tf.value = v; }
+    });
+    // Restore slider values
+    document.querySelectorAll('[data-range-output]').forEach(inp => {
+      const out = document.getElementById(inp.getAttribute('data-range-output'));
+      if (out) out.textContent = inp.value;
+    });
+    // Restore other reveals
+    document.querySelectorAll('.question-block').forEach(b => {
+      const rads = b.querySelectorAll('input[type=radio]'), chks = b.querySelectorAll('input[type=checkbox]');
+      if (rads.length) { const rev = b.querySelector('.other-reveal'); if (rev && b.querySelector('input[type=radio]:checked')?.value === '其他') rev.classList.add('visible'); }
+      else if (chks.length) { const rev = b.querySelector('.other-reveal'); if (rev && b.querySelector('input[value=其他]')?.checked) rev.classList.add('visible'); }
+    });
+  }
+
+  // Save
+  function saveAnswers() {
+    const data = safeSession.getJSON('survey_answers');
+    for (const [k, v] of new FormData(form)) {
+      if (!k) continue;
+      if (data[k] === undefined) data[k] = String(v);
+      else if (Array.isArray(data[k])) data[k].push(String(v));
+      else data[k] = [data[k], String(v);
+    }
+    safeSession.set('survey_answers', JSON.stringify(data));
+  }
+
+  // Required codes for this section
+  const requiredCodes = currentSectionData.questions.filter(q => q.type !== 'textarea').map(q => q.type === 'matrix' ? q.code + '__0' : q.code);
+
+  // Validate
+  function validateSection() {
+    const data = {};
+    for (const [k, v] of new FormData(form)) {
+      if (!k) continue;
+      const grouped = k.match(/^([A-Z]\d+)__\d+$/)?.[1] || k;
+      if (data[grouped] === undefined) data[grouped] = String(v);
+      else if (Array.isArray(data[grouped])) data[grouped].push(String(v));
+      else data[grouped] = [data[grouped], String(v)];
+    }
+    if (section === 'b3') { // B10 matrix - check all 8 rows
+      for (let i = 0; i < 8; i++) { if (!data['B10__' + i]) return ['B10__' + i]; }
+      return [];
+    }
+    return requiredCodes.filter(code => !data[code.replace('__0', '')]);
+  }
+
+  // Max select limits
+  function setupMaxSelect() {
+    document.querySelectorAll('.question-block[data-max-select]').forEach(b => {
+      const max = Number(b.getAttribute('data-max-select'));
+      const boxes = Array.from(b.querySelectorAll('input[type=checkbox]'));
+      if (!max || !boxes.length) return;
+      const sync = () => {
+        const checked = boxes.filter(c => c.checked).length;
+        boxes.forEach(c => { c.disabled = checked >= max && !c.checked; c.closest('.option-label')?.classList.toggle('option-disabled', c.disabled); });
+      };
+      boxes.forEach(c => c.addEventListener('change', sync));
+      sync();
+    });
+  }
+
+  // Other reveal
+  function setupOther() {
+    document.querySelectorAll('.question-block').forEach(b => {
+      const rads = b.querySelectorAll('input[type=radio]'), chks = b.querySelectorAll('input[type=checkbox]');
+      if (rads.length) {
+        const rev = b.querySelector('.other-reveal');
+        if (!rev) return;
+        const sync = () => rev.classList.toggle('visible', b.querySelector('input[type=radio]:checked')?.value === '其他');
+        rads.forEach(r => r.addEventListener('change', sync)); sync();
+      } else if (chks.length) {
+        const rev = b.querySelector('.other-reveal');
+        if (!rev) return;
+        const sync = () => rev.classList.toggle('visible', b.querySelector('input[value=其他]')?.checked ?? false);
+        chks.forEach(c => c.addEventListener('change', sync)); sync();
+      }
+    });
+  }
+
+  // Slider sync
+  function setupSlider() {
+    document.querySelectorAll('[data-range-output]').forEach(inp => {
+      const out = document.getElementById(inp.getAttribute('data-range-output'));
+      if (!out) return;
+      const sync = () => out.textContent = inp.value;
+      inp.addEventListener('input', sync); sync();
+    });
+  }
+
+  // Nav handlers
+  document.querySelectorAll('.nav-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = btn.getAttribute('data-section');
+      const isContact = btn.getAttribute('data-action') === 'contact';
+      saveAnswers();
+      sessionStorage.setItem('survey_section', section);
+      const lng = window.location.pathname.split('/').filter(Boolean)[0] || 'zh';
+      if (target) window.location.href = `/${lng}/campaign/ai-companion/${role}/${target}`;
+      else if (isContact) window.location.href = `/${lng}/campaign/ai-companion/${role}/contact`;
+    });
+  });
+
+  setupMaxSelect(); setupOther(); setupSlider(); restoreDraft();
+</script>

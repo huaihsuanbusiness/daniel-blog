@@ -363,7 +363,7 @@ import SurveyLayout from '../../../../layouts/SurveyLayout.astro';
 
   const urlParams = new URLSearchParams(window.location.search);
   const role = urlParams.get('role') || safeSession.get('survey_role') || '';
-  const inviteUrl = urlParams.get('invite') || '';
+  const inviteUrl = urlParams.get('invite') || safeSession.get('survey_inviteLink') || '';
   const articleUrl = 'https://www.danielcanfly.com/zh/blog/ai-companion-survey';
   const isMobileBrowser = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
   // 判斷是否要顯示第一個專屬分享 panel：

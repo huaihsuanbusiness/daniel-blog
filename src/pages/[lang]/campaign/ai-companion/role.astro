@@ -1,0 +1,133 @@
+---
+export const prerender = true;
+export function getStaticPaths() {
+  return [{ params: { lang: 'en' } }, { params: { lang: 'zh' } }];
+}
+const { lang } = Astro.params;
+import SurveyLayout from '../../../../layouts/SurveyLayout.astro';
+---
+<SurveyLayout title="AI 陪伴夥伴市場調查" description="歡迎參加！請先選擇您的身份" size="elder">
+  <div class="role-intro">
+    <h2>這個問卷是關於...</h2>
+    <p>我們正在研究一種為長輩與離家家人設計的語音 AI 夥伴。</p>
+    <p>它可以每天主動問安、陪長輩聊幾句，也能記得先前聊過的一些事情，讓互動更連續。</p>
+    <p>在不做醫療診斷的前提下，我們希望它能同時做到兩件事：</p>
+    <ul>
+      <li>對長輩來說，是一種低壓力、有人回應、也有人記得的陪伴</li>
+      <li>對家人來說，是一種在保有長輩隱私的前提下，透過簡單狀態與提醒，讓人比較放心的支持</li>
+    </ul>
+  </div>
+
+  <form id="role-form">
+    <div class="question-block">
+      <div class="question-code">Q0</div>
+      <div class="question-text">您這次是以哪個身分填寫？</div>
+      <ul class="options-list">
+        <li>
+          <label class="option-label">
+            <input type="radio" name="Q0" value="elder" required />
+            <span>我是長輩本人</span>
+          </label>
+        </li>
+        <li>
+          <label class="option-label">
+            <input type="radio" name="Q0" value="caregiver" />
+            <span>我是兒子／女兒</span>
+          </label>
+        </li>
+        <li>
+          <label class="option-label">
+            <input type="radio" name="Q0" value="caregiver" />
+            <span>我是孫子／孫女</span>
+          </label>
+        </li>
+        <li>
+          <label class="option-label">
+            <input type="radio" name="Q0" value="caregiver" />
+            <span>我是其他家屬／親友照顧者</span>
+          </label>
+        </li>
+        <li>
+          <label class="option-label">
+            <input type="radio" name="Q0" value="caregiver" />
+            <span>其他</span>
+          </label>
+        </li>
+      </ul>
+    </div>
+  </form>
+
+  <div class="role-note">
+    <p>這個問卷大約需要 5 分鐘，完全匿名</p>
+  </div>
+</SurveyLayout>
+
+<style>
+  .role-intro {
+    background: var(--bg-card);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 24px;
+    line-height: 1.7;
+    color: var(--text-secondary);
+  }
+  .role-intro h2 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0 0 12px;
+    color: var(--text-primary);
+  }
+  .role-intro ul {
+    margin: 12px 0 0;
+    padding-left: 20px;
+  }
+  .role-intro li {
+    margin-bottom: 6px;
+  }
+  .role-note {
+    text-align: center;
+    margin-top: 16px;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+  }
+</style>
+
+<script>
+  const form = document.getElementById('role-form') as HTMLFormElement;
+  
+  // Check sessionStorage for existing role and section - restore flow
+  const storedRole = sessionStorage.getItem('survey_role');
+  const storedSection = sessionStorage.getItem('survey_section');
+  
+  // If user already has progress, redirect to the next section
+  if (storedRole && storedSection && storedSection !== 'role') {
+    const lang = window.location.pathname.split('/').filter(Boolean)[0] || 'zh';
+    const sectionPath = storedRole === 'elder' 
+      ? `/${lang}/campaign/ai-companion/elder/${storedSection}`
+      : `/${lang}/campaign/ai-companion/caregiver/${storedSection}`;
+    window.location.href = sectionPath;
+  }
+
+  form.addEventListener('change', () => {
+    const selected = (form.querySelector('input[name="Q0"]:checked') as HTMLInputElement)?.value;
+    if (!selected) return;
+    
+    // Store role in sessionStorage
+    sessionStorage.setItem('survey_role', selected);
+    
+    // Determine first section based on role
+    const firstSection = selected === 'elder' ? 'a1' : 'b1';
+    sessionStorage.setItem('survey_section', firstSection);
+    sessionStorage.setItem('survey_answers', '{}'); // Initialize empty answers
+    
+    // Use current path to derive locale
+    const segments = window.location.pathname.split('/').filter(Boolean);
+    const lang = segments[0] || 'zh';
+    
+    if (selected === 'elder') {
+      window.location.href = `/${lang}/campaign/ai-companion/elder/a1`;
+    } else {
+      window.location.href = `/${lang}/campaign/ai-companion/caregiver/b1`;
+    }
+  });
+</script>

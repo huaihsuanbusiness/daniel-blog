@@ -1,0 +1,172 @@
+---
+export const prerender = true;
+export function getStaticPaths() {
+  return [
+    { params: { lang: 'en', role: 'elder' } },
+    { params: { lang: 'zh', role: 'elder' } },
+    { params: { lang: 'en', role: 'caregiver' } },
+    { params: { lang: 'zh', role: 'caregiver' } }
+  ];
+}
+const { lang, role } = Astro.params;
+import SurveyLayout from '../../../../../layouts/SurveyLayout.astro';
+---
+<SurveyLayout title="聯絡與後續參與意願｜市場調查" description="最後一步！" size={role === 'elder' ? 'elder' : 'normal'}>
+  <div class="progress-bar">
+    <div class="progress-track"><div class="progress-fill" style="width: 100%"></div></div>
+    <div class="progress-text">最後一頁 · 聯絡與後續參與意願</div>
+  </div>
+
+  <form id="contact-form">
+    <div class="question-block">
+      <div class="section-label">聯絡與後續參與意願</div>
+      <div class="question-text">感謝您完成問卷！<br/>如果您願意留下聯絡方式，後續有機會：</div>
+      <ul class="contact-list">
+        <li>優先參與 3 個月免費試用（價值 $900 元）</li>
+        <li>接受 15–30 分鐘深度訪談邀請</li>
+        <li>參與後續產品測試或研究回訪</li>
+      </ul>
+      <div class="contact-note">這一部分完全自願。即使不留下聯絡資訊，也不影響本次問卷完成。我們只會將您提供的聯絡資訊用於本研究，不會任意對外公開。</div>
+      <div class="question-text">我是否願意留下聯絡方式？</div>
+      <ul class="options-list">
+        <li><label class="option-label"><input type="radio" name="contact_willing" value="願意" required /> <span>願意（已閱讀並同意 <a href={`/${lang}/privacy/`} target="_blank" onclick="event.stopPropagation()" style="color:var(--accent);text-decoration:underline">隱私權聲明</a>）</span></label></li>
+        <li><label class="option-label"><input type="radio" name="contact_willing" value="暫時不願意" /> <span>暫時不願意</span></label></li>
+      </ul>
+    </div>
+
+    <div id="contact-conditional" class="contact-conditional" style="display:none">
+      <div class="question-code">選填</div>
+      <div class="question-text">聯絡方式（至少填寫一格）</div>
+      <div class="contact-row"><span class="contact-row-label">電子郵件</span><input type="email" name="contact_email" class="text-input" placeholder="電子郵件，例如：example@email.com" /></div>
+      <div class="contact-row"><span class="contact-row-label">LINE</span><input type="text" name="contact_line" class="text-input" placeholder="LINE ID" /></div>
+      <ul class="options-list">
+        <li><label class="option-label"><input type="checkbox" name="consent_followup" value="我願意接受與本研究相關的後續聯絡，包括免費試用邀請與產品優先測試通知" /> <span>我願意接受與本研究相關的後續聯絡，包括免費試用邀請與產品優先測試通知</span></label></li>
+        <li><label class="option-label"><input type="checkbox" name="consent_interview" value="我願意接受後續深度訪談邀請（約 15–30 分鐘）" /> <span>我願意接受後續深度訪談邀請（約 15–30 分鐘）</span></label></li>
+      </ul>
+    </div>
+  </form>
+
+  <div class="section-nav">
+    <button type="button" class="nav-btn nav-prev" data-action="prev">← 上一頁</button>
+    <span class="nav-indicator">最終</span>
+    <button type="submit" class="nav-btn nav-submit" form="contact-form">送出 ✓</button>
+  </div>
+
+  <div id="error-container"></div>
+</SurveyLayout>
+
+<style>
+  .progress-bar{position:sticky;top:0;background:var(--bg-page);padding:12px 16px;z-index:10;border-bottom:1px solid var(--border-color)}
+  .progress-track{height:4px;background:var(--border-color);border-radius:2px;overflow:hidden}
+  .progress-fill{height:100%;background:var(--accent)}
+  .progress-text{font-size:.8rem;color:var(--text-secondary);margin-top:6px;text-align:center}
+  .section-nav{position:fixed;bottom:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:12px 16px;padding-bottom:calc(12px + env(safe-area-inset-bottom));background:var(--bg-card);border-top:1px solid var(--border-color);z-index:20}
+  .nav-btn{appearance:none;padding:12px 24px;border-radius:999px;font-size:1rem;font-weight:600;cursor:pointer;transition:all .15s}
+  .nav-prev{background:transparent;color:var(--text-secondary);border:1px solid var(--border-color)}
+  .nav-submit{background:var(--accent);color:#fff;border:1px solid var(--accent)}
+  .nav-indicator{font-size:.9rem;color:var(--text-muted)}
+  .question-block{background:var(--bg-card);border:1px solid var(--border-color);border-radius:12px;padding:20px;margin-bottom:24px}
+  .section-label{font-size:.75rem;color:#4a7c59;font-weight:600;margin-bottom:4px;letter-spacing:.5px}
+  .contact-list{list-style:none;padding:0;margin:12px 0}
+  .contact-list li{color:var(--text-primary);font-size:1rem;padding:4px 0}
+  .contact-list li::before{content:'✓ ';color:var(--accent);margin-right:6px}
+  .contact-note{font-size:.9rem;color:var(--text-muted);margin-bottom:16px;line-height:1.6}
+  .contact-row{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+  .contact-row-label{min-width:78px;font-size:1.05rem;font-weight:600;color:var(--text-primary)}
+  .contact-row .text-input{flex:1;min-height:46px;padding:10px 14px;border:1.5px solid var(--border-color);border-radius:14px;font-size:.98rem;background:var(--bg-page);color:var(--text-primary)}
+  .error-msg{background:var(--error-bg);border:1px solid var(--error-border);border-radius:8px;padding:12px 16px;color:var(--error-text);margin-bottom:16px}
+  @media(max-width:480px){.section-nav{padding:10px 12px;padding-bottom:calc(10px + env(safe-area-inset-bottom))}}
+</style>
+
+<script define:vars={{ role }}>
+  const form = document.getElementById('contact-form');
+  const errorContainer = document.getElementById('error-container');
+  const contactConditional = document.getElementById('contact-conditional');
+  const safeSession = {
+    get(k) { try { return sessionStorage.getItem(k); } catch { return null; } },
+    set(k, v) { try { sessionStorage.setItem(k, v); } catch {} },
+    getJSON(k) { try { const r = this.get(k); return r ? JSON.parse(r) : {}; } catch { return {}; } }
+  };
+
+  // Restore
+  function restore() {
+    const stored = safeSession.getJSON('survey_answers');
+    if (!stored) return;
+    if (stored.contact_willing) {
+      document.querySelectorAll('input[name="contact_willing"]').forEach(e => { if (e.value === stored.contact_willing) e.checked = true; });
+      if (stored.contact_willing === '願意') { contactConditional.style.display = 'block'; contactConditional.classList.add('revealed'); }
+    }
+    if (stored.contact_email) document.querySelector('input[name="contact_email"]').value = stored.contact_email;
+    if (stored.contact_line) document.querySelector('input[name="contact_line"]').value = stored.contact_line;
+    if (stored.consent_followup) document.querySelectorAll('input[name="consent_followup"]').forEach(e => { if (e.value === stored.consent_followup) e.checked = true; });
+    if (stored.consent_interview) document.querySelectorAll('input[name="consent_interview"]').forEach(e => { if (e.value === stored.consent_interview) e.checked = true; });
+  }
+
+  // Contact conditional
+  document.querySelectorAll('input[name="contact_willing"]').forEach(r => {
+    r.addEventListener('change', () => {
+      const w = document.querySelector('input[name="contact_willing"]:checked')?.value;
+      if (w === '願意') { contactConditional.style.display = 'block'; contactConditional.classList.add('revealed'); }
+      else { contactConditional.style.display = 'none'; contactConditional.classList.remove('revealed'); }
+    });
+  });
+
+  // Prev
+  document.querySelector('.nav-prev').addEventListener('click', () => {
+    const prevSec = role === 'elder' ? 'a8' : 'b9';
+    window.location.href = `/${lang}/campaign/ai-companion/${role}/${prevSec}`;
+  });
+
+  // Submit
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    errorContainer.innerHTML = '';
+    const data = {};
+    for (const [k, v] of new FormData(form)) {
+      if (data[k] === undefined) data[k] = String(v);
+      else if (Array.isArray(data[k])) data[k].push(String(v));
+      else data[k] = [data[k], String(v)];
+    }
+    safeSession.set('survey_answers', JSON.stringify({ ...safeSession.getJSON('survey_answers'), ...data }));
+
+    // Validate
+    const contactWilling = data.contact_willing;
+    if (contactWilling === '願意') {
+      const hasContact = !!(data.contact_email || data.contact_line);
+      const hasConsent = !!(data.consent_followup || data.consent_interview);
+      if (!hasContact || !hasConsent) {
+        contactConditional.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        errorContainer.innerHTML = `<div class="error-msg">${!hasContact ? '請填寫電子郵件或 LINE' : ''} ${!hasConsent ? '請選擇後續聯絡意願' : ''}</div>`;
+        return;
+      }
+    }
+
+    // Submit to API
+    const submitBtn = document.querySelector('.nav-submit');
+    submitBtn.disabled = true;
+    submitBtn.textContent = '送出中…';
+
+    try {
+      const allAnswers = safeSession.getJSON('survey_answers');
+      const res = await fetch('/api/campaign/ai-companion-submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ role, answers: allAnswers, locale: lang })
+      });
+      const result = await res.json();
+      if (!res.ok || !result.success) throw new Error(result.error || '送出失敗');
+
+      // Store familyId and invite
+      sessionStorage.setItem('survey_familyId', result.familyId);
+      sessionStorage.setItem('survey_inviteLink', result.inviteLink || '');
+
+      window.location.href = `/${lang}/campaign/ai-companion/thank-you?role=${role}${result.inviteLink ? '&invite=' + encodeURIComponent(result.inviteLink) : ''}${result.contactSubmitted ? '&contact=1' : ''}`;
+    } catch (err) {
+      errorContainer.innerHTML = `<div class="error-msg">送出失敗：${err.message}</div>`;
+      submitBtn.disabled = false;
+      submitBtn.textContent = '送出 ✓';
+    }
+  });
+
+  restore();
+</script>
