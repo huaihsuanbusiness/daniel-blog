@@ -136,16 +136,12 @@ const ELDER_QUESTION_CODES = [
 export class GoogleSheet {
   private readonly env: GoogleSheetEnv;
   private readonly sheetId: string;
-  private testMode = false;
   private token: string | null = null;
 
   constructor(env: GoogleSheetEnv) {
     this.env = env;
     this.sheetId = env.GOOGLE_SHEET_ID || '';
-    if (!this.sheetId) {
-      console.warn('⚠️ GOOGLE_SHEET_ID not set - running in TEST mode (no data will be saved)');
-      this.testMode = true;
-    }
+    if (!this.sheetId) throw new Error('GOOGLE_SHEET_ID is not set');
   }
 
   private async token_(): Promise<string> {
@@ -281,15 +277,6 @@ export class GoogleSheet {
     answers: Record<string, string | string[]>;
     locale?: string;
   }): Promise<{ success: boolean; familyId: string; inviteLink?: string }> {
-    // Test mode - skip Google Sheets API
-    if (this.testMode) {
-      console.log('📝 TEST MODE: Would save to Google Sheet but GOOGLE_SHEET_ID is not set');
-      return {
-        success: true,
-        familyId: params.familyId || 'test_' + Date.now(),
-      };
-    }
-
     const { role, familyId: fid, answers, locale } = params;
     const site = this.env.SITE || 'https://danielcanfly.com';
 
