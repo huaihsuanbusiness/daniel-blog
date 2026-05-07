@@ -725,6 +725,37 @@ function renderQuestion(q: typeof questions[0], qIndex: number) {
     border-color: color-mix(in srgb, var(--accent) 60%, transparent);
     box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 14%, transparent);
   }
+  /* Section navigation bar */
+  :global(.section-nav-bar) {
+    position: sticky;
+    top: 60px;
+    background: var(--bg-page);
+    padding: 8px 12px;
+    z-index: 9;
+    border-bottom: 1px solid var(--border-color);
+    overflow-x: auto;
+  }
+  :global(.section-nav-bar ul) {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    gap: 8px;
+    justify-content: center;
+  }
+  :global(.nav-dot) {
+    display: block;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--border-color);
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  :global(.nav-dot:hover),
+  :global(.nav-dot.active) {
+    background: var(--accent);
+  }
 </style>
 
 <script>
@@ -1055,5 +1086,27 @@ function renderQuestion(q: typeof questions[0], qIndex: number) {
       submitBtn.disabled = false;
       submitBtn.textContent = '送出';
     }
+  });
+
+  // NEW: Add section navigation bar at top
+  const sections = ['B1', 'B5', 'B10', 'B13', 'B14', 'B16', 'B20', 'B23', 'B30', 'B33'];
+  const navHtml = '<div class="section-nav-bar"><ul>' + 
+    sections.map(s => `<li><a href="#sec-${s}" class="nav-dot" data-target="#sec-${s}"></a></li>`).join('') + 
+    '</ul></div>';
+  
+  // Insert nav bar after progress bar
+  const progressBar = document.querySelector('.progress-bar');
+  if (progressBar) {
+    progressBar.insertAdjacentHTML('afterend', navHtml);
+  }
+  
+  // Add click handlers for smooth scroll
+  document.querySelectorAll('.nav-dot').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const target = btn.getAttribute('data-target');
+      const el = document.querySelector(target as string);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
   });
 </script>
