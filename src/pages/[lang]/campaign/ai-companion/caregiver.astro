@@ -725,39 +725,6 @@ function renderQuestion(q: typeof questions[0], qIndex: number) {
     border-color: color-mix(in srgb, var(--accent) 60%, transparent);
     box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 14%, transparent);
   }
-  /* Section navigation bar */
-  :global(.section-nav-bar) {
-    position: -webkit-sticky;
-    position: sticky;
-    top: 60px;
-    background: var(--bg-page);
-    padding: 10px 16px;
-    z-index: 9;
-    border-bottom: 1px solid var(--border-color);
-    display: flex;
-    justify-content: center;
-  }
-  :global(.section-nav-bar ul) {
-    display: flex;
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    gap: 12px;
-  }
-  :global(.nav-dot) {
-    display: block;
-    width: 14px;
-    height: 14px;
-    border-radius: 50%;
-    background: var(--border-color);
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-  :global(.nav-dot:hover),
-  :global(.nav-dot.active) {
-    background: var(--accent);
-    transform: scale(1.2);
-  }
 </style>
 
 <script>
@@ -1089,31 +1056,4 @@ function renderQuestion(q: typeof questions[0], qIndex: number) {
       submitBtn.textContent = '送出';
     }
   });
-
-  // Section navigation - find section labels and create navigation dots
-  const sectionLabels = Array.from(document.querySelectorAll('.section-label')).filter(el => {
-    const text = el.textContent || '';
-    return text.startsWith('B-1') || text.startsWith('B-2') || text.startsWith('B-3') || 
-           text.startsWith('B-4') || text.startsWith('B-5') || text.startsWith('B-6') ||
-           text.startsWith('B-7') || text.startsWith('B-8') || text.startsWith('B-9');
-  });
-  
-  if (sectionLabels.length > 0) {
-    const navHtml = '<div class="section-nav-bar"><ul>' + 
-      sectionLabels.map((el, i) => `<li><a href="#sec-${i}" class="nav-dot" data-target="#sec-${i}"></a></li>`).join('') + 
-      '</ul></div>';
-    const surveyHeader = document.querySelector('.survey-header');
-    if (surveyHeader) {
-      surveyHeader.insertAdjacentHTML('afterend', navHtml);
-      sectionLabels.forEach((el, i) => el.id = 'sec-' + i);
-    }
-    document.querySelectorAll('.nav-dot').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        e.preventDefault();
-        const target = btn.getAttribute('data-target');
-        const el = document.querySelector(target as string);
-        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      });
-    });
-  }
 </script>
