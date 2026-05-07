@@ -364,37 +364,6 @@ const refParam = '';
     border-color: color-mix(in srgb, var(--accent) 60%, transparent);
     box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 14%, transparent);
   }
-  /* Section navigation bar */
-  :global(.section-nav-bar) {
-    position: sticky;
-    top: 60px;
-    background: var(--bg-page);
-    padding: 8px 12px;
-    z-index: 9;
-    border-bottom: 1px solid var(--border-color);
-    overflow-x: auto;
-  }
-  :global(.section-nav-bar ul) {
-    display: flex;
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    gap: 8px;
-    justify-content: center;
-  }
-  :global(.nav-dot) {
-    display: block;
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    background: var(--border-color);
-    cursor: pointer;
-    transition: background 0.2s;
-  }
-  :global(.nav-dot:hover),
-  :global(.nav-dot.active) {
-    background: var(--accent);
-  }
 </style>
 
 <script>
@@ -712,51 +681,4 @@ const refParam = '';
       submitBtn.textContent = '送出';
     }
   });
-
-  // Section navigation
-  const sections = ['A1', 'A5-1', 'A8', 'A11', 'A14', 'A16', 'A22', 'A24'];
-  const navHtml = '<div class="section-nav-bar"><ul>' +
-    sections.map(s => `<li><a href="#sec-${s}" class="nav-dot" data-target="#sec-${s}"></a></li>`).join('') +
-    '</ul></div>';
-  
-  const progressBar = document.querySelector('.progress-bar');
-  if (progressBar) {
-    progressBar.insertAdjacentHTML('afterend', navHtml);
-  }
-  
-  document.querySelectorAll('.nav-dot').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      e.preventDefault();
-      const target = btn.getAttribute('data-target');
-      const el = document.querySelector(target as string);
-      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    });
-  });
-
-  // Section navigation
-  const sectionLabels = Array.from(document.querySelectorAll('.section-label')).filter(el => {
-    const text = el.textContent || '';
-    return text.startsWith('A-1') || text.startsWith('A-2') || text.startsWith('A-3') || 
-           text.startsWith('A-4') || text.startsWith('A-5') || text.startsWith('A-6') ||
-           text.startsWith('A-7') || text.startsWith('A-8');
-  });
-  
-  if (sectionLabels.length > 0) {
-    const navHtml = '<div class="section-nav-bar"><ul>' + 
-      sectionLabels.map((el, i) => `<li><a href="#sec-${i}" class="nav-dot" data-target="#sec-${i}"></a></li>`).join('') + 
-      '</ul></div>';
-    const surveyHeader = document.querySelector('.survey-header');
-    if (surveyHeader) {
-      surveyHeader.insertAdjacentHTML('afterend', navHtml);
-      sectionLabels.forEach((el, i) => el.id = 'sec-' + i);
-    }
-    document.querySelectorAll('.nav-dot').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        e.preventDefault();
-        const target = btn.getAttribute('data-target');
-        const el = document.querySelector(target as string);
-        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      });
-    });
-  }
 </script>
