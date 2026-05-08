@@ -284,7 +284,7 @@ export class GoogleSheet {
     await this.setupBothSheets();
 
     if (role === 'caregiver') {
-      const newFid = fid ?? 'fam_' + nanoid(8);
+      const newFid = fid ?? 'F' + Math.random().toString(36).slice(2, 10).toUpperCase();
       const sheetName = 'Caregiver';
       const headers = await this.getHeaderRow_(sheetName);
       const ci = (name: string) => headers.indexOf(name);
