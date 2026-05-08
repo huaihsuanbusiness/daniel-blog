@@ -118,7 +118,6 @@ const CAREGIVER_QUESTION_CODES = [
   'B20','B21','B22','B23','B24','B25','B26','B27','B28','B29',
   'B30','B31','B32','B33','B34',
   'contact_willing','contact_email','contact_line',
-  'consent_followup','consent_interview',
 ];
 
 const ELDER_QUESTION_CODES = [
@@ -128,7 +127,6 @@ const ELDER_QUESTION_CODES = [
   'A11','A12','A13','A14','A15','A16','A17','A18','A19',
   'A20','A21','A22','A23','A24','A25','A26',
   'contact_willing','contact_email','contact_line',
-  'consent_followup','consent_interview',
 ];
 
 // ── GoogleSheet ───────────────────────────────────────────────────────────
