@@ -228,7 +228,7 @@ function renderQuestion(q: typeof questions[0], qIndex: number) {
 const refParam = '';
 ---
 
-<SurveyLayout title="市場調查｜長輩版" description="請根據您的實際情況填寫" size="elder">
+<SurveyLayout title="市場調查｜長輩版" description="自從高齡化時代來臨，許多長輩除了要面臨日常孤單的問題，更常見的是家人雖然惦記，卻因為工作、地點、無法每天關心而形成一段距離。我們正在開發一個語音AI陪伴系統，它會每天主動致電長輩、陪長輩聊幾句、記得長輩說過的事並在適當時拿出來聊，同時也會貼心提醒長輩該吃藥、該運動；當長輩出現情緒低落的跡象時，系統也會即時通知家屬。這不是監視器，也不是要取代家人。填寫時間約5分鐘，以勾選為主。所有回饋僅用於本研究，不會用於任何商業推廣或第三方分享。" size="elder">
   <form id="survey-form">
     {questions.map((q, i) => (
       <Fragment set:html={renderQuestion(q, i)} />
@@ -238,11 +238,10 @@ const refParam = '';
 
     <div class="question-block">
       <div class="section-label">聯絡與後續參與意願</div>
-      <div class="question-text">感謝您完成問卷。<br />如果您願意留下聯絡方式，後續有機會：</div>
+      <div class="question-text">感謝您完成問卷。若您願意留下電子郵件，後續將寄發一份「個人化AI陪伴選擇建議」報告，以及優先參與產品測試的邀請。所有回饋僅用於本研究，不會用於任何商業推廣或第三方分享。</div>
       <ul class="contact-list">
-        <li>優先參與 3 個月免費試用（價值 $900 元）</li>
+        <li>優先參與產品測試或研究回訪</li>
         <li>接受 15–30 分鐘深度訪談邀請</li>
-        <li>參與後續產品測試或研究回訪</li>
       </ul>
       <div class="contact-note">
         這一部分完全自願。即使不留下聯絡資訊，也不影響本次問卷完成。<br />
