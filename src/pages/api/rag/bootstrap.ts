@@ -6,10 +6,11 @@ export const prerender = false;
 
 export const GET: APIRoute = async () => {
   try {
-    const [health, queryProfiles, runtimeBudgets] = await Promise.all([
+    const [health, queryProfiles, runtimeBudgets, runtimePolicyStatus] = await Promise.all([
       fetchPublicRagJson('/health'),
       fetchPublicRagJson('/query-profiles'),
       fetchPublicRagJson('/runtime-budgets'),
+      fetchPublicRagJson('/runtime-policy/status').catch(() => null),
     ]);
 
     return new Response(
@@ -19,8 +20,10 @@ export const GET: APIRoute = async () => {
         health,
         queryProfiles,
         runtimeBudgets,
+        runtimePolicyStatus,
         defaults: {
-          query_mode: 'safe',
+          query_mode: 'auto',
+          use_runtime_policy_router: true,
           use_workflow: false,
           use_tool_routing: false,
           use_retry_loop: true,

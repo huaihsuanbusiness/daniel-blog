@@ -16,14 +16,17 @@ export const POST: APIRoute = async ({ request }) => {
       );
     }
 
-    const payload = {
+    const payload: Record<string, unknown> = {
       question,
-      query_mode: typeof body.query_mode === 'string' ? body.query_mode : 'safe',
-      use_workflow: Boolean(body.use_workflow),
-      use_tool_routing: Boolean(body.use_tool_routing),
-      use_retry_loop: body.use_retry_loop !== false,
-      use_async_evaluators: Boolean(body.use_async_evaluators),
+      query_mode: typeof body.query_mode === 'string' ? body.query_mode : 'auto',
+      use_runtime_policy_router: body.use_runtime_policy_router !== false,
     };
+
+    for (const field of ['use_workflow', 'use_tool_routing', 'use_retry_loop', 'use_async_evaluators']) {
+      if (field in (body || {})) {
+        payload[field] = body[field];
+      }
+    }
 
     const upstream = await postRagAsk(payload);
 

@@ -17,7 +17,11 @@ const copy = {
     questionPlaceholder: 'Try: What are the supported query modes and how do they change the runtime path?',
     examplesLabel: 'Try one of these',
     modeLabel: 'Query mode',
-    controlsLabel: 'Runtime controls',
+    controlsLabel: 'Advanced runtime controls',
+    modeHelp: 'Auto is the default. Switch to a manual mode only when you want to override the system.',
+    controlsHelp: 'These only apply when you intentionally override the automatic policy.',
+    advancedSummary: 'Manual overrides',
+    policyLabel: 'Policy router',
     askButton: 'Run this question',
     askingButton: 'Running…',
     resetButton: 'Reset defaults',
@@ -54,7 +58,11 @@ const copy = {
     questionPlaceholder: '例如：這套 RAG 支援哪些 query mode？它們會怎麼改變 runtime path？',
     examplesLabel: '你可以先試這些問題',
     modeLabel: 'Query mode',
-    controlsLabel: 'Runtime controls',
+    controlsLabel: '進階 Runtime controls',
+    modeHelp: '預設建議使用 Auto，只有在你想故意覆寫系統判斷時才切到手動模式。',
+    controlsHelp: '這些開關只在你刻意覆寫自動策略時才需要調整。',
+    advancedSummary: '手動覆寫設定',
+    policyLabel: 'Policy router',
     askButton: '送出這次查詢',
     askingButton: '執行中…',
     resetButton: '重設預設值',
@@ -114,10 +122,12 @@ const copy = {
           <p class="rag-label">{copy.modeLabel}</p>
           <div class="rag-mode-grid" data-rag-modes></div>
           <p class="rag-mode-note" data-rag-mode-note></p>
+          <p class="rag-subtle">{copy.modeHelp}</p>
         </div>
 
-        <div class="rag-control-group">
-          <p class="rag-label">{copy.controlsLabel}</p>
+        <details class="rag-control-group rag-advanced-controls">
+          <summary class="rag-label">{copy.advancedSummary}</summary>
+          <p class="rag-subtle">{copy.controlsHelp}</p>
           <div class="rag-toggle-list">
             <label class="rag-toggle">
               <input type="checkbox" data-rag-flag="use_workflow" />
@@ -132,7 +142,7 @@ const copy = {
               <span>{copy.retryLoop}</span>
             </label>
           </div>
-        </div>
+        </details>
 
         <div class="rag-actions">
           <button type="button" class="rag-primary" data-rag-submit>{copy.askButton}</button>
@@ -201,7 +211,7 @@ const copy = {
   if (root) {
     const state = {
       bootstrap: null,
-      selectedMode: 'safe',
+      selectedMode: 'auto',
     };
 
     const elements = {
@@ -270,6 +280,7 @@ const copy = {
 
     const routeSummary = (response) => {
       const chips = [];
+      chips.push(`policy:${response.runtime_policy_router?.source?.includes('llm') ? 'llm' : 'auto'}`);
       chips.push(response.query_profile?.mode || state.selectedMode);
       chips.push(response.filters?.retrieval_mode || 'hybrid');
       chips.push(response.workflow?.enabled ? 'workflow:on' : 'workflow:off');
@@ -280,7 +291,7 @@ const copy = {
 
     const renderModes = () => {
       const queryProfiles = state.bootstrap?.queryProfiles;
-      const supportedModes = queryProfiles?.supported_modes || ['fast', 'safe', 'creative', 'deep_eval', 'agentic'];
+      const supportedModes = queryProfiles?.supported_modes || ['auto', 'fast', 'safe', 'creative', 'deep_eval', 'agentic'];
       elements.modes.innerHTML = supportedModes
         .map((mode) => {
           const active = mode === state.selectedMode;
@@ -288,13 +299,17 @@ const copy = {
         })
         .join('');
 
-      const selectedProfile = queryProfiles?.profiles?.[state.selectedMode];
+      const selectedProfile =
+        state.selectedMode === 'auto'
+          ? queryProfiles?.auto_mode
+          : queryProfiles?.profiles?.[state.selectedMode];
       elements.modeNote.textContent = selectedProfile?.description || '';
 
       elements.modes.querySelectorAll('[data-rag-mode]').forEach((button) => {
         button.addEventListener('click', () => {
-          state.selectedMode = button.getAttribute('data-rag-mode') || 'safe';
+          state.selectedMode = button.getAttribute('data-rag-mode') || 'auto';
           renderModes();
+          syncManualControlState();
         });
       });
     };
@@ -310,7 +325,7 @@ const copy = {
       renderModes();
       elements.metrics.innerHTML = `
         <div class="rag-metric-card"><span class="rag-metric-label">Health</span><strong>${healthy ? copy.healthOk : copy.healthBad}</strong></div>
-        <div class="rag-metric-card"><span class="rag-metric-label">Modes</span><strong>${(state.bootstrap?.queryProfiles?.supported_modes || []).length || 0}</strong></div>
+        <div class="rag-metric-card"><span class="rag-metric-label">${copy.policyLabel}</span><strong>${escapeHtml(state.bootstrap?.runtimePolicyStatus?.implementation || 'adaptive')}</strong></div>
         <div class="rag-metric-card"><span class="rag-metric-label">Tenant</span><strong>${escapeHtml(state.bootstrap?.proxy?.tenantId || '—')}</strong></div>
       `;
     };
@@ -330,7 +345,9 @@ const copy = {
       const toolRouting = response.tool_routing || {};
       const retry = response.retry_loop || {};
       const workflow = response.workflow || {};
+      const policy = response.runtime_policy_router || {};
       elements.runtime.innerHTML = `
+        <div class="rag-mini-card"><span>${copy.policyLabel}</span><strong>${escapeHtml(policy.user_explanation || policy.reasoning || '—')}</strong></div>
         <div class="rag-mini-card"><span>Workflow</span><strong>${escapeHtml(workflow.enabled ? 'enabled' : 'disabled')}</strong></div>
         <div class="rag-mini-card"><span>Tool route</span><strong>${escapeHtml(toolRouting.route || 'rag_search')}</strong></div>
         <div class="rag-mini-card"><span>Retry attempts</span><strong>${escapeHtml(retry.retry_attempt_count ?? 0)}</strong></div>
@@ -410,32 +427,48 @@ const copy = {
     };
 
     const getPayload = () => {
-      const flags = Object.fromEntries(
-        elements.flags.map((input) => [input.getAttribute('data-rag-flag'), input.checked])
-      );
-      return {
+      const payload = {
         question: elements.question.value.trim(),
         query_mode: state.selectedMode,
-        ...flags,
+        use_runtime_policy_router: state.selectedMode === 'auto',
       };
+      if (state.selectedMode !== 'auto') {
+        Object.assign(
+          payload,
+          Object.fromEntries(elements.flags.map((input) => [input.getAttribute('data-rag-flag'), input.checked]))
+        );
+      }
+      return payload;
     };
 
     const setLoading = (loading) => {
       elements.submit.disabled = loading;
       elements.reset.disabled = loading;
-      elements.flags.forEach((flag) => (flag.disabled = loading));
       elements.question.disabled = loading;
       elements.submit.textContent = loading ? copy.askingButton : copy.askButton;
+      if (loading) {
+        elements.flags.forEach((flag) => (flag.disabled = true));
+      } else {
+        syncManualControlState();
+      }
+    };
+
+    const syncManualControlState = () => {
+      const manual = state.selectedMode !== 'auto';
+      elements.flags.forEach((flag) => {
+        flag.disabled = !manual;
+      });
     };
 
     const resetDefaults = () => {
-      state.selectedMode = state.bootstrap?.defaults?.query_mode || 'safe';
+      state.selectedMode = state.bootstrap?.defaults?.query_mode || 'auto';
       elements.question.value = defaultQuestion;
       elements.flags.forEach((flag) => {
         const key = flag.getAttribute('data-rag-flag');
         flag.checked = Boolean(state.bootstrap?.defaults?.[key] ?? (key === 'use_retry_loop'));
       });
       renderModes();
+      syncManualControlState();
     };
 
     root.querySelectorAll('[data-rag-example]').forEach((button) => {
@@ -621,6 +654,15 @@ const copy = {
   .rag-examples,
   .rag-control-group {
     margin-top: 20px;
+  }
+
+  .rag-advanced-controls summary {
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .rag-advanced-controls summary::-webkit-details-marker {
+    display: none;
   }
 
   .rag-chip-row,
