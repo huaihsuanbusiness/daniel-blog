@@ -19,6 +19,11 @@ require_env() {
 require_env GOOGLE_SHEET_ID
 require_env GOOGLE_SERVICE_ACCOUNT_EMAIL
 require_env GOOGLE_PRIVATE_KEY
+require_env SUPABASE_URL
+require_env SUPABASE_ANON_KEY
+require_env SUPABASE_TEST_EMAIL
+require_env SUPABASE_TEST_PASSWORD
+require_env RAG_TENANT_ID
 
 if [ ! -x "$WRANGLER" ]; then
   echo "[deploy-with-secrets] Wrangler not found at $WRANGLER" >&2
@@ -89,6 +94,12 @@ with open(out, 'w') as f:
         'GOOGLE_SHEET_ID': os.environ['GOOGLE_SHEET_ID'],
         'GOOGLE_SERVICE_ACCOUNT_EMAIL': os.environ['GOOGLE_SERVICE_ACCOUNT_EMAIL'],
         'GOOGLE_PRIVATE_KEY': os.environ['GOOGLE_PRIVATE_KEY'],
+        'SUPABASE_URL': os.environ['SUPABASE_URL'],
+        'SUPABASE_ANON_KEY': os.environ['SUPABASE_ANON_KEY'],
+        'SUPABASE_TEST_EMAIL': os.environ['SUPABASE_TEST_EMAIL'],
+        'SUPABASE_TEST_PASSWORD': os.environ['SUPABASE_TEST_PASSWORD'],
+        'RAG_TENANT_ID': os.environ['RAG_TENANT_ID'],
+        'RAG_API_BASE_URL': os.environ.get('RAG_API_BASE_URL', 'https://api.danielcanfly.com'),
     }, f)
 PY
 
@@ -115,3 +126,4 @@ echo "[deploy-with-secrets] Promoting version $VERSION_ID to production..."
 echo "[deploy-with-secrets] Done. Live target should now be version: $VERSION_ID"
 echo "[deploy-with-secrets] Optional manual verify:"
 echo "curl -s '$SITE_URL/api/campaign/ai-companion-submit' -X POST -H 'Content-Type: application/json' -d '{\"role\":\"caregiver\",\"familyId\":\"manual_check\",\"answers\":{\"Q0\":\"照顧者\"},\"locale\":\"zh\"}'"
+echo "curl -s '$SITE_URL/api/rag/bootstrap'"

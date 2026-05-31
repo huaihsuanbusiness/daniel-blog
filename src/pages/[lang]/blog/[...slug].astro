@@ -4,6 +4,7 @@ export const prerender = true;
 import Base from '../../../layouts/Base.astro';
 import Header from '../../../components/Header.astro';
 import Footer from '../../../components/Footer.astro';
+import RagWorkbench from '../../../components/RagWorkbench.astro';
 import { getCollection, render } from 'astro:content';
 import { calculateReadTime } from '../../../utils/readTime';
 import { getCategoryLabel, normalizeCategory } from '../../../utils/categories';
@@ -68,6 +69,7 @@ const formattedDate = new Intl.DateTimeFormat(lang === 'zh' ? 'zh-TW' : 'en-US',
 const otherLangLabel = lang === 'zh' ? 'English' : '中文';
 const primaryCategory = normalizeCategory(post.data.categories[0] || '') ?? null;
 const isLargeBodyPost = slug === 'ai-companion-survey';
+const isInteractiveRagWorkbench = slug === 'from-rag-to-production-rag-part-1';
 
 const seriesMeta = getSeriesMeta(slug!, lang!, post.data.series);
 const seriesPosts = seriesMeta
@@ -112,6 +114,12 @@ const currentSeriesIndex = seriesPosts.findIndex(p => p.id === post.id);
           </div>
         )}
       </header>
+
+      {isInteractiveRagWorkbench && (
+        <div class="interactive-rag-shell animate-in animate-delay-1">
+          <RagWorkbench lang={lang as 'en' | 'zh'} />
+        </div>
+      )}
 
       <a id="prev-post-link" href={prevPost ? `/${lang}/blog/${prevPost.slug}${sharedQueryString}` : '#'} class="side-nav side-nav-left" aria-label={lang === 'zh' ? '上一篇' : 'Previous post'} hidden={!prevPost}>
         <span class="side-nav-chip">
@@ -472,6 +480,10 @@ const currentSeriesIndex = seriesPosts.findIndex(p => p.id === post.id);
   .lang-btn:hover {
     border-color: var(--color-accent);
     color: var(--color-accent);
+  }
+
+  .interactive-rag-shell {
+    margin: 0 auto var(--space-5);
   }
 
   .post-content {

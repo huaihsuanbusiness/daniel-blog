@@ -1,0 +1,845 @@
+---
+interface Props {
+  lang: 'en' | 'zh';
+}
+
+const { lang } = Astro.props;
+
+const copy = {
+  en: {
+    eyebrow: 'Interactive RAG Lab',
+    title: 'This isn’t just an article. It’s an interactive RAG workbench.',
+    description:
+      'Ask the live system a question, switch runtime controls, and inspect the exact route this request took through planning, retrieval, workflow, retry, and citation checks.',
+    statusReady: 'Live system ready',
+    statusLoading: 'Loading runtime profile…',
+    questionLabel: 'Ask the RAG something real',
+    questionPlaceholder: 'Try: What are the supported query modes and how do they change the runtime path?',
+    examplesLabel: 'Try one of these',
+    modeLabel: 'Query mode',
+    controlsLabel: 'Runtime controls',
+    askButton: 'Run this question',
+    askingButton: 'Running…',
+    resetButton: 'Reset defaults',
+    answerLabel: 'Answer',
+    routeLabel: 'Request journey',
+    routeEmpty: 'Run a question and this panel will show how the system actually moved.',
+    planLabel: 'Planner view',
+    runtimeLabel: 'Runtime guardrails',
+    sourceLabel: 'Retrieved sources',
+    sourceEmpty: 'No sources returned yet.',
+    rawLabel: 'Raw response',
+    timelineLabel: 'Stage-by-stage trace',
+    timelineEmpty: 'The detailed execution timeline will appear here after each run.',
+    workflow: 'Workflow',
+    toolRouting: 'Tool routing',
+    retryLoop: 'Retry loop',
+    healthOk: 'healthy',
+    healthBad: 'needs attention',
+    failPrefix: 'Request failed',
+    examples: [
+      'What query modes does this RAG support?',
+      'Explain what happened between planning and synthesis in the latest request.',
+      'When should I use creative mode instead of fast mode?',
+    ],
+  },
+  zh: {
+    eyebrow: 'Interactive RAG Lab',
+    title: '這不只是一篇文章，這是一個可互動的 RAG 實驗台。',
+    description:
+      '你可以直接問這套 live RAG 問題，切換 runtime 控制，並看到這次查詢實際經過了 planning、retrieval、workflow、retry 與 citation checks 的哪些路徑。',
+    statusReady: 'Live system 已連線',
+    statusLoading: '正在載入 runtime profile…',
+    questionLabel: '直接問這個 RAG 一個真實問題',
+    questionPlaceholder: '例如：這套 RAG 支援哪些 query mode？它們會怎麼改變 runtime path？',
+    examplesLabel: '你可以先試這些問題',
+    modeLabel: 'Query mode',
+    controlsLabel: 'Runtime controls',
+    askButton: '送出這次查詢',
+    askingButton: '執行中…',
+    resetButton: '重設預設值',
+    answerLabel: '最終回答',
+    routeLabel: '這次請求的旅程',
+    routeEmpty: '送出一個問題之後，這裡會把這一趟查詢走過的路攤開給你看。',
+    planLabel: 'Planner 視角',
+    runtimeLabel: 'Runtime guardrails',
+    sourceLabel: '這次取回的 sources',
+    sourceEmpty: '目前還沒有來源。',
+    rawLabel: 'Raw response',
+    timelineLabel: '逐階段 trace',
+    timelineEmpty: '每個 stage 的執行時間與結果，會在送出查詢後出現在這裡。',
+    workflow: 'Workflow',
+    toolRouting: 'Tool routing',
+    retryLoop: 'Retry loop',
+    healthOk: '正常',
+    healthBad: '需要檢查',
+    failPrefix: '請求失敗',
+    examples: [
+      '這套 RAG 支援哪些 query mode？',
+      '幫我解釋這次 request 在 planning 到 synthesis 中間經過了什麼。',
+      '什麼情況下應該用 creative mode，而不是 fast mode？',
+    ],
+  },
+}[lang];
+---
+
+<section class="rag-lab" data-rag-lab data-lang={lang}>
+  <div class="rag-lab-shell">
+    <div class="rag-lab-hero">
+      <p class="rag-lab-eyebrow">{copy.eyebrow}</p>
+      <h2 class="rag-lab-title">{copy.title}</h2>
+      <p class="rag-lab-description">{copy.description}</p>
+
+      <div class="rag-lab-status" data-rag-status>
+        <span class="rag-status-dot"></span>
+        <span>{copy.statusLoading}</span>
+      </div>
+    </div>
+
+    <div class="rag-lab-grid">
+      <aside class="rag-lab-panel rag-lab-controls">
+        <label class="rag-label" for="rag-question">{copy.questionLabel}</label>
+        <textarea id="rag-question" class="rag-question" rows="5" placeholder={copy.questionPlaceholder}></textarea>
+
+        <div class="rag-examples">
+          <p class="rag-subtle">{copy.examplesLabel}</p>
+          <div class="rag-chip-row">
+            {copy.examples.map((prompt) => (
+              <button type="button" class="rag-chip" data-rag-example={prompt}>{prompt}</button>
+            ))}
+          </div>
+        </div>
+
+        <div class="rag-control-group">
+          <p class="rag-label">{copy.modeLabel}</p>
+          <div class="rag-mode-grid" data-rag-modes></div>
+          <p class="rag-mode-note" data-rag-mode-note></p>
+        </div>
+
+        <div class="rag-control-group">
+          <p class="rag-label">{copy.controlsLabel}</p>
+          <div class="rag-toggle-list">
+            <label class="rag-toggle">
+              <input type="checkbox" data-rag-flag="use_workflow" />
+              <span>{copy.workflow}</span>
+            </label>
+            <label class="rag-toggle">
+              <input type="checkbox" data-rag-flag="use_tool_routing" />
+              <span>{copy.toolRouting}</span>
+            </label>
+            <label class="rag-toggle">
+              <input type="checkbox" data-rag-flag="use_retry_loop" checked />
+              <span>{copy.retryLoop}</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="rag-actions">
+          <button type="button" class="rag-primary" data-rag-submit>{copy.askButton}</button>
+          <button type="button" class="rag-secondary" data-rag-reset>{copy.resetButton}</button>
+        </div>
+      </aside>
+
+      <div class="rag-lab-panel rag-lab-output">
+        <div class="rag-metric-strip" data-rag-metrics></div>
+
+        <section class="rag-section">
+          <div class="rag-section-head">
+            <h3>{copy.answerLabel}</h3>
+          </div>
+          <div class="rag-answer" data-rag-answer>{lang === 'zh' ? '送出第一個問題之後，回答會出現在這裡。' : 'Your answer will appear here after the first run.'}</div>
+        </section>
+
+        <section class="rag-section">
+          <div class="rag-section-head">
+            <h3>{copy.routeLabel}</h3>
+          </div>
+          <div class="rag-route" data-rag-route>{copy.routeEmpty}</div>
+        </section>
+
+        <div class="rag-detail-grid">
+          <section class="rag-section">
+            <div class="rag-section-head">
+              <h3>{copy.planLabel}</h3>
+            </div>
+            <div class="rag-card-list" data-rag-plan></div>
+          </section>
+
+          <section class="rag-section">
+            <div class="rag-section-head">
+              <h3>{copy.runtimeLabel}</h3>
+            </div>
+            <div class="rag-card-list" data-rag-runtime></div>
+          </section>
+        </div>
+
+        <section class="rag-section">
+          <div class="rag-section-head">
+            <h3>{copy.timelineLabel}</h3>
+          </div>
+          <div class="rag-timeline" data-rag-timeline>{copy.timelineEmpty}</div>
+        </section>
+
+        <section class="rag-section">
+          <div class="rag-section-head">
+            <h3>{copy.sourceLabel}</h3>
+          </div>
+          <div class="rag-sources" data-rag-sources>{copy.sourceEmpty}</div>
+        </section>
+
+        <details class="rag-raw">
+          <summary>{copy.rawLabel}</summary>
+          <pre data-rag-raw></pre>
+        </details>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script is:inline define:vars={{ lang, copy }} type="module">
+  const root = document.querySelector('[data-rag-lab]');
+  if (root) {
+    const state = {
+      bootstrap: null,
+      selectedMode: 'safe',
+    };
+
+    const elements = {
+      status: root.querySelector('[data-rag-status]'),
+      question: root.querySelector('#rag-question'),
+      modes: root.querySelector('[data-rag-modes]'),
+      modeNote: root.querySelector('[data-rag-mode-note]'),
+      metrics: root.querySelector('[data-rag-metrics]'),
+      answer: root.querySelector('[data-rag-answer]'),
+      route: root.querySelector('[data-rag-route]'),
+      plan: root.querySelector('[data-rag-plan]'),
+      runtime: root.querySelector('[data-rag-runtime]'),
+      timeline: root.querySelector('[data-rag-timeline]'),
+      sources: root.querySelector('[data-rag-sources]'),
+      raw: root.querySelector('[data-rag-raw]'),
+      submit: root.querySelector('[data-rag-submit]'),
+      reset: root.querySelector('[data-rag-reset]'),
+      flags: Array.from(root.querySelectorAll('[data-rag-flag]')),
+    };
+
+    const defaultQuestion = copy.examples[0];
+    elements.question.value = defaultQuestion;
+
+    const escapeHtml = (value) =>
+      String(value ?? '')
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#39;');
+
+    const formatLatency = (value) => {
+      if (typeof value !== 'number' || Number.isNaN(value)) return '—';
+      return `${value.toFixed(value >= 100 ? 0 : 1)} ms`;
+    };
+
+    const formatMaybe = (value) => {
+      if (value === null || value === undefined || value === '') return '—';
+      if (typeof value === 'boolean') return value ? 'true' : 'false';
+      return String(value);
+    };
+
+    const stageSummary = (stage) => {
+      if (!stage) return '';
+      const output = stage.output || {};
+      const metadata = stage.metadata || {};
+      switch (stage.name) {
+        case 'planner':
+          return metadata.route_reason || output.rewritten_question || '';
+        case 'retrieval':
+          return `${output.output_count ?? 0} source(s) via ${metadata.retrieval_mode || 'rag'}`;
+        case 'parent_expansion':
+          return `${output.source_count ?? 0} expanded source(s)`;
+        case 'context_compression':
+          return metadata.enabled ? `Compressed ${metadata.compressed_sources ?? 0} source(s)` : 'Compression off';
+        case 'synthesis':
+          return metadata.diagnostics?.deterministic_reason || metadata.model || `Answer chars: ${metadata.answer_chars ?? '—'}`;
+        case 'citation_check':
+          return `score ${formatMaybe(output.score)} / passed ${formatMaybe(output.passed)}`;
+        case 'engine.ask':
+          return `${output.source_count ?? 0} source(s), ${output.answer_chars ?? 0} chars`;
+        default:
+          return JSON.stringify(output).slice(0, 120);
+      }
+    };
+
+    const routeSummary = (response) => {
+      const chips = [];
+      chips.push(response.query_profile?.mode || state.selectedMode);
+      chips.push(response.filters?.retrieval_mode || 'hybrid');
+      chips.push(response.workflow?.enabled ? 'workflow:on' : 'workflow:off');
+      chips.push(response.tool_routing?.enabled ? `route:${response.tool_routing?.route || 'tool'}` : 'route:rag');
+      chips.push(response.retry_loop?.enabled ? `retry:${response.retry_loop?.retry_attempt_count ?? 0}` : 'retry:off');
+      return chips.map((chip) => `<span class="rag-path-chip">${escapeHtml(chip)}</span>`).join('');
+    };
+
+    const renderModes = () => {
+      const queryProfiles = state.bootstrap?.queryProfiles;
+      const supportedModes = queryProfiles?.supported_modes || ['fast', 'safe', 'creative', 'deep_eval', 'agentic'];
+      elements.modes.innerHTML = supportedModes
+        .map((mode) => {
+          const active = mode === state.selectedMode;
+          return `<button type="button" class="rag-mode-btn ${active ? 'is-active' : ''}" data-rag-mode="${escapeHtml(mode)}">${escapeHtml(mode)}</button>`;
+        })
+        .join('');
+
+      const selectedProfile = queryProfiles?.profiles?.[state.selectedMode];
+      elements.modeNote.textContent = selectedProfile?.description || '';
+
+      elements.modes.querySelectorAll('[data-rag-mode]').forEach((button) => {
+        button.addEventListener('click', () => {
+          state.selectedMode = button.getAttribute('data-rag-mode') || 'safe';
+          renderModes();
+        });
+      });
+    };
+
+    const renderBootstrapState = () => {
+      const healthy = state.bootstrap?.health?.status === 'ok';
+      elements.status.innerHTML = `
+        <span class="rag-status-dot ${healthy ? 'is-healthy' : 'is-bad'}"></span>
+        <span>${healthy ? copy.statusReady : copy.healthBad}</span>
+        <span class="rag-status-meta">${escapeHtml(state.bootstrap?.proxy?.apiBaseUrl || '')}</span>
+      `;
+
+      renderModes();
+      elements.metrics.innerHTML = `
+        <div class="rag-metric-card"><span class="rag-metric-label">Health</span><strong>${healthy ? copy.healthOk : copy.healthBad}</strong></div>
+        <div class="rag-metric-card"><span class="rag-metric-label">Modes</span><strong>${(state.bootstrap?.queryProfiles?.supported_modes || []).length || 0}</strong></div>
+        <div class="rag-metric-card"><span class="rag-metric-label">Tenant</span><strong>${escapeHtml(state.bootstrap?.proxy?.tenantId || '—')}</strong></div>
+      `;
+    };
+
+    const renderPlan = (response) => {
+      const plan = response.plan || {};
+      elements.plan.innerHTML = `
+        <div class="rag-mini-card"><span>Original</span><strong>${escapeHtml(plan.original_question || '—')}</strong></div>
+        <div class="rag-mini-card"><span>Rewritten</span><strong>${escapeHtml(plan.rewritten_question || '—')}</strong></div>
+        <div class="rag-mini-card"><span>Route reason</span><strong>${escapeHtml(plan.route_reason || '—')}</strong></div>
+        <div class="rag-mini-card"><span>Rewrite reason</span><strong>${escapeHtml(plan.rewrite_reason || '—')}</strong></div>
+      `;
+    };
+
+    const renderRuntime = (response) => {
+      const budget = response.runtime_budget || {};
+      const toolRouting = response.tool_routing || {};
+      const retry = response.retry_loop || {};
+      const workflow = response.workflow || {};
+      elements.runtime.innerHTML = `
+        <div class="rag-mini-card"><span>Workflow</span><strong>${escapeHtml(workflow.enabled ? 'enabled' : 'disabled')}</strong></div>
+        <div class="rag-mini-card"><span>Tool route</span><strong>${escapeHtml(toolRouting.route || 'rag_search')}</strong></div>
+        <div class="rag-mini-card"><span>Retry attempts</span><strong>${escapeHtml(retry.retry_attempt_count ?? 0)}</strong></div>
+        <div class="rag-mini-card"><span>Latency budget</span><strong>${escapeHtml(String(budget.limits?.max_latency_ms ?? '—'))} ms</strong></div>
+        <div class="rag-mini-card"><span>LLM synthesis</span><strong>${escapeHtml(budget.permissions?.allow_llm_synthesis ? 'allowed' : 'guarded')}</strong></div>
+        <div class="rag-mini-card"><span>External tools</span><strong>${escapeHtml(budget.permissions?.allow_external_tools ? 'allowed' : 'off')}</strong></div>
+      `;
+    };
+
+    const renderTimeline = (response) => {
+      const stages = response.observability?.stages || [];
+      if (!stages.length) {
+        elements.timeline.textContent = copy.timelineEmpty;
+        return;
+      }
+      elements.timeline.innerHTML = stages
+        .map((stage) => `
+          <article class="rag-stage-card">
+            <div class="rag-stage-head">
+              <strong>${escapeHtml(stage.name || 'stage')}</strong>
+              <span>${escapeHtml(formatLatency(stage.latency_ms))}</span>
+            </div>
+            <p>${escapeHtml(stageSummary(stage))}</p>
+          </article>
+        `)
+        .join('');
+    };
+
+    const renderSources = (response) => {
+      const sources = response.sources || [];
+      if (!sources.length) {
+        elements.sources.textContent = copy.sourceEmpty;
+        return;
+      }
+      elements.sources.innerHTML = sources
+        .slice(0, 6)
+        .map((source, index) => `
+          <article class="rag-source-card">
+            <div class="rag-source-head">
+              <strong>${escapeHtml(source.file_name || source.metadata?.file_name || `Source ${index + 1}`)}</strong>
+              <span>${escapeHtml(source.marker || source.citation_marker || `#${index + 1}`)}</span>
+            </div>
+            <p class="rag-source-meta">score ${escapeHtml(formatMaybe(source.score))} · ${escapeHtml(source.metadata?.document_type || source.metadata?.file_type || 'source')}</p>
+            <p class="rag-source-preview">${escapeHtml(source.preview || source.text || '').slice(0, 280)}</p>
+          </article>
+        `)
+        .join('');
+    };
+
+    const renderResponse = (response) => {
+      elements.answer.textContent = response.answer || '';
+      elements.route.innerHTML = routeSummary(response);
+      elements.raw.textContent = JSON.stringify(response, null, 2);
+      renderPlan(response);
+      renderRuntime(response);
+      renderTimeline(response);
+      renderSources(response);
+
+      const observedLatency = response.runtime_budget?.postrun?.observed?.latency_ms;
+      elements.metrics.innerHTML = `
+        <div class="rag-metric-card"><span class="rag-metric-label">Mode</span><strong>${escapeHtml(response.query_profile?.mode || state.selectedMode)}</strong></div>
+        <div class="rag-metric-card"><span class="rag-metric-label">Latency</span><strong>${escapeHtml(formatLatency(observedLatency))}</strong></div>
+        <div class="rag-metric-card"><span class="rag-metric-label">Sources</span><strong>${escapeHtml(String((response.sources || []).length))}</strong></div>
+        <div class="rag-metric-card"><span class="rag-metric-label">Trace stages</span><strong>${escapeHtml(String((response.observability?.stage_names || []).length || 0))}</strong></div>
+      `;
+    };
+
+    const renderError = async (response) => {
+      const payload = await response.json().catch(() => ({}));
+      elements.answer.textContent = `${copy.failPrefix}: ${payload?.detail || payload?.error || response.statusText}`;
+      elements.route.textContent = copy.routeEmpty;
+      elements.plan.innerHTML = '';
+      elements.runtime.innerHTML = '';
+      elements.timeline.textContent = copy.timelineEmpty;
+      elements.sources.textContent = copy.sourceEmpty;
+      elements.raw.textContent = JSON.stringify(payload, null, 2);
+    };
+
+    const getPayload = () => {
+      const flags = Object.fromEntries(
+        elements.flags.map((input) => [input.getAttribute('data-rag-flag'), input.checked])
+      );
+      return {
+        question: elements.question.value.trim(),
+        query_mode: state.selectedMode,
+        ...flags,
+      };
+    };
+
+    const setLoading = (loading) => {
+      elements.submit.disabled = loading;
+      elements.reset.disabled = loading;
+      elements.flags.forEach((flag) => (flag.disabled = loading));
+      elements.question.disabled = loading;
+      elements.submit.textContent = loading ? copy.askingButton : copy.askButton;
+    };
+
+    const resetDefaults = () => {
+      state.selectedMode = state.bootstrap?.defaults?.query_mode || 'safe';
+      elements.question.value = defaultQuestion;
+      elements.flags.forEach((flag) => {
+        const key = flag.getAttribute('data-rag-flag');
+        flag.checked = Boolean(state.bootstrap?.defaults?.[key] ?? (key === 'use_retry_loop'));
+      });
+      renderModes();
+    };
+
+    root.querySelectorAll('[data-rag-example]').forEach((button) => {
+      button.addEventListener('click', () => {
+        elements.question.value = button.getAttribute('data-rag-example') || '';
+      });
+    });
+
+    elements.reset.addEventListener('click', resetDefaults);
+
+    elements.submit.addEventListener('click', async () => {
+      const payload = getPayload();
+      if (!payload.question) {
+        elements.answer.textContent = lang === 'zh' ? '請先輸入問題。' : 'Please enter a question first.';
+        return;
+      }
+
+      setLoading(true);
+      elements.answer.textContent = lang === 'zh' ? '正在請求 live RAG…' : 'Calling the live RAG…';
+      elements.route.innerHTML = '';
+      elements.plan.innerHTML = '';
+      elements.runtime.innerHTML = '';
+      elements.timeline.textContent = copy.timelineEmpty;
+      elements.sources.textContent = copy.sourceEmpty;
+
+      try {
+        const response = await fetch('/api/rag/ask', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        if (!response.ok) {
+          await renderError(response);
+        } else {
+          renderResponse(await response.json());
+        }
+      } catch (error) {
+        elements.answer.textContent = `${copy.failPrefix}: ${String(error)}`;
+      } finally {
+        setLoading(false);
+      }
+    });
+
+    try {
+      const bootstrapResponse = await fetch('/api/rag/bootstrap');
+      const bootstrapData = await bootstrapResponse.json();
+      if (!bootstrapResponse.ok || !bootstrapData.ok) {
+        throw new Error(bootstrapData.error || 'Failed to load bootstrap data');
+      }
+      state.bootstrap = bootstrapData;
+      resetDefaults();
+      renderBootstrapState();
+    } catch (error) {
+      elements.status.innerHTML = `
+        <span class="rag-status-dot is-bad"></span>
+        <span>${escapeHtml(String(error))}</span>
+      `;
+    }
+  }
+</script>
+
+<style>
+  .rag-lab {
+    margin: var(--space-5) 0 var(--space-6);
+  }
+
+  .rag-lab-shell {
+    border: 1px solid color-mix(in srgb, var(--color-accent) 16%, var(--color-border));
+    background:
+      radial-gradient(circle at top right, color-mix(in srgb, var(--color-accent) 12%, transparent), transparent 38%),
+      linear-gradient(180deg, color-mix(in srgb, var(--color-surface) 96%, transparent), color-mix(in srgb, var(--color-bg) 92%, transparent));
+    border-radius: 28px;
+    padding: clamp(20px, 3vw, 32px);
+    box-shadow: 0 28px 90px rgba(0, 0, 0, 0.18);
+  }
+
+  .rag-lab-hero {
+    margin-bottom: var(--space-4);
+  }
+
+  .rag-lab-eyebrow {
+    color: var(--color-accent);
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .rag-lab-title {
+    font-size: clamp(1.8rem, 3.4vw, 3rem);
+    margin-bottom: 12px;
+    max-width: 14ch;
+  }
+
+  .rag-lab-description {
+    color: var(--color-muted);
+    max-width: 72ch;
+  }
+
+  .rag-lab-status {
+    margin-top: 18px;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--color-surface) 88%, transparent);
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+  }
+
+  .rag-status-meta {
+    color: var(--color-muted);
+  }
+
+  .rag-status-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 999px;
+    background: var(--color-muted);
+    box-shadow: 0 0 0 6px color-mix(in srgb, var(--color-muted) 18%, transparent);
+  }
+
+  .rag-status-dot.is-healthy {
+    background: #34d399;
+    box-shadow: 0 0 0 6px rgba(52, 211, 153, 0.18);
+  }
+
+  .rag-status-dot.is-bad {
+    background: #fb7185;
+    box-shadow: 0 0 0 6px rgba(251, 113, 133, 0.16);
+  }
+
+  .rag-lab-grid {
+    display: grid;
+    grid-template-columns: minmax(280px, 360px) minmax(0, 1fr);
+    gap: 24px;
+  }
+
+  .rag-lab-panel {
+    border: 1px solid var(--color-border);
+    border-radius: 22px;
+    background: color-mix(in srgb, var(--color-surface) 86%, transparent);
+    padding: 20px;
+    min-width: 0;
+  }
+
+  .rag-lab-controls {
+    position: sticky;
+    top: 96px;
+    align-self: start;
+  }
+
+  .rag-label {
+    display: block;
+    margin-bottom: 10px;
+    font-family: var(--font-display);
+    font-size: 0.92rem;
+    font-weight: 600;
+  }
+
+  .rag-subtle {
+    margin-bottom: 10px;
+    color: var(--color-muted);
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+  }
+
+  .rag-question {
+    width: 100%;
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+    background: color-mix(in srgb, var(--color-bg) 72%, transparent);
+    color: var(--color-text);
+    padding: 14px 16px;
+    resize: vertical;
+    min-height: 132px;
+    font: inherit;
+  }
+
+  .rag-examples,
+  .rag-control-group {
+    margin-top: 20px;
+  }
+
+  .rag-chip-row,
+  .rag-mode-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .rag-chip,
+  .rag-mode-btn {
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--color-text);
+    padding: 9px 12px;
+    cursor: pointer;
+    transition: transform var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast), background var(--transition-fast);
+    font: inherit;
+    font-size: 0.82rem;
+  }
+
+  .rag-chip:hover,
+  .rag-mode-btn:hover,
+  .rag-mode-btn.is-active {
+    border-color: color-mix(in srgb, var(--color-accent) 58%, var(--color-border));
+    background: color-mix(in srgb, var(--color-accent) 12%, transparent);
+    color: var(--color-accent);
+    transform: translateY(-1px);
+  }
+
+  .rag-mode-note {
+    margin-top: 10px;
+    color: var(--color-muted);
+    font-size: 0.88rem;
+    max-width: 44ch;
+  }
+
+  .rag-toggle-list {
+    display: grid;
+    gap: 10px;
+  }
+
+  .rag-toggle {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    border: 1px solid var(--color-border);
+    border-radius: 14px;
+    background: color-mix(in srgb, var(--color-bg) 60%, transparent);
+  }
+
+  .rag-toggle input {
+    accent-color: var(--color-accent);
+  }
+
+  .rag-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+  }
+
+  .rag-primary,
+  .rag-secondary {
+    border: none;
+    border-radius: 999px;
+    padding: 12px 16px;
+    font-family: var(--font-display);
+    font-size: 0.9rem;
+    cursor: pointer;
+  }
+
+  .rag-primary {
+    background: var(--color-accent);
+    color: var(--color-bg);
+    flex: 1 1 auto;
+  }
+
+  .rag-secondary {
+    background: transparent;
+    color: var(--color-text);
+    border: 1px solid var(--color-border);
+  }
+
+  .rag-primary:disabled,
+  .rag-secondary:disabled {
+    opacity: 0.58;
+    cursor: not-allowed;
+  }
+
+  .rag-metric-strip {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+    margin-bottom: 18px;
+  }
+
+  .rag-metric-card,
+  .rag-mini-card,
+  .rag-stage-card,
+  .rag-source-card {
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+    background: color-mix(in srgb, var(--color-bg) 52%, transparent);
+    padding: 14px;
+  }
+
+  .rag-metric-label,
+  .rag-mini-card span {
+    display: block;
+    color: var(--color-muted);
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
+    margin-bottom: 6px;
+  }
+
+  .rag-section + .rag-section,
+  .rag-detail-grid,
+  .rag-raw {
+    margin-top: 18px;
+  }
+
+  .rag-section-head {
+    margin-bottom: 10px;
+  }
+
+  .rag-answer {
+    white-space: pre-wrap;
+    line-height: 1.75;
+    color: var(--color-text);
+  }
+
+  .rag-route {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    color: var(--color-muted);
+  }
+
+  .rag-path-chip {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 999px;
+    padding: 8px 12px;
+    border: 1px solid color-mix(in srgb, var(--color-accent) 28%, var(--color-border));
+    background: color-mix(in srgb, var(--color-accent) 10%, transparent);
+    color: var(--color-accent);
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+  }
+
+  .rag-detail-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+  }
+
+  .rag-card-list {
+    display: grid;
+    gap: 10px;
+  }
+
+  .rag-mini-card strong {
+    display: block;
+    line-height: 1.5;
+  }
+
+  .rag-timeline,
+  .rag-sources {
+    display: grid;
+    gap: 12px;
+  }
+
+  .rag-stage-head,
+  .rag-source-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+
+  .rag-stage-card p,
+  .rag-source-card p {
+    color: var(--color-muted);
+    max-width: none;
+  }
+
+  .rag-source-meta {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    margin-bottom: 8px;
+  }
+
+  .rag-source-preview {
+    color: var(--color-text);
+  }
+
+  .rag-raw summary {
+    cursor: pointer;
+    color: var(--color-muted);
+    margin-bottom: 10px;
+  }
+
+  .rag-raw pre {
+    margin-top: 10px;
+    max-height: 360px;
+  }
+
+  @media (max-width: 980px) {
+    .rag-lab-grid,
+    .rag-detail-grid,
+    .rag-metric-strip {
+      grid-template-columns: 1fr;
+    }
+
+    .rag-lab-controls {
+      position: static;
+    }
+  }
+</style>
