@@ -7,192 +7,400 @@ const { lang } = Astro.props;
 
 const copy = {
   en: {
-    eyebrow: 'Interactive RAG Lab',
-    title: 'This isn’t just an article. It’s an interactive RAG workbench.',
+    eyebrow: 'Interactive RAG Workbench',
+    title: 'This isn’t just an article. It’s a live RAG cockpit.',
     description:
-      'Ask the live system a question, switch runtime controls, and inspect the exact route this request took through planning, retrieval, workflow, retry, and citation checks.',
-    statusReady: 'Live system ready',
+      'Ask a real question, let the runtime choose the cheapest safe path, or manually override the retrieval stack when you want to inspect how the system behaves.',
     statusLoading: 'Loading runtime profile…',
-    questionLabel: 'Ask the RAG something real',
-    questionPlaceholder: 'Try: What are the supported query modes and how do they change the runtime path?',
-    examplesLabel: 'Try one of these',
+    statusReady: 'Live runtime connected',
+    statusFallback: 'Auto mode is visible, but the dedicated runtime-policy endpoint is still falling back.',
+    questionLabel: 'Ask the RAG a real question',
+    questionPlaceholder: 'Try asking how the system decides between fast, safe, creative, deep_eval, and agentic.',
+    exampleLabel: 'Good demo prompts',
     modeLabel: 'Query mode',
-    controlsLabel: 'Advanced runtime controls',
-    modeHelp: 'Auto is the default. Switch to a manual mode only when you want to override the system.',
-    controlsHelp: 'These only apply when you intentionally override the automatic policy.',
-    advancedSummary: 'Manual overrides',
-    policyLabel: 'Policy router',
-    askButton: 'Run this question',
+    modeHintAuto: 'Best for most readers. The system chooses the strategy first, then runs the answer path.',
+    modeHintManual: 'Pick a fixed mode when you want a predictable profile for teaching or debugging.',
+    manualLabel: 'Advanced runtime controls',
+    manualDescription:
+      'Turn this on only when you want to override the system. If it stays off, the runtime keeps its own defaults.',
+    manualToggle: 'Enable manual overrides',
+    manualHelper:
+      'Manual overrides are sent explicitly to the API, so they can replace what auto mode or a fixed mode would normally choose.',
+    modeAutoTitle: 'Auto',
+    workflow: 'Workflow',
+    workflowHelp: 'Use the inspectable workflow rail instead of the direct engine path.',
+    toolRouting: 'Tool routing',
+    toolRoutingHelp: 'Route toward tools or alternate execution paths before answering.',
+    retryLoop: 'Retry loop',
+    retryLoopHelp: 'Allow reflect-and-retry if the first answer looks weak or mismatched.',
+    retrievalMode: 'Retrieval mode',
+    retrievalModeHelp: 'Choose between hybrid retrieval and dense-only retrieval.',
+    parentExpansion: 'Parent expansion',
+    parentExpansionHelp: 'Expand retrieved child chunks back into richer parent context.',
+    contextCompression: 'Context compression',
+    contextCompressionHelp: 'Compress long context before synthesis to save attention budget.',
+    longContextReorder: 'Long-context reorder',
+    longContextReorderHelp: 'Re-rank long context so the strongest evidence appears earlier.',
+    minScore: 'Minimum score',
+    minScoreHelp: 'Drop evidence below this retrieval confidence threshold.',
+    maxRetries: 'Max retries',
+    maxRetriesHelp: 'Cap how many recovery attempts the runtime may spend on this question.',
+    hybrid: 'Hybrid',
+    dense: 'Dense only',
+    askButton: 'Run this request',
     askingButton: 'Running…',
-    resetButton: 'Reset defaults',
-    answerLabel: 'Answer',
+    resetButton: 'Reset',
+    answerLabel: 'Final answer',
     routeLabel: 'Request journey',
-    routeEmpty: 'Run a question and this panel will show how the system actually moved.',
-    planLabel: 'Planner view',
+    routeEmpty: 'After the first run, this ribbon will show the exact path the request took.',
+    policyLabel: 'Automatic policy decision',
+    policyEmpty: 'Run a question to inspect which policy the runtime selected and why.',
+    plannerLabel: 'Planner view',
     runtimeLabel: 'Runtime guardrails',
-    sourceLabel: 'Retrieved sources',
+    timelineLabel: 'Stage trace',
+    timelineEmpty: 'Each recorded stage will appear here after the request finishes.',
+    sourcesLabel: 'Retrieved sources',
     sourceEmpty: 'No sources returned yet.',
     rawLabel: 'Raw response',
-    timelineLabel: 'Stage-by-stage trace',
-    timelineEmpty: 'The detailed execution timeline will appear here after each run.',
-    workflow: 'Workflow',
-    toolRouting: 'Tool routing',
-    retryLoop: 'Retry loop',
-    healthOk: 'healthy',
-    healthBad: 'needs attention',
-    failPrefix: 'Request failed',
+    failedPrefix: 'Request failed',
     examples: [
-      'What query modes does this RAG support?',
-      'Explain what happened between planning and synthesis in the latest request.',
-      'When should I use creative mode instead of fast mode?',
+      'What query modes does this system support, and when would each one be chosen?',
+      'Explain the path from planning to synthesis for this request.',
+      'When should I use creative mode instead of safe mode?',
     ],
+    emptyAnswer: 'Your answer will appear here after the first run.',
+    runningAnswer: 'Calling the live RAG…',
+    needsQuestion: 'Please enter a question first.',
+    policyLive: 'runtime policy live',
+    policyFallback: 'proxy fallback',
+    metricsHealth: 'Health',
+    metricsModes: 'Modes',
+    metricsPolicy: 'Policy',
+    metricsTenant: 'Tenant',
+    metricsLatency: 'Latency',
+    metricsSources: 'Sources',
+    metricsStages: 'Trace stages',
+    metricsResolvedMode: 'Resolved mode',
   },
   zh: {
-    eyebrow: 'Interactive RAG Lab',
-    title: '這不只是一篇文章，這是一個可互動的 RAG 實驗台。',
+    eyebrow: 'Interactive RAG Workbench',
+    title: '這不只是一篇文章，這是一個 live RAG 控制台。',
     description:
-      '你可以直接問這套 live RAG 問題，切換 runtime 控制，並看到這次查詢實際經過了 planning、retrieval、workflow、retry 與 citation checks 的哪些路徑。',
-    statusReady: 'Live system 已連線',
+      '你可以直接問一個真實問題，讓系統先判斷最便宜又安全的路徑，或在需要教學、除錯時手動覆寫 retrieval 與 runtime 控制。',
     statusLoading: '正在載入 runtime profile…',
+    statusReady: 'Live runtime 已連線',
+    statusFallback: '目前已顯示 auto mode，但正式 runtime-policy endpoint 還在 fallback 狀態。',
     questionLabel: '直接問這個 RAG 一個真實問題',
-    questionPlaceholder: '例如：這套 RAG 支援哪些 query mode？它們會怎麼改變 runtime path？',
-    examplesLabel: '你可以先試這些問題',
+    questionPlaceholder: '試著問：系統會怎麼在 fast、safe、creative、deep_eval、agentic 之間做選擇？',
+    exampleLabel: '你可以先試這些問題',
     modeLabel: 'Query mode',
-    controlsLabel: '進階 Runtime controls',
-    modeHelp: '預設建議使用 Auto，只有在你想故意覆寫系統判斷時才切到手動模式。',
-    controlsHelp: '這些開關只在你刻意覆寫自動策略時才需要調整。',
-    advancedSummary: '手動覆寫設定',
-    policyLabel: 'Policy router',
+    modeHintAuto: '最適合一般讀者。系統會先決定策略，再走後續回答路徑。',
+    modeHintManual: '如果你想教學或除錯，就選固定 mode 來觀察一條比較可預期的路徑。',
+    manualLabel: '進階 Runtime controls',
+    manualDescription:
+      '只有在你想覆寫系統判斷時才需要打開。維持關閉時，runtime 會沿用自己的預設策略。',
+    manualToggle: '啟用手動覆寫',
+    manualHelper:
+      '一旦你開啟手動覆寫，這些欄位會被明確送到 API，所以它們可能會取代 auto mode 或固定 mode 原本會自動選的設定。',
+    modeAutoTitle: 'Auto',
+    workflow: 'Workflow',
+    workflowHelp: '改走可觀察的 workflow rail，而不是直接 engine path。',
+    toolRouting: 'Tool routing',
+    toolRoutingHelp: '先判斷要不要走工具或其他執行路徑，再開始回答。',
+    retryLoop: 'Retry loop',
+    retryLoopHelp: '如果第一版答案看起來不夠好，允許系統反思後再試一次。',
+    retrievalMode: 'Retrieval mode',
+    retrievalModeHelp: '選擇 hybrid 檢索，或只用 dense vector 檢索。',
+    parentExpansion: 'Parent expansion',
+    parentExpansionHelp: '把命中的 child chunk 展開回更完整的 parent context。',
+    contextCompression: 'Context compression',
+    contextCompressionHelp: '在 synthesis 前先壓縮長上下文，節省注意力預算。',
+    longContextReorder: 'Long-context reorder',
+    longContextReorderHelp: '重新排序長上下文，讓最關鍵證據更早被模型看到。',
+    minScore: 'Minimum score',
+    minScoreHelp: '低於這個檢索分數的證據，系統就不應太信任。',
+    maxRetries: 'Max retries',
+    maxRetriesHelp: '限制這題最多可以花多少次重試機會。',
+    hybrid: 'Hybrid',
+    dense: 'Dense only',
     askButton: '送出這次查詢',
     askingButton: '執行中…',
-    resetButton: '重設預設值',
+    resetButton: '重設',
     answerLabel: '最終回答',
     routeLabel: '這次請求的旅程',
-    routeEmpty: '送出一個問題之後，這裡會把這一趟查詢走過的路攤開給你看。',
-    planLabel: 'Planner 視角',
+    routeEmpty: '送出第一個問題後，這裡會把這次請求實際經過的路徑攤開給你看。',
+    policyLabel: '自動策略判斷',
+    policyEmpty: '送出一個問題後，這裡會顯示 runtime 最後選了什麼策略，以及為什麼。',
+    plannerLabel: 'Planner 視角',
     runtimeLabel: 'Runtime guardrails',
-    sourceLabel: '這次取回的 sources',
+    timelineLabel: '逐階段 trace',
+    timelineEmpty: '每個被記錄的 stage，都會在查詢完成後出現在這裡。',
+    sourcesLabel: '這次取回的 sources',
     sourceEmpty: '目前還沒有來源。',
     rawLabel: 'Raw response',
-    timelineLabel: '逐階段 trace',
-    timelineEmpty: '每個 stage 的執行時間與結果，會在送出查詢後出現在這裡。',
-    workflow: 'Workflow',
-    toolRouting: 'Tool routing',
-    retryLoop: 'Retry loop',
-    healthOk: '正常',
-    healthBad: '需要檢查',
-    failPrefix: '請求失敗',
+    failedPrefix: '請求失敗',
     examples: [
-      '這套 RAG 支援哪些 query mode？',
-      '幫我解釋這次 request 在 planning 到 synthesis 中間經過了什麼。',
-      '什麼情況下應該用 creative mode，而不是 fast mode？',
+      '這套系統有哪些 query modes？系統會在什麼情況下自動選它們？',
+      '幫我解釋這次 request 從 planning 到 synthesis 之間發生了什麼。',
+      '什麼情況下比較適合 creative mode，而不是 safe mode？',
     ],
+    emptyAnswer: '送出第一個問題之後，回答會出現在這裡。',
+    runningAnswer: '正在請求 live RAG…',
+    needsQuestion: '請先輸入問題。',
+    policyLive: 'runtime policy 已上線',
+    policyFallback: '目前仍是 proxy fallback',
+    metricsHealth: 'Health',
+    metricsModes: 'Modes',
+    metricsPolicy: 'Policy',
+    metricsTenant: 'Tenant',
+    metricsLatency: 'Latency',
+    metricsSources: 'Sources',
+    metricsStages: 'Trace stages',
+    metricsResolvedMode: 'Resolved mode',
   },
 }[lang];
 ---
 
 <section class="rag-lab" data-rag-lab data-lang={lang}>
   <div class="rag-lab-shell">
-    <div class="rag-lab-hero">
-      <p class="rag-lab-eyebrow">{copy.eyebrow}</p>
-      <h2 class="rag-lab-title">{copy.title}</h2>
-      <p class="rag-lab-description">{copy.description}</p>
+    <div class="rag-orb rag-orb-a"></div>
+    <div class="rag-orb rag-orb-b"></div>
 
-      <div class="rag-lab-status" data-rag-status>
-        <span class="rag-status-dot"></span>
-        <span>{copy.statusLoading}</span>
+    <header class="rag-hero">
+      <div class="rag-hero-copy">
+        <p class="rag-eyebrow">{copy.eyebrow}</p>
+        <h2 class="rag-title">{copy.title}</h2>
+        <p class="rag-description">{copy.description}</p>
       </div>
-    </div>
 
-    <div class="rag-lab-grid">
-      <aside class="rag-lab-panel rag-lab-controls">
-        <label class="rag-label" for="rag-question">{copy.questionLabel}</label>
-        <textarea id="rag-question" class="rag-question" rows="5" placeholder={copy.questionPlaceholder}></textarea>
-
-        <div class="rag-examples">
-          <p class="rag-subtle">{copy.examplesLabel}</p>
-          <div class="rag-chip-row">
-            {copy.examples.map((prompt) => (
-              <button type="button" class="rag-chip" data-rag-example={prompt}>{prompt}</button>
-            ))}
-          </div>
+      <div class="rag-status-card">
+        <div class="rag-status-row" data-rag-status>
+          <span class="rag-status-dot"></span>
+          <span>{copy.statusLoading}</span>
         </div>
+        <p class="rag-status-note" data-rag-status-note></p>
+      </div>
+    </header>
 
-        <div class="rag-control-group">
-          <p class="rag-label">{copy.modeLabel}</p>
-          <div class="rag-mode-grid" data-rag-modes></div>
-          <p class="rag-mode-note" data-rag-mode-note></p>
-          <p class="rag-subtle">{copy.modeHelp}</p>
-        </div>
+    <div class="rag-grid">
+      <aside class="rag-sidebar">
+        <section class="rag-panel rag-panel-soft">
+          <label class="rag-label" for="rag-question">{copy.questionLabel}</label>
+          <textarea id="rag-question" class="rag-question" rows="6" placeholder={copy.questionPlaceholder}></textarea>
 
-        <details class="rag-control-group rag-advanced-controls">
-          <summary class="rag-label">{copy.advancedSummary}</summary>
-          <p class="rag-subtle">{copy.controlsHelp}</p>
-          <div class="rag-toggle-list">
-            <label class="rag-toggle">
-              <input type="checkbox" data-rag-flag="use_workflow" />
-              <span>{copy.workflow}</span>
-            </label>
-            <label class="rag-toggle">
-              <input type="checkbox" data-rag-flag="use_tool_routing" />
-              <span>{copy.toolRouting}</span>
-            </label>
-            <label class="rag-toggle">
-              <input type="checkbox" data-rag-flag="use_retry_loop" checked />
-              <span>{copy.retryLoop}</span>
-            </label>
+          <div class="rag-example-block">
+            <p class="rag-kicker">{copy.exampleLabel}</p>
+            <div class="rag-chip-row">
+              {copy.examples.map((prompt) => (
+                <button type="button" class="rag-chip" data-rag-example={prompt}>{prompt}</button>
+              ))}
+            </div>
           </div>
-        </details>
-
-        <div class="rag-actions">
-          <button type="button" class="rag-primary" data-rag-submit>{copy.askButton}</button>
-          <button type="button" class="rag-secondary" data-rag-reset>{copy.resetButton}</button>
-        </div>
-      </aside>
-
-      <div class="rag-lab-panel rag-lab-output">
-        <div class="rag-metric-strip" data-rag-metrics></div>
-
-        <section class="rag-section">
-          <div class="rag-section-head">
-            <h3>{copy.answerLabel}</h3>
-          </div>
-          <div class="rag-answer" data-rag-answer>{lang === 'zh' ? '送出第一個問題之後，回答會出現在這裡。' : 'Your answer will appear here after the first run.'}</div>
         </section>
 
-        <section class="rag-section">
-          <div class="rag-section-head">
-            <h3>{copy.routeLabel}</h3>
+        <section class="rag-panel">
+          <div class="rag-section-headline">
+            <div>
+              <p class="rag-kicker">{copy.modeLabel}</p>
+              <h3 class="rag-subtitle">{copy.modeLabel}</h3>
+            </div>
+            <span class="rag-pill" data-rag-mode-state>{copy.modeAutoTitle}</span>
+          </div>
+          <p class="rag-helper" data-rag-mode-helper>{copy.modeHintAuto}</p>
+          <div class="rag-mode-grid" data-rag-modes></div>
+          <div class="rag-mode-note" data-rag-mode-note></div>
+        </section>
+
+        <section class="rag-panel">
+          <div class="rag-section-headline">
+            <div>
+              <p class="rag-kicker">{copy.manualLabel}</p>
+              <h3 class="rag-subtitle">{copy.manualLabel}</h3>
+            </div>
+            <label class="rag-switch rag-switch-master">
+              <input type="checkbox" data-rag-manual-enabled />
+              <span class="rag-switch-track"></span>
+              <span class="rag-switch-text">{copy.manualToggle}</span>
+            </label>
+          </div>
+          <p class="rag-helper">{copy.manualDescription}</p>
+          <p class="rag-callout" data-rag-manual-helper>{copy.manualHelper}</p>
+
+          <div class="rag-override-list" data-rag-manual-fields>
+            <article class="rag-override-card">
+              <div>
+                <h4>{copy.workflow}</h4>
+                <p>{copy.workflowHelp}</p>
+              </div>
+              <label class="rag-switch">
+                <input type="checkbox" data-rag-field="use_workflow" />
+                <span class="rag-switch-track"></span>
+              </label>
+            </article>
+
+            <article class="rag-override-card">
+              <div>
+                <h4>{copy.toolRouting}</h4>
+                <p>{copy.toolRoutingHelp}</p>
+              </div>
+              <label class="rag-switch">
+                <input type="checkbox" data-rag-field="use_tool_routing" />
+                <span class="rag-switch-track"></span>
+              </label>
+            </article>
+
+            <article class="rag-override-card">
+              <div>
+                <h4>{copy.retryLoop}</h4>
+                <p>{copy.retryLoopHelp}</p>
+              </div>
+              <label class="rag-switch">
+                <input type="checkbox" data-rag-field="use_retry_loop" />
+                <span class="rag-switch-track"></span>
+              </label>
+            </article>
+
+            <article class="rag-override-card">
+              <div>
+                <h4>{copy.retrievalMode}</h4>
+                <p>{copy.retrievalModeHelp}</p>
+              </div>
+              <select class="rag-select" data-rag-field="retrieval_mode">
+                <option value="hybrid">{copy.hybrid}</option>
+                <option value="dense">{copy.dense}</option>
+              </select>
+            </article>
+
+            <article class="rag-override-card">
+              <div>
+                <h4>{copy.parentExpansion}</h4>
+                <p>{copy.parentExpansionHelp}</p>
+              </div>
+              <label class="rag-switch">
+                <input type="checkbox" data-rag-field="use_parent_expansion" />
+                <span class="rag-switch-track"></span>
+              </label>
+            </article>
+
+            <article class="rag-override-card">
+              <div>
+                <h4>{copy.contextCompression}</h4>
+                <p>{copy.contextCompressionHelp}</p>
+              </div>
+              <label class="rag-switch">
+                <input type="checkbox" data-rag-field="use_context_compression" />
+                <span class="rag-switch-track"></span>
+              </label>
+            </article>
+
+            <article class="rag-override-card">
+              <div>
+                <h4>{copy.longContextReorder}</h4>
+                <p>{copy.longContextReorderHelp}</p>
+              </div>
+              <label class="rag-switch">
+                <input type="checkbox" data-rag-field="use_long_context_reorder" />
+                <span class="rag-switch-track"></span>
+              </label>
+            </article>
+
+            <article class="rag-override-card">
+              <div>
+                <h4>{copy.minScore}</h4>
+                <p>{copy.minScoreHelp}</p>
+              </div>
+              <input class="rag-number" type="number" min="0" max="1" step="0.01" data-rag-field="min_score" />
+            </article>
+
+            <article class="rag-override-card">
+              <div>
+                <h4>{copy.maxRetries}</h4>
+                <p>{copy.maxRetriesHelp}</p>
+              </div>
+              <input class="rag-number" type="number" min="0" max="5" step="1" data-rag-field="max_retries" />
+            </article>
+          </div>
+
+          <div class="rag-actions">
+            <button type="button" class="rag-primary" data-rag-submit>{copy.askButton}</button>
+            <button type="button" class="rag-secondary" data-rag-reset>{copy.resetButton}</button>
+          </div>
+        </section>
+      </aside>
+
+      <div class="rag-main">
+        <div class="rag-metric-strip" data-rag-metrics></div>
+
+        <section class="rag-panel rag-panel-featured">
+          <div class="rag-section-headline">
+            <div>
+              <p class="rag-kicker">{copy.answerLabel}</p>
+              <h3 class="rag-subtitle">{copy.answerLabel}</h3>
+            </div>
+          </div>
+          <div class="rag-answer" data-rag-answer>{copy.emptyAnswer}</div>
+        </section>
+
+        <section class="rag-panel">
+          <div class="rag-section-headline">
+            <div>
+              <p class="rag-kicker">{copy.routeLabel}</p>
+              <h3 class="rag-subtitle">{copy.routeLabel}</h3>
+            </div>
           </div>
           <div class="rag-route" data-rag-route>{copy.routeEmpty}</div>
         </section>
 
-        <div class="rag-detail-grid">
-          <section class="rag-section">
-            <div class="rag-section-head">
-              <h3>{copy.planLabel}</h3>
+        <div class="rag-dual-grid">
+          <section class="rag-panel">
+            <div class="rag-section-headline">
+              <div>
+                <p class="rag-kicker">{copy.policyLabel}</p>
+                <h3 class="rag-subtitle">{copy.policyLabel}</h3>
+              </div>
             </div>
-            <div class="rag-card-list" data-rag-plan></div>
+            <div class="rag-card-list" data-rag-policy>{copy.policyEmpty}</div>
           </section>
 
-          <section class="rag-section">
-            <div class="rag-section-head">
-              <h3>{copy.runtimeLabel}</h3>
+          <section class="rag-panel">
+            <div class="rag-section-headline">
+              <div>
+                <p class="rag-kicker">{copy.runtimeLabel}</p>
+                <h3 class="rag-subtitle">{copy.runtimeLabel}</h3>
+              </div>
             </div>
             <div class="rag-card-list" data-rag-runtime></div>
           </section>
         </div>
 
-        <section class="rag-section">
-          <div class="rag-section-head">
-            <h3>{copy.timelineLabel}</h3>
-          </div>
-          <div class="rag-timeline" data-rag-timeline>{copy.timelineEmpty}</div>
-        </section>
+        <div class="rag-dual-grid">
+          <section class="rag-panel">
+            <div class="rag-section-headline">
+              <div>
+                <p class="rag-kicker">{copy.plannerLabel}</p>
+                <h3 class="rag-subtitle">{copy.plannerLabel}</h3>
+              </div>
+            </div>
+            <div class="rag-card-list" data-rag-plan></div>
+          </section>
 
-        <section class="rag-section">
-          <div class="rag-section-head">
-            <h3>{copy.sourceLabel}</h3>
+          <section class="rag-panel">
+            <div class="rag-section-headline">
+              <div>
+                <p class="rag-kicker">{copy.timelineLabel}</p>
+                <h3 class="rag-subtitle">{copy.timelineLabel}</h3>
+              </div>
+            </div>
+            <div class="rag-timeline" data-rag-timeline>{copy.timelineEmpty}</div>
+          </section>
+        </div>
+
+        <section class="rag-panel">
+          <div class="rag-section-headline">
+            <div>
+              <p class="rag-kicker">{copy.sourcesLabel}</p>
+              <h3 class="rag-subtitle">{copy.sourcesLabel}</h3>
+            </div>
           </div>
           <div class="rag-sources" data-rag-sources>{copy.sourceEmpty}</div>
         </section>
@@ -208,28 +416,39 @@ const copy = {
 
 <script is:inline define:vars={{ lang, copy }} type="module">
   const root = document.querySelector('[data-rag-lab]');
+
   if (root) {
+    const AUTO_MODE = 'auto';
+    const FALLBACK_MODES = ['auto', 'fast', 'safe', 'creative', 'deep_eval', 'agentic'];
+
     const state = {
       bootstrap: null,
-      selectedMode: 'auto',
+      selectedMode: AUTO_MODE,
+      manualOverridesEnabled: false,
     };
 
     const elements = {
       status: root.querySelector('[data-rag-status]'),
+      statusNote: root.querySelector('[data-rag-status-note]'),
       question: root.querySelector('#rag-question'),
       modes: root.querySelector('[data-rag-modes]'),
       modeNote: root.querySelector('[data-rag-mode-note]'),
+      modeHelper: root.querySelector('[data-rag-mode-helper]'),
+      modeState: root.querySelector('[data-rag-mode-state]'),
+      manualEnabled: root.querySelector('[data-rag-manual-enabled]'),
+      manualFields: Array.from(root.querySelectorAll('[data-rag-field]')),
+      manualHelper: root.querySelector('[data-rag-manual-helper]'),
       metrics: root.querySelector('[data-rag-metrics]'),
       answer: root.querySelector('[data-rag-answer]'),
       route: root.querySelector('[data-rag-route]'),
-      plan: root.querySelector('[data-rag-plan]'),
+      policy: root.querySelector('[data-rag-policy]'),
       runtime: root.querySelector('[data-rag-runtime]'),
+      plan: root.querySelector('[data-rag-plan]'),
       timeline: root.querySelector('[data-rag-timeline]'),
       sources: root.querySelector('[data-rag-sources]'),
       raw: root.querySelector('[data-rag-raw]'),
       submit: root.querySelector('[data-rag-submit]'),
       reset: root.querySelector('[data-rag-reset]'),
-      flags: Array.from(root.querySelectorAll('[data-rag-flag]')),
     };
 
     const defaultQuestion = copy.examples[0];
@@ -243,15 +462,34 @@ const copy = {
         .replaceAll('"', '&quot;')
         .replaceAll("'", '&#39;');
 
-    const formatLatency = (value) => {
-      if (typeof value !== 'number' || Number.isNaN(value)) return '—';
-      return `${value.toFixed(value >= 100 ? 0 : 1)} ms`;
-    };
-
     const formatMaybe = (value) => {
       if (value === null || value === undefined || value === '') return '—';
       if (typeof value === 'boolean') return value ? 'true' : 'false';
+      if (typeof value === 'number' && Number.isFinite(value)) return String(value);
       return String(value);
+    };
+
+    const formatLatency = (value) => {
+      if (typeof value !== 'number' || Number.isNaN(value)) return '—';
+      return `${value >= 100 ? value.toFixed(0) : value.toFixed(1)} ms`;
+    };
+
+    const getProfileMeta = (mode) => {
+      const profiles = state.bootstrap?.queryProfiles || {};
+      if (mode === AUTO_MODE) return profiles.auto_mode || null;
+      return profiles.profiles?.[mode] || null;
+    };
+
+    const getModeDescription = (mode) => getProfileMeta(mode)?.description || '';
+
+    const updateManualState = () => {
+      elements.manualEnabled.checked = state.manualOverridesEnabled;
+      elements.manualFields.forEach((field) => {
+        field.disabled = !state.manualOverridesEnabled;
+      });
+      elements.manualHelper.textContent = state.manualOverridesEnabled
+        ? copy.manualHelper
+        : copy.manualDescription;
     };
 
     const stageSummary = (stage) => {
@@ -271,89 +509,157 @@ const copy = {
           return metadata.diagnostics?.deterministic_reason || metadata.model || `Answer chars: ${metadata.answer_chars ?? '—'}`;
         case 'citation_check':
           return `score ${formatMaybe(output.score)} / passed ${formatMaybe(output.passed)}`;
+        case 'reflect_retry':
+          return `retry decision: ${metadata.retry_decision || output.retry_decision || 'n/a'}`;
         case 'engine.ask':
           return `${output.source_count ?? 0} source(s), ${output.answer_chars ?? 0} chars`;
         default:
-          return JSON.stringify(output).slice(0, 120);
+          return JSON.stringify(output || metadata).slice(0, 140);
       }
     };
 
     const routeSummary = (response) => {
+      const policy = response.runtime_policy_router || {};
+      const resolved = policy.resolved || {};
       const chips = [];
-      chips.push(`policy:${response.runtime_policy_router?.source?.includes('llm') ? 'llm' : 'auto'}`);
-      chips.push(response.query_profile?.mode || state.selectedMode);
-      chips.push(response.filters?.retrieval_mode || 'hybrid');
-      chips.push(response.workflow?.enabled ? 'workflow:on' : 'workflow:off');
-      chips.push(response.tool_routing?.enabled ? `route:${response.tool_routing?.route || 'tool'}` : 'route:rag');
-      chips.push(response.retry_loop?.enabled ? `retry:${response.retry_loop?.retry_attempt_count ?? 0}` : 'retry:off');
+      chips.push(response.query_profile?.mode || resolved.query_mode || state.selectedMode);
+      chips.push(response.filters?.retrieval_mode || resolved.retrieval_mode || 'hybrid');
+      chips.push((response.workflow?.enabled || resolved.use_workflow) ? 'workflow:on' : 'workflow:off');
+      chips.push((response.tool_routing?.enabled || resolved.use_tool_routing) ? `route:${response.tool_routing?.route || resolved.tool_route || 'tool'}` : 'route:rag');
+      chips.push((response.retry_loop?.enabled || resolved.use_retry_loop) ? `retry:${response.retry_loop?.retry_attempt_count ?? 0}` : 'retry:off');
       return chips.map((chip) => `<span class="rag-path-chip">${escapeHtml(chip)}</span>`).join('');
     };
 
     const renderModes = () => {
       const queryProfiles = state.bootstrap?.queryProfiles;
-      const supportedModes = queryProfiles?.supported_modes || ['auto', 'fast', 'safe', 'creative', 'deep_eval', 'agentic'];
+      const supportedModes = queryProfiles?.supported_modes || FALLBACK_MODES;
+
       elements.modes.innerHTML = supportedModes
         .map((mode) => {
+          const meta = getProfileMeta(mode) || {};
           const active = mode === state.selectedMode;
-          return `<button type="button" class="rag-mode-btn ${active ? 'is-active' : ''}" data-rag-mode="${escapeHtml(mode)}">${escapeHtml(mode)}</button>`;
+          const cost = meta.cost_tier || (mode === AUTO_MODE ? 'adaptive' : 'n/a');
+          const title = mode === AUTO_MODE ? copy.modeAutoTitle : mode;
+          return `
+            <button type="button" class="rag-mode-card ${active ? 'is-active' : ''}" data-rag-mode="${escapeHtml(mode)}">
+              <span class="rag-mode-top">
+                <strong>${escapeHtml(title)}</strong>
+                <span>${escapeHtml(cost)}</span>
+              </span>
+              <p>${escapeHtml(getModeDescription(mode) || '')}</p>
+            </button>
+          `;
         })
         .join('');
 
-      const selectedProfile =
-        state.selectedMode === 'auto'
-          ? queryProfiles?.auto_mode
-          : queryProfiles?.profiles?.[state.selectedMode];
-      elements.modeNote.textContent = selectedProfile?.description || '';
+      elements.modeNote.textContent = getModeDescription(state.selectedMode) || '';
+      elements.modeHelper.textContent = state.selectedMode === AUTO_MODE ? copy.modeHintAuto : copy.modeHintManual;
+      elements.modeState.textContent = state.selectedMode === AUTO_MODE ? copy.modeAutoTitle : state.selectedMode;
 
       elements.modes.querySelectorAll('[data-rag-mode]').forEach((button) => {
         button.addEventListener('click', () => {
-          state.selectedMode = button.getAttribute('data-rag-mode') || 'auto';
+          state.selectedMode = button.getAttribute('data-rag-mode') || AUTO_MODE;
           renderModes();
-          syncManualControlState();
         });
       });
     };
 
+    const renderMetrics = (payload = null) => {
+      const healthy = state.bootstrap?.health?.status === 'ok';
+      const runtimePolicyLive = Boolean(state.bootstrap?.capabilities?.runtimePolicyEndpoint);
+      const observedLatency = payload?.runtime_budget?.postrun?.observed?.latency_ms;
+      const sourcesCount = (payload?.sources || []).length;
+      const stagesCount = (payload?.observability?.stage_names || []).length;
+      const resolvedMode = payload?.query_profile?.mode || state.selectedMode;
+
+      elements.metrics.innerHTML = `
+        <article class="rag-metric-card">
+          <span>${copy.metricsHealth}</span>
+          <strong>${healthy ? 'ok' : 'check'}</strong>
+        </article>
+        <article class="rag-metric-card">
+          <span>${copy.metricsPolicy}</span>
+          <strong>${runtimePolicyLive ? copy.policyLive : copy.policyFallback}</strong>
+        </article>
+        <article class="rag-metric-card">
+          <span>${payload ? copy.metricsResolvedMode : copy.metricsModes}</span>
+          <strong>${escapeHtml(payload ? resolvedMode : String((state.bootstrap?.queryProfiles?.supported_modes || FALLBACK_MODES).length))}</strong>
+        </article>
+        <article class="rag-metric-card">
+          <span>${payload ? copy.metricsLatency : copy.metricsTenant}</span>
+          <strong>${escapeHtml(payload ? formatLatency(observedLatency) : state.bootstrap?.proxy?.tenantId || '—')}</strong>
+        </article>
+        ${payload ? `
+          <article class="rag-metric-card">
+            <span>${copy.metricsSources}</span>
+            <strong>${escapeHtml(String(sourcesCount))}</strong>
+          </article>
+          <article class="rag-metric-card">
+            <span>${copy.metricsStages}</span>
+            <strong>${escapeHtml(String(stagesCount))}</strong>
+          </article>
+        ` : ''}
+      `;
+    };
+
     const renderBootstrapState = () => {
       const healthy = state.bootstrap?.health?.status === 'ok';
+      const runtimePolicyLive = Boolean(state.bootstrap?.capabilities?.runtimePolicyEndpoint);
+
       elements.status.innerHTML = `
         <span class="rag-status-dot ${healthy ? 'is-healthy' : 'is-bad'}"></span>
-        <span>${healthy ? copy.statusReady : copy.healthBad}</span>
-        <span class="rag-status-meta">${escapeHtml(state.bootstrap?.proxy?.apiBaseUrl || '')}</span>
+        <span>${healthy ? copy.statusReady : 'API needs attention'}</span>
       `;
-
+      elements.statusNote.textContent = runtimePolicyLive ? state.bootstrap?.proxy?.apiBaseUrl || '' : copy.statusFallback;
       renderModes();
-      elements.metrics.innerHTML = `
-        <div class="rag-metric-card"><span class="rag-metric-label">Health</span><strong>${healthy ? copy.healthOk : copy.healthBad}</strong></div>
-        <div class="rag-metric-card"><span class="rag-metric-label">${copy.policyLabel}</span><strong>${escapeHtml(state.bootstrap?.runtimePolicyStatus?.implementation || 'adaptive')}</strong></div>
-        <div class="rag-metric-card"><span class="rag-metric-label">Tenant</span><strong>${escapeHtml(state.bootstrap?.proxy?.tenantId || '—')}</strong></div>
+      renderMetrics();
+    };
+
+    const renderPolicy = (response) => {
+      const policy = response.runtime_policy_router || {};
+      const resolved = policy.resolved || {};
+      const explanation = escapeHtml(policy.user_explanation || policy.reasoning || copy.policyEmpty);
+      const badges = [
+        resolved.query_mode || response.query_profile?.mode || 'safe',
+        resolved.use_workflow ? 'workflow:on' : 'workflow:off',
+        resolved.use_tool_routing ? `route:${resolved.tool_route || 'tool'}` : 'route:rag',
+        resolved.use_retry_loop ? 'retry:on' : 'retry:off',
+      ];
+
+      elements.policy.innerHTML = `
+        <article class="rag-policy-card">
+          <p class="rag-policy-lead">${explanation}</p>
+          <div class="rag-route">${badges.map((badge) => `<span class="rag-path-chip">${escapeHtml(badge)}</span>`).join('')}</div>
+          <div class="rag-policy-meta">
+            <div><span>Implementation</span><strong>${escapeHtml(policy.implementation || policy.fallback || '—')}</strong></div>
+            <div><span>Confidence</span><strong>${escapeHtml(formatMaybe(policy.confidence))}</strong></div>
+            <div><span>Tool route</span><strong>${escapeHtml(resolved.tool_route || response.tool_routing?.route || 'rag_search')}</strong></div>
+          </div>
+        </article>
       `;
     };
 
     const renderPlan = (response) => {
       const plan = response.plan || {};
       elements.plan.innerHTML = `
-        <div class="rag-mini-card"><span>Original</span><strong>${escapeHtml(plan.original_question || '—')}</strong></div>
-        <div class="rag-mini-card"><span>Rewritten</span><strong>${escapeHtml(plan.rewritten_question || '—')}</strong></div>
-        <div class="rag-mini-card"><span>Route reason</span><strong>${escapeHtml(plan.route_reason || '—')}</strong></div>
-        <div class="rag-mini-card"><span>Rewrite reason</span><strong>${escapeHtml(plan.rewrite_reason || '—')}</strong></div>
+        <article class="rag-mini-card"><span>Original</span><strong>${escapeHtml(plan.original_question || '—')}</strong></article>
+        <article class="rag-mini-card"><span>Rewritten</span><strong>${escapeHtml(plan.rewritten_question || '—')}</strong></article>
+        <article class="rag-mini-card"><span>Route reason</span><strong>${escapeHtml(plan.route_reason || '—')}</strong></article>
+        <article class="rag-mini-card"><span>Rewrite reason</span><strong>${escapeHtml(plan.rewrite_reason || '—')}</strong></article>
       `;
     };
 
     const renderRuntime = (response) => {
       const budget = response.runtime_budget || {};
-      const toolRouting = response.tool_routing || {};
       const retry = response.retry_loop || {};
-      const workflow = response.workflow || {};
-      const policy = response.runtime_policy_router || {};
+      const flags = response.query_profile?.resolved_flags || {};
       elements.runtime.innerHTML = `
-        <div class="rag-mini-card"><span>${copy.policyLabel}</span><strong>${escapeHtml(policy.user_explanation || policy.reasoning || '—')}</strong></div>
-        <div class="rag-mini-card"><span>Workflow</span><strong>${escapeHtml(workflow.enabled ? 'enabled' : 'disabled')}</strong></div>
-        <div class="rag-mini-card"><span>Tool route</span><strong>${escapeHtml(toolRouting.route || 'rag_search')}</strong></div>
-        <div class="rag-mini-card"><span>Retry attempts</span><strong>${escapeHtml(retry.retry_attempt_count ?? 0)}</strong></div>
-        <div class="rag-mini-card"><span>Latency budget</span><strong>${escapeHtml(String(budget.limits?.max_latency_ms ?? '—'))} ms</strong></div>
-        <div class="rag-mini-card"><span>LLM synthesis</span><strong>${escapeHtml(budget.permissions?.allow_llm_synthesis ? 'allowed' : 'guarded')}</strong></div>
-        <div class="rag-mini-card"><span>External tools</span><strong>${escapeHtml(budget.permissions?.allow_external_tools ? 'allowed' : 'off')}</strong></div>
+        <article class="rag-mini-card"><span>Workflow</span><strong>${escapeHtml(response.workflow?.enabled ? 'enabled' : 'disabled')}</strong></article>
+        <article class="rag-mini-card"><span>Tool route</span><strong>${escapeHtml(response.tool_routing?.route || 'rag_search')}</strong></article>
+        <article class="rag-mini-card"><span>Retry attempts</span><strong>${escapeHtml(retry.retry_attempt_count ?? 0)}</strong></article>
+        <article class="rag-mini-card"><span>Latency budget</span><strong>${escapeHtml(String(budget.limits?.max_latency_ms ?? '—'))} ms</strong></article>
+        <article class="rag-mini-card"><span>Retrieval mode</span><strong>${escapeHtml(flags.retrieval_mode || response.filters?.retrieval_mode || 'hybrid')}</strong></article>
+        <article class="rag-mini-card"><span>Min score</span><strong>${escapeHtml(formatMaybe(response.filters?.min_score ?? flags.min_score ?? '—'))}</strong></article>
       `;
     };
 
@@ -363,6 +669,7 @@ const copy = {
         elements.timeline.textContent = copy.timelineEmpty;
         return;
       }
+
       elements.timeline.innerHTML = stages
         .map((stage) => `
           <article class="rag-stage-card">
@@ -382,6 +689,7 @@ const copy = {
         elements.sources.textContent = copy.sourceEmpty;
         return;
       }
+
       elements.sources.innerHTML = sources
         .slice(0, 6)
         .map((source, index) => `
@@ -401,74 +709,98 @@ const copy = {
       elements.answer.textContent = response.answer || '';
       elements.route.innerHTML = routeSummary(response);
       elements.raw.textContent = JSON.stringify(response, null, 2);
+      renderPolicy(response);
       renderPlan(response);
       renderRuntime(response);
       renderTimeline(response);
       renderSources(response);
-
-      const observedLatency = response.runtime_budget?.postrun?.observed?.latency_ms;
-      elements.metrics.innerHTML = `
-        <div class="rag-metric-card"><span class="rag-metric-label">Mode</span><strong>${escapeHtml(response.query_profile?.mode || state.selectedMode)}</strong></div>
-        <div class="rag-metric-card"><span class="rag-metric-label">Latency</span><strong>${escapeHtml(formatLatency(observedLatency))}</strong></div>
-        <div class="rag-metric-card"><span class="rag-metric-label">Sources</span><strong>${escapeHtml(String((response.sources || []).length))}</strong></div>
-        <div class="rag-metric-card"><span class="rag-metric-label">Trace stages</span><strong>${escapeHtml(String((response.observability?.stage_names || []).length || 0))}</strong></div>
-      `;
+      renderMetrics(response);
     };
 
     const renderError = async (response) => {
       const payload = await response.json().catch(() => ({}));
-      elements.answer.textContent = `${copy.failPrefix}: ${payload?.detail || payload?.error || response.statusText}`;
+      elements.answer.textContent = `${copy.failedPrefix}: ${payload?.detail?.message || payload?.detail || payload?.error || response.statusText}`;
       elements.route.textContent = copy.routeEmpty;
+      elements.policy.textContent = copy.policyEmpty;
       elements.plan.innerHTML = '';
       elements.runtime.innerHTML = '';
       elements.timeline.textContent = copy.timelineEmpty;
       elements.sources.textContent = copy.sourceEmpty;
       elements.raw.textContent = JSON.stringify(payload, null, 2);
+      renderMetrics();
+    };
+
+    const coerceNumber = (value, { min = -Infinity, max = Infinity, integer = false } = {}) => {
+      if (value === '' || value === null || value === undefined) return null;
+      const numeric = Number(value);
+      if (!Number.isFinite(numeric)) return null;
+      const candidate = integer ? Math.trunc(numeric) : numeric;
+      if (candidate < min || candidate > max) return null;
+      return candidate;
     };
 
     const getPayload = () => {
       const payload = {
         question: elements.question.value.trim(),
         query_mode: state.selectedMode,
-        use_runtime_policy_router: state.selectedMode === 'auto',
+        use_runtime_policy_router: state.selectedMode === AUTO_MODE,
       };
-      if (state.selectedMode !== 'auto') {
-        Object.assign(
-          payload,
-          Object.fromEntries(elements.flags.map((input) => [input.getAttribute('data-rag-flag'), input.checked]))
-        );
+
+      if (state.manualOverridesEnabled) {
+        for (const field of elements.manualFields) {
+          const key = field.getAttribute('data-rag-field');
+          if (!key) continue;
+
+          if (field.type === 'checkbox') {
+            payload[key] = Boolean(field.checked);
+          } else if (key === 'min_score') {
+            const value = coerceNumber(field.value, { min: 0, max: 1 });
+            if (value !== null) payload[key] = value;
+          } else if (key === 'max_retries') {
+            const value = coerceNumber(field.value, { min: 0, max: 5, integer: true });
+            if (value !== null) payload[key] = value;
+          } else if (field.value) {
+            payload[key] = field.value;
+          }
+        }
       }
+
       return payload;
     };
 
     const setLoading = (loading) => {
       elements.submit.disabled = loading;
       elements.reset.disabled = loading;
+      elements.manualEnabled.disabled = loading;
+      elements.manualFields.forEach((field) => {
+        field.disabled = loading || !state.manualOverridesEnabled;
+      });
       elements.question.disabled = loading;
       elements.submit.textContent = loading ? copy.askingButton : copy.askButton;
-      if (loading) {
-        elements.flags.forEach((flag) => (flag.disabled = true));
-      } else {
-        syncManualControlState();
-      }
-    };
-
-    const syncManualControlState = () => {
-      const manual = state.selectedMode !== 'auto';
-      elements.flags.forEach((flag) => {
-        flag.disabled = !manual;
-      });
     };
 
     const resetDefaults = () => {
-      state.selectedMode = state.bootstrap?.defaults?.query_mode || 'auto';
+      const defaults = state.bootstrap?.defaults || {};
+      state.selectedMode = defaults.query_mode || AUTO_MODE;
+      state.manualOverridesEnabled = false;
       elements.question.value = defaultQuestion;
-      elements.flags.forEach((flag) => {
-        const key = flag.getAttribute('data-rag-flag');
-        flag.checked = Boolean(state.bootstrap?.defaults?.[key] ?? (key === 'use_retry_loop'));
-      });
+
+      for (const field of elements.manualFields) {
+        const key = field.getAttribute('data-rag-field');
+        if (!key) continue;
+        const value = defaults[key];
+        if (field.type === 'checkbox') {
+          field.checked = Boolean(value);
+        } else if (value === null || value === undefined) {
+          field.value = '';
+        } else {
+          field.value = String(value);
+        }
+      }
+
+      updateManualState();
       renderModes();
-      syncManualControlState();
+      renderMetrics();
     };
 
     root.querySelectorAll('[data-rag-example]').forEach((button) => {
@@ -477,18 +809,24 @@ const copy = {
       });
     });
 
+    elements.manualEnabled.addEventListener('change', () => {
+      state.manualOverridesEnabled = elements.manualEnabled.checked;
+      updateManualState();
+    });
+
     elements.reset.addEventListener('click', resetDefaults);
 
     elements.submit.addEventListener('click', async () => {
       const payload = getPayload();
       if (!payload.question) {
-        elements.answer.textContent = lang === 'zh' ? '請先輸入問題。' : 'Please enter a question first.';
+        elements.answer.textContent = copy.needsQuestion;
         return;
       }
 
       setLoading(true);
-      elements.answer.textContent = lang === 'zh' ? '正在請求 live RAG…' : 'Calling the live RAG…';
-      elements.route.innerHTML = '';
+      elements.answer.textContent = copy.runningAnswer;
+      elements.route.textContent = '';
+      elements.policy.textContent = copy.policyEmpty;
       elements.plan.innerHTML = '';
       elements.runtime.innerHTML = '';
       elements.timeline.textContent = copy.timelineEmpty;
@@ -500,13 +838,14 @@ const copy = {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload),
         });
+
         if (!response.ok) {
           await renderError(response);
         } else {
           renderResponse(await response.json());
         }
       } catch (error) {
-        elements.answer.textContent = `${copy.failPrefix}: ${String(error)}`;
+        elements.answer.textContent = `${copy.failedPrefix}: ${String(error)}`;
       } finally {
         setLoading(false);
       }
@@ -526,6 +865,7 @@ const copy = {
         <span class="rag-status-dot is-bad"></span>
         <span>${escapeHtml(String(error))}</span>
       `;
+      elements.statusNote.textContent = '';
     }
   }
 </script>
@@ -536,220 +876,477 @@ const copy = {
   }
 
   .rag-lab-shell {
-    border: 1px solid color-mix(in srgb, var(--color-accent) 16%, var(--color-border));
+    position: relative;
+    overflow: hidden;
+    border-radius: 36px;
+    padding: clamp(22px, 3vw, 34px);
+    border: 1px solid color-mix(in srgb, var(--color-accent) 18%, var(--color-border));
     background:
-      radial-gradient(circle at top right, color-mix(in srgb, var(--color-accent) 12%, transparent), transparent 38%),
-      linear-gradient(180deg, color-mix(in srgb, var(--color-surface) 96%, transparent), color-mix(in srgb, var(--color-bg) 92%, transparent));
-    border-radius: 28px;
-    padding: clamp(20px, 3vw, 32px);
-    box-shadow: 0 28px 90px rgba(0, 0, 0, 0.18);
+      radial-gradient(circle at 12% 10%, rgba(201, 121, 45, 0.16), transparent 30%),
+      radial-gradient(circle at 84% 18%, rgba(17, 118, 122, 0.12), transparent 34%),
+      linear-gradient(180deg, rgba(255, 251, 244, 0.98), rgba(247, 241, 232, 0.92));
+    box-shadow:
+      0 22px 80px rgba(45, 28, 13, 0.12),
+      inset 0 1px 0 rgba(255, 255, 255, 0.65);
   }
 
-  .rag-lab-hero {
-    margin-bottom: var(--space-4);
+  .rag-orb {
+    position: absolute;
+    border-radius: 999px;
+    pointer-events: none;
+    filter: blur(18px);
+    opacity: 0.5;
   }
 
-  .rag-lab-eyebrow {
-    color: var(--color-accent);
+  .rag-orb-a {
+    width: 220px;
+    height: 220px;
+    top: -80px;
+    right: -70px;
+    background: radial-gradient(circle, rgba(200, 116, 32, 0.28), transparent 66%);
+  }
+
+  .rag-orb-b {
+    width: 180px;
+    height: 180px;
+    bottom: -60px;
+    left: -40px;
+    background: radial-gradient(circle, rgba(36, 115, 118, 0.16), transparent 66%);
+  }
+
+  .rag-hero,
+  .rag-grid,
+  .rag-main,
+  .rag-sidebar {
+    position: relative;
+    z-index: 1;
+  }
+
+  .rag-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1.35fr) minmax(280px, 0.65fr);
+    gap: 20px;
+    align-items: end;
+    margin-bottom: 24px;
+  }
+
+  .rag-eyebrow,
+  .rag-kicker {
+    margin: 0 0 8px;
+    color: color-mix(in srgb, var(--color-accent) 74%, #7a4b1d);
     font-family: var(--font-mono);
-    font-size: 0.78rem;
+    font-size: 0.74rem;
     letter-spacing: 0.14em;
     text-transform: uppercase;
-    margin-bottom: 10px;
   }
 
-  .rag-lab-title {
-    font-size: clamp(1.8rem, 3.4vw, 3rem);
-    margin-bottom: 12px;
-    max-width: 14ch;
+  .rag-title {
+    margin: 0;
+    font-size: clamp(2.1rem, 4vw, 4rem);
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+    max-width: 12ch;
+    color: #20150e;
   }
 
-  .rag-lab-description {
-    color: var(--color-muted);
-    max-width: 72ch;
+  .rag-description {
+    margin-top: 14px;
+    max-width: 66ch;
+    color: rgba(32, 21, 14, 0.74);
+    font-size: 1rem;
+    line-height: 1.7;
   }
 
-  .rag-lab-status {
-    margin-top: 18px;
-    display: inline-flex;
+  .rag-status-card,
+  .rag-panel,
+  .rag-raw {
+    border: 1px solid rgba(96, 68, 45, 0.12);
+    background: rgba(255, 252, 248, 0.72);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 14px 36px rgba(78, 50, 28, 0.08);
+  }
+
+  .rag-status-card {
+    border-radius: 24px;
+    padding: 18px 20px;
+  }
+
+  .rag-status-row {
+    display: flex;
+    gap: 12px;
     align-items: center;
-    gap: 10px;
-    padding: 10px 14px;
-    border: 1px solid var(--color-border);
-    border-radius: 999px;
-    background: color-mix(in srgb, var(--color-surface) 88%, transparent);
-    font-family: var(--font-mono);
-    font-size: 0.78rem;
+    font-weight: 600;
+    color: #20150e;
   }
 
-  .rag-status-meta {
-    color: var(--color-muted);
+  .rag-status-note {
+    margin-top: 10px;
+    color: rgba(32, 21, 14, 0.62);
+    font-size: 0.88rem;
+    line-height: 1.55;
   }
 
   .rag-status-dot {
     width: 10px;
     height: 10px;
     border-radius: 999px;
-    background: var(--color-muted);
-    box-shadow: 0 0 0 6px color-mix(in srgb, var(--color-muted) 18%, transparent);
+    background: #b8a592;
+    box-shadow: 0 0 0 8px rgba(184, 165, 146, 0.18);
   }
 
   .rag-status-dot.is-healthy {
-    background: #34d399;
-    box-shadow: 0 0 0 6px rgba(52, 211, 153, 0.18);
+    background: #1f8d72;
+    box-shadow: 0 0 0 8px rgba(31, 141, 114, 0.16);
   }
 
   .rag-status-dot.is-bad {
-    background: #fb7185;
-    box-shadow: 0 0 0 6px rgba(251, 113, 133, 0.16);
+    background: #cb5b58;
+    box-shadow: 0 0 0 8px rgba(203, 91, 88, 0.16);
   }
 
-  .rag-lab-grid {
+  .rag-grid {
     display: grid;
-    grid-template-columns: minmax(280px, 360px) minmax(0, 1fr);
+    grid-template-columns: minmax(300px, 410px) minmax(0, 1fr);
     gap: 24px;
+    align-items: start;
   }
 
-  .rag-lab-panel {
-    border: 1px solid var(--color-border);
-    border-radius: 22px;
-    background: color-mix(in srgb, var(--color-surface) 86%, transparent);
-    padding: 20px;
-    min-width: 0;
-  }
-
-  .rag-lab-controls {
+  .rag-sidebar {
+    display: grid;
+    gap: 18px;
     position: sticky;
-    top: 96px;
+    top: 92px;
     align-self: start;
+  }
+
+  .rag-main {
+    display: grid;
+    gap: 18px;
+  }
+
+  .rag-panel {
+    border-radius: 28px;
+    padding: 20px;
+  }
+
+  .rag-panel-soft {
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.78), rgba(252, 246, 238, 0.72)),
+      rgba(255, 252, 248, 0.72);
+  }
+
+  .rag-panel-featured {
+    background:
+      linear-gradient(135deg, rgba(33, 22, 14, 0.02), rgba(201, 121, 45, 0.08)),
+      rgba(255, 252, 248, 0.8);
   }
 
   .rag-label {
     display: block;
     margin-bottom: 10px;
+    color: #20150e;
     font-family: var(--font-display);
-    font-size: 0.92rem;
-    font-weight: 600;
+    font-size: 0.96rem;
+    font-weight: 700;
   }
 
-  .rag-subtle {
-    margin-bottom: 10px;
-    color: var(--color-muted);
-    font-family: var(--font-mono);
-    font-size: 0.78rem;
-  }
-
-  .rag-question {
+  .rag-question,
+  .rag-select,
+  .rag-number {
     width: 100%;
-    border: 1px solid var(--color-border);
-    border-radius: 16px;
-    background: color-mix(in srgb, var(--color-bg) 72%, transparent);
-    color: var(--color-text);
-    padding: 14px 16px;
-    resize: vertical;
-    min-height: 132px;
+    border: 1px solid rgba(95, 67, 44, 0.16);
+    background: rgba(255, 255, 255, 0.72);
+    color: #20150e;
     font: inherit;
   }
 
-  .rag-examples,
-  .rag-control-group {
-    margin-top: 20px;
+  .rag-question {
+    min-height: 150px;
+    resize: vertical;
+    border-radius: 22px;
+    padding: 16px 18px;
+    line-height: 1.65;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.75);
   }
 
-  .rag-advanced-controls summary {
-    cursor: pointer;
-    list-style: none;
+  .rag-question:focus,
+  .rag-select:focus,
+  .rag-number:focus {
+    outline: none;
+    border-color: rgba(201, 121, 45, 0.45);
+    box-shadow: 0 0 0 4px rgba(201, 121, 45, 0.12);
   }
 
-  .rag-advanced-controls summary::-webkit-details-marker {
-    display: none;
+  .rag-example-block {
+    margin-top: 18px;
   }
 
-  .rag-chip-row,
-  .rag-mode-grid {
+  .rag-chip-row {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
   }
 
-  .rag-chip,
-  .rag-mode-btn {
-    border: 1px solid var(--color-border);
+  .rag-chip {
+    border: 1px solid rgba(95, 67, 44, 0.14);
+    background: rgba(255, 255, 255, 0.72);
+    color: rgba(32, 21, 14, 0.86);
+    padding: 10px 14px;
     border-radius: 999px;
-    background: transparent;
-    color: var(--color-text);
-    padding: 9px 12px;
     cursor: pointer;
-    transition: transform var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast), background var(--transition-fast);
+    transition: transform var(--transition-fast), border-color var(--transition-fast), background var(--transition-fast);
     font: inherit;
-    font-size: 0.82rem;
+    font-size: 0.86rem;
   }
 
-  .rag-chip:hover,
-  .rag-mode-btn:hover,
-  .rag-mode-btn.is-active {
-    border-color: color-mix(in srgb, var(--color-accent) 58%, var(--color-border));
-    background: color-mix(in srgb, var(--color-accent) 12%, transparent);
-    color: var(--color-accent);
+  .rag-chip:hover {
     transform: translateY(-1px);
+    border-color: rgba(201, 121, 45, 0.36);
+    background: rgba(255, 250, 245, 0.94);
   }
 
+  .rag-section-headline {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 14px;
+    margin-bottom: 14px;
+  }
+
+  .rag-subtitle {
+    margin: 0;
+    color: #20150e;
+    font-size: 1.12rem;
+  }
+
+  .rag-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    padding: 8px 12px;
+    border: 1px solid rgba(95, 67, 44, 0.12);
+    background: rgba(255, 255, 255, 0.72);
+    color: rgba(32, 21, 14, 0.76);
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .rag-helper,
+  .rag-callout,
+  .rag-mode-note,
+  .rag-answer,
+  .rag-policy-lead,
+  .rag-source-card p,
+  .rag-stage-card p {
+    color: rgba(32, 21, 14, 0.7);
+    line-height: 1.65;
+  }
+
+  .rag-helper,
+  .rag-callout,
   .rag-mode-note {
-    margin-top: 10px;
-    color: var(--color-muted);
-    font-size: 0.88rem;
-    max-width: 44ch;
+    margin: 0 0 14px;
+    font-size: 0.92rem;
   }
 
-  .rag-toggle-list {
+  .rag-callout {
+    padding: 12px 14px;
+    border-radius: 18px;
+    background: rgba(255, 247, 236, 0.82);
+    border: 1px solid rgba(201, 121, 45, 0.14);
+  }
+
+  .rag-mode-grid {
     display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .rag-mode-card {
+    border: 1px solid rgba(95, 67, 44, 0.12);
+    border-radius: 22px;
+    background: rgba(255, 255, 255, 0.72);
+    padding: 14px;
+    text-align: left;
+    cursor: pointer;
+    transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast);
+  }
+
+  .rag-mode-card:hover,
+  .rag-mode-card.is-active {
+    transform: translateY(-1px);
+    border-color: rgba(201, 121, 45, 0.32);
+    background: rgba(255, 252, 247, 0.96);
+    box-shadow: 0 10px 30px rgba(201, 121, 45, 0.1);
+  }
+
+  .rag-mode-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 8px;
+    color: #20150e;
+  }
+
+  .rag-mode-top strong {
+    font-size: 0.98rem;
+  }
+
+  .rag-mode-top span {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: rgba(32, 21, 14, 0.56);
+    text-transform: uppercase;
+  }
+
+  .rag-mode-card p {
+    margin: 0;
+    font-size: 0.84rem;
+    line-height: 1.55;
+    color: rgba(32, 21, 14, 0.66);
+  }
+
+  .rag-override-list {
+    display: grid;
+    gap: 12px;
+  }
+
+  .rag-override-card,
+  .rag-metric-card,
+  .rag-mini-card,
+  .rag-stage-card,
+  .rag-source-card,
+  .rag-policy-card {
+    border: 1px solid rgba(95, 67, 44, 0.12);
+    background: rgba(255, 255, 255, 0.74);
+    border-radius: 22px;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+  }
+
+  .rag-override-card {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 14px;
+    align-items: center;
+    padding: 14px;
+  }
+
+  .rag-override-card h4 {
+    margin: 0 0 6px;
+    color: #20150e;
+    font-size: 0.96rem;
+  }
+
+  .rag-override-card p {
+    margin: 0;
+    color: rgba(32, 21, 14, 0.62);
+    font-size: 0.84rem;
+    line-height: 1.55;
+  }
+
+  .rag-select,
+  .rag-number {
+    max-width: 148px;
+    border-radius: 14px;
+    padding: 10px 12px;
+  }
+
+  .rag-switch {
+    display: inline-flex;
+    align-items: center;
     gap: 10px;
   }
 
-  .rag-toggle {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 12px 14px;
-    border: 1px solid var(--color-border);
-    border-radius: 14px;
-    background: color-mix(in srgb, var(--color-bg) 60%, transparent);
+  .rag-switch input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
   }
 
-  .rag-toggle input {
-    accent-color: var(--color-accent);
+  .rag-switch-track {
+    position: relative;
+    width: 48px;
+    height: 28px;
+    border-radius: 999px;
+    background: rgba(125, 108, 93, 0.22);
+    transition: background var(--transition-fast);
+  }
+
+  .rag-switch-track::after {
+    content: '';
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    width: 20px;
+    height: 20px;
+    border-radius: 999px;
+    background: #fffaf5;
+    box-shadow: 0 4px 14px rgba(45, 28, 13, 0.18);
+    transition: transform var(--transition-fast);
+  }
+
+  .rag-switch input:checked + .rag-switch-track {
+    background: linear-gradient(135deg, #d1842b, #b56923);
+  }
+
+  .rag-switch input:checked + .rag-switch-track::after {
+    transform: translateX(20px);
+  }
+
+  .rag-switch-text {
+    color: #20150e;
+    font-size: 0.86rem;
+    font-weight: 600;
+  }
+
+  .rag-switch-master {
+    flex-shrink: 0;
   }
 
   .rag-actions {
     display: flex;
     gap: 12px;
-    margin-top: 24px;
+    margin-top: 18px;
   }
 
   .rag-primary,
   .rag-secondary {
-    border: none;
     border-radius: 999px;
-    padding: 12px 16px;
+    padding: 13px 18px;
     font-family: var(--font-display);
-    font-size: 0.9rem;
+    font-size: 0.92rem;
     cursor: pointer;
+    transition: transform var(--transition-fast), opacity var(--transition-fast), background var(--transition-fast);
   }
 
   .rag-primary {
-    background: var(--color-accent);
-    color: var(--color-bg);
     flex: 1 1 auto;
+    border: none;
+    color: #fff8ef;
+    background: linear-gradient(135deg, #d1842b, #b56923);
+    box-shadow: 0 16px 30px rgba(201, 121, 45, 0.24);
   }
 
   .rag-secondary {
-    background: transparent;
-    color: var(--color-text);
-    border: 1px solid var(--color-border);
+    border: 1px solid rgba(95, 67, 44, 0.14);
+    background: rgba(255, 255, 255, 0.72);
+    color: #20150e;
+  }
+
+  .rag-primary:hover,
+  .rag-secondary:hover {
+    transform: translateY(-1px);
   }
 
   .rag-primary:disabled,
-  .rag-secondary:disabled {
+  .rag-secondary:disabled,
+  .rag-question:disabled,
+  .rag-select:disabled,
+  .rag-number:disabled {
     opacity: 0.58;
     cursor: not-allowed;
   }
@@ -758,49 +1355,46 @@ const copy = {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 12px;
-    margin-bottom: 18px;
   }
 
   .rag-metric-card,
   .rag-mini-card,
   .rag-stage-card,
-  .rag-source-card {
-    border: 1px solid var(--color-border);
-    border-radius: 16px;
-    background: color-mix(in srgb, var(--color-bg) 52%, transparent);
-    padding: 14px;
+  .rag-source-card,
+  .rag-policy-card {
+    padding: 15px;
   }
 
-  .rag-metric-label,
-  .rag-mini-card span {
+  .rag-metric-card span,
+  .rag-mini-card span,
+  .rag-policy-meta span {
     display: block;
-    color: var(--color-muted);
+    color: rgba(32, 21, 14, 0.54);
     font-family: var(--font-mono);
-    font-size: 0.74rem;
+    font-size: 0.72rem;
     margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
   }
 
-  .rag-section + .rag-section,
-  .rag-detail-grid,
-  .rag-raw {
-    margin-top: 18px;
-  }
-
-  .rag-section-head {
-    margin-bottom: 10px;
+  .rag-metric-card strong,
+  .rag-mini-card strong,
+  .rag-policy-meta strong {
+    color: #20150e;
+    font-size: 0.95rem;
+    line-height: 1.45;
   }
 
   .rag-answer {
     white-space: pre-wrap;
-    line-height: 1.75;
-    color: var(--color-text);
+    color: #20150e;
+    font-size: 1.01rem;
   }
 
   .rag-route {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
-    color: var(--color-muted);
   }
 
   .rag-path-chip {
@@ -808,80 +1402,103 @@ const copy = {
     align-items: center;
     border-radius: 999px;
     padding: 8px 12px;
-    border: 1px solid color-mix(in srgb, var(--color-accent) 28%, var(--color-border));
-    background: color-mix(in srgb, var(--color-accent) 10%, transparent);
-    color: var(--color-accent);
+    border: 1px solid rgba(201, 121, 45, 0.18);
+    background: rgba(255, 246, 235, 0.94);
+    color: #9d5d1e;
     font-family: var(--font-mono);
-    font-size: 0.78rem;
+    font-size: 0.76rem;
   }
 
-  .rag-detail-grid {
+  .rag-dual-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 18px;
   }
 
-  .rag-card-list {
+  .rag-card-list,
+  .rag-timeline,
+  .rag-sources {
     display: grid;
     gap: 10px;
   }
 
-  .rag-mini-card strong {
-    display: block;
-    line-height: 1.5;
+  .rag-policy-lead {
+    margin: 0 0 12px;
   }
 
-  .rag-timeline,
-  .rag-sources {
+  .rag-policy-meta {
     display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 12px;
+    margin-top: 14px;
   }
 
   .rag-stage-head,
   .rag-source-head {
     display: flex;
-    align-items: flex-start;
     justify-content: space-between;
     gap: 12px;
     margin-bottom: 8px;
-  }
-
-  .rag-stage-card p,
-  .rag-source-card p {
-    color: var(--color-muted);
-    max-width: none;
+    color: #20150e;
   }
 
   .rag-source-meta {
+    margin: 0 0 8px;
     font-family: var(--font-mono);
-    font-size: 0.75rem;
-    margin-bottom: 8px;
+    font-size: 0.74rem;
   }
 
   .rag-source-preview {
-    color: var(--color-text);
+    margin: 0;
+    color: #20150e;
+  }
+
+  .rag-raw {
+    border-radius: 22px;
+    padding: 14px 18px;
   }
 
   .rag-raw summary {
     cursor: pointer;
-    color: var(--color-muted);
-    margin-bottom: 10px;
+    color: rgba(32, 21, 14, 0.66);
   }
 
   .rag-raw pre {
-    margin-top: 10px;
+    margin-top: 12px;
     max-height: 360px;
+    overflow: auto;
+    font-size: 0.8rem;
   }
 
-  @media (max-width: 980px) {
-    .rag-lab-grid,
-    .rag-detail-grid,
-    .rag-metric-strip {
+  @media (max-width: 1080px) {
+    .rag-hero,
+    .rag-grid,
+    .rag-dual-grid,
+    .rag-metric-strip,
+    .rag-policy-meta {
       grid-template-columns: 1fr;
     }
 
-    .rag-lab-controls {
+    .rag-sidebar {
       position: static;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .rag-title {
+      max-width: 14ch;
+    }
+
+    .rag-mode-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .rag-override-card {
+      grid-template-columns: 1fr;
+    }
+
+    .rag-actions {
+      flex-direction: column;
     }
   }
 </style>
