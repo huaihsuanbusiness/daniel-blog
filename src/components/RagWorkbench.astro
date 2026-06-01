@@ -2222,11 +2222,11 @@ const copy = {
   }
 
   :global(html[data-theme='dark']) .rag-shell {
-    border-color: rgba(196, 140, 72, 0.18);
+    border-color: rgba(184, 133, 71, 0.22);
     background:
-      radial-gradient(circle at 10% 10%, rgba(206, 132, 56, 0.14), transparent 26%),
-      radial-gradient(circle at 88% 14%, rgba(41, 111, 112, 0.12), transparent 28%),
-      linear-gradient(180deg, rgba(20, 17, 14, 0.98), rgba(13, 11, 10, 0.96));
+      radial-gradient(circle at 8% 8%, rgba(219, 154, 76, 0.14), transparent 18%),
+      radial-gradient(circle at 88% 8%, rgba(198, 142, 69, 0.08), transparent 22%),
+      linear-gradient(180deg, rgba(14, 15, 17, 0.985), rgba(10, 10, 12, 0.99));
     box-shadow:
       0 28px 100px rgba(0, 0, 0, 0.42),
       inset 0 1px 0 rgba(255,255,255,0.04);
@@ -2239,27 +2239,32 @@ const copy = {
   :global(html[data-theme='dark']) .rag-advanced-modal,
   :global(html[data-theme='dark']) .rag-panel,
   :global(html[data-theme='dark']) .rag-raw {
-    border-color: rgba(157, 118, 72, 0.16);
-    background: rgba(24, 20, 17, 0.82);
+    border-color: rgba(171, 124, 67, 0.34);
+    background: linear-gradient(180deg, rgba(17, 18, 20, 0.96), rgba(14, 15, 17, 0.98));
     box-shadow:
       0 18px 40px rgba(0,0,0,0.32),
-      inset 0 1px 0 rgba(255,255,255,0.03);
+      inset 0 1px 0 rgba(255,255,255,0.04);
   }
 
   :global(html[data-theme='dark']) .rag-runtime-plaque {
-    border-color: rgba(184, 138, 84, 0.38);
+    border-color: rgba(194, 145, 82, 0.56);
     background:
-      radial-gradient(circle at 88% 36%, rgba(238, 176, 92, 0.12), transparent 18%),
-      linear-gradient(180deg, rgba(29, 25, 21, 0.98), rgba(18, 15, 12, 0.98));
+      radial-gradient(circle at 88% 34%, rgba(238, 176, 92, 0.1), transparent 18%),
+      linear-gradient(180deg, rgba(30, 26, 22, 0.99), rgba(18, 16, 13, 0.995));
   }
 
   :global(html[data-theme='dark']) .rag-runtime-frame {
-    border-color: rgba(214, 164, 99, 0.24);
+    border-color: rgba(214, 164, 99, 0.34);
   }
 
   :global(html[data-theme='dark']) .rag-runtime-legend,
   :global(html[data-theme='dark']) .rag-runtime-legend-label {
-    color: rgba(241, 230, 216, 0.78);
+    color: rgba(228, 209, 185, 0.82);
+  }
+
+  :global(html[data-theme='dark']) .rag-eyebrow,
+  :global(html[data-theme='dark']) .rag-kicker {
+    color: rgba(229, 164, 87, 0.92);
   }
 
   :global(html[data-theme='dark']) .rag-title,
@@ -2271,7 +2276,14 @@ const copy = {
   :global(html[data-theme='dark']) .rag-source-head strong,
   :global(html[data-theme='dark']) .rag-stage-head strong,
   :global(html[data-theme='dark']) .rag-metric-card strong {
-    color: #f1e6d8;
+    color: #f4e5d0;
+  }
+
+  :global(html[data-theme='dark']) .rag-title em {
+    background: linear-gradient(180deg, #f0c57c, #cc8c34);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
   }
 
   :global(html[data-theme='dark']) .rag-description,
@@ -2289,11 +2301,11 @@ const copy = {
   :global(html[data-theme='dark']) .rag-advanced-pill,
   :global(html[data-theme='dark']) .rag-raw summary,
   :global(html[data-theme='dark']) .rag-raw pre {
-    color: rgba(241, 230, 216, 0.72);
+    color: rgba(232, 217, 197, 0.76);
   }
 
   :global(html[data-theme='dark']) .rag-field-shell {
-    background: linear-gradient(180deg, rgba(255,255,255,0.05), rgba(152,112,66,0.08));
+    background: linear-gradient(180deg, rgba(208, 151, 85, 0.22), rgba(255,255,255,0.03));
   }
 
   :global(html[data-theme='dark']) .rag-question,
@@ -2307,36 +2319,44 @@ const copy = {
   :global(html[data-theme='dark']) .rag-path-chip,
   :global(html[data-theme='dark']) .rag-secondary,
   :global(html[data-theme='dark']) .rag-mode-pill {
-    border-color: rgba(157, 118, 72, 0.16);
-    background: rgba(31, 25, 21, 0.82);
-    color: rgba(241, 230, 216, 0.8);
+    border-color: rgba(171, 124, 67, 0.28);
+    background: rgba(21, 22, 24, 0.94);
+    color: rgba(240, 228, 209, 0.84);
   }
 
   :global(html[data-theme='dark']) .rag-telemetry-ribbon {
-    border-color: rgba(157, 118, 72, 0.16);
-    background: rgba(24, 20, 17, 0.7);
+    border-color: rgba(171, 124, 67, 0.3);
+    background: linear-gradient(180deg, rgba(18, 19, 21, 0.95), rgba(14, 15, 17, 0.98));
     box-shadow:
       0 18px 36px rgba(0,0,0,0.24),
-      inset 0 1px 0 rgba(255,255,255,0.03);
+      inset 0 1px 0 rgba(255,255,255,0.02);
   }
 
   :global(html[data-theme='dark']) .rag-metric-card {
-    border-right-color: rgba(157, 118, 72, 0.12);
+    border-right-color: rgba(171, 124, 67, 0.18);
+  }
+
+  :global(html[data-theme='dark']) .rag-metric-icon {
+    border-color: rgba(196, 145, 82, 0.34);
+    background: rgba(18, 18, 20, 0.9);
+    color: #efbb73;
   }
 
   :global(html[data-theme='dark']) .rag-mode-pill.is-active {
-    border-color: rgba(224, 169, 98, 0.28);
-    background: linear-gradient(135deg, rgba(173, 111, 42, 0.92), rgba(211, 158, 88, 0.9));
+    border-color: rgba(233, 181, 103, 0.36);
+    background: linear-gradient(135deg, rgba(190, 124, 40, 0.95), rgba(228, 170, 88, 0.93));
     color: #fff8ef;
+    box-shadow: 0 10px 24px rgba(176, 111, 43, 0.22);
   }
 
   :global(html[data-theme='dark']) .rag-primary {
+    background: linear-gradient(135deg, #ba7226, #df9f48);
     box-shadow: 0 16px 34px rgba(176, 111, 43, 0.22);
   }
 
   :global(html[data-theme='dark']) .rag-advanced-pill {
-    border-color: rgba(157, 118, 72, 0.18);
-    background: rgba(31, 25, 21, 0.82);
+    border-color: rgba(171, 124, 67, 0.26);
+    background: rgba(21, 22, 24, 0.92);
   }
 
   :global(html[data-theme='dark']) .rag-policy-meta span,
@@ -2344,11 +2364,28 @@ const copy = {
   :global(html[data-theme='dark']) .rag-source-meta,
   :global(html[data-theme='dark']) .rag-stage-head span,
   :global(html[data-theme='dark']) .rag-metric-card span {
-    color: rgba(241, 230, 216, 0.5);
+    color: rgba(226, 207, 181, 0.62);
   }
 
   :global(html[data-theme='dark']) .rag-link-button {
-    color: rgba(232, 181, 113, 0.9);
+    color: rgba(240, 187, 109, 0.96);
+  }
+
+  :global(html[data-theme='dark']) .rag-question:focus,
+  :global(html[data-theme='dark']) .rag-select:focus,
+  :global(html[data-theme='dark']) .rag-number:focus {
+    border-color: rgba(220, 165, 88, 0.44);
+    box-shadow: 0 0 0 4px rgba(214, 152, 72, 0.14);
+  }
+
+  :global(html[data-theme='dark']) .rag-switch-track {
+    background: rgba(96, 78, 59, 0.36);
+    border-color: rgba(171, 124, 67, 0.26);
+  }
+
+  :global(html[data-theme='dark']) .rag-switch input:checked + .rag-switch-track {
+    background: rgba(191, 127, 48, 0.48);
+    border-color: rgba(223, 169, 93, 0.38);
   }
 
   @media (max-width: 1080px) {
