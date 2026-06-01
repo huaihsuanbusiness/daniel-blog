@@ -64,7 +64,7 @@ const copy = {
     policyLabel: 'Automatic policy decision',
     policyEmpty: 'Run a question to inspect which policy the runtime selected and why.',
     plannerLabel: 'Planner view',
-    plannerEmpty: 'The planner panel stays pinned so you can compare before and after each run.',
+    plannerEmpty: '—',
     runtimeLabel: 'Runtime guardrails',
     runtimeEmpty: 'Guardrails, retry budget, and retrieval controls will be summarized here.',
     timelineLabel: 'Stage trace',
@@ -152,7 +152,7 @@ const copy = {
     policyLabel: '自動策略判斷',
     policyEmpty: '送出問題後，這裡會顯示 runtime 最後選了什麼策略，以及為什麼。',
     plannerLabel: 'Planner 視角',
-    plannerEmpty: '這個版位會固定保留，方便你對照查詢前後 planner 的差異。',
+    plannerEmpty: '—',
     runtimeLabel: 'Runtime guardrails',
     runtimeEmpty: '這裡會固定顯示 guardrails、retry budget 與 retrieval controls。',
     timelineLabel: '逐階段 trace',
@@ -633,7 +633,6 @@ const copy = {
       const stages = response.observability?.timings?.stages || [];
       const preview = stages
         .filter((stage) => stage?.name && !String(stage.name).startsWith('engine.'))
-        .slice(0, 5)
         .map(
           (stage, index) => `
             <li class="rag-journey-step">
@@ -733,11 +732,8 @@ const copy = {
         elements.traceToggle.hidden = true;
         return;
       }
-
-      const previewCount = state.traceExpanded ? stages.length : Math.min(stages.length, 5);
-      const previewStages = stages.slice(0, previewCount);
-      elements.traceToggle.hidden = stages.length <= 5;
-      elements.traceToggle.textContent = state.traceExpanded ? copy.traceCollapse : copy.traceExpand;
+      const previewStages = stages;
+      elements.traceToggle.hidden = true;
 
       elements.timeline.innerHTML = previewStages
         .map(
@@ -954,11 +950,7 @@ const copy = {
       });
     });
 
-    elements.traceToggle.addEventListener('click', () => {
-      state.traceExpanded = !state.traceExpanded;
-      const payload = getRenderedResponse();
-      if (payload) renderTimeline(payload);
-    });
+    elements.traceToggle?.addEventListener('click', () => {});
 
     elements.sourcesToggle.addEventListener('click', () => {
       state.sourcesExpanded = !state.sourcesExpanded;
@@ -1544,6 +1536,13 @@ const copy = {
     align-items: center;
   }
 
+  .rag-advanced-card-actions .rag-secondary,
+  .rag-advanced-modal-actions .rag-secondary {
+    min-height: 42px;
+    padding: 8px 10px;
+    font-size: 0.76rem;
+  }
+
   .rag-advanced-pill {
     display: inline-flex;
     align-items: center;
@@ -1737,6 +1736,9 @@ const copy = {
     display: grid;
     gap: 12px;
     align-content: start;
+    max-height: 280px;
+    overflow-y: auto;
+    padding-right: 6px;
   }
 
   .rag-route-chips {
@@ -1838,6 +1840,9 @@ const copy = {
     display: grid;
     gap: 12px;
     align-content: start;
+    max-height: 280px;
+    overflow-y: auto;
+    padding-right: 6px;
   }
 
   .rag-mini-card {
@@ -1848,6 +1853,9 @@ const copy = {
     display: grid;
     gap: 14px;
     align-content: start;
+    max-height: 620px;
+    overflow-y: auto;
+    padding-right: 6px;
   }
 
   .rag-stage-card {
