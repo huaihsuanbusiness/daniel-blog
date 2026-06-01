@@ -8,7 +8,11 @@ const { lang } = Astro.props;
 const copy = {
   en: {
     eyebrow: 'Interactive RAG Workbench',
-    title: 'This isn’t just an article. It’s a live RAG workbench.',
+    titleLeadA: 'This is not just',
+    titleLeadB: 'an article,',
+    titleLeadC: 'this is a',
+    titleAccent: 'live RAG',
+    titleTail: 'workbench.',
     description:
       'Ask a real question, watch the runtime choose a policy, and inspect how the system routes, retrieves, evaluates, and answers.',
     statusLoading: 'Checking runtime connection…',
@@ -89,7 +93,10 @@ const copy = {
   },
   zh: {
     eyebrow: 'Interactive RAG Workbench',
-    title: '這不只是一篇文章，這是一個 live RAG 實驗台。',
+    titleLeadA: '這不只是一篇文章，',
+    titleLeadB: '這是一個',
+    titleAccent: 'live RAG',
+    titleTail: '實驗台。',
     description:
       '你可以直接問一個真實問題，讓 runtime 先選策略，再把 routing、retrieval、evaluation 與回答路徑攤開給你看。',
     statusLoading: '正在確認 runtime 連線…',
@@ -178,8 +185,22 @@ const copy = {
 
     <header class="rag-hero">
       <div class="rag-hero-copy">
+        <div class="rag-hero-mark" aria-hidden="true"></div>
         <p class="rag-eyebrow">{copy.eyebrow}</p>
-        <h2 class="rag-title">{copy.title}</h2>
+        <h2 class="rag-title">
+          {lang === 'zh' ? (
+            <>
+              <span>{copy.titleLeadA}</span>
+              <span>{copy.titleLeadB} <em>{copy.titleAccent}</em> {copy.titleTail}</span>
+            </>
+          ) : (
+            <>
+              <span>{copy.titleLeadA}</span>
+              <span>{copy.titleLeadB}</span>
+              <span>{copy.titleLeadC} <em>{copy.titleAccent}</em> {copy.titleTail}</span>
+            </>
+          )}
+        </h2>
         <p class="rag-description">{copy.description}</p>
       </div>
 
@@ -192,85 +213,99 @@ const copy = {
           </div>
         </div>
         <p class="rag-runtime-endpoint" data-rag-status-note></p>
+        <div class="rag-runtime-badge" aria-hidden="true"></div>
       </aside>
     </header>
 
     <section class="rag-telemetry-ribbon" data-rag-metrics>
       <article class="rag-metric-card">
+        <span class="rag-metric-icon rag-metric-icon-health" aria-hidden="true">♥</span>
+        <div class="rag-metric-copy">
         <span>{copy.metricsHealth}</span>
         <strong data-rag-metric-health>OK</strong>
+        </div>
       </article>
       <article class="rag-metric-card">
+        <span class="rag-metric-icon rag-metric-icon-policy" aria-hidden="true">🛡</span>
+        <div class="rag-metric-copy">
         <span>{copy.metricsPolicy}</span>
         <strong data-rag-metric-policy>{copy.policyFallback}</strong>
+        </div>
       </article>
       <article class="rag-metric-card">
+        <span class="rag-metric-icon rag-metric-icon-mode" aria-hidden="true">☷</span>
+        <div class="rag-metric-copy">
         <span>{copy.metricsResolvedMode}</span>
         <strong data-rag-metric-mode>Auto</strong>
+        </div>
       </article>
       <article class="rag-metric-card">
+        <span class="rag-metric-icon rag-metric-icon-latency" aria-hidden="true">◷</span>
+        <div class="rag-metric-copy">
         <span>{copy.metricsLatency}</span>
         <strong data-rag-metric-latency>—</strong>
+        </div>
       </article>
       <article class="rag-metric-card">
+        <span class="rag-metric-icon rag-metric-icon-sources" aria-hidden="true">▣</span>
+        <div class="rag-metric-copy">
         <span>{copy.metricsSources}</span>
         <strong data-rag-metric-sources>0</strong>
+        </div>
       </article>
     </section>
 
-    <section class="rag-workbench-grid">
-      <div class="rag-left-rail">
-        <section class="rag-composer-card">
-          <div class="rag-composer-head">
-            <div>
-              <p class="rag-kicker">{copy.questionLabel}</p>
-              <h3 class="rag-section-title">{copy.questionLabel}</h3>
-            </div>
+    <section class="rag-composer-card">
+      <div class="rag-composer-head">
+        <div class="rag-composer-title">
+          <span class="rag-composer-orb" aria-hidden="true">✦</span>
+          <div>
+            <h3 class="rag-section-title">{copy.questionLabel}</h3>
           </div>
+        </div>
+        <div class="rag-composer-actions">
+          <button type="button" class="rag-primary" data-rag-submit>{copy.askButton}</button>
+          <button type="button" class="rag-secondary" data-rag-reset>{copy.resetButton}</button>
+        </div>
+      </div>
 
-          <label class="rag-field-shell" for="rag-question">
-            <textarea id="rag-question" class="rag-question" rows="5" placeholder={copy.questionPlaceholder}></textarea>
-          </label>
+      <label class="rag-field-shell" for="rag-question">
+        <textarea id="rag-question" class="rag-question" rows="4" placeholder={copy.questionPlaceholder}></textarea>
+      </label>
 
-          <div class="rag-composer-actions">
-            <button type="button" class="rag-primary" data-rag-submit>{copy.askButton}</button>
-            <button type="button" class="rag-secondary" data-rag-reset>{copy.resetButton}</button>
+      <div class="rag-example-block">
+        <p class="rag-kicker">{copy.exampleLabel}</p>
+        <div class="rag-chip-row">
+          {copy.examples.map((prompt) => (
+            <button type="button" class="rag-chip" data-rag-example={prompt}>{prompt}</button>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="rag-controls-row">
+      <section class="rag-mode-card">
+        <div class="rag-mode-head">
+          <div>
+            <h3 class="rag-section-title">{copy.modeLabel}</h3>
           </div>
-
-          <div class="rag-example-block">
-            <p class="rag-kicker">{copy.exampleLabel}</p>
-            <div class="rag-chip-row">
-              {copy.examples.map((prompt) => (
-                <button type="button" class="rag-chip" data-rag-example={prompt}>{prompt}</button>
-              ))}
-            </div>
           </div>
-        </section>
+        </div>
+        <div class="rag-mode-pills" data-rag-modes>
+          <button type="button" class="rag-mode-pill is-active" data-rag-mode="auto">Auto</button>
+          <button type="button" class="rag-mode-pill" data-rag-mode="fast">Fast</button>
+          <button type="button" class="rag-mode-pill" data-rag-mode="safe">Safe</button>
+          <button type="button" class="rag-mode-pill" data-rag-mode="deep_eval">Deep Eval</button>
+          <button type="button" class="rag-mode-pill" data-rag-mode="creative">Creative</button>
+          <button type="button" class="rag-mode-pill" data-rag-mode="agentic">Agentic</button>
+        </div>
+        <p class="rag-mode-helper" data-rag-mode-helper>{copy.modeHintAuto}</p>
+        <p class="rag-mode-note" data-rag-mode-note hidden></p>
+      </section>
 
-        <section class="rag-control-rail">
-          <div class="rag-mode-card">
-            <div class="rag-mode-head">
-              <div>
-                <p class="rag-kicker">{copy.modeLabel}</p>
-                <h3 class="rag-section-title">{copy.modeLabel}</h3>
-              </div>
-            </div>
-            <div class="rag-mode-pills" data-rag-modes>
-              <button type="button" class="rag-mode-pill is-active" data-rag-mode="auto">Auto</button>
-              <button type="button" class="rag-mode-pill" data-rag-mode="fast">Fast</button>
-              <button type="button" class="rag-mode-pill" data-rag-mode="safe">Safe</button>
-              <button type="button" class="rag-mode-pill" data-rag-mode="deep_eval">Deep Eval</button>
-              <button type="button" class="rag-mode-pill" data-rag-mode="creative">Creative</button>
-              <button type="button" class="rag-mode-pill" data-rag-mode="agentic">Agentic</button>
-            </div>
-            <p class="rag-mode-helper" data-rag-mode-helper>{copy.modeHintAuto}</p>
-            <p class="rag-mode-note" data-rag-mode-note hidden></p>
-          </div>
-
-          <details class="rag-advanced" data-rag-advanced>
+      <details class="rag-advanced" data-rag-advanced>
             <summary class="rag-advanced-summary">
               <div>
-                <p class="rag-kicker">{copy.manualLabel}</p>
                 <h3 class="rag-section-title">{copy.manualLabel}</h3>
               </div>
               <div class="rag-advanced-meta">
@@ -387,15 +422,12 @@ const copy = {
               </div>
             </div>
           </details>
-        </section>
-      </div>
+    </section>
 
-      <div class="rag-right-stage">
-        <section class="rag-output-grid">
+    <section class="rag-results-grid">
       <section class="rag-panel rag-panel-answer">
         <div class="rag-panel-head">
           <div>
-            <p class="rag-kicker">{copy.answerLabel}</p>
             <h3 class="rag-section-title">{copy.answerLabel}</h3>
           </div>
         </div>
@@ -405,37 +437,15 @@ const copy = {
       <section class="rag-panel rag-panel-journey">
         <div class="rag-panel-head">
           <div>
-            <p class="rag-kicker">{copy.routeLabel}</p>
             <h3 class="rag-section-title">{copy.routeLabel}</h3>
           </div>
         </div>
         <div class="rag-route" data-rag-route>{copy.routeEmpty}</div>
       </section>
 
-      <section class="rag-panel rag-panel-policy">
-        <div class="rag-panel-head">
-          <div>
-            <p class="rag-kicker">{copy.policyLabel}</p>
-            <h3 class="rag-section-title">{copy.policyLabel}</h3>
-          </div>
-        </div>
-        <div class="rag-card-stack" data-rag-policy>{copy.policyEmpty}</div>
-      </section>
-
-      <section class="rag-panel rag-panel-runtime">
-        <div class="rag-panel-head">
-          <div>
-            <p class="rag-kicker">{copy.runtimeLabel}</p>
-            <h3 class="rag-section-title">{copy.runtimeLabel}</h3>
-          </div>
-        </div>
-        <div class="rag-mini-grid" data-rag-runtime>{copy.runtimeEmpty}</div>
-      </section>
-
       <section class="rag-panel rag-panel-planner">
         <div class="rag-panel-head">
           <div>
-            <p class="rag-kicker">{copy.plannerLabel}</p>
             <h3 class="rag-section-title">{copy.plannerLabel}</h3>
           </div>
         </div>
@@ -445,7 +455,6 @@ const copy = {
       <section class="rag-panel rag-panel-trace">
         <div class="rag-panel-head">
           <div>
-            <p class="rag-kicker">{copy.timelineLabel}</p>
             <h3 class="rag-section-title">{copy.timelineLabel}</h3>
           </div>
           <button type="button" class="rag-link-button" data-rag-trace-toggle hidden>{copy.traceExpand}</button>
@@ -456,15 +465,12 @@ const copy = {
       <section class="rag-panel rag-panel-sources">
         <div class="rag-panel-head">
           <div>
-            <p class="rag-kicker">{copy.sourcesLabel}</p>
             <h3 class="rag-section-title">{copy.sourcesLabel}</h3>
           </div>
           <button type="button" class="rag-link-button" data-rag-sources-toggle hidden>{copy.sourcesExpand}</button>
         </div>
         <div class="rag-sources" data-rag-sources>{copy.sourceEmpty}</div>
       </section>
-        </section>
-      </div>
     </section>
 
     <details class="rag-raw">
@@ -507,8 +513,6 @@ const copy = {
       metricSources: root.querySelector('[data-rag-metric-sources]'),
       answer: root.querySelector('[data-rag-answer]'),
       route: root.querySelector('[data-rag-route]'),
-      policy: root.querySelector('[data-rag-policy]'),
-      runtime: root.querySelector('[data-rag-runtime]'),
       plan: root.querySelector('[data-rag-plan]'),
       timeline: root.querySelector('[data-rag-timeline]'),
       traceToggle: root.querySelector('[data-rag-trace-toggle]'),
@@ -591,7 +595,25 @@ const copy = {
       chips.push((response.workflow?.enabled || resolved.use_workflow) ? 'workflow:on' : 'workflow:off');
       chips.push((response.tool_routing?.enabled || resolved.use_tool_routing) ? `route:${response.tool_routing?.route || resolved.tool_route || 'tool'}` : 'route:rag');
       chips.push((response.retry_loop?.enabled || resolved.use_retry_loop) ? `retry:${response.retry_loop?.retry_attempt_count ?? 0}` : 'retry:off');
-      return chips.map((chip) => `<span class="rag-path-chip">${escapeHtml(chip)}</span>`).join('');
+      const stages = response.observability?.timings?.stages || [];
+      const preview = stages
+        .filter((stage) => stage?.name && !String(stage.name).startsWith('engine.'))
+        .slice(0, 5)
+        .map(
+          (stage, index) => `
+            <li class="rag-journey-step">
+              <span class="rag-journey-index">${index + 1}</span>
+              <span class="rag-journey-name">${escapeHtml(stage.name)}</span>
+              <span class="rag-journey-time">${escapeHtml(formatLatency(stage.latency_ms))}</span>
+            </li>
+          `
+        )
+        .join('');
+
+      return `
+        <div class="rag-route-chips">${chips.map((chip) => `<span class="rag-path-chip">${escapeHtml(chip)}</span>`).join('')}</div>
+        <ol class="rag-journey-list">${preview || `<li class="rag-journey-empty">${escapeHtml(copy.routeEmpty)}</li>`}</ol>
+      `;
     };
 
     const setStatus = (healthy, runtimePolicyLive) => {
@@ -643,30 +665,6 @@ const copy = {
       elements.manualState.textContent = state.manualOverridesEnabled ? copy.manualToggle : copy.manualSummaryClosed;
     };
 
-    const renderPolicy = (response) => {
-      const policy = response.runtime_policy_router || {};
-      const resolved = policy.resolved || {};
-      const explanation = escapeHtml(policy.user_explanation || policy.reasoning || copy.policyEmpty);
-      const badges = [
-        resolved.query_mode || response.query_profile?.mode || 'safe',
-        resolved.use_workflow ? 'workflow:on' : 'workflow:off',
-        resolved.use_tool_routing ? `route:${resolved.tool_route || 'tool'}` : 'route:rag',
-        resolved.use_retry_loop ? 'retry:on' : 'retry:off',
-      ];
-
-      elements.policy.innerHTML = `
-        <article class="rag-policy-card">
-          <p class="rag-policy-lead">${explanation}</p>
-          <div class="rag-route rag-route-inline">${badges.map((badge) => `<span class="rag-path-chip">${escapeHtml(badge)}</span>`).join('')}</div>
-          <div class="rag-policy-meta">
-            <div><span>Implementation</span><strong>${escapeHtml(policy.implementation || policy.fallback || '—')}</strong></div>
-            <div><span>Confidence</span><strong>${escapeHtml(formatMaybe(policy.confidence))}</strong></div>
-            <div><span>Tool route</span><strong>${escapeHtml(resolved.tool_route || response.tool_routing?.route || 'rag_search')}</strong></div>
-          </div>
-        </article>
-      `;
-    };
-
     const renderPlan = (response) => {
       const plan = response.plan || {};
       const originalQuestion = plan.original_question || response.question || '—';
@@ -687,31 +685,6 @@ const copy = {
         <article class="rag-mini-card"><span>Rewritten</span><strong>—</strong></article>
         <article class="rag-mini-card"><span>Route reason</span><strong>${escapeHtml(copy.plannerEmpty)}</strong></article>
         <article class="rag-mini-card"><span>Rewrite reason</span><strong>—</strong></article>
-      `;
-    };
-
-    const renderRuntime = (response) => {
-      const budget = response.runtime_budget || {};
-      const retry = response.retry_loop || {};
-      const flags = response.query_profile?.resolved_flags || {};
-      elements.runtime.innerHTML = `
-        <article class="rag-mini-card"><span>Workflow rail</span><strong>${escapeHtml(response.workflow?.enabled ? 'enabled' : 'engine path')}</strong></article>
-        <article class="rag-mini-card"><span>Tool route</span><strong>${escapeHtml(response.tool_routing?.route || 'rag_search')}</strong></article>
-        <article class="rag-mini-card"><span>Retry attempts</span><strong>${escapeHtml(String(retry.retry_attempt_count ?? 0))}</strong></article>
-        <article class="rag-mini-card"><span>Latency budget</span><strong>${escapeHtml(String(budget.limits?.max_latency_ms ?? '—'))} ms</strong></article>
-        <article class="rag-mini-card"><span>Retrieval mode</span><strong>${escapeHtml(flags.retrieval_mode || response.filters?.retrieval_mode || 'hybrid')}</strong></article>
-        <article class="rag-mini-card"><span>Min score</span><strong>${escapeHtml(formatMaybe(response.filters?.min_score ?? flags.min_score ?? '—'))}</strong></article>
-      `;
-    };
-
-    const renderRuntimeEmpty = () => {
-      elements.runtime.innerHTML = `
-        <article class="rag-mini-card"><span>Workflow rail</span><strong>—</strong></article>
-        <article class="rag-mini-card"><span>Tool route</span><strong>—</strong></article>
-        <article class="rag-mini-card"><span>Retry attempts</span><strong>—</strong></article>
-        <article class="rag-mini-card"><span>Latency budget</span><strong>—</strong></article>
-        <article class="rag-mini-card"><span>Retrieval mode</span><strong>—</strong></article>
-        <article class="rag-mini-card"><span>Min score</span><strong>${escapeHtml(copy.runtimeEmpty)}</strong></article>
       `;
     };
 
@@ -779,9 +752,7 @@ const copy = {
       elements.answer.textContent = response.answer || '';
       elements.route.innerHTML = routeSummary(response);
       elements.raw.textContent = JSON.stringify(response, null, 2);
-      renderPolicy(response);
       renderPlan(response);
-      renderRuntime(response);
       renderTimeline(response);
       renderSources(response);
       renderMetrics(response);
@@ -790,10 +761,8 @@ const copy = {
     const renderError = async (response) => {
       const payload = await response.json().catch(() => ({}));
       elements.answer.textContent = `${copy.failedPrefix}: ${payload?.detail?.message || payload?.detail || payload?.error || response.statusText}`;
-      elements.route.textContent = copy.routeEmpty;
-      elements.policy.textContent = copy.policyEmpty;
+      elements.route.innerHTML = `<div class="rag-journey-empty">${escapeHtml(copy.routeEmpty)}</div>`;
       renderPlanEmpty();
-      renderRuntimeEmpty();
       elements.timeline.textContent = copy.timelineEmpty;
       elements.traceToggle.hidden = true;
       elements.sources.textContent = copy.sourceEmpty;
@@ -885,10 +854,8 @@ const copy = {
       renderModes();
       renderMetrics();
       elements.answer.textContent = copy.emptyAnswer;
-      elements.route.textContent = copy.routeEmpty;
-      elements.policy.textContent = copy.policyEmpty;
+      elements.route.innerHTML = `<div class="rag-journey-empty">${escapeHtml(copy.routeEmpty)}</div>`;
       renderPlanEmpty();
-      renderRuntimeEmpty();
       elements.timeline.textContent = copy.timelineEmpty;
       elements.traceToggle.hidden = true;
       elements.sources.textContent = copy.sourceEmpty;
@@ -942,10 +909,8 @@ const copy = {
       state.traceExpanded = false;
       state.sourcesExpanded = false;
       elements.answer.textContent = copy.runningAnswer;
-      elements.route.textContent = copy.routeEmpty;
-      elements.policy.textContent = copy.policyEmpty;
+      elements.route.innerHTML = `<div class="rag-journey-empty">${escapeHtml(copy.routeEmpty)}</div>`;
       renderPlanEmpty();
-      renderRuntimeEmpty();
       elements.timeline.textContent = copy.timelineEmpty;
       elements.traceToggle.hidden = true;
       elements.sources.textContent = copy.sourceEmpty;
@@ -987,7 +952,6 @@ const copy = {
       elements.status.textContent = copy.statusError;
       elements.statusNote.textContent = String(error);
       renderPlanEmpty();
-      renderRuntimeEmpty();
     }
   }
 </script>
@@ -1038,8 +1002,9 @@ const copy = {
 
   .rag-hero,
   .rag-telemetry-ribbon,
-  .rag-workbench-grid,
-  .rag-output-grid,
+  .rag-composer-card,
+  .rag-controls-row,
+  .rag-results-grid,
   .rag-raw {
     position: relative;
     z-index: 1;
@@ -1047,10 +1012,31 @@ const copy = {
 
   .rag-hero {
     display: grid;
-    grid-template-columns: minmax(0, 1.12fr) minmax(300px, 0.88fr);
-    gap: 28px;
-    align-items: center;
+    grid-template-columns: minmax(0, 1.45fr) minmax(320px, 0.72fr);
+    gap: 42px;
+    align-items: start;
     margin-bottom: 24px;
+  }
+
+  .rag-hero-copy {
+    position: relative;
+    padding-left: 128px;
+  }
+
+  .rag-hero-mark {
+    position: absolute;
+    top: -4px;
+    left: 0;
+    width: 96px;
+    height: 96px;
+    border-radius: 999px;
+    border: 1px solid rgba(193, 126, 54, 0.26);
+    background:
+      radial-gradient(circle at 50% 50%, rgba(255, 248, 230, 0.9) 0%, rgba(224, 171, 98, 0.9) 18%, rgba(176, 111, 40, 0.42) 34%, rgba(176, 111, 40, 0.06) 72%, transparent 74%),
+      radial-gradient(circle at 50% 50%, rgba(194, 125, 52, 0.12), transparent 74%);
+    box-shadow:
+      0 0 0 24px rgba(194, 125, 52, 0.04),
+      0 18px 44px rgba(181, 118, 49, 0.18);
   }
 
   .rag-eyebrow,
@@ -1065,20 +1051,33 @@ const copy = {
 
   .rag-title {
     margin: 0;
-    max-width: 8.8ch;
-    color: #20150e;
-    font-size: clamp(2.6rem, 5.2vw, 5.5rem);
-    line-height: 0.92;
-    letter-spacing: -0.05em;
-    text-wrap: balance;
+    max-width: 11ch;
+    color: #21140d;
+    font-family: "Iowan Old Style", "Baskerville", "Times New Roman", "Songti TC", serif;
+    font-size: clamp(2.6rem, 4.8vw, 5.1rem);
+    line-height: 0.94;
+    letter-spacing: -0.045em;
+  }
+
+  .rag-title span {
+    display: block;
+  }
+
+  .rag-title em {
+    font-style: normal;
+    color: #b86d28;
+    background: linear-gradient(180deg, #c7771b, #a95d16);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
   }
 
   .rag-description {
-    margin-top: 16px;
-    max-width: 64ch;
+    margin-top: 18px;
+    max-width: 56ch;
     color: rgba(32, 21, 14, 0.74);
-    font-size: 1rem;
-    line-height: 1.72;
+    font-size: 1.02rem;
+    line-height: 1.78;
   }
 
   .rag-runtime-plaque,
@@ -1097,9 +1096,20 @@ const copy = {
 
   .rag-runtime-plaque {
     justify-self: end;
-    width: min(100%, 360px);
-    border-radius: 28px;
-    padding: 18px 20px;
+    position: relative;
+    width: min(100%, 452px);
+    min-height: 142px;
+    overflow: hidden;
+    border-radius: 24px;
+    padding: 24px 28px;
+    border-color: rgba(165, 116, 55, 0.56);
+    background:
+      radial-gradient(circle at 88% 36%, rgba(238, 176, 92, 0.12), transparent 18%),
+      linear-gradient(180deg, rgba(34, 29, 24, 0.98), rgba(22, 19, 16, 0.98));
+    box-shadow:
+      0 20px 46px rgba(32, 18, 10, 0.24),
+      inset 0 0 0 1px rgba(248, 196, 116, 0.12),
+      inset 0 1px 0 rgba(255, 255, 255, 0.06);
   }
 
   .rag-runtime-head {
@@ -1129,7 +1139,7 @@ const copy = {
 
   .rag-runtime-label {
     margin: 0;
-    color: #20150e;
+    color: #fff7ee;
     font-family: var(--font-display);
     font-weight: 600;
   }
@@ -1137,15 +1147,28 @@ const copy = {
   .rag-runtime-caption,
   .rag-runtime-endpoint {
     margin: 6px 0 0;
-    color: rgba(32, 21, 14, 0.64);
+    color: rgba(255, 242, 228, 0.76);
     font-size: 0.86rem;
   }
 
   .rag-runtime-endpoint {
-    margin-top: 14px;
+    margin-top: 18px;
     font-family: var(--font-mono);
     font-size: 0.78rem;
     word-break: break-all;
+  }
+
+  .rag-runtime-badge {
+    position: absolute;
+    top: 22px;
+    right: 24px;
+    width: 72px;
+    height: 72px;
+    border-radius: 999px;
+    border: 1px solid rgba(242, 184, 102, 0.4);
+    background:
+      radial-gradient(circle at 50% 50%, rgba(236, 171, 88, 0.18), transparent 56%),
+      rgba(255, 255, 255, 0.02);
   }
 
   .rag-telemetry-ribbon {
@@ -1165,8 +1188,9 @@ const copy = {
   }
 
   .rag-metric-card {
-    display: grid;
-    gap: 6px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
     min-width: 0;
     padding: 16px 18px;
     border-right: 1px solid rgba(96, 68, 45, 0.08);
@@ -1177,7 +1201,12 @@ const copy = {
     border-right: 0;
   }
 
-  .rag-metric-card span {
+  .rag-metric-copy {
+    display: grid;
+    gap: 6px;
+  }
+
+  .rag-metric-card span:not(.rag-metric-icon) {
     color: rgba(32, 21, 14, 0.54);
     font-family: var(--font-mono);
     font-size: 0.72rem;
@@ -1191,23 +1220,24 @@ const copy = {
     font-weight: 700;
   }
 
+  .rag-metric-icon {
+    width: 50px;
+    height: 50px;
+    flex: none;
+    display: grid;
+    place-items: center;
+    border-radius: 999px;
+    border: 1px solid rgba(186, 130, 69, 0.18);
+    background: rgba(255,255,255,0.72);
+    color: #8d5820;
+    font-size: 1.15rem;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.68);
+  }
+
   .rag-composer-card {
     border-radius: 32px;
-    padding: 22px;
-  }
-
-  .rag-workbench-grid {
-    display: grid;
-    grid-template-columns: minmax(340px, 0.82fr) minmax(0, 1.18fr);
-    gap: 18px;
-    align-items: start;
-  }
-
-  .rag-left-rail,
-  .rag-right-stage {
-    display: grid;
-    gap: 18px;
-    align-content: start;
+    padding: 18px 22px 14px;
+    margin-bottom: 16px;
   }
 
   .rag-composer-head,
@@ -1218,6 +1248,25 @@ const copy = {
     justify-content: space-between;
     gap: 14px;
     margin-bottom: 14px;
+  }
+
+  .rag-composer-title {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .rag-composer-orb {
+    width: 42px;
+    height: 42px;
+    flex: none;
+    display: grid;
+    place-items: center;
+    border-radius: 999px;
+    border: 1px solid rgba(194, 126, 54, 0.24);
+    background: rgba(255,255,255,0.8);
+    color: #b76d28;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.72);
   }
 
   .rag-section-title {
@@ -1244,10 +1293,10 @@ const copy = {
   }
 
   .rag-question {
-    min-height: 154px;
+    min-height: 110px;
     border-radius: 22px;
-    padding: 18px 20px;
-    resize: vertical;
+    padding: 16px 18px;
+    resize: none;
     line-height: 1.65;
     box-shadow: inset 0 1px 0 rgba(255,255,255,0.7);
   }
@@ -1264,7 +1313,6 @@ const copy = {
     display: flex;
     align-items: center;
     gap: 12px;
-    margin-top: 14px;
   }
 
   .rag-primary,
@@ -1345,15 +1393,17 @@ const copy = {
     border-color: rgba(201, 121, 45, 0.26);
   }
 
-  .rag-control-rail {
+  .rag-controls-row {
     display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     gap: 16px;
+    margin-bottom: 16px;
   }
 
   .rag-mode-card,
   .rag-advanced {
     border-radius: 28px;
-    padding: 18px 20px;
+    padding: 14px 18px;
   }
 
   .rag-mode-pills {
@@ -1393,8 +1443,8 @@ const copy = {
   .rag-mode-helper,
   .rag-mode-note,
   .rag-callout {
-    margin: 14px 0 0;
-    font-size: 0.92rem;
+    margin: 10px 0 0;
+    font-size: 0.9rem;
   }
 
   .rag-advanced {
@@ -1560,16 +1610,14 @@ const copy = {
     padding: 10px 12px;
   }
 
-  .rag-output-grid {
+  .rag-results-grid {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(280px, 0.86fr);
+    grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr) minmax(280px, 0.9fr) minmax(280px, 0.9fr);
     grid-template-areas:
-      "answer answer"
-      "journey journey"
-      "policy runtime"
-      "planner trace"
-      "planner sources";
+      "answer journey trace sources"
+      "answer planner trace sources";
     gap: 18px;
+    margin-bottom: 18px;
   }
 
   .rag-panel {
@@ -1579,34 +1627,71 @@ const copy = {
 
   .rag-panel-answer { grid-area: answer; }
   .rag-panel-journey { grid-area: journey; }
-  .rag-panel-policy { grid-area: policy; }
-  .rag-panel-runtime { grid-area: runtime; }
   .rag-panel-planner { grid-area: planner; }
   .rag-panel-trace { grid-area: trace; }
   .rag-panel-sources { grid-area: sources; }
 
-  .rag-panel-policy,
-  .rag-panel-runtime,
+  .rag-panel-answer,
+  .rag-panel-journey,
   .rag-panel-planner,
   .rag-panel-trace,
   .rag-panel-sources {
-    min-height: 296px;
+    min-height: 300px;
   }
 
   .rag-answer {
     white-space: pre-wrap;
     font-size: 0.98rem;
-    min-height: 110px;
+    min-height: 520px;
   }
 
   .rag-route {
+    display: grid;
+    gap: 12px;
+    align-content: start;
+  }
+
+  .rag-route-chips {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
   }
 
-  .rag-route-inline {
-    margin-top: 14px;
+  .rag-journey-list {
+    display: grid;
+    gap: 10px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .rag-journey-step {
+    display: grid;
+    grid-template-columns: 28px minmax(0, 1fr) auto;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .rag-journey-index {
+    width: 22px;
+    height: 22px;
+    display: grid;
+    place-items: center;
+    border-radius: 999px;
+    border: 1px solid rgba(193, 126, 54, 0.24);
+    font-size: 0.72rem;
+    color: #9b5f22;
+  }
+
+  .rag-journey-name {
+    color: #35231a;
+    font-size: 0.9rem;
+  }
+
+  .rag-journey-time,
+  .rag-journey-empty {
+    color: rgba(32, 21, 14, 0.58);
+    font-size: 0.84rem;
   }
 
   .rag-path-chip {
@@ -1730,6 +1815,11 @@ const copy = {
     font-size: 0.92rem;
   }
 
+  .rag-panel-trace,
+  .rag-panel-sources {
+    min-height: 620px;
+  }
+
   .rag-sources {
     display: grid;
     gap: 12px;
@@ -1806,6 +1896,13 @@ const copy = {
     box-shadow:
       0 18px 40px rgba(0,0,0,0.32),
       inset 0 1px 0 rgba(255,255,255,0.03);
+  }
+
+  :global(html[data-theme='dark']) .rag-runtime-plaque {
+    border-color: rgba(184, 138, 84, 0.38);
+    background:
+      radial-gradient(circle at 88% 36%, rgba(238, 176, 92, 0.12), transparent 18%),
+      linear-gradient(180deg, rgba(29, 25, 21, 0.98), rgba(18, 15, 12, 0.98));
   }
 
   :global(html[data-theme='dark']) .rag-title,
@@ -1901,8 +1998,8 @@ const copy = {
 
   @media (max-width: 1080px) {
     .rag-hero,
-    .rag-workbench-grid,
-    .rag-output-grid {
+    .rag-controls-row,
+    .rag-results-grid {
       grid-template-columns: 1fr;
     }
 
@@ -1910,12 +2007,14 @@ const copy = {
       align-items: start;
     }
 
-    .rag-output-grid {
+    .rag-hero-copy {
+      padding-left: 112px;
+    }
+
+    .rag-results-grid {
       grid-template-areas:
         "answer"
         "journey"
-        "policy"
-        "runtime"
         "planner"
         "trace"
         "sources";
@@ -1944,6 +2043,17 @@ const copy = {
     .rag-title {
       max-width: 8.5ch;
       font-size: clamp(2.4rem, 12vw, 4.4rem);
+    }
+
+    .rag-hero-copy {
+      padding-left: 0;
+      padding-top: 94px;
+    }
+
+    .rag-hero-mark {
+      top: 0;
+      width: 80px;
+      height: 80px;
     }
 
     .rag-composer-actions {
