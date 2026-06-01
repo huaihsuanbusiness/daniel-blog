@@ -19,6 +19,10 @@ const copy = {
     statusReady: 'Live runtime connected',
     statusError: 'Live runtime needs attention',
     statusHint: 'Connected endpoint',
+    statusLegend: 'Status lights',
+    statusHealthy: 'Normal',
+    statusWarning: 'Warning',
+    statusErrorState: 'Issue',
     questionLabel: 'Ask the RAG a real question',
     questionPlaceholder: 'Try asking when creative mode should be chosen instead of safe mode.',
     exampleLabel: 'Try one of these',
@@ -107,6 +111,10 @@ const copy = {
     statusReady: 'Live runtime 已連線',
     statusError: 'Live runtime 目前異常',
     statusHint: '目前連到的 endpoint',
+    statusLegend: '狀態燈號',
+    statusHealthy: '正常',
+    statusWarning: '警告',
+    statusErrorState: '異常',
     questionLabel: '直接問這個 RAG 一個真實問題',
     questionPlaceholder: '試著問：什麼情況下比較適合 creative mode，而不是 safe mode？',
     exampleLabel: '你可以先試這些問題',
@@ -213,16 +221,25 @@ const copy = {
       </div>
 
       <aside class="rag-runtime-plaque">
+        <div class="rag-runtime-frame" aria-hidden="true"></div>
         <div class="rag-runtime-head">
           <span class="rag-signal-dot" data-rag-signal></span>
           <div>
             <p class="rag-runtime-label" data-rag-status>{copy.statusLoading}</p>
-            <p class="rag-runtime-caption">{copy.statusHint}</p>
           </div>
         </div>
         <p class="rag-runtime-endpoint" data-rag-status-note></p>
-        <div class="rag-runtime-badge" aria-hidden="true"></div>
+        <div class="rag-runtime-badge" aria-hidden="true">
+          <span class="rag-runtime-badge-ring"></span>
+          <span class="rag-runtime-badge-core"></span>
+        </div>
       </aside>
+      <div class="rag-runtime-legend" aria-hidden="true">
+        <span class="rag-runtime-legend-label">{copy.statusLegend}:</span>
+        <span class="rag-runtime-legend-item"><i class="rag-runtime-led rag-runtime-led-green"></i>{copy.statusHealthy}</span>
+        <span class="rag-runtime-legend-item"><i class="rag-runtime-led rag-runtime-led-amber"></i>{copy.statusWarning}</span>
+        <span class="rag-runtime-legend-item"><i class="rag-runtime-led rag-runtime-led-red"></i>{copy.statusErrorState}</span>
+      </div>
     </header>
 
     <section class="rag-telemetry-ribbon" data-rag-metrics>
@@ -1080,6 +1097,39 @@ const copy = {
     margin-bottom: 24px;
   }
 
+  .rag-runtime-legend {
+    grid-column: 2;
+    justify-self: end;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin-top: -6px;
+    color: rgba(77, 60, 44, 0.78);
+    font-family: var(--font-display);
+    font-size: 0.92rem;
+  }
+
+  .rag-runtime-legend-label {
+    color: rgba(77, 60, 44, 0.7);
+  }
+
+  .rag-runtime-legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .rag-runtime-led {
+    width: 16px;
+    height: 16px;
+    border-radius: 999px;
+    box-shadow: 0 0 0 2px rgba(255,255,255,0.42), 0 4px 10px rgba(0,0,0,0.1);
+  }
+
+  .rag-runtime-led-green { background: #43a93e; }
+  .rag-runtime-led-amber { background: #f0a81f; }
+  .rag-runtime-led-red { background: #e15f37; }
+
   .rag-hero-copy {
     position: relative;
     padding-left: 128px;
@@ -1161,50 +1211,84 @@ const copy = {
     justify-self: end;
     position: relative;
     width: min(100%, 452px);
-    min-height: 142px;
+    min-height: 164px;
     overflow: hidden;
-    border-radius: 24px;
-    padding: 24px 28px;
-    border-color: rgba(165, 116, 55, 0.56);
+    border-radius: 22px;
+    padding: 28px 30px;
+    border-color: rgba(191, 145, 86, 0.82);
     background:
       radial-gradient(circle at 88% 36%, rgba(238, 176, 92, 0.12), transparent 18%),
-      linear-gradient(180deg, rgba(34, 29, 24, 0.98), rgba(22, 19, 16, 0.98));
+      linear-gradient(180deg, rgba(34, 29, 24, 0.99), rgba(22, 19, 16, 0.99));
     box-shadow:
-      0 20px 46px rgba(32, 18, 10, 0.24),
-      inset 0 0 0 1px rgba(248, 196, 116, 0.12),
+      0 22px 48px rgba(32, 18, 10, 0.24),
+      inset 0 0 0 1px rgba(248, 196, 116, 0.2),
       inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  }
+
+  .rag-runtime-frame {
+    position: absolute;
+    inset: 6px;
+    border-radius: 17px;
+    border: 1px solid rgba(214, 164, 99, 0.38);
+    box-shadow:
+      inset 0 0 0 1px rgba(255, 242, 220, 0.08),
+      inset 0 -10px 28px rgba(0,0,0,0.18);
+    pointer-events: none;
+  }
+
+  .rag-runtime-frame::before,
+  .rag-runtime-frame::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    width: 18px;
+    height: 9px;
+    transform: translateX(-50%);
+    background: linear-gradient(180deg, rgba(250, 188, 97, 0.95), rgba(196, 120, 34, 0.95));
+    clip-path: polygon(50% 100%, 0 0, 100% 0);
+    filter: drop-shadow(0 0 8px rgba(246, 180, 86, 0.38));
+  }
+
+  .rag-runtime-frame::before { top: -1px; }
+  .rag-runtime-frame::after {
+    bottom: -1px;
+    transform: translateX(-50%) rotate(180deg);
   }
 
   .rag-runtime-head {
     display: flex;
     align-items: center;
-    gap: 14px;
+    gap: 18px;
+    position: relative;
+    z-index: 1;
   }
 
   .rag-signal-dot {
-    width: 12px;
-    height: 12px;
+    width: 14px;
+    height: 14px;
     flex: none;
     border-radius: 999px;
     background: #b8a592;
-    box-shadow: 0 0 0 8px rgba(184, 165, 146, 0.16);
+    box-shadow: 0 0 12px rgba(184, 165, 146, 0.4), 0 0 0 8px rgba(184, 165, 146, 0.12);
   }
 
   .rag-signal-dot.is-healthy {
-    background: #1f8d72;
-    box-shadow: 0 0 0 8px rgba(31, 141, 114, 0.16);
+    background: #78f15f;
+    box-shadow: 0 0 18px rgba(120, 241, 95, 0.75), 0 0 0 8px rgba(120, 241, 95, 0.1);
   }
 
   .rag-signal-dot.is-bad {
     background: #cb5b58;
-    box-shadow: 0 0 0 8px rgba(203, 91, 88, 0.16);
+    box-shadow: 0 0 18px rgba(203, 91, 88, 0.68), 0 0 0 8px rgba(203, 91, 88, 0.12);
   }
 
   .rag-runtime-label {
     margin: 0;
     color: #fff7ee;
     font-family: var(--font-display);
+    font-size: 1.05rem;
     font-weight: 600;
+    letter-spacing: -0.01em;
   }
 
   .rag-runtime-caption,
@@ -1215,23 +1299,78 @@ const copy = {
   }
 
   .rag-runtime-endpoint {
-    margin-top: 18px;
+    position: relative;
+    z-index: 1;
+    margin-top: 24px;
     font-family: var(--font-mono);
-    font-size: 0.78rem;
+    font-size: 0.82rem;
     word-break: break-all;
   }
 
   .rag-runtime-badge {
     position: absolute;
-    top: 22px;
-    right: 24px;
-    width: 72px;
-    height: 72px;
+    top: 18px;
+    right: 18px;
+    width: 120px;
+    height: 120px;
     border-radius: 999px;
-    border: 1px solid rgba(242, 184, 102, 0.4);
-    background:
-      radial-gradient(circle at 50% 50%, rgba(236, 171, 88, 0.18), transparent 56%),
-      rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(242, 184, 102, 0.26);
+    background: radial-gradient(circle at 50% 50%, rgba(236, 171, 88, 0.1), transparent 58%);
+    box-shadow:
+      inset 0 0 0 1px rgba(255, 217, 168, 0.05),
+      0 0 0 18px rgba(242, 184, 102, 0.03);
+  }
+
+  .rag-runtime-badge::before,
+  .rag-runtime-badge::after {
+    content: '';
+    position: absolute;
+    inset: 12px;
+    border-radius: 999px;
+    border: 1px solid rgba(242, 184, 102, 0.1);
+  }
+
+  .rag-runtime-badge::after {
+    inset: 28px;
+    border-color: rgba(242, 184, 102, 0.16);
+  }
+
+  .rag-runtime-badge-ring,
+  .rag-runtime-badge-core {
+    position: absolute;
+    inset: 0;
+  }
+
+  .rag-runtime-badge-core::before {
+    content: '◉';
+    position: absolute;
+    inset: 50% auto auto 50%;
+    transform: translate(-50%, -50%);
+    color: rgba(245, 180, 88, 0.94);
+    font-size: 1.3rem;
+    text-shadow: 0 0 16px rgba(245, 180, 88, 0.3);
+  }
+
+  .rag-runtime-badge-ring::before,
+  .rag-runtime-badge-ring::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 44px;
+    height: 44px;
+    transform: translate(-50%, -50%);
+    border-radius: 999px;
+    border: 3px solid transparent;
+    border-top-color: rgba(244, 178, 86, 0.94);
+    border-bottom-color: rgba(244, 178, 86, 0.94);
+    opacity: 0.95;
+  }
+
+  .rag-runtime-badge-ring::after {
+    width: 66px;
+    height: 66px;
+    opacity: 0.68;
   }
 
   .rag-telemetry-ribbon {
@@ -2018,6 +2157,15 @@ const copy = {
       linear-gradient(180deg, rgba(29, 25, 21, 0.98), rgba(18, 15, 12, 0.98));
   }
 
+  :global(html[data-theme='dark']) .rag-runtime-frame {
+    border-color: rgba(214, 164, 99, 0.24);
+  }
+
+  :global(html[data-theme='dark']) .rag-runtime-legend,
+  :global(html[data-theme='dark']) .rag-runtime-legend-label {
+    color: rgba(241, 230, 216, 0.78);
+  }
+
   :global(html[data-theme='dark']) .rag-title,
   :global(html[data-theme='dark']) .rag-runtime-label,
   :global(html[data-theme='dark']) .rag-section-title,
@@ -2134,6 +2282,14 @@ const copy = {
       justify-self: stretch;
     }
 
+    .rag-runtime-legend {
+      grid-column: auto;
+      justify-self: start;
+      margin-top: 6px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
     .rag-telemetry-ribbon {
       grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 0;
@@ -2153,6 +2309,18 @@ const copy = {
     .rag-title {
       max-width: 8.5ch;
       font-size: clamp(2.4rem, 12vw, 4.4rem);
+    }
+
+    .rag-runtime-plaque {
+      min-height: 150px;
+      padding: 22px 24px;
+    }
+
+    .rag-runtime-badge {
+      width: 94px;
+      height: 94px;
+      top: 16px;
+      right: 16px;
     }
 
     .rag-hero-copy {
