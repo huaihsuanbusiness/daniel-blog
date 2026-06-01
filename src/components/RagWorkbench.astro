@@ -14,7 +14,7 @@ const copy = {
     titleAccent: 'live RAG',
     titleTail: 'workbench.',
     description:
-      'Ask a real question, watch the runtime choose a policy, and inspect how the system routes, retrieves, evaluates, and answers.',
+      'Ask anything about me, or anything mentioned across this blog, and watch the runtime route, retrieve, evaluate, and answer in public.',
     statusLoading: 'Checking runtime connection…',
     statusReady: 'Live runtime connected',
     statusError: 'Live runtime needs attention',
@@ -102,7 +102,7 @@ const copy = {
     titleAccent: 'live RAG',
     titleTail: '實驗台。',
     description:
-      '你可以直接問一個真實問題，讓 runtime 先選策略，再把 routing、retrieval、evaluation 與回答路徑攤開給你看。',
+      '你可以問任何關於我的問題，也可以問這個部落格裡提到的任何內容，然後直接看 runtime 怎麼檢索、判斷與回答。',
     statusLoading: '正在確認 runtime 連線…',
     statusReady: 'Live runtime 已連線',
     statusError: 'Live runtime 目前異常',
@@ -1116,7 +1116,7 @@ const copy = {
     max-width: 11ch;
     color: #21140d;
     font-family: "Iowan Old Style", "Baskerville", "Times New Roman", "Songti TC", serif;
-    font-size: clamp(2.6rem, 4.8vw, 5.1rem);
+    font-size: clamp(2.34rem, 4.32vw, 4.59rem);
     line-height: 0.94;
     letter-spacing: -0.045em;
   }
@@ -1972,6 +1972,8 @@ const copy = {
 
   .rag-sources-foldout-body {
     padding: 0 18px 18px;
+    max-height: 420px;
+    overflow-y: auto;
   }
 
   .rag-foldout-actions {
