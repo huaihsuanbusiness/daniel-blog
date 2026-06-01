@@ -56,11 +56,17 @@ const copy = {
     policyLabel: 'Automatic policy decision',
     policyEmpty: 'Run a question to inspect which policy the runtime selected and why.',
     plannerLabel: 'Planner view',
+    plannerEmpty: 'The planner panel stays pinned so you can compare before and after each run.',
     runtimeLabel: 'Runtime guardrails',
+    runtimeEmpty: 'Guardrails, retry budget, and retrieval controls will be summarized here.',
     timelineLabel: 'Stage trace',
     timelineEmpty: 'Each recorded stage will appear here after the request finishes.',
+    traceExpand: 'View full trace',
+    traceCollapse: 'Collapse trace',
     sourcesLabel: 'Retrieved sources',
     sourceEmpty: 'No sources returned yet.',
+    sourcesExpand: 'View more sources',
+    sourcesCollapse: 'Show fewer sources',
     rawLabel: 'Raw response',
     failedPrefix: 'Request failed',
     examples: [
@@ -131,11 +137,17 @@ const copy = {
     policyLabel: '自動策略判斷',
     policyEmpty: '送出問題後，這裡會顯示 runtime 最後選了什麼策略，以及為什麼。',
     plannerLabel: 'Planner 視角',
+    plannerEmpty: '這個版位會固定保留，方便你對照查詢前後 planner 的差異。',
     runtimeLabel: 'Runtime guardrails',
+    runtimeEmpty: '這裡會固定顯示 guardrails、retry budget 與 retrieval controls。',
     timelineLabel: '逐階段 trace',
     timelineEmpty: '每個被記錄的 stage，都會在查詢完成後出現在這裡。',
+    traceExpand: '檢視完整 Trace',
+    traceCollapse: '收合 Trace',
     sourcesLabel: '這次取回的 sources',
     sourceEmpty: '目前還沒有來源。',
+    sourcesExpand: '檢視更多來源',
+    sourcesCollapse: '顯示較少來源',
     rawLabel: 'Raw response',
     failedPrefix: '請求失敗',
     examples: [
@@ -159,7 +171,7 @@ const copy = {
 }[lang];
 ---
 
-<section class="rag-lab" data-rag-lab data-lang={lang} data-has-response="false">
+<section class="rag-lab" data-rag-lab data-lang={lang}>
   <div class="rag-shell">
     <div class="rag-atmosphere rag-atmosphere-a"></div>
     <div class="rag-atmosphere rag-atmosphere-b"></div>
@@ -183,7 +195,28 @@ const copy = {
       </aside>
     </header>
 
-    <section class="rag-telemetry-ribbon" data-rag-metrics></section>
+    <section class="rag-telemetry-ribbon" data-rag-metrics>
+      <article class="rag-metric-card">
+        <span>{copy.metricsHealth}</span>
+        <strong data-rag-metric-health>OK</strong>
+      </article>
+      <article class="rag-metric-card">
+        <span>{copy.metricsPolicy}</span>
+        <strong data-rag-metric-policy>{copy.policyFallback}</strong>
+      </article>
+      <article class="rag-metric-card">
+        <span>{copy.metricsResolvedMode}</span>
+        <strong data-rag-metric-mode>Auto</strong>
+      </article>
+      <article class="rag-metric-card">
+        <span>{copy.metricsLatency}</span>
+        <strong data-rag-metric-latency>—</strong>
+      </article>
+      <article class="rag-metric-card">
+        <span>{copy.metricsSources}</span>
+        <strong data-rag-metric-sources>0</strong>
+      </article>
+    </section>
 
     <section class="rag-composer-card">
       <div class="rag-composer-head">
@@ -220,7 +253,14 @@ const copy = {
             <h3 class="rag-section-title">{copy.modeLabel}</h3>
           </div>
         </div>
-        <div class="rag-mode-pills" data-rag-modes></div>
+        <div class="rag-mode-pills" data-rag-modes>
+          <button type="button" class="rag-mode-pill is-active" data-rag-mode="auto">Auto</button>
+          <button type="button" class="rag-mode-pill" data-rag-mode="fast">Fast</button>
+          <button type="button" class="rag-mode-pill" data-rag-mode="safe">Safe</button>
+          <button type="button" class="rag-mode-pill" data-rag-mode="deep_eval">Deep Eval</button>
+          <button type="button" class="rag-mode-pill" data-rag-mode="creative">Creative</button>
+          <button type="button" class="rag-mode-pill" data-rag-mode="agentic">Agentic</button>
+        </div>
         <p class="rag-mode-helper" data-rag-mode-helper>{copy.modeHintAuto}</p>
         <p class="rag-mode-note" data-rag-mode-note></p>
       </div>
@@ -368,7 +408,7 @@ const copy = {
         <div class="rag-route" data-rag-route>{copy.routeEmpty}</div>
       </section>
 
-      <section class="rag-panel rag-panel-policy" data-rag-deferred>
+      <section class="rag-panel rag-panel-policy">
         <div class="rag-panel-head">
           <div>
             <p class="rag-kicker">{copy.policyLabel}</p>
@@ -378,42 +418,44 @@ const copy = {
         <div class="rag-card-stack" data-rag-policy>{copy.policyEmpty}</div>
       </section>
 
-      <section class="rag-panel rag-panel-runtime" data-rag-deferred>
+      <section class="rag-panel rag-panel-runtime">
         <div class="rag-panel-head">
           <div>
             <p class="rag-kicker">{copy.runtimeLabel}</p>
             <h3 class="rag-section-title">{copy.runtimeLabel}</h3>
           </div>
         </div>
-        <div class="rag-mini-grid" data-rag-runtime></div>
+        <div class="rag-mini-grid" data-rag-runtime>{copy.runtimeEmpty}</div>
       </section>
 
-      <section class="rag-panel rag-panel-planner" data-rag-deferred>
+      <section class="rag-panel rag-panel-planner">
         <div class="rag-panel-head">
           <div>
             <p class="rag-kicker">{copy.plannerLabel}</p>
             <h3 class="rag-section-title">{copy.plannerLabel}</h3>
           </div>
         </div>
-        <div class="rag-mini-grid" data-rag-plan></div>
+        <div class="rag-mini-grid" data-rag-plan>{copy.plannerEmpty}</div>
       </section>
 
-      <section class="rag-panel rag-panel-trace" data-rag-deferred>
+      <section class="rag-panel rag-panel-trace">
         <div class="rag-panel-head">
           <div>
             <p class="rag-kicker">{copy.timelineLabel}</p>
             <h3 class="rag-section-title">{copy.timelineLabel}</h3>
           </div>
+          <button type="button" class="rag-link-button" data-rag-trace-toggle hidden>{copy.traceExpand}</button>
         </div>
         <div class="rag-trace" data-rag-timeline>{copy.timelineEmpty}</div>
       </section>
 
-      <section class="rag-panel rag-panel-sources" data-rag-deferred>
+      <section class="rag-panel rag-panel-sources">
         <div class="rag-panel-head">
           <div>
             <p class="rag-kicker">{copy.sourcesLabel}</p>
             <h3 class="rag-section-title">{copy.sourcesLabel}</h3>
           </div>
+          <button type="button" class="rag-link-button" data-rag-sources-toggle hidden>{copy.sourcesExpand}</button>
         </div>
         <div class="rag-sources" data-rag-sources>{copy.sourceEmpty}</div>
       </section>
@@ -436,6 +478,8 @@ const copy = {
       bootstrap: null,
       selectedMode: AUTO_MODE,
       manualOverridesEnabled: false,
+      traceExpanded: false,
+      sourcesExpanded: false,
     };
 
     const elements = {
@@ -450,14 +494,20 @@ const copy = {
       manualFields: Array.from(root.querySelectorAll('[data-rag-field]')),
       manualHelper: root.querySelector('[data-rag-manual-helper]'),
       manualState: root.querySelector('[data-rag-manual-state]'),
-      metrics: root.querySelector('[data-rag-metrics]'),
+      metricHealth: root.querySelector('[data-rag-metric-health]'),
+      metricPolicy: root.querySelector('[data-rag-metric-policy]'),
+      metricMode: root.querySelector('[data-rag-metric-mode]'),
+      metricLatency: root.querySelector('[data-rag-metric-latency]'),
+      metricSources: root.querySelector('[data-rag-metric-sources]'),
       answer: root.querySelector('[data-rag-answer]'),
       route: root.querySelector('[data-rag-route]'),
       policy: root.querySelector('[data-rag-policy]'),
       runtime: root.querySelector('[data-rag-runtime]'),
       plan: root.querySelector('[data-rag-plan]'),
       timeline: root.querySelector('[data-rag-timeline]'),
+      traceToggle: root.querySelector('[data-rag-trace-toggle]'),
       sources: root.querySelector('[data-rag-sources]'),
+      sourcesToggle: root.querySelector('[data-rag-sources-toggle]'),
       raw: root.querySelector('[data-rag-raw]'),
       submit: root.querySelector('[data-rag-submit]'),
       reset: root.querySelector('[data-rag-reset]'),
@@ -493,6 +543,12 @@ const copy = {
     };
 
     const getModeDescription = (mode) => getProfileMeta(mode)?.description || '';
+
+    const truncateText = (value, maxLength) => {
+      const text = String(value ?? '').replace(/\s+/g, ' ').trim();
+      if (!text) return '';
+      return text.length > maxLength ? `${text.slice(0, maxLength - 1)}…` : text;
+    };
 
     const stageSummary = (stage) => {
       if (!stage) return '';
@@ -540,35 +596,19 @@ const copy = {
       elements.statusNote.setAttribute('data-policy-live', runtimePolicyLive ? 'true' : 'false');
     };
 
-    const setResponseState = (hasResponse) => {
-      root.setAttribute('data-has-response', hasResponse ? 'true' : 'false');
-    };
-
     const renderModes = () => {
       const queryProfiles = state.bootstrap?.queryProfiles;
       const supportedModes = queryProfiles?.supported_modes || FALLBACK_MODES;
-      elements.modes.innerHTML = supportedModes
-        .map((mode) => {
-          const active = mode === state.selectedMode;
-          const title = mode === AUTO_MODE ? 'Auto' : mode.replaceAll('_', ' ');
-          return `
-            <button type="button" class="rag-mode-pill ${active ? 'is-active' : ''}" data-rag-mode="${escapeHtml(mode)}">
-              ${escapeHtml(title)}
-            </button>
-          `;
-        })
-        .join('');
-
-      elements.modeHelper.textContent = state.selectedMode === AUTO_MODE ? copy.modeHintAuto : copy.modeHintManual;
-      elements.modeNote.textContent = getModeDescription(state.selectedMode) || '';
-
       elements.modes.querySelectorAll('[data-rag-mode]').forEach((button) => {
-        button.addEventListener('click', () => {
-          state.selectedMode = button.getAttribute('data-rag-mode') || AUTO_MODE;
-          renderModes();
-          renderMetrics();
-        });
+        const mode = button.getAttribute('data-rag-mode') || '';
+        const isSupported = supportedModes.includes(mode);
+        button.hidden = !isSupported;
+        button.classList.toggle('is-active', mode === state.selectedMode);
       });
+
+      elements.modeHelper.textContent =
+        state.selectedMode === AUTO_MODE ? copy.modeHintAuto : copy.modeHintManual;
+      elements.modeNote.textContent = getModeDescription(state.selectedMode) || '';
     };
 
     const renderMetrics = (payload = null) => {
@@ -577,25 +617,11 @@ const copy = {
       const resolvedMode = payload?.query_profile?.mode || state.selectedMode || AUTO_MODE;
       const observedLatency = payload?.runtime_budget?.postrun?.observed?.latency_ms ?? null;
       const sourcesCount = (payload?.sources || []).length;
-
-      const metrics = [
-        { label: copy.metricsHealth, value: healthy ? 'OK' : copy.disconnected },
-        { label: copy.metricsPolicy, value: runtimePolicyLive ? copy.policyLive : copy.policyFallback },
-        { label: copy.metricsResolvedMode, value: resolvedMode === AUTO_MODE ? 'Auto' : resolvedMode },
-        { label: copy.metricsLatency, value: formatLatency(observedLatency) },
-        { label: copy.metricsSources, value: String(sourcesCount) },
-      ];
-
-      elements.metrics.innerHTML = metrics
-        .map(
-          (metric, index) => `
-            <article class="rag-metric-card ${index === 0 ? 'is-status' : ''}">
-              <span>${escapeHtml(metric.label)}</span>
-              <strong>${escapeHtml(metric.value)}</strong>
-            </article>
-          `
-        )
-        .join('');
+      elements.metricHealth.textContent = healthy ? 'OK' : copy.disconnected;
+      elements.metricPolicy.textContent = runtimePolicyLive ? copy.policyLive : copy.policyFallback;
+      elements.metricMode.textContent = resolvedMode === AUTO_MODE ? 'Auto' : resolvedMode;
+      elements.metricLatency.textContent = formatLatency(observedLatency);
+      elements.metricSources.textContent = String(sourcesCount);
     };
 
     const updateManualState = () => {
@@ -633,11 +659,24 @@ const copy = {
 
     const renderPlan = (response) => {
       const plan = response.plan || {};
+      const originalQuestion = plan.original_question || response.question || '—';
+      const rewrittenQuestion = plan.rewritten_question || originalQuestion;
+      const routeReason = plan.route_reason || response.runtime_policy_router?.reasoning || '—';
+      const rewriteReason = plan.rewrite_reason || response.runtime_policy_router?.user_explanation || '—';
       elements.plan.innerHTML = `
-        <article class="rag-mini-card"><span>Original</span><strong>${escapeHtml(plan.original_question || '—')}</strong></article>
-        <article class="rag-mini-card"><span>Rewritten</span><strong>${escapeHtml(plan.rewritten_question || '—')}</strong></article>
-        <article class="rag-mini-card"><span>Route reason</span><strong>${escapeHtml(plan.route_reason || '—')}</strong></article>
-        <article class="rag-mini-card"><span>Rewrite reason</span><strong>${escapeHtml(plan.rewrite_reason || '—')}</strong></article>
+        <article class="rag-mini-card"><span>Original</span><strong>${escapeHtml(originalQuestion)}</strong></article>
+        <article class="rag-mini-card"><span>Rewritten</span><strong>${escapeHtml(rewrittenQuestion)}</strong></article>
+        <article class="rag-mini-card"><span>Route reason</span><strong>${escapeHtml(routeReason)}</strong></article>
+        <article class="rag-mini-card"><span>Rewrite reason</span><strong>${escapeHtml(rewriteReason)}</strong></article>
+      `;
+    };
+
+    const renderPlanEmpty = () => {
+      elements.plan.innerHTML = `
+        <article class="rag-mini-card"><span>Original</span><strong>—</strong></article>
+        <article class="rag-mini-card"><span>Rewritten</span><strong>—</strong></article>
+        <article class="rag-mini-card"><span>Route reason</span><strong>${escapeHtml(copy.plannerEmpty)}</strong></article>
+        <article class="rag-mini-card"><span>Rewrite reason</span><strong>—</strong></article>
       `;
     };
 
@@ -655,14 +694,31 @@ const copy = {
       `;
     };
 
+    const renderRuntimeEmpty = () => {
+      elements.runtime.innerHTML = `
+        <article class="rag-mini-card"><span>Workflow rail</span><strong>—</strong></article>
+        <article class="rag-mini-card"><span>Tool route</span><strong>—</strong></article>
+        <article class="rag-mini-card"><span>Retry attempts</span><strong>—</strong></article>
+        <article class="rag-mini-card"><span>Latency budget</span><strong>—</strong></article>
+        <article class="rag-mini-card"><span>Retrieval mode</span><strong>—</strong></article>
+        <article class="rag-mini-card"><span>Min score</span><strong>${escapeHtml(copy.runtimeEmpty)}</strong></article>
+      `;
+    };
+
     const renderTimeline = (response) => {
       const stages = response.observability?.timings?.stages || [];
       if (!stages.length) {
         elements.timeline.textContent = copy.timelineEmpty;
+        elements.traceToggle.hidden = true;
         return;
       }
 
-      elements.timeline.innerHTML = stages
+      const previewCount = state.traceExpanded ? stages.length : Math.min(stages.length, 5);
+      const previewStages = stages.slice(0, previewCount);
+      elements.traceToggle.hidden = stages.length <= 5;
+      elements.traceToggle.textContent = state.traceExpanded ? copy.traceCollapse : copy.traceExpand;
+
+      elements.timeline.innerHTML = previewStages
         .map(
           (stage) => `
             <article class="rag-stage-card">
@@ -672,7 +728,7 @@ const copy = {
                   <strong>${escapeHtml(stage.name || 'stage')}</strong>
                   <span>${escapeHtml(formatLatency(stage.latency_ms))}</span>
                 </div>
-                <p>${escapeHtml(stageSummary(stage))}</p>
+                <p>${escapeHtml(truncateText(stageSummary(stage), 140))}</p>
               </div>
             </article>
           `
@@ -684,11 +740,16 @@ const copy = {
       const sources = response.sources || [];
       if (!sources.length) {
         elements.sources.textContent = copy.sourceEmpty;
+        elements.sourcesToggle.hidden = true;
         return;
       }
 
+      const previewCount = state.sourcesExpanded ? sources.length : Math.min(sources.length, 2);
+      elements.sourcesToggle.hidden = sources.length <= 2;
+      elements.sourcesToggle.textContent = state.sourcesExpanded ? copy.sourcesCollapse : copy.sourcesExpand;
+
       elements.sources.innerHTML = sources
-        .slice(0, 6)
+        .slice(0, previewCount)
         .map(
           (source, index) => `
             <article class="rag-source-card">
@@ -697,7 +758,7 @@ const copy = {
                 <span>${escapeHtml(source.marker || source.citation_marker || `#${index + 1}`)}</span>
               </div>
               <p class="rag-source-meta">score ${escapeHtml(formatMaybe(source.score))} · ${escapeHtml(source.metadata?.document_type || source.metadata?.file_type || 'source')}</p>
-              <p class="rag-source-preview">${escapeHtml(source.preview || source.text || '').slice(0, 280)}</p>
+              <p class="rag-source-preview">${escapeHtml(truncateText(source.preview || source.text || '', 220))}</p>
             </article>
           `
         )
@@ -705,7 +766,6 @@ const copy = {
     };
 
     const renderResponse = (response) => {
-      setResponseState(true);
       elements.answer.textContent = response.answer || '';
       elements.route.innerHTML = routeSummary(response);
       elements.raw.textContent = JSON.stringify(response, null, 2);
@@ -718,15 +778,16 @@ const copy = {
     };
 
     const renderError = async (response) => {
-      setResponseState(false);
       const payload = await response.json().catch(() => ({}));
       elements.answer.textContent = `${copy.failedPrefix}: ${payload?.detail?.message || payload?.detail || payload?.error || response.statusText}`;
       elements.route.textContent = copy.routeEmpty;
       elements.policy.textContent = copy.policyEmpty;
-      elements.plan.innerHTML = '';
-      elements.runtime.innerHTML = '';
+      renderPlanEmpty();
+      renderRuntimeEmpty();
       elements.timeline.textContent = copy.timelineEmpty;
+      elements.traceToggle.hidden = true;
       elements.sources.textContent = copy.sourceEmpty;
+      elements.sourcesToggle.hidden = true;
       elements.raw.textContent = JSON.stringify(payload, null, 2);
       renderMetrics();
     };
@@ -769,6 +830,15 @@ const copy = {
       return payload;
     };
 
+    const getRenderedResponse = () => {
+      if (!elements.raw.textContent) return null;
+      try {
+        return JSON.parse(elements.raw.textContent);
+      } catch {
+        return null;
+      }
+    };
+
     const setLoading = (loading) => {
       elements.submit.disabled = loading;
       elements.reset.disabled = loading;
@@ -781,10 +851,11 @@ const copy = {
     };
 
     const resetDefaults = () => {
-      setResponseState(false);
       const defaults = state.bootstrap?.defaults || {};
       state.selectedMode = defaults.query_mode || AUTO_MODE;
       state.manualOverridesEnabled = false;
+      state.traceExpanded = false;
+      state.sourcesExpanded = false;
       elements.question.value = defaultQuestion;
 
       for (const field of elements.manualFields) {
@@ -803,6 +874,16 @@ const copy = {
       updateManualState();
       renderModes();
       renderMetrics();
+      elements.answer.textContent = copy.emptyAnswer;
+      elements.route.textContent = copy.routeEmpty;
+      elements.policy.textContent = copy.policyEmpty;
+      renderPlanEmpty();
+      renderRuntimeEmpty();
+      elements.timeline.textContent = copy.timelineEmpty;
+      elements.traceToggle.hidden = true;
+      elements.sources.textContent = copy.sourceEmpty;
+      elements.sourcesToggle.hidden = true;
+      elements.raw.textContent = '';
     };
 
     root.querySelectorAll('[data-rag-example]').forEach((button) => {
@@ -812,9 +893,30 @@ const copy = {
       });
     });
 
+    elements.modes.querySelectorAll('[data-rag-mode]').forEach((button) => {
+      button.addEventListener('click', () => {
+        const nextMode = button.getAttribute('data-rag-mode') || AUTO_MODE;
+        state.selectedMode = nextMode;
+        renderModes();
+        renderMetrics();
+      });
+    });
+
     elements.manualEnabled.addEventListener('change', () => {
       state.manualOverridesEnabled = elements.manualEnabled.checked;
       updateManualState();
+    });
+
+    elements.traceToggle.addEventListener('click', () => {
+      state.traceExpanded = !state.traceExpanded;
+      const payload = getRenderedResponse();
+      if (payload) renderTimeline(payload);
+    });
+
+    elements.sourcesToggle.addEventListener('click', () => {
+      state.sourcesExpanded = !state.sourcesExpanded;
+      const payload = getRenderedResponse();
+      if (payload) renderSources(payload);
     });
 
     elements.reset.addEventListener('click', resetDefaults);
@@ -827,14 +929,18 @@ const copy = {
       }
 
       setLoading(true);
-      setResponseState(false);
+      state.traceExpanded = false;
+      state.sourcesExpanded = false;
       elements.answer.textContent = copy.runningAnswer;
-      elements.route.textContent = '';
+      elements.route.textContent = copy.routeEmpty;
       elements.policy.textContent = copy.policyEmpty;
-      elements.plan.innerHTML = '';
-      elements.runtime.innerHTML = '';
+      renderPlanEmpty();
+      renderRuntimeEmpty();
       elements.timeline.textContent = copy.timelineEmpty;
+      elements.traceToggle.hidden = true;
       elements.sources.textContent = copy.sourceEmpty;
+      elements.sourcesToggle.hidden = true;
+      elements.raw.textContent = '';
 
       try {
         const response = await fetch('/api/rag/ask', {
@@ -870,12 +976,13 @@ const copy = {
       elements.signal.classList.add('is-bad');
       elements.status.textContent = copy.statusError;
       elements.statusNote.textContent = String(error);
-      setResponseState(false);
+      renderPlanEmpty();
+      renderRuntimeEmpty();
     }
   }
 </script>
 
-<style>
+<style is:global>
   .rag-lab {
     margin: var(--space-5) 0 var(--space-6);
   }
@@ -1033,8 +1140,8 @@ const copy = {
   }
 
   .rag-telemetry-ribbon {
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
     align-items: stretch;
     gap: 0;
     margin-bottom: 22px;
@@ -1051,7 +1158,7 @@ const copy = {
   .rag-metric-card {
     display: grid;
     gap: 6px;
-    flex: 1 1 160px;
+    min-width: 0;
     padding: 16px 18px;
     border-right: 1px solid rgba(96, 68, 45, 0.08);
     background: transparent;
@@ -1441,19 +1548,8 @@ const copy = {
       "journey journey"
       "policy runtime"
       "planner trace"
-      "sources sources";
+      "planner sources";
     gap: 18px;
-  }
-
-  .rag-lab[data-has-response='false'] [data-rag-deferred] {
-    display: none;
-  }
-
-  .rag-lab[data-has-response='false'] .rag-output-grid {
-    grid-template-columns: 1fr;
-    grid-template-areas:
-      "answer"
-      "journey";
   }
 
   .rag-panel {
@@ -1468,6 +1564,14 @@ const copy = {
   .rag-panel-planner { grid-area: planner; }
   .rag-panel-trace { grid-area: trace; }
   .rag-panel-sources { grid-area: sources; }
+
+  .rag-panel-policy,
+  .rag-panel-runtime,
+  .rag-panel-planner,
+  .rag-panel-trace,
+  .rag-panel-sources {
+    min-height: 296px;
+  }
 
   .rag-answer {
     white-space: pre-wrap;
@@ -1540,6 +1644,7 @@ const copy = {
   .rag-mini-grid {
     display: grid;
     gap: 12px;
+    align-content: start;
   }
 
   .rag-mini-card {
@@ -1549,6 +1654,7 @@ const copy = {
   .rag-trace {
     display: grid;
     gap: 14px;
+    align-content: start;
   }
 
   .rag-stage-card {
@@ -1607,6 +1713,7 @@ const copy = {
   .rag-sources {
     display: grid;
     gap: 12px;
+    align-content: start;
   }
 
   .rag-source-card {
@@ -1636,8 +1743,25 @@ const copy = {
     border: 0;
     background: transparent;
     color: rgba(32, 21, 14, 0.8);
+    padding: 0 18px 18px;
     max-height: 420px;
     overflow: auto;
+  }
+
+  .rag-link-button {
+    border: 0;
+    padding: 0;
+    background: transparent;
+    color: color-mix(in srgb, var(--color-accent) 74%, #7a4b1d);
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+
+  .rag-link-button:hover {
+    color: #a4601c;
   }
 
   :global(html[data-theme='dark']) .rag-shell {
@@ -1751,6 +1875,10 @@ const copy = {
     color: rgba(241, 230, 216, 0.5);
   }
 
+  :global(html[data-theme='dark']) .rag-link-button {
+    color: rgba(232, 181, 113, 0.9);
+  }
+
   @media (max-width: 1080px) {
     .rag-hero,
     .rag-control-rail,
@@ -1774,7 +1902,6 @@ const copy = {
     }
 
     .rag-telemetry-ribbon {
-      display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 0;
     }
