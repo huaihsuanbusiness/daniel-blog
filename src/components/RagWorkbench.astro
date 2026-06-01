@@ -26,11 +26,13 @@ const copy = {
     modeHintAuto: 'Auto lets the runtime policy router decide the cheapest safe path first.',
     modeHintManual: 'Fixed modes are useful when you want a more predictable teaching or debugging path.',
     manualLabel: 'Advanced Runtime controls',
-    manualDescription: 'Keep this collapsed for most readers. Expand it only when you want to override the runtime.',
+    manualDescription: '',
     manualToggle: 'Manual override',
-    manualHelper:
-      'When manual override is on, these fields are sent explicitly to the API and can replace what auto mode would normally choose.',
-    manualSummaryClosed: 'Collapsed by default so the main interaction stays close to the question composer.',
+    manualHelper: '',
+    manualSummaryClosed: 'Default',
+    manualStatusActive: 'Manual override on',
+    manualOpenButton: 'Open controls',
+    manualCloseButton: 'Done',
     workflow: 'Workflow rail',
     workflowHelp: 'Route this request through the inspectable workflow rail instead of the direct engine path.',
     toolRouting: 'Tool routing',
@@ -110,11 +112,13 @@ const copy = {
     modeHintAuto: 'Auto 會先交給 runtime policy router 判斷當下最便宜又安全的路徑。',
     modeHintManual: '固定 mode 比較適合教學或除錯，因為你能觀察比較可預期的路徑。',
     manualLabel: '進階 Runtime controls',
-    manualDescription: '大多數讀者不需要打開這區。只有想覆寫 runtime 行為時，再展開它。',
+    manualDescription: '',
     manualToggle: '啟用手動覆寫',
-    manualHelper:
-      '一旦開啟手動覆寫，這些欄位會被明確送進 API，因此它們可能會取代 auto mode 原本會自動選的設定。',
-    manualSummaryClosed: '預設收合，讓主要互動區保持靠近輸入框與送出按鈕。',
+    manualHelper: '',
+    manualSummaryClosed: '預設',
+    manualStatusActive: '手動覆寫已開啟',
+    manualOpenButton: '開啟控制面板',
+    manualCloseButton: '完成',
     workflow: 'Workflow rail',
     workflowHelp: '改走可觀察的 workflow rail，而不是直接的 engine path。',
     toolRouting: 'Tool routing',
@@ -302,126 +306,128 @@ const copy = {
         <p class="rag-mode-note" data-rag-mode-note hidden></p>
       </section>
 
-      <details class="rag-advanced" data-rag-advanced>
-            <summary class="rag-advanced-summary">
-              <div>
-                <h3 class="rag-section-title">{copy.manualLabel}</h3>
-              </div>
-              <div class="rag-advanced-meta">
-                <span class="rag-advanced-preview" data-rag-manual-state>{copy.manualSummaryClosed}</span>
-                <span class="rag-advanced-chevron" aria-hidden="true"></span>
-              </div>
-            </summary>
-
-            <div class="rag-advanced-body">
-              <div class="rag-advanced-toggle-row">
-                <p class="rag-advanced-copy">{copy.manualDescription}</p>
-                <label class="rag-switch rag-switch-master">
-                  <input type="checkbox" data-rag-manual-enabled />
-                  <span class="rag-switch-track"></span>
-                  <span class="rag-switch-label">{copy.manualToggle}</span>
-                </label>
-              </div>
-
-              <p class="rag-callout" data-rag-manual-helper>{copy.manualDescription}</p>
-
-              <div class="rag-manual-grid" data-rag-manual-fields-wrap>
-            <article class="rag-manual-row">
-              <div>
-                <h4>{copy.workflow}</h4>
-                <p>{copy.workflowHelp}</p>
-              </div>
-              <label class="rag-switch">
-                <input type="checkbox" data-rag-field="use_workflow" />
-                <span class="rag-switch-track"></span>
-              </label>
-            </article>
-
-            <article class="rag-manual-row">
-              <div>
-                <h4>{copy.toolRouting}</h4>
-                <p>{copy.toolRoutingHelp}</p>
-              </div>
-              <label class="rag-switch">
-                <input type="checkbox" data-rag-field="use_tool_routing" />
-                <span class="rag-switch-track"></span>
-              </label>
-            </article>
-
-            <article class="rag-manual-row">
-              <div>
-                <h4>{copy.retryLoop}</h4>
-                <p>{copy.retryLoopHelp}</p>
-              </div>
-              <label class="rag-switch">
-                <input type="checkbox" data-rag-field="use_retry_loop" />
-                <span class="rag-switch-track"></span>
-              </label>
-            </article>
-
-            <article class="rag-manual-row">
-              <div>
-                <h4>{copy.retrievalMode}</h4>
-                <p>{copy.retrievalModeHelp}</p>
-              </div>
-              <select class="rag-select" data-rag-field="retrieval_mode">
-                <option value="hybrid">{copy.hybrid}</option>
-                <option value="dense">{copy.dense}</option>
-              </select>
-            </article>
-
-            <article class="rag-manual-row">
-              <div>
-                <h4>{copy.parentExpansion}</h4>
-                <p>{copy.parentExpansionHelp}</p>
-              </div>
-              <label class="rag-switch">
-                <input type="checkbox" data-rag-field="use_parent_expansion" />
-                <span class="rag-switch-track"></span>
-              </label>
-            </article>
-
-            <article class="rag-manual-row">
-              <div>
-                <h4>{copy.contextCompression}</h4>
-                <p>{copy.contextCompressionHelp}</p>
-              </div>
-              <label class="rag-switch">
-                <input type="checkbox" data-rag-field="use_context_compression" />
-                <span class="rag-switch-track"></span>
-              </label>
-            </article>
-
-            <article class="rag-manual-row">
-              <div>
-                <h4>{copy.longContextReorder}</h4>
-                <p>{copy.longContextReorderHelp}</p>
-              </div>
-              <label class="rag-switch">
-                <input type="checkbox" data-rag-field="use_long_context_reorder" />
-                <span class="rag-switch-track"></span>
-              </label>
-            </article>
-
-            <article class="rag-manual-row">
-              <div>
-                <h4>{copy.minScore}</h4>
-                <p>{copy.minScoreHelp}</p>
-              </div>
-              <input class="rag-number" type="number" min="0" max="1" step="0.01" data-rag-field="min_score" />
-            </article>
-
-            <article class="rag-manual-row">
-              <div>
-                <h4>{copy.maxRetries}</h4>
-                <p>{copy.maxRetriesHelp}</p>
-              </div>
-              <input class="rag-number" type="number" min="0" max="5" step="1" data-rag-field="max_retries" />
-            </article>
-              </div>
-            </div>
-          </details>
+      <section class="rag-advanced-card">
+        <div class="rag-advanced-card-head">
+          <h3 class="rag-section-title">{copy.manualLabel}</h3>
+          <span class="rag-advanced-pill" data-rag-manual-state>{copy.manualSummaryClosed}</span>
+        </div>
+        <button type="button" class="rag-secondary rag-advanced-trigger" data-rag-advanced-open>{copy.manualOpenButton}</button>
+      </section>
     </section>
+
+    <dialog class="rag-advanced-modal" data-rag-advanced-dialog>
+      <form method="dialog" class="rag-advanced-modal-shell">
+        <div class="rag-advanced-modal-head">
+          <div>
+            <h3 class="rag-section-title">{copy.manualLabel}</h3>
+          </div>
+          <button type="submit" class="rag-secondary rag-advanced-close" data-rag-advanced-close>{copy.manualCloseButton}</button>
+        </div>
+
+        <div class="rag-advanced-toggle-row">
+          <label class="rag-switch rag-switch-master">
+            <input type="checkbox" data-rag-manual-enabled />
+            <span class="rag-switch-track"></span>
+            <span class="rag-switch-label">{copy.manualToggle}</span>
+          </label>
+        </div>
+
+        <div class="rag-manual-grid" data-rag-manual-fields-wrap>
+          <article class="rag-manual-row">
+            <div>
+              <h4>{copy.workflow}</h4>
+              <p>{copy.workflowHelp}</p>
+            </div>
+            <label class="rag-switch">
+              <input type="checkbox" data-rag-field="use_workflow" />
+              <span class="rag-switch-track"></span>
+            </label>
+          </article>
+
+          <article class="rag-manual-row">
+            <div>
+              <h4>{copy.toolRouting}</h4>
+              <p>{copy.toolRoutingHelp}</p>
+            </div>
+            <label class="rag-switch">
+              <input type="checkbox" data-rag-field="use_tool_routing" />
+              <span class="rag-switch-track"></span>
+            </label>
+          </article>
+
+          <article class="rag-manual-row">
+            <div>
+              <h4>{copy.retryLoop}</h4>
+              <p>{copy.retryLoopHelp}</p>
+            </div>
+            <label class="rag-switch">
+              <input type="checkbox" data-rag-field="use_retry_loop" />
+              <span class="rag-switch-track"></span>
+            </label>
+          </article>
+
+          <article class="rag-manual-row">
+            <div>
+              <h4>{copy.retrievalMode}</h4>
+              <p>{copy.retrievalModeHelp}</p>
+            </div>
+            <select class="rag-select" data-rag-field="retrieval_mode">
+              <option value="hybrid">{copy.hybrid}</option>
+              <option value="dense">{copy.dense}</option>
+            </select>
+          </article>
+
+          <article class="rag-manual-row">
+            <div>
+              <h4>{copy.parentExpansion}</h4>
+              <p>{copy.parentExpansionHelp}</p>
+            </div>
+            <label class="rag-switch">
+              <input type="checkbox" data-rag-field="use_parent_expansion" />
+              <span class="rag-switch-track"></span>
+            </label>
+          </article>
+
+          <article class="rag-manual-row">
+            <div>
+              <h4>{copy.contextCompression}</h4>
+              <p>{copy.contextCompressionHelp}</p>
+            </div>
+            <label class="rag-switch">
+              <input type="checkbox" data-rag-field="use_context_compression" />
+              <span class="rag-switch-track"></span>
+            </label>
+          </article>
+
+          <article class="rag-manual-row">
+            <div>
+              <h4>{copy.longContextReorder}</h4>
+              <p>{copy.longContextReorderHelp}</p>
+            </div>
+            <label class="rag-switch">
+              <input type="checkbox" data-rag-field="use_long_context_reorder" />
+              <span class="rag-switch-track"></span>
+            </label>
+          </article>
+
+          <article class="rag-manual-row">
+            <div>
+              <h4>{copy.minScore}</h4>
+              <p>{copy.minScoreHelp}</p>
+            </div>
+            <input class="rag-number" type="number" min="0" max="1" step="0.01" data-rag-field="min_score" />
+          </article>
+
+          <article class="rag-manual-row">
+            <div>
+              <h4>{copy.maxRetries}</h4>
+              <p>{copy.maxRetriesHelp}</p>
+            </div>
+            <input class="rag-number" type="number" min="0" max="5" step="1" data-rag-field="max_retries" />
+          </article>
+        </div>
+      </form>
+    </dialog>
 
     <section class="rag-results-grid">
       <section class="rag-panel rag-panel-answer">
@@ -500,9 +506,11 @@ const copy = {
       modes: root.querySelector('[data-rag-modes]'),
       modeHelper: root.querySelector('[data-rag-mode-helper]'),
       modeNote: root.querySelector('[data-rag-mode-note]'),
+      advancedDialog: root.querySelector('[data-rag-advanced-dialog]'),
+      advancedOpen: root.querySelector('[data-rag-advanced-open]'),
+      advancedClose: root.querySelector('[data-rag-advanced-close]'),
       manualEnabled: root.querySelector('[data-rag-manual-enabled]'),
       manualFields: Array.from(root.querySelectorAll('[data-rag-field]')),
-      manualHelper: root.querySelector('[data-rag-manual-helper]'),
       manualState: root.querySelector('[data-rag-manual-state]'),
       metricHealth: root.querySelector('[data-rag-metric-health]'),
       metricPolicy: root.querySelector('[data-rag-metric-policy]'),
@@ -659,8 +667,7 @@ const copy = {
       elements.manualFields.forEach((field) => {
         field.disabled = !state.manualOverridesEnabled;
       });
-      elements.manualHelper.textContent = state.manualOverridesEnabled ? copy.manualHelper : copy.manualDescription;
-      elements.manualState.textContent = state.manualOverridesEnabled ? copy.manualToggle : copy.manualSummaryClosed;
+      elements.manualState.textContent = state.manualOverridesEnabled ? copy.manualStatusActive : copy.manualSummaryClosed;
     };
 
     const renderPlan = (response) => {
@@ -878,6 +885,22 @@ const copy = {
       });
     });
 
+    elements.advancedOpen?.addEventListener('click', () => {
+      elements.advancedDialog?.showModal();
+    });
+
+    elements.advancedDialog?.addEventListener('click', (event) => {
+      const rect = elements.advancedDialog.getBoundingClientRect();
+      const isInside =
+        event.clientX >= rect.left &&
+        event.clientX <= rect.right &&
+        event.clientY >= rect.top &&
+        event.clientY <= rect.bottom;
+      if (!isInside) {
+        elements.advancedDialog.close();
+      }
+    });
+
     elements.manualEnabled.addEventListener('change', () => {
       state.manualOverridesEnabled = elements.manualEnabled.checked;
       updateManualState();
@@ -1082,7 +1105,8 @@ const copy = {
   .rag-runtime-plaque,
   .rag-composer-card,
   .rag-mode-card,
-  .rag-advanced,
+  .rag-advanced-card,
+  .rag-advanced-modal,
   .rag-panel,
   .rag-raw {
     border: 1px solid rgba(96, 68, 45, 0.12);
@@ -1326,8 +1350,7 @@ const copy = {
   .rag-primary,
   .rag-secondary,
   .rag-chip,
-  .rag-mode-pill,
-  .rag-advanced-summary {
+  .rag-mode-pill {
     transition:
       transform var(--transition-fast),
       border-color var(--transition-fast),
@@ -1400,7 +1423,7 @@ const copy = {
   }
 
   .rag-mode-card,
-  .rag-advanced {
+  .rag-advanced-card {
     border-radius: 28px;
     padding: 14px 18px;
   }
@@ -1433,7 +1456,6 @@ const copy = {
 
   .rag-mode-helper,
   .rag-mode-note,
-  .rag-callout,
   .rag-policy-lead,
   .rag-answer,
   .rag-route,
@@ -1446,80 +1468,85 @@ const copy = {
   }
 
   .rag-mode-helper,
-  .rag-mode-note,
-  .rag-callout {
+  .rag-mode-note {
     margin: 10px 0 0;
     font-size: 0.9rem;
   }
 
-  .rag-advanced {
-    padding: 0;
-    overflow: hidden;
+  .rag-advanced-card {
+    border-radius: 28px;
+    padding: 18px 20px;
+    display: grid;
+    gap: 16px;
+    align-content: start;
   }
 
-  .rag-advanced[open] .rag-advanced-chevron {
-    transform: rotate(180deg);
-  }
-
-  .rag-advanced-summary {
-    list-style: none;
+  .rag-advanced-card-head {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 16px;
-    padding: 18px 20px;
-    cursor: pointer;
   }
 
-  .rag-advanced-summary::-webkit-details-marker {
-    display: none;
+  .rag-advanced-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 34px;
+    padding: 0 14px;
+    border-radius: 999px;
+    border: 1px solid rgba(95, 67, 44, 0.12);
+    background: rgba(255,255,255,0.66);
+    color: rgba(32, 21, 14, 0.68);
+    font-size: 0.82rem;
+    white-space: nowrap;
   }
 
-  .rag-advanced-meta {
+  .rag-advanced-trigger {
+    justify-self: start;
+  }
+
+  .rag-advanced-modal {
+    width: min(920px, calc(100vw - 32px));
+    max-height: min(82vh, 980px);
+    border: 1px solid rgba(95, 67, 44, 0.12);
+    border-radius: 30px;
+    padding: 0;
+    background:
+      radial-gradient(circle at top left, rgba(244, 230, 214, 0.9), transparent 35%),
+      rgba(255, 250, 244, 0.98);
+    box-shadow: 0 32px 90px rgba(32, 21, 14, 0.22);
+  }
+
+  .rag-advanced-modal::backdrop {
+    background: rgba(24, 18, 12, 0.34);
+    backdrop-filter: blur(8px);
+  }
+
+  .rag-advanced-modal-shell {
+    display: grid;
+    gap: 18px;
+    padding: 20px;
+    max-height: min(82vh, 980px);
+    overflow: auto;
+  }
+
+  .rag-advanced-modal-head {
     display: flex;
     align-items: center;
-    gap: 14px;
+    justify-content: space-between;
+    gap: 16px;
   }
 
-  .rag-advanced-preview {
-    max-width: 28ch;
-    color: rgba(32, 21, 14, 0.58);
-    font-size: 0.86rem;
-    text-align: right;
-  }
-
-  .rag-advanced-chevron {
-    width: 12px;
-    height: 12px;
-    border-right: 1.8px solid rgba(32, 21, 14, 0.6);
-    border-bottom: 1.8px solid rgba(32, 21, 14, 0.6);
-    transform: rotate(45deg);
-    transform-origin: center;
-  }
-
-  .rag-advanced-body {
-    padding: 0 20px 20px;
+  .rag-advanced-close {
+    flex-shrink: 0;
   }
 
   .rag-advanced-toggle-row {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-start;
     gap: 16px;
-  }
-
-  .rag-advanced-copy {
-    margin: 0;
-    color: rgba(32, 21, 14, 0.66);
-    font-size: 0.92rem;
-    line-height: 1.6;
-  }
-
-  .rag-callout {
-    padding: 12px 14px;
-    border-radius: 18px;
-    background: rgba(255, 246, 234, 0.82);
-    border: 1px solid rgba(201, 121, 45, 0.14);
   }
 
   .rag-manual-grid {
@@ -1904,7 +1931,8 @@ const copy = {
   :global(html[data-theme='dark']) .rag-runtime-plaque,
   :global(html[data-theme='dark']) .rag-composer-card,
   :global(html[data-theme='dark']) .rag-mode-card,
-  :global(html[data-theme='dark']) .rag-advanced,
+  :global(html[data-theme='dark']) .rag-advanced-card,
+  :global(html[data-theme='dark']) .rag-advanced-modal,
   :global(html[data-theme='dark']) .rag-panel,
   :global(html[data-theme='dark']) .rag-raw {
     border-color: rgba(157, 118, 72, 0.16);
@@ -1938,16 +1966,14 @@ const copy = {
   :global(html[data-theme='dark']) .rag-runtime-endpoint,
   :global(html[data-theme='dark']) .rag-mode-helper,
   :global(html[data-theme='dark']) .rag-mode-note,
-  :global(html[data-theme='dark']) .rag-callout,
   :global(html[data-theme='dark']) .rag-policy-lead,
   :global(html[data-theme='dark']) .rag-answer,
   :global(html[data-theme='dark']) .rag-route,
   :global(html[data-theme='dark']) .rag-source-card p,
   :global(html[data-theme='dark']) .rag-stage-card p,
-  :global(html[data-theme='dark']) .rag-advanced-copy,
   :global(html[data-theme='dark']) .rag-manual-row p,
   :global(html[data-theme='dark']) .rag-switch-label,
-  :global(html[data-theme='dark']) .rag-advanced-preview,
+  :global(html[data-theme='dark']) .rag-advanced-pill,
   :global(html[data-theme='dark']) .rag-raw summary,
   :global(html[data-theme='dark']) .rag-raw pre {
     color: rgba(241, 230, 216, 0.72);
@@ -1995,9 +2021,9 @@ const copy = {
     box-shadow: 0 16px 34px rgba(176, 111, 43, 0.22);
   }
 
-  :global(html[data-theme='dark']) .rag-callout {
-    background: rgba(61, 43, 24, 0.36);
-    border-color: rgba(170, 121, 68, 0.18);
+  :global(html[data-theme='dark']) .rag-advanced-pill {
+    border-color: rgba(157, 118, 72, 0.18);
+    background: rgba(31, 25, 21, 0.82);
   }
 
   :global(html[data-theme='dark']) .rag-policy-meta span,
@@ -2094,7 +2120,7 @@ const copy = {
       border-bottom: 0;
     }
 
-    .rag-advanced-summary,
+    .rag-advanced-card-head,
     .rag-advanced-toggle-row,
     .rag-manual-row,
     .rag-stage-head,
@@ -2102,7 +2128,7 @@ const copy = {
       gap: 10px;
     }
 
-    .rag-advanced-summary,
+    .rag-advanced-card-head,
     .rag-advanced-toggle-row,
     .rag-manual-row {
       grid-template-columns: 1fr;
@@ -2113,11 +2139,7 @@ const copy = {
       display: grid;
     }
 
-    .rag-advanced-meta {
-      justify-content: space-between;
-    }
-
-    .rag-advanced-preview {
+    .rag-advanced-pill {
       text-align: left;
     }
   }
