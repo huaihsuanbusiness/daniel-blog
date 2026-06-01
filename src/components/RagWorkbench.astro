@@ -203,7 +203,7 @@ const copy = {
       <div class="rag-hero-copy">
         <div class="rag-hero-mark" aria-hidden="true"></div>
         <p class="rag-eyebrow">{copy.eyebrow}</p>
-        <h2 class="rag-title">
+        <h2 class:list={['rag-title', lang === 'zh' && 'is-zh']}>
           {lang === 'zh' ? (
             <>
               <span>{copy.titleLeadA}</span>
@@ -243,36 +243,66 @@ const copy = {
     </header>
 
     <section class="rag-telemetry-ribbon" data-rag-metrics>
-      <article class="rag-metric-card">
-        <span class="rag-metric-icon rag-metric-icon-health" aria-hidden="true">♥</span>
+      <article class="rag-metric-card rag-metric-card-health">
+        <span class="rag-metric-icon rag-metric-icon-health" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 20s-6.5-4.35-8.7-8.18C1.6 8.78 3.1 5 6.35 5c2.02 0 3.08 1.14 3.69 2.21C10.66 6.14 11.71 5 13.73 5 17 5 18.48 8.79 16.8 11.82 14.58 15.65 12 20 12 20Z" />
+          </svg>
+        </span>
         <div class="rag-metric-copy">
         <span>{copy.metricsHealth}</span>
         <strong data-rag-metric-health>OK</strong>
         </div>
       </article>
-      <article class="rag-metric-card">
-        <span class="rag-metric-icon rag-metric-icon-policy" aria-hidden="true">🛡</span>
+      <article class="rag-metric-card rag-metric-card-policy">
+        <span class="rag-metric-icon rag-metric-icon-policy" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 3l6 2.7v5.9c0 4.14-2.63 7.78-6 9.4-3.37-1.62-6-5.26-6-9.4V5.7L12 3Z" />
+            <path d="m9.6 11.8 1.6 1.7 3.4-3.8" />
+          </svg>
+        </span>
         <div class="rag-metric-copy">
         <span>{copy.metricsPolicy}</span>
         <strong data-rag-metric-policy>{copy.policyFallback}</strong>
         </div>
       </article>
-      <article class="rag-metric-card">
-        <span class="rag-metric-icon rag-metric-icon-mode" aria-hidden="true">☷</span>
+      <article class="rag-metric-card rag-metric-card-mode">
+        <span class="rag-metric-icon rag-metric-icon-mode" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 6h14" />
+            <path d="M5 12h14" />
+            <path d="M5 18h14" />
+            <circle cx="9" cy="6" r="1.9" fill="currentColor" stroke="none" />
+            <circle cx="15" cy="12" r="1.9" fill="currentColor" stroke="none" />
+            <circle cx="11" cy="18" r="1.9" fill="currentColor" stroke="none" />
+          </svg>
+        </span>
         <div class="rag-metric-copy">
         <span>{copy.metricsResolvedMode}</span>
         <strong data-rag-metric-mode>Auto</strong>
         </div>
       </article>
-      <article class="rag-metric-card">
-        <span class="rag-metric-icon rag-metric-icon-latency" aria-hidden="true">◷</span>
+      <article class="rag-metric-card rag-metric-card-latency">
+        <span class="rag-metric-icon rag-metric-icon-latency" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="7.4" />
+            <path d="M12 8.3v4.2l3 1.8" />
+          </svg>
+        </span>
         <div class="rag-metric-copy">
         <span>{copy.metricsLatency}</span>
         <strong data-rag-metric-latency>—</strong>
         </div>
       </article>
-      <article class="rag-metric-card">
-        <span class="rag-metric-icon rag-metric-icon-sources" aria-hidden="true">▣</span>
+      <article class="rag-metric-card rag-metric-card-sources">
+        <span class="rag-metric-icon rag-metric-icon-sources" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M8 4.5h6l4 4v11H8z" />
+            <path d="M14 4.5v4h4" />
+            <path d="M10.5 13h5" />
+            <path d="M10.5 16h5" />
+          </svg>
+        </span>
         <div class="rag-metric-copy">
         <span>{copy.metricsSources}</span>
         <strong data-rag-metric-sources>0</strong>
@@ -1091,10 +1121,10 @@ const copy = {
 
   .rag-hero {
     display: grid;
-    grid-template-columns: minmax(0, 1.45fr) minmax(320px, 0.72fr);
+    grid-template-columns: minmax(0, 1.38fr) minmax(350px, 0.68fr);
     gap: 42px;
     align-items: start;
-    margin-bottom: 24px;
+    margin-bottom: 8px;
   }
 
   .rag-runtime-legend {
@@ -1132,23 +1162,24 @@ const copy = {
 
   .rag-hero-copy {
     position: relative;
-    padding-left: 128px;
+    padding-left: 108px;
+    align-self: start;
   }
 
   .rag-hero-mark {
     position: absolute;
     top: -4px;
     left: 0;
-    width: 96px;
-    height: 96px;
+    width: 82px;
+    height: 82px;
     border-radius: 999px;
     border: 1px solid rgba(193, 126, 54, 0.26);
     background:
       radial-gradient(circle at 50% 50%, rgba(255, 248, 230, 0.9) 0%, rgba(224, 171, 98, 0.9) 18%, rgba(176, 111, 40, 0.42) 34%, rgba(176, 111, 40, 0.06) 72%, transparent 74%),
       radial-gradient(circle at 50% 50%, rgba(194, 125, 52, 0.12), transparent 74%);
     box-shadow:
-      0 0 0 24px rgba(194, 125, 52, 0.04),
-      0 18px 44px rgba(181, 118, 49, 0.18);
+      0 0 0 18px rgba(194, 125, 52, 0.04),
+      0 16px 34px rgba(181, 118, 49, 0.16);
   }
 
   .rag-eyebrow,
@@ -1171,6 +1202,17 @@ const copy = {
     letter-spacing: -0.045em;
   }
 
+  .rag-title.is-zh {
+    max-width: none;
+    font-size: clamp(0.96rem, 1.72vw, 1.8rem);
+    line-height: 0.94;
+    letter-spacing: -0.04em;
+  }
+
+  .rag-title.is-zh span {
+    white-space: nowrap;
+  }
+
   .rag-title span {
     display: block;
   }
@@ -1185,12 +1227,12 @@ const copy = {
   }
 
   .rag-description {
-    margin-top: 18px;
+    margin-top: 10px;
     margin-bottom: 0;
-    max-width: 56ch;
+    max-width: 50ch;
     color: rgba(32, 21, 14, 0.74);
-    font-size: 1.02rem;
-    line-height: 1.78;
+    font-size: 0.96rem;
+    line-height: 1.62;
   }
 
   .rag-runtime-plaque,
@@ -1211,14 +1253,18 @@ const copy = {
   .rag-runtime-plaque {
     justify-self: end;
     position: relative;
-    width: min(100%, 452px);
-    min-height: 164px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 108px;
+    align-items: center;
+    gap: 18px;
+    width: min(100%, 442px);
+    min-height: 112px;
     overflow: hidden;
-    border-radius: 22px;
-    padding: 28px 30px;
+    border-radius: 18px;
+    padding: 16px 20px 16px 18px;
     border-color: rgba(191, 145, 86, 0.82);
     background:
-      radial-gradient(circle at 88% 36%, rgba(238, 176, 92, 0.12), transparent 18%),
+      radial-gradient(circle at 86% 32%, rgba(238, 176, 92, 0.07), transparent 17%),
       linear-gradient(180deg, rgba(34, 29, 24, 0.99), rgba(22, 19, 16, 0.99));
     box-shadow:
       0 22px 48px rgba(32, 18, 10, 0.24),
@@ -1228,8 +1274,8 @@ const copy = {
 
   .rag-runtime-frame {
     position: absolute;
-    inset: 6px;
-    border-radius: 17px;
+    inset: 4px;
+    border-radius: 14px;
     border: 1px solid rgba(214, 164, 99, 0.38);
     box-shadow:
       inset 0 0 0 1px rgba(255, 242, 220, 0.08),
@@ -1242,8 +1288,8 @@ const copy = {
     content: '';
     position: absolute;
     left: 50%;
-    width: 18px;
-    height: 9px;
+    width: 14px;
+    height: 7px;
     transform: translateX(-50%);
     background: linear-gradient(180deg, rgba(250, 188, 97, 0.95), rgba(196, 120, 34, 0.95));
     clip-path: polygon(50% 100%, 0 0, 100% 0);
@@ -1259,35 +1305,37 @@ const copy = {
   .rag-runtime-head {
     display: flex;
     align-items: center;
-    gap: 18px;
+    gap: 12px;
     position: relative;
     z-index: 1;
+    min-height: 32px;
+    grid-column: 1;
   }
 
   .rag-signal-dot {
-    width: 14px;
-    height: 14px;
+    width: 11px;
+    height: 11px;
     flex: none;
     border-radius: 999px;
     background: #b8a592;
-    box-shadow: 0 0 12px rgba(184, 165, 146, 0.4), 0 0 0 8px rgba(184, 165, 146, 0.12);
+    box-shadow: 0 0 10px rgba(184, 165, 146, 0.4), 0 0 0 7px rgba(184, 165, 146, 0.12);
   }
 
   .rag-signal-dot.is-healthy {
     background: #78f15f;
-    box-shadow: 0 0 18px rgba(120, 241, 95, 0.75), 0 0 0 8px rgba(120, 241, 95, 0.1);
+    box-shadow: 0 0 15px rgba(120, 241, 95, 0.72), 0 0 0 7px rgba(120, 241, 95, 0.1);
   }
 
   .rag-signal-dot.is-bad {
     background: #cb5b58;
-    box-shadow: 0 0 18px rgba(203, 91, 88, 0.68), 0 0 0 8px rgba(203, 91, 88, 0.12);
+    box-shadow: 0 0 15px rgba(203, 91, 88, 0.68), 0 0 0 7px rgba(203, 91, 88, 0.12);
   }
 
   .rag-runtime-label {
     margin: 0;
     color: #fff7ee;
     font-family: var(--font-display);
-    font-size: 1.05rem;
+    font-size: 0.84rem;
     font-weight: 600;
     letter-spacing: -0.01em;
   }
@@ -1302,37 +1350,41 @@ const copy = {
   .rag-runtime-endpoint {
     position: relative;
     z-index: 1;
-    margin-top: 24px;
+    grid-column: 1;
+    align-self: start;
+    margin-top: 6px;
     font-family: var(--font-mono);
-    font-size: 0.82rem;
+    font-size: 0.64rem;
+    line-height: 1.45;
     word-break: break-all;
   }
 
   .rag-runtime-badge {
-    position: absolute;
-    top: 18px;
-    right: 18px;
-    width: 120px;
-    height: 120px;
+    position: relative;
+    justify-self: end;
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    width: 78px;
+    height: 78px;
     border-radius: 999px;
-    border: 1px solid rgba(242, 184, 102, 0.26);
+    border: 1px solid rgba(242, 184, 102, 0.22);
     background: radial-gradient(circle at 50% 50%, rgba(236, 171, 88, 0.1), transparent 58%);
     box-shadow:
       inset 0 0 0 1px rgba(255, 217, 168, 0.05),
-      0 0 0 18px rgba(242, 184, 102, 0.03);
+      0 0 0 9px rgba(242, 184, 102, 0.03);
   }
 
   .rag-runtime-badge::before,
   .rag-runtime-badge::after {
     content: '';
     position: absolute;
-    inset: 12px;
+    inset: 10px;
     border-radius: 999px;
     border: 1px solid rgba(242, 184, 102, 0.1);
   }
 
   .rag-runtime-badge::after {
-    inset: 28px;
+    inset: 18px;
     border-color: rgba(242, 184, 102, 0.16);
   }
 
@@ -1348,7 +1400,7 @@ const copy = {
     inset: 50% auto auto 50%;
     transform: translate(-50%, -50%);
     color: rgba(245, 180, 88, 0.94);
-    font-size: 1.3rem;
+    font-size: 0.86rem;
     text-shadow: 0 0 16px rgba(245, 180, 88, 0.3);
   }
 
@@ -1358,29 +1410,29 @@ const copy = {
     position: absolute;
     top: 50%;
     left: 50%;
-    width: 44px;
-    height: 44px;
+    width: 22px;
+    height: 22px;
     transform: translate(-50%, -50%);
     border-radius: 999px;
-    border: 3px solid transparent;
+    border: 2.2px solid transparent;
     border-top-color: rgba(244, 178, 86, 0.94);
     border-bottom-color: rgba(244, 178, 86, 0.94);
     opacity: 0.95;
   }
 
   .rag-runtime-badge-ring::after {
-    width: 66px;
-    height: 66px;
+    width: 34px;
+    height: 34px;
     opacity: 0.68;
   }
 
   .rag-telemetry-ribbon {
     display: grid;
     grid-template-columns: repeat(5, minmax(0, 1fr));
-    align-items: stretch;
+    align-items: center;
     gap: 0;
-    margin-bottom: 22px;
-    border-radius: 22px;
+    margin-bottom: 20px;
+    border-radius: 18px;
     overflow: hidden;
     border: 1px solid rgba(96, 68, 45, 0.11);
     background: rgba(255, 250, 244, 0.58);
@@ -1395,7 +1447,8 @@ const copy = {
     align-items: center;
     gap: 14px;
     min-width: 0;
-    padding: 16px 18px;
+    min-height: 78px;
+    padding: 12px 18px;
     border-right: 1px solid rgba(96, 68, 45, 0.08);
     background: transparent;
   }
@@ -1412,20 +1465,37 @@ const copy = {
   .rag-metric-card span:not(.rag-metric-icon) {
     color: rgba(32, 21, 14, 0.54);
     font-family: var(--font-mono);
-    font-size: 0.72rem;
-    letter-spacing: 0.08em;
+    font-size: 0.6rem;
+    letter-spacing: 0.16em;
     text-transform: uppercase;
   }
 
   .rag-metric-card strong {
     color: #20150e;
-    font-size: 0.96rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 0.92rem;
     font-weight: 700;
+    line-height: 1.1;
+  }
+
+  .rag-metric-card-health strong::before,
+  .rag-metric-card-policy strong::before,
+  .rag-metric-card-mode strong::before,
+  .rag-metric-card-sources strong::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    flex: none;
+    border-radius: 999px;
+    background: #4fa13c;
+    box-shadow: 0 0 0 1px rgba(79, 161, 60, 0.16);
   }
 
   .rag-metric-icon {
-    width: 50px;
-    height: 50px;
+    width: 42px;
+    height: 42px;
     flex: none;
     display: grid;
     place-items: center;
@@ -1433,8 +1503,14 @@ const copy = {
     border: 1px solid rgba(186, 130, 69, 0.18);
     background: rgba(255,255,255,0.72);
     color: #8d5820;
-    font-size: 1.15rem;
+    font-size: 1rem;
     box-shadow: inset 0 1px 0 rgba(255,255,255,0.68);
+  }
+
+  .rag-metric-icon svg {
+    width: 20px;
+    height: 20px;
+    display: block;
   }
 
   .rag-composer-card {
