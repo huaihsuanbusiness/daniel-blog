@@ -218,78 +218,80 @@ const copy = {
       </article>
     </section>
 
-    <section class="rag-composer-card">
-      <div class="rag-composer-head">
-        <div>
-          <p class="rag-kicker">{copy.questionLabel}</p>
-          <h3 class="rag-section-title">{copy.questionLabel}</h3>
-        </div>
-      </div>
-
-      <label class="rag-field-shell" for="rag-question">
-        <textarea id="rag-question" class="rag-question" rows="5" placeholder={copy.questionPlaceholder}></textarea>
-      </label>
-
-      <div class="rag-composer-actions">
-        <button type="button" class="rag-primary" data-rag-submit>{copy.askButton}</button>
-        <button type="button" class="rag-secondary" data-rag-reset>{copy.resetButton}</button>
-      </div>
-
-      <div class="rag-example-block">
-        <p class="rag-kicker">{copy.exampleLabel}</p>
-        <div class="rag-chip-row">
-          {copy.examples.map((prompt) => (
-            <button type="button" class="rag-chip" data-rag-example={prompt}>{prompt}</button>
-          ))}
-        </div>
-      </div>
-    </section>
-
-    <section class="rag-control-rail">
-      <div class="rag-mode-card">
-        <div class="rag-mode-head">
-          <div>
-            <p class="rag-kicker">{copy.modeLabel}</p>
-            <h3 class="rag-section-title">{copy.modeLabel}</h3>
-          </div>
-        </div>
-        <div class="rag-mode-pills" data-rag-modes>
-          <button type="button" class="rag-mode-pill is-active" data-rag-mode="auto">Auto</button>
-          <button type="button" class="rag-mode-pill" data-rag-mode="fast">Fast</button>
-          <button type="button" class="rag-mode-pill" data-rag-mode="safe">Safe</button>
-          <button type="button" class="rag-mode-pill" data-rag-mode="deep_eval">Deep Eval</button>
-          <button type="button" class="rag-mode-pill" data-rag-mode="creative">Creative</button>
-          <button type="button" class="rag-mode-pill" data-rag-mode="agentic">Agentic</button>
-        </div>
-        <p class="rag-mode-helper" data-rag-mode-helper>{copy.modeHintAuto}</p>
-        <p class="rag-mode-note" data-rag-mode-note></p>
-      </div>
-
-      <details class="rag-advanced" data-rag-advanced>
-        <summary class="rag-advanced-summary">
-          <div>
-            <p class="rag-kicker">{copy.manualLabel}</p>
-            <h3 class="rag-section-title">{copy.manualLabel}</h3>
-          </div>
-          <div class="rag-advanced-meta">
-            <span class="rag-advanced-preview" data-rag-manual-state>{copy.manualSummaryClosed}</span>
-            <span class="rag-advanced-chevron" aria-hidden="true"></span>
-          </div>
-        </summary>
-
-        <div class="rag-advanced-body">
-          <div class="rag-advanced-toggle-row">
-            <p class="rag-advanced-copy">{copy.manualDescription}</p>
-            <label class="rag-switch rag-switch-master">
-              <input type="checkbox" data-rag-manual-enabled />
-              <span class="rag-switch-track"></span>
-              <span class="rag-switch-label">{copy.manualToggle}</span>
-            </label>
+    <section class="rag-workbench-grid">
+      <div class="rag-left-rail">
+        <section class="rag-composer-card">
+          <div class="rag-composer-head">
+            <div>
+              <p class="rag-kicker">{copy.questionLabel}</p>
+              <h3 class="rag-section-title">{copy.questionLabel}</h3>
+            </div>
           </div>
 
-          <p class="rag-callout" data-rag-manual-helper>{copy.manualDescription}</p>
+          <label class="rag-field-shell" for="rag-question">
+            <textarea id="rag-question" class="rag-question" rows="5" placeholder={copy.questionPlaceholder}></textarea>
+          </label>
 
-          <div class="rag-manual-grid" data-rag-manual-fields-wrap>
+          <div class="rag-composer-actions">
+            <button type="button" class="rag-primary" data-rag-submit>{copy.askButton}</button>
+            <button type="button" class="rag-secondary" data-rag-reset>{copy.resetButton}</button>
+          </div>
+
+          <div class="rag-example-block">
+            <p class="rag-kicker">{copy.exampleLabel}</p>
+            <div class="rag-chip-row">
+              {copy.examples.map((prompt) => (
+                <button type="button" class="rag-chip" data-rag-example={prompt}>{prompt}</button>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section class="rag-control-rail">
+          <div class="rag-mode-card">
+            <div class="rag-mode-head">
+              <div>
+                <p class="rag-kicker">{copy.modeLabel}</p>
+                <h3 class="rag-section-title">{copy.modeLabel}</h3>
+              </div>
+            </div>
+            <div class="rag-mode-pills" data-rag-modes>
+              <button type="button" class="rag-mode-pill is-active" data-rag-mode="auto">Auto</button>
+              <button type="button" class="rag-mode-pill" data-rag-mode="fast">Fast</button>
+              <button type="button" class="rag-mode-pill" data-rag-mode="safe">Safe</button>
+              <button type="button" class="rag-mode-pill" data-rag-mode="deep_eval">Deep Eval</button>
+              <button type="button" class="rag-mode-pill" data-rag-mode="creative">Creative</button>
+              <button type="button" class="rag-mode-pill" data-rag-mode="agentic">Agentic</button>
+            </div>
+            <p class="rag-mode-helper" data-rag-mode-helper>{copy.modeHintAuto}</p>
+            <p class="rag-mode-note" data-rag-mode-note hidden></p>
+          </div>
+
+          <details class="rag-advanced" data-rag-advanced>
+            <summary class="rag-advanced-summary">
+              <div>
+                <p class="rag-kicker">{copy.manualLabel}</p>
+                <h3 class="rag-section-title">{copy.manualLabel}</h3>
+              </div>
+              <div class="rag-advanced-meta">
+                <span class="rag-advanced-preview" data-rag-manual-state>{copy.manualSummaryClosed}</span>
+                <span class="rag-advanced-chevron" aria-hidden="true"></span>
+              </div>
+            </summary>
+
+            <div class="rag-advanced-body">
+              <div class="rag-advanced-toggle-row">
+                <p class="rag-advanced-copy">{copy.manualDescription}</p>
+                <label class="rag-switch rag-switch-master">
+                  <input type="checkbox" data-rag-manual-enabled />
+                  <span class="rag-switch-track"></span>
+                  <span class="rag-switch-label">{copy.manualToggle}</span>
+                </label>
+              </div>
+
+              <p class="rag-callout" data-rag-manual-helper>{copy.manualDescription}</p>
+
+              <div class="rag-manual-grid" data-rag-manual-fields-wrap>
             <article class="rag-manual-row">
               <div>
                 <h4>{copy.workflow}</h4>
@@ -382,12 +384,14 @@ const copy = {
               </div>
               <input class="rag-number" type="number" min="0" max="5" step="1" data-rag-field="max_retries" />
             </article>
-          </div>
-        </div>
-      </details>
-    </section>
+              </div>
+            </div>
+          </details>
+        </section>
+      </div>
 
-    <section class="rag-output-grid">
+      <div class="rag-right-stage">
+        <section class="rag-output-grid">
       <section class="rag-panel rag-panel-answer">
         <div class="rag-panel-head">
           <div>
@@ -459,6 +463,8 @@ const copy = {
         </div>
         <div class="rag-sources" data-rag-sources>{copy.sourceEmpty}</div>
       </section>
+        </section>
+      </div>
     </section>
 
     <details class="rag-raw">
@@ -599,6 +605,7 @@ const copy = {
     const renderModes = () => {
       const queryProfiles = state.bootstrap?.queryProfiles;
       const supportedModes = queryProfiles?.supported_modes || FALLBACK_MODES;
+      const profileDescription = getModeDescription(state.selectedMode);
       elements.modes.querySelectorAll('[data-rag-mode]').forEach((button) => {
         const mode = button.getAttribute('data-rag-mode') || '';
         const isSupported = supportedModes.includes(mode);
@@ -607,8 +614,11 @@ const copy = {
       });
 
       elements.modeHelper.textContent =
-        state.selectedMode === AUTO_MODE ? copy.modeHintAuto : copy.modeHintManual;
-      elements.modeNote.textContent = getModeDescription(state.selectedMode) || '';
+        state.selectedMode === AUTO_MODE
+          ? copy.modeHintAuto
+          : profileDescription || copy.modeHintManual;
+      elements.modeNote.textContent = '';
+      elements.modeNote.hidden = true;
     };
 
     const renderMetrics = (payload = null) => {
@@ -1028,8 +1038,7 @@ const copy = {
 
   .rag-hero,
   .rag-telemetry-ribbon,
-  .rag-composer-card,
-  .rag-control-rail,
+  .rag-workbench-grid,
   .rag-output-grid,
   .rag-raw {
     position: relative;
@@ -1038,10 +1047,10 @@ const copy = {
 
   .rag-hero {
     display: grid;
-    grid-template-columns: minmax(0, 1.32fr) minmax(280px, 0.68fr);
-    gap: 24px;
-    align-items: end;
-    margin-bottom: 28px;
+    grid-template-columns: minmax(0, 1.12fr) minmax(300px, 0.88fr);
+    gap: 28px;
+    align-items: center;
+    margin-bottom: 24px;
   }
 
   .rag-eyebrow,
@@ -1056,11 +1065,11 @@ const copy = {
 
   .rag-title {
     margin: 0;
-    max-width: 7.4ch;
+    max-width: 8.8ch;
     color: #20150e;
-    font-size: clamp(2.8rem, 7vw, 7rem);
-    line-height: 0.88;
-    letter-spacing: -0.06em;
+    font-size: clamp(2.6rem, 5.2vw, 5.5rem);
+    line-height: 0.92;
+    letter-spacing: -0.05em;
     text-wrap: balance;
   }
 
@@ -1185,7 +1194,20 @@ const copy = {
   .rag-composer-card {
     border-radius: 32px;
     padding: 22px;
-    margin-bottom: 18px;
+  }
+
+  .rag-workbench-grid {
+    display: grid;
+    grid-template-columns: minmax(340px, 0.82fr) minmax(0, 1.18fr);
+    gap: 18px;
+    align-items: start;
+  }
+
+  .rag-left-rail,
+  .rag-right-stage {
+    display: grid;
+    gap: 18px;
+    align-content: start;
   }
 
   .rag-composer-head,
@@ -1325,9 +1347,7 @@ const copy = {
 
   .rag-control-rail {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(320px, 0.92fr);
     gap: 16px;
-    margin-bottom: 24px;
   }
 
   .rag-mode-card,
@@ -1542,7 +1562,7 @@ const copy = {
 
   .rag-output-grid {
     display: grid;
-    grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
+    grid-template-columns: minmax(0, 1fr) minmax(280px, 0.86fr);
     grid-template-areas:
       "answer answer"
       "journey journey"
@@ -1881,9 +1901,13 @@ const copy = {
 
   @media (max-width: 1080px) {
     .rag-hero,
-    .rag-control-rail,
+    .rag-workbench-grid,
     .rag-output-grid {
       grid-template-columns: 1fr;
+    }
+
+    .rag-hero {
+      align-items: start;
     }
 
     .rag-output-grid {
@@ -1918,8 +1942,8 @@ const copy = {
     }
 
     .rag-title {
-      max-width: 7ch;
-      font-size: clamp(2.8rem, 16vw, 4.8rem);
+      max-width: 8.5ch;
+      font-size: clamp(2.4rem, 12vw, 4.4rem);
     }
 
     .rag-composer-actions {
