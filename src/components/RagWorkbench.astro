@@ -461,16 +461,15 @@ const copy = {
         <div class="rag-trace" data-rag-timeline>{copy.timelineEmpty}</div>
       </section>
 
-      <section class="rag-panel rag-panel-sources">
-        <div class="rag-panel-head">
-          <div>
-            <h3 class="rag-section-title">{copy.sourcesLabel}</h3>
-          </div>
-          <button type="button" class="rag-link-button" data-rag-sources-toggle hidden>{copy.sourcesExpand}</button>
-        </div>
-        <div class="rag-sources" data-rag-sources>{copy.sourceEmpty}</div>
-      </section>
     </section>
+
+    <details class="rag-raw rag-sources-foldout">
+      <summary>{copy.sourcesLabel}</summary>
+      <div class="rag-sources rag-sources-foldout-body" data-rag-sources-foldout>{copy.sourceEmpty}</div>
+      <div class="rag-foldout-actions">
+        <button type="button" class="rag-link-button" data-rag-sources-toggle hidden>{copy.sourcesExpand}</button>
+      </div>
+    </details>
 
     <details class="rag-raw">
       <summary>{copy.rawLabel}</summary>
@@ -515,7 +514,7 @@ const copy = {
       plan: root.querySelector('[data-rag-plan]'),
       timeline: root.querySelector('[data-rag-timeline]'),
       traceToggle: root.querySelector('[data-rag-trace-toggle]'),
-      sources: root.querySelector('[data-rag-sources]'),
+      sourcesFoldout: root.querySelector('[data-rag-sources-foldout]'),
       sourcesToggle: root.querySelector('[data-rag-sources-toggle]'),
       raw: root.querySelector('[data-rag-raw]'),
       submit: root.querySelector('[data-rag-submit]'),
@@ -721,16 +720,16 @@ const copy = {
     const renderSources = (response) => {
       const sources = response.sources || [];
       if (!sources.length) {
-        elements.sources.textContent = copy.sourceEmpty;
+        elements.sourcesFoldout.textContent = copy.sourceEmpty;
         elements.sourcesToggle.hidden = true;
         return;
       }
 
-      const previewCount = state.sourcesExpanded ? sources.length : Math.min(sources.length, 2);
-      elements.sourcesToggle.hidden = sources.length <= 2;
+      const previewCount = state.sourcesExpanded ? sources.length : Math.min(sources.length, 3);
+      elements.sourcesToggle.hidden = sources.length <= 3;
       elements.sourcesToggle.textContent = state.sourcesExpanded ? copy.sourcesCollapse : copy.sourcesExpand;
 
-      elements.sources.innerHTML = sources
+      const renderedSourcesFull = sources
         .slice(0, previewCount)
         .map(
           (source, index) => `
@@ -745,6 +744,7 @@ const copy = {
           `
         )
         .join('');
+      elements.sourcesFoldout.innerHTML = renderedSourcesFull;
     };
 
     const renderResponse = (response) => {
@@ -764,7 +764,7 @@ const copy = {
       renderPlanEmpty();
       elements.timeline.textContent = copy.timelineEmpty;
       elements.traceToggle.hidden = true;
-      elements.sources.textContent = copy.sourceEmpty;
+      elements.sourcesFoldout.textContent = copy.sourceEmpty;
       elements.sourcesToggle.hidden = true;
       elements.raw.textContent = JSON.stringify(payload, null, 2);
       renderMetrics();
@@ -857,7 +857,7 @@ const copy = {
       renderPlanEmpty();
       elements.timeline.textContent = copy.timelineEmpty;
       elements.traceToggle.hidden = true;
-      elements.sources.textContent = copy.sourceEmpty;
+      elements.sourcesFoldout.textContent = copy.sourceEmpty;
       elements.sourcesToggle.hidden = true;
       elements.raw.textContent = '';
     };
@@ -912,7 +912,7 @@ const copy = {
       renderPlanEmpty();
       elements.timeline.textContent = copy.timelineEmpty;
       elements.traceToggle.hidden = true;
-      elements.sources.textContent = copy.sourceEmpty;
+      elements.sourcesFoldout.textContent = copy.sourceEmpty;
       elements.sourcesToggle.hidden = true;
       elements.raw.textContent = '';
 
@@ -1406,18 +1406,22 @@ const copy = {
   }
 
   .rag-mode-pills {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 6px;
+    align-items: stretch;
   }
 
   .rag-mode-pill {
     border: 1px solid rgba(95, 67, 44, 0.12);
     border-radius: 999px;
-    padding: 10px 16px;
+    padding: 8px 10px;
     background: rgba(255,255,255,0.66);
     color: rgba(32, 21, 14, 0.74);
     cursor: pointer;
+    white-space: nowrap;
+    font-size: 0.76rem;
+    text-align: center;
   }
 
   .rag-mode-pill.is-active {
@@ -1433,6 +1437,8 @@ const copy = {
   .rag-policy-lead,
   .rag-answer,
   .rag-route,
+  .rag-trace,
+  .rag-sources,
   .rag-source-card p,
   .rag-stage-card p {
     color: rgba(32, 21, 14, 0.72);
@@ -1611,10 +1617,10 @@ const copy = {
 
   .rag-results-grid {
     display: grid;
-    grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr) minmax(280px, 0.9fr) minmax(280px, 0.9fr);
+    grid-template-columns: minmax(0, 1.35fr) minmax(320px, 0.9fr) minmax(320px, 0.95fr);
     grid-template-areas:
-      "answer journey trace sources"
-      "answer planner trace sources";
+      "answer journey trace"
+      "answer planner trace";
     gap: 18px;
     margin-bottom: 18px;
   }
@@ -1628,13 +1634,10 @@ const copy = {
   .rag-panel-journey { grid-area: journey; }
   .rag-panel-planner { grid-area: planner; }
   .rag-panel-trace { grid-area: trace; }
-  .rag-panel-sources { grid-area: sources; }
-
   .rag-panel-answer,
   .rag-panel-journey,
   .rag-panel-planner,
-  .rag-panel-trace,
-  .rag-panel-sources {
+  .rag-panel-trace {
     min-height: 300px;
   }
 
@@ -1689,7 +1692,7 @@ const copy = {
 
   .rag-journey-time,
   .rag-journey-empty {
-    color: rgba(32, 21, 14, 0.58);
+    color: rgba(32, 21, 14, 0.72);
     font-size: 0.84rem;
   }
 
@@ -1815,7 +1818,7 @@ const copy = {
   }
 
   .rag-panel-trace,
-  .rag-panel-sources {
+  .rag-panel-trace {
     min-height: 620px;
   }
 
@@ -1867,6 +1870,20 @@ const copy = {
     letter-spacing: 0.08em;
     text-transform: uppercase;
     cursor: pointer;
+  }
+
+  .rag-sources-foldout {
+    margin-top: 0;
+  }
+
+  .rag-sources-foldout-body {
+    padding: 0 18px 18px;
+  }
+
+  .rag-foldout-actions {
+    display: flex;
+    justify-content: flex-end;
+    padding: 0 18px 18px;
   }
 
   .rag-link-button:hover {
@@ -2015,8 +2032,7 @@ const copy = {
         "answer"
         "journey"
         "planner"
-        "trace"
-        "sources";
+        "trace";
     }
 
     .rag-runtime-plaque {
