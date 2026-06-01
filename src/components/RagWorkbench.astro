@@ -616,7 +616,19 @@ const copy = {
       return profiles.profiles?.[mode] || null;
     };
 
-    const getModeDescription = (mode) => getProfileMeta(mode)?.description || '';
+    const MODE_DESCRIPTION_ZH = {
+      auto: 'Auto 會讓 runtime policy router 自動決定最適合的執行路徑。',
+      fast: '低延遲的事實型 RAG 路徑。走較精簡的回答流程，不開昂貴 evaluator。',
+      safe: '偏穩健的事實型 RAG 路徑。會優先保留較可控、較安全的回答方式。',
+      deep_eval: '偏除錯與評估的模式。會打開較昂貴的 evaluator，方便檢查回答品質。',
+      creative: '偏探索與延展的模式。適合需要更開放發想、重寫或多角度回答的問題。',
+      agentic: '偏多步推理與規劃的模式。適合需要更多拆解、路由與工作流控制的問題。',
+    };
+
+    const getModeDescription = (mode) => {
+      if (lang === 'zh' && MODE_DESCRIPTION_ZH[mode]) return MODE_DESCRIPTION_ZH[mode];
+      return getProfileMeta(mode)?.description || '';
+    };
 
     const truncateText = (value, maxLength) => {
       const text = String(value ?? '').replace(/\s+/g, ' ').trim();
@@ -1636,8 +1648,8 @@ const copy = {
   .rag-secondary {
     border: 1px solid rgba(95, 67, 44, 0.14);
     border-radius: 14px;
-    min-height: 48px;
-    padding: 12px 22px;
+    min-height: 42px;
+    padding: 8px 18px;
     background: rgba(255,255,255,0.72);
     color: rgba(32, 21, 14, 0.78);
     cursor: pointer;
@@ -1662,8 +1674,8 @@ const copy = {
     border: 1px solid rgba(95, 67, 44, 0.12);
     background: rgba(255,255,255,0.7);
     color: rgba(32, 21, 14, 0.82);
-    min-height: 44px;
-    padding: 10px 18px;
+    min-height: 40px;
+    padding: 7px 16px;
     border-radius: 14px;
     cursor: pointer;
     font-size: 0.82rem;
@@ -1697,8 +1709,8 @@ const copy = {
   .rag-mode-pill {
     border: 1px solid rgba(95, 67, 44, 0.12);
     border-radius: 14px;
-    min-height: 42px;
-    padding: 8px 12px;
+    min-height: 38px;
+    padding: 5px 10px;
     background: rgba(255,255,255,0.66);
     color: rgba(32, 21, 14, 0.74);
     cursor: pointer;
@@ -1760,8 +1772,8 @@ const copy = {
 
   .rag-advanced-card-actions .rag-secondary,
   .rag-advanced-modal-actions .rag-secondary {
-    min-height: 42px;
-    padding: 8px 16px;
+    min-height: 38px;
+    padding: 5px 14px;
     font-size: 0.74rem;
   }
 
