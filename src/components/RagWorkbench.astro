@@ -547,6 +547,7 @@ const copy = {
   if (root) {
     const AUTO_MODE = 'auto';
     const FALLBACK_MODES = ['auto', 'fast', 'safe', 'deep_eval', 'creative', 'agentic'];
+    const currentLang = root.getAttribute('data-lang') || 'en';
     const state = {
       bootstrap: null,
       selectedMode: AUTO_MODE,
@@ -626,7 +627,7 @@ const copy = {
     };
 
     const getModeDescription = (mode) => {
-      if (lang === 'zh' && MODE_DESCRIPTION_ZH[mode]) return MODE_DESCRIPTION_ZH[mode];
+      if (currentLang === 'zh' && MODE_DESCRIPTION_ZH[mode]) return MODE_DESCRIPTION_ZH[mode];
       return getProfileMeta(mode)?.description || '';
     };
 
