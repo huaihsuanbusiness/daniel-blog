@@ -30,9 +30,11 @@ const copy = {
     manualToggle: 'Manual override',
     manualHelper: '',
     manualSummaryClosed: 'Default',
+    manualStatusCustom: 'Customized',
     manualStatusActive: 'Manual override on',
     manualOpenButton: 'Open controls',
     manualCloseButton: 'Done',
+    manualResetButton: 'Restore defaults',
     workflow: 'Workflow rail',
     workflowHelp: 'Route this request through the inspectable workflow rail instead of the direct engine path.',
     toolRouting: 'Tool routing',
@@ -116,9 +118,11 @@ const copy = {
     manualToggle: '啟用手動覆寫',
     manualHelper: '',
     manualSummaryClosed: '預設',
+    manualStatusCustom: '已自訂',
     manualStatusActive: '手動覆寫已開啟',
     manualOpenButton: '開啟控制面板',
     manualCloseButton: '完成',
+    manualResetButton: '還原預設',
     workflow: 'Workflow rail',
     workflowHelp: '改走可觀察的 workflow rail，而不是直接的 engine path。',
     toolRouting: 'Tool routing',
@@ -311,7 +315,10 @@ const copy = {
           <h3 class="rag-section-title">{copy.manualLabel}</h3>
           <span class="rag-advanced-pill" data-rag-manual-state>{copy.manualSummaryClosed}</span>
         </div>
-        <button type="button" class="rag-secondary rag-advanced-trigger" data-rag-advanced-open>{copy.manualOpenButton}</button>
+        <div class="rag-advanced-card-actions">
+          <button type="button" class="rag-secondary rag-advanced-trigger" data-rag-advanced-open>{copy.manualOpenButton}</button>
+          <button type="button" class="rag-secondary rag-advanced-reset" data-rag-manual-reset>{copy.manualResetButton}</button>
+        </div>
       </section>
     </section>
 
@@ -321,7 +328,10 @@ const copy = {
           <div>
             <h3 class="rag-section-title">{copy.manualLabel}</h3>
           </div>
-          <button type="submit" class="rag-secondary rag-advanced-close" data-rag-advanced-close>{copy.manualCloseButton}</button>
+          <div class="rag-advanced-modal-actions">
+            <button type="button" class="rag-secondary rag-advanced-reset" data-rag-manual-reset>{copy.manualResetButton}</button>
+            <button type="submit" class="rag-secondary rag-advanced-close" data-rag-advanced-close>{copy.manualCloseButton}</button>
+          </div>
         </div>
 
         <div class="rag-advanced-toggle-row">
@@ -509,6 +519,7 @@ const copy = {
       advancedDialog: root.querySelector('[data-rag-advanced-dialog]'),
       advancedOpen: root.querySelector('[data-rag-advanced-open]'),
       advancedClose: root.querySelector('[data-rag-advanced-close]'),
+      manualResetButtons: Array.from(root.querySelectorAll('[data-rag-manual-reset]')),
       manualEnabled: root.querySelector('[data-rag-manual-enabled]'),
       manualFields: Array.from(root.querySelectorAll('[data-rag-field]')),
       manualState: root.querySelector('[data-rag-manual-state]'),
@@ -565,6 +576,24 @@ const copy = {
       if (!text) return '';
       return text.length > maxLength ? `${text.slice(0, maxLength - 1)}…` : text;
     };
+
+    const getFieldDefaultValue = (field) => {
+      const key = field.getAttribute('data-rag-field');
+      if (!key) return null;
+      return state.bootstrap?.defaults?.[key];
+    };
+
+    const fieldMatchesDefault = (field) => {
+      const defaultValue = getFieldDefaultValue(field);
+      if (field.type === 'checkbox') {
+        return Boolean(field.checked) === Boolean(defaultValue);
+      }
+      const currentValue = field.value === '' ? null : field.value;
+      const expectedValue = defaultValue === undefined || defaultValue === null ? null : String(defaultValue);
+      return currentValue === expectedValue;
+    };
+
+    const hasManualDiffs = () => elements.manualFields.some((field) => !fieldMatchesDefault(field));
 
     const stageSummary = (stage) => {
       if (!stage) return '';
@@ -667,7 +696,11 @@ const copy = {
       elements.manualFields.forEach((field) => {
         field.disabled = !state.manualOverridesEnabled;
       });
-      elements.manualState.textContent = state.manualOverridesEnabled ? copy.manualStatusActive : copy.manualSummaryClosed;
+      elements.manualState.textContent = state.manualOverridesEnabled
+        ? copy.manualStatusActive
+        : hasManualDiffs()
+          ? copy.manualStatusCustom
+          : copy.manualSummaryClosed;
     };
 
     const renderPlan = (response) => {
@@ -835,14 +868,9 @@ const copy = {
       elements.submit.textContent = loading ? copy.askingButton : copy.askButton;
     };
 
-    const resetDefaults = () => {
+    const resetManualControls = () => {
       const defaults = state.bootstrap?.defaults || {};
-      state.selectedMode = defaults.query_mode || AUTO_MODE;
       state.manualOverridesEnabled = false;
-      state.traceExpanded = false;
-      state.sourcesExpanded = false;
-      elements.question.value = defaultQuestion;
-
       for (const field of elements.manualFields) {
         const key = field.getAttribute('data-rag-field');
         if (!key) continue;
@@ -857,6 +885,15 @@ const copy = {
       }
 
       updateManualState();
+    };
+
+    const resetDefaults = () => {
+      const defaults = state.bootstrap?.defaults || {};
+      state.selectedMode = defaults.query_mode || AUTO_MODE;
+      state.traceExpanded = false;
+      state.sourcesExpanded = false;
+      elements.question.value = defaultQuestion;
+      resetManualControls();
       renderModes();
       renderMetrics();
       elements.answer.textContent = copy.emptyAnswer;
@@ -904,6 +941,17 @@ const copy = {
     elements.manualEnabled.addEventListener('change', () => {
       state.manualOverridesEnabled = elements.manualEnabled.checked;
       updateManualState();
+    });
+
+    elements.manualFields.forEach((field) => {
+      field.addEventListener('change', updateManualState);
+      field.addEventListener('input', updateManualState);
+    });
+
+    elements.manualResetButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        resetManualControls();
+      });
     });
 
     elements.traceToggle.addEventListener('click', () => {
@@ -1488,6 +1536,14 @@ const copy = {
     gap: 16px;
   }
 
+  .rag-advanced-card-actions,
+  .rag-advanced-modal-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+  }
+
   .rag-advanced-pill {
     display: inline-flex;
     align-items: center;
@@ -1507,6 +1563,9 @@ const copy = {
   }
 
   .rag-advanced-modal {
+    position: fixed;
+    inset: 0;
+    margin: auto;
     width: min(920px, calc(100vw - 32px));
     max-height: min(82vh, 980px);
     border: 1px solid rgba(95, 67, 44, 0.12);
