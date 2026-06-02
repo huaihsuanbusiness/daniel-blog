@@ -8,9 +8,8 @@ const { lang } = Astro.props;
 const copy = {
   en: {
     eyebrow: 'Interactive RAG Workbench',
-    titleLeadA: 'This is not just',
-    titleLeadB: 'an article,',
-    titleLeadC: 'this is a',
+    titleLeadA: 'This is not just an article,',
+    titleLeadB: 'this is a',
     titleAccent: 'live RAG',
     titleTail: 'workbench.',
     description:
@@ -212,8 +211,7 @@ const copy = {
           ) : (
             <>
               <span>{copy.titleLeadA}</span>
-              <span>{copy.titleLeadB}</span>
-              <span>{copy.titleLeadC} <em>{copy.titleAccent}</em> {copy.titleTail}</span>
+              <span>{copy.titleLeadB} <em>{copy.titleAccent}</em> {copy.titleTail}</span>
             </>
           )}
         </h2>
@@ -555,6 +553,18 @@ const copy = {
       traceExpanded: false,
       sourcesExpanded: false,
     };
+
+    const syncWorkbenchTheme = () => {
+      const theme = document.documentElement.dataset.theme || 'light';
+      root.classList.toggle('is-dark', theme === 'dark');
+      root.classList.toggle('is-light', theme !== 'dark');
+    };
+
+    syncWorkbenchTheme();
+    new MutationObserver(syncWorkbenchTheme).observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['data-theme'],
+    });
 
     const elements = {
       signal: root.querySelector('[data-rag-signal]'),
@@ -1207,12 +1217,12 @@ const copy = {
 
   .rag-title {
     margin: 0;
-    max-width: 11ch;
+    max-width: none;
     color: #21140d;
     font-family: "Iowan Old Style", "Baskerville", "Times New Roman", "Songti TC", serif;
-    font-size: clamp(1.872rem, 3.456vw, 3.672rem);
+    font-size: clamp(0.96rem, 1.72vw, 1.8rem);
     line-height: 0.94;
-    letter-spacing: -0.045em;
+    letter-spacing: -0.04em;
   }
 
   .rag-title.is-zh {
@@ -2221,7 +2231,8 @@ const copy = {
     color: #a4601c;
   }
 
-  html[data-theme='dark'] .rag-shell {
+  html[data-theme='dark'] .rag-shell,
+  .rag-lab.is-dark .rag-shell {
     border-color: rgba(184, 133, 71, 0.22);
     background:
       radial-gradient(circle at 8% 8%, rgba(219, 154, 76, 0.14), transparent 18%),
@@ -2233,12 +2244,19 @@ const copy = {
   }
 
   html[data-theme='dark'] .rag-runtime-plaque,
+  .rag-lab.is-dark .rag-runtime-plaque,
   html[data-theme='dark'] .rag-composer-card,
+  .rag-lab.is-dark .rag-composer-card,
   html[data-theme='dark'] .rag-mode-card,
+  .rag-lab.is-dark .rag-mode-card,
   html[data-theme='dark'] .rag-advanced-card,
+  .rag-lab.is-dark .rag-advanced-card,
   html[data-theme='dark'] .rag-advanced-modal,
+  .rag-lab.is-dark .rag-advanced-modal,
   html[data-theme='dark'] .rag-panel,
-  html[data-theme='dark'] .rag-raw {
+  .rag-lab.is-dark .rag-panel,
+  html[data-theme='dark'] .rag-raw,
+  .rag-lab.is-dark .rag-raw {
     border-color: rgba(171, 124, 67, 0.34);
     background: linear-gradient(180deg, rgba(17, 18, 20, 0.96), rgba(14, 15, 17, 0.98));
     box-shadow:
@@ -2246,40 +2264,56 @@ const copy = {
       inset 0 1px 0 rgba(255,255,255,0.04);
   }
 
-  html[data-theme='dark'] .rag-runtime-plaque {
+  html[data-theme='dark'] .rag-runtime-plaque,
+  .rag-lab.is-dark .rag-runtime-plaque {
     border-color: rgba(194, 145, 82, 0.56);
     background:
       radial-gradient(circle at 88% 34%, rgba(238, 176, 92, 0.1), transparent 18%),
       linear-gradient(180deg, rgba(30, 26, 22, 0.99), rgba(18, 16, 13, 0.995));
   }
 
-  html[data-theme='dark'] .rag-runtime-frame {
+  html[data-theme='dark'] .rag-runtime-frame,
+  .rag-lab.is-dark .rag-runtime-frame {
     border-color: rgba(214, 164, 99, 0.34);
   }
 
   html[data-theme='dark'] .rag-runtime-legend,
-  html[data-theme='dark'] .rag-runtime-legend-label {
+  .rag-lab.is-dark .rag-runtime-legend,
+  html[data-theme='dark'] .rag-runtime-legend-label,
+  .rag-lab.is-dark .rag-runtime-legend-label {
     color: rgba(228, 209, 185, 0.82);
   }
 
   html[data-theme='dark'] .rag-eyebrow,
-  html[data-theme='dark'] .rag-kicker {
+  .rag-lab.is-dark .rag-eyebrow,
+  html[data-theme='dark'] .rag-kicker,
+  .rag-lab.is-dark .rag-kicker {
     color: rgba(229, 164, 87, 0.92);
   }
 
   html[data-theme='dark'] .rag-title,
+  .rag-lab.is-dark .rag-title,
   html[data-theme='dark'] .rag-runtime-label,
+  .rag-lab.is-dark .rag-runtime-label,
   html[data-theme='dark'] .rag-section-title,
+  .rag-lab.is-dark .rag-section-title,
   html[data-theme='dark'] .rag-manual-row h4,
+  .rag-lab.is-dark .rag-manual-row h4,
   html[data-theme='dark'] .rag-policy-meta strong,
+  .rag-lab.is-dark .rag-policy-meta strong,
   html[data-theme='dark'] .rag-mini-card strong,
+  .rag-lab.is-dark .rag-mini-card strong,
   html[data-theme='dark'] .rag-source-head strong,
+  .rag-lab.is-dark .rag-source-head strong,
   html[data-theme='dark'] .rag-stage-head strong,
-  html[data-theme='dark'] .rag-metric-card strong {
+  .rag-lab.is-dark .rag-stage-head strong,
+  html[data-theme='dark'] .rag-metric-card strong,
+  .rag-lab.is-dark .rag-metric-card strong {
     color: #f4e5d0;
   }
 
-  html[data-theme='dark'] .rag-title em {
+  html[data-theme='dark'] .rag-title em,
+  .rag-lab.is-dark .rag-title em {
     background: linear-gradient(180deg, #f0c57c, #cc8c34);
     -webkit-background-clip: text;
     background-clip: text;
@@ -2287,44 +2321,72 @@ const copy = {
   }
 
   html[data-theme='dark'] .rag-description,
+  .rag-lab.is-dark .rag-description,
   html[data-theme='dark'] .rag-runtime-caption,
+  .rag-lab.is-dark .rag-runtime-caption,
   html[data-theme='dark'] .rag-runtime-endpoint,
+  .rag-lab.is-dark .rag-runtime-endpoint,
   html[data-theme='dark'] .rag-mode-helper,
+  .rag-lab.is-dark .rag-mode-helper,
   html[data-theme='dark'] .rag-mode-note,
+  .rag-lab.is-dark .rag-mode-note,
   html[data-theme='dark'] .rag-policy-lead,
+  .rag-lab.is-dark .rag-policy-lead,
   html[data-theme='dark'] .rag-answer,
+  .rag-lab.is-dark .rag-answer,
   html[data-theme='dark'] .rag-route,
+  .rag-lab.is-dark .rag-route,
   html[data-theme='dark'] .rag-source-card p,
+  .rag-lab.is-dark .rag-source-card p,
   html[data-theme='dark'] .rag-stage-card p,
+  .rag-lab.is-dark .rag-stage-card p,
   html[data-theme='dark'] .rag-manual-row p,
+  .rag-lab.is-dark .rag-manual-row p,
   html[data-theme='dark'] .rag-switch-label,
+  .rag-lab.is-dark .rag-switch-label,
   html[data-theme='dark'] .rag-advanced-pill,
+  .rag-lab.is-dark .rag-advanced-pill,
   html[data-theme='dark'] .rag-raw summary,
-  html[data-theme='dark'] .rag-raw pre {
+  .rag-lab.is-dark .rag-raw summary,
+  html[data-theme='dark'] .rag-raw pre,
+  .rag-lab.is-dark .rag-raw pre {
     color: rgba(232, 217, 197, 0.76);
   }
 
-  html[data-theme='dark'] .rag-field-shell {
+  html[data-theme='dark'] .rag-field-shell,
+  .rag-lab.is-dark .rag-field-shell {
     background: linear-gradient(180deg, rgba(208, 151, 85, 0.22), rgba(255,255,255,0.03));
   }
 
   html[data-theme='dark'] .rag-question,
+  .rag-lab.is-dark .rag-question,
   html[data-theme='dark'] .rag-select,
+  .rag-lab.is-dark .rag-select,
   html[data-theme='dark'] .rag-number,
+  .rag-lab.is-dark .rag-number,
   html[data-theme='dark'] .rag-chip,
+  .rag-lab.is-dark .rag-chip,
   html[data-theme='dark'] .rag-manual-row,
+  .rag-lab.is-dark .rag-manual-row,
   html[data-theme='dark'] .rag-mini-card,
+  .rag-lab.is-dark .rag-mini-card,
   html[data-theme='dark'] .rag-source-card,
+  .rag-lab.is-dark .rag-source-card,
   html[data-theme='dark'] .rag-policy-card,
+  .rag-lab.is-dark .rag-policy-card,
   html[data-theme='dark'] .rag-path-chip,
+  .rag-lab.is-dark .rag-path-chip,
   html[data-theme='dark'] .rag-secondary,
-  html[data-theme='dark'] .rag-mode-pill {
+  .rag-lab.is-dark .rag-secondary,
+  html[data-theme='dark'] .rag-mode-pill,
+  .rag-lab.is-dark .rag-mode-pill {
     border-color: rgba(171, 124, 67, 0.28);
     background: rgba(21, 22, 24, 0.94);
     color: rgba(240, 228, 209, 0.84);
   }
 
-  html[data-theme='dark'] .rag-telemetry-ribbon {
+  html[data-theme='dark'] .rag-telemetry-ribbon,
+  .rag-lab.is-dark .rag-telemetry-ribbon {
     border-color: rgba(171, 124, 67, 0.3);
     background: linear-gradient(180deg, rgba(18, 19, 21, 0.95), rgba(14, 15, 17, 0.98));
     box-shadow:
@@ -2332,58 +2394,74 @@ const copy = {
       inset 0 1px 0 rgba(255,255,255,0.02);
   }
 
-  html[data-theme='dark'] .rag-metric-card {
+  html[data-theme='dark'] .rag-metric-card,
+  .rag-lab.is-dark .rag-metric-card {
     border-right-color: rgba(171, 124, 67, 0.18);
   }
 
-  html[data-theme='dark'] .rag-metric-icon {
+  html[data-theme='dark'] .rag-metric-icon,
+  .rag-lab.is-dark .rag-metric-icon {
     border-color: rgba(196, 145, 82, 0.34);
     background: rgba(18, 18, 20, 0.9);
     color: #efbb73;
   }
 
-  html[data-theme='dark'] .rag-mode-pill.is-active {
+  html[data-theme='dark'] .rag-mode-pill.is-active,
+  .rag-lab.is-dark .rag-mode-pill.is-active {
     border-color: rgba(233, 181, 103, 0.36);
     background: linear-gradient(135deg, rgba(190, 124, 40, 0.95), rgba(228, 170, 88, 0.93));
     color: #fff8ef;
     box-shadow: 0 10px 24px rgba(176, 111, 43, 0.22);
   }
 
-  html[data-theme='dark'] .rag-primary {
+  html[data-theme='dark'] .rag-primary,
+  .rag-lab.is-dark .rag-primary {
     background: linear-gradient(135deg, #ba7226, #df9f48);
     box-shadow: 0 16px 34px rgba(176, 111, 43, 0.22);
   }
 
-  html[data-theme='dark'] .rag-advanced-pill {
+  html[data-theme='dark'] .rag-advanced-pill,
+  .rag-lab.is-dark .rag-advanced-pill {
     border-color: rgba(171, 124, 67, 0.26);
     background: rgba(21, 22, 24, 0.92);
   }
 
   html[data-theme='dark'] .rag-policy-meta span,
+  .rag-lab.is-dark .rag-policy-meta span,
   html[data-theme='dark'] .rag-mini-card span,
+  .rag-lab.is-dark .rag-mini-card span,
   html[data-theme='dark'] .rag-source-meta,
+  .rag-lab.is-dark .rag-source-meta,
   html[data-theme='dark'] .rag-stage-head span,
-  html[data-theme='dark'] .rag-metric-card span {
+  .rag-lab.is-dark .rag-stage-head span,
+  html[data-theme='dark'] .rag-metric-card span,
+  .rag-lab.is-dark .rag-metric-card span {
     color: rgba(226, 207, 181, 0.62);
   }
 
-  html[data-theme='dark'] .rag-link-button {
+  html[data-theme='dark'] .rag-link-button,
+  .rag-lab.is-dark .rag-link-button {
     color: rgba(240, 187, 109, 0.96);
   }
 
   html[data-theme='dark'] .rag-question:focus,
+  .rag-lab.is-dark .rag-question:focus,
   html[data-theme='dark'] .rag-select:focus,
-  html[data-theme='dark'] .rag-number:focus {
+  .rag-lab.is-dark .rag-select:focus,
+  html[data-theme='dark'] .rag-number:focus,
+  .rag-lab.is-dark .rag-number:focus {
     border-color: rgba(220, 165, 88, 0.44);
     box-shadow: 0 0 0 4px rgba(214, 152, 72, 0.14);
   }
 
-  html[data-theme='dark'] .rag-switch-track {
+  html[data-theme='dark'] .rag-switch-track,
+  .rag-lab.is-dark .rag-switch-track {
     background: rgba(96, 78, 59, 0.36);
     border-color: rgba(171, 124, 67, 0.26);
   }
 
-  html[data-theme='dark'] .rag-switch input:checked + .rag-switch-track {
+  html[data-theme='dark'] .rag-switch input:checked + .rag-switch-track,
+  .rag-lab.is-dark .rag-switch input:checked + .rag-switch-track {
     background: rgba(191, 127, 48, 0.48);
     border-color: rgba(223, 169, 93, 0.38);
   }
