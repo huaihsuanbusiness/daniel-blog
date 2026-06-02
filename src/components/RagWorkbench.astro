@@ -552,6 +552,7 @@ const copy = {
       manualOverridesEnabled: false,
       traceExpanded: false,
       sourcesExpanded: false,
+      modeTouched: false,
     };
 
     const syncWorkbenchTheme = () => {
@@ -982,6 +983,7 @@ const copy = {
     elements.modes.querySelectorAll('[data-rag-mode]').forEach((button) => {
       button.addEventListener('click', () => {
         const nextMode = button.getAttribute('data-rag-mode') || AUTO_MODE;
+        state.modeTouched = true;
         state.selectedMode = nextMode;
         renderModes();
         renderMetrics();
@@ -1075,10 +1077,14 @@ const copy = {
         throw new Error(bootstrapData.error || 'Failed to load bootstrap data');
       }
       state.bootstrap = bootstrapData;
-      resetDefaults();
+      if (!state.modeTouched) {
+        resetDefaults();
+      } else {
+        resetManualControls();
+        renderModes();
+        renderMetrics();
+      }
       setStatus(state.bootstrap?.health?.status === 'ok', Boolean(state.bootstrap?.capabilities?.runtimePolicyEndpoint));
-      renderModes();
-      renderMetrics();
     } catch (error) {
       elements.signal.classList.add('is-bad');
       elements.status.textContent = copy.statusError;
@@ -1143,20 +1149,23 @@ const copy = {
   }
 
   .rag-hero {
+    position: relative;
     display: grid;
     grid-template-columns: minmax(0, 1.38fr) minmax(350px, 0.68fr);
     gap: 42px;
     align-items: start;
-    margin-bottom: 8px;
+    margin-bottom: 14px;
+    padding-bottom: 30px;
   }
 
   .rag-runtime-legend {
-    grid-column: 2;
-    justify-self: end;
+    position: absolute;
+    right: 0;
+    bottom: 0;
     display: flex;
     align-items: center;
     gap: 18px;
-    margin-top: -6px;
+    margin-top: 0;
     color: rgba(77, 60, 44, 0.78);
     font-family: var(--font-display);
     font-size: 0.92rem;
@@ -2019,7 +2028,7 @@ const copy = {
   }
 
   .rag-journey-name {
-    color: #35231a;
+    color: rgba(32, 21, 14, 0.72);
     font-size: 0.9rem;
   }
 
@@ -2033,13 +2042,15 @@ const copy = {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    border-radius: 999px;
-    padding: 10px 14px;
+    min-height: 38px;
+    border-radius: 14px;
+    padding: 5px 14px;
     background: rgba(255,255,255,0.78);
     border: 1px solid rgba(95, 67, 44, 0.12);
     color: rgba(32, 21, 14, 0.76);
     font-family: var(--font-mono);
-    font-size: 0.8rem;
+    font-size: 0.74rem;
+    line-height: 1;
   }
 
   .rag-policy-card {
@@ -2340,6 +2351,8 @@ const copy = {
   .rag-lab.is-dark .rag-source-card p,
   html[data-theme='dark'] .rag-stage-card p,
   .rag-lab.is-dark .rag-stage-card p,
+  html[data-theme='dark'] .rag-journey-name,
+  .rag-lab.is-dark .rag-journey-name,
   html[data-theme='dark'] .rag-manual-row p,
   .rag-lab.is-dark .rag-manual-row p,
   html[data-theme='dark'] .rag-switch-label,
@@ -2434,9 +2447,17 @@ const copy = {
   .rag-lab.is-dark .rag-source-meta,
   html[data-theme='dark'] .rag-stage-head span,
   .rag-lab.is-dark .rag-stage-head span,
+  html[data-theme='dark'] .rag-journey-time,
+  .rag-lab.is-dark .rag-journey-time,
   html[data-theme='dark'] .rag-metric-card span,
   .rag-lab.is-dark .rag-metric-card span {
     color: rgba(226, 207, 181, 0.62);
+  }
+
+  html[data-theme='dark'] .rag-journey-index,
+  .rag-lab.is-dark .rag-journey-index {
+    border-color: rgba(220, 165, 88, 0.28);
+    color: #efbb73;
   }
 
   html[data-theme='dark'] .rag-link-button,
@@ -2494,6 +2515,7 @@ const copy = {
     }
 
     .rag-runtime-legend {
+      position: static;
       grid-column: auto;
       justify-self: start;
       margin-top: 6px;
