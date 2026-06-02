@@ -79,6 +79,8 @@ const copy = {
     sourcesExpand: 'View more sources',
     sourcesCollapse: 'Show fewer sources',
     rawLabel: 'Raw response',
+    rawCopyButton: 'Copy all',
+    rawCopiedButton: 'Copied',
     failedPrefix: 'Request failed',
     examples: [
       'When should this runtime choose creative mode instead of safe mode?',
@@ -171,6 +173,8 @@ const copy = {
     sourcesExpand: '檢視更多來源',
     sourcesCollapse: '顯示較少來源',
     rawLabel: 'Raw response',
+    rawCopyButton: '複製全部',
+    rawCopiedButton: '已複製',
     failedPrefix: '請求失敗',
     examples: [
       '什麼情況下比較適合 creative mode，而不是 safe mode？',
@@ -533,7 +537,10 @@ const copy = {
     </details>
 
     <details class="rag-raw">
-      <summary>{copy.rawLabel}</summary>
+      <summary>
+        <span>{copy.rawLabel}</span>
+        <button type="button" class="rag-link-button rag-raw-copy" data-rag-raw-copy>{copy.rawCopyButton}</button>
+      </summary>
       <pre data-rag-raw></pre>
     </details>
   </div>
@@ -595,6 +602,7 @@ const copy = {
       sourcesFoldout: root.querySelector('[data-rag-sources-foldout]'),
       sourcesToggle: root.querySelector('[data-rag-sources-toggle]'),
       raw: root.querySelector('[data-rag-raw]'),
+      rawCopy: root.querySelector('[data-rag-raw-copy]'),
       submit: root.querySelector('[data-rag-submit]'),
       reset: root.querySelector('[data-rag-reset]'),
     };
@@ -1028,6 +1036,31 @@ const copy = {
       state.sourcesExpanded = !state.sourcesExpanded;
       const payload = getRenderedResponse();
       if (payload) renderSources(payload);
+    });
+
+    elements.rawCopy?.addEventListener('click', async (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      const text = elements.raw.textContent || '';
+      if (!text.trim()) return;
+      try {
+        await navigator.clipboard.writeText(text);
+      } catch {
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+        textarea.setAttribute('readonly', '');
+        textarea.style.position = 'absolute';
+        textarea.style.left = '-9999px';
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        textarea.remove();
+      }
+      const original = copy.rawCopyButton;
+      elements.rawCopy.textContent = copy.rawCopiedButton;
+      window.setTimeout(() => {
+        if (elements.rawCopy) elements.rawCopy.textContent = original;
+      }, 1200);
     });
 
     elements.reset.addEventListener('click', resetDefaults);
@@ -2197,6 +2230,21 @@ const copy = {
     padding: 16px 18px;
     color: rgba(32, 21, 14, 0.72);
     font-family: var(--font-display);
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .rag-raw summary::-webkit-details-marker {
+    margin-right: 8px;
+  }
+
+  .rag-raw-copy {
+    flex: none;
+    padding: 0;
+    font-size: 0.84rem;
     font-weight: 600;
   }
 
