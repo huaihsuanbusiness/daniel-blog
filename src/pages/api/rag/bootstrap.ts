@@ -159,7 +159,10 @@ export const GET: APIRoute = async () => {
         defaults,
         capabilities: {
           runtimePolicyEndpoint: Boolean(runtimePolicyStatus),
-          workflowAvailable: Boolean((workflowStatus as { available?: boolean } | null)?.available),
+          workflowAvailable: Boolean(
+            (workflowStatus as { available?: boolean; enabled?: boolean } | null)?.available ??
+            (workflowStatus as { available?: boolean; enabled?: boolean } | null)?.enabled
+          ),
         },
       }),
       { status: 200, headers: { 'Content-Type': 'application/json' } }

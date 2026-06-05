@@ -40,9 +40,12 @@ function containsAny(text: string, keywords: string[]): boolean {
 
 function applyProxyAutoFallback(question: string, payload: Record<string, unknown>) {
   const text = question.toLowerCase();
-  const creativeKeywords = ['summarize', 'summary', 'rewrite', 'draft', 'brainstorm', '改寫', '摘要', '整理', '草稿'];
+  const creativeKeywords = ['rewrite', 'draft', 'brainstorm', '改寫', '草稿', '文案', '潤稿'];
   const evalKeywords = ['evaluate', 'evaluation', 'judge', 'verify', 'fact-check', 'hallucination', 'debug', '評估', '驗證', '檢查', '除錯'];
   const toolKeywords = ['latest', 'current', 'today', 'news', 'weather', 'price', 'schedule', 'sql', 'database', 'calculator', '計算', '最新', '今天', '現在', '資料庫', '上網查', 'mcp'];
+  const identityQuestion =
+    /(daniel|nattynites|pm|product manager|產品經理|产品经理|創業|创业)/.test(text) &&
+    /(是什麼|做什麼|在做什麼|是誰|覺得|認為|认为|看法|怎麼看|怎么看|特質|特质|能力|最重要|what is|what does|who is|traits|quality|qualities|mindset|important)/.test(text);
 
   let resolvedMode = 'safe';
   let workflow = false;
@@ -54,6 +57,8 @@ function applyProxyAutoFallback(question: string, payload: Record<string, unknow
     workflow = true;
     toolRouting = true;
     retryLoop = false;
+  } else if (identityQuestion) {
+    resolvedMode = 'safe';
   } else if (containsAny(text, evalKeywords)) {
     resolvedMode = 'deep_eval';
   } else if (containsAny(text, creativeKeywords)) {
@@ -116,7 +121,7 @@ export const POST: APIRoute = async ({ request }) => {
       applyProxyAutoFallback(question, payload);
     }
 
-    const upstream = await postRagAsk(payload);
+    const upstream = await postRagAsk(payload, { signal: request.signal });
 
     return new Response(JSON.stringify(upstream.payload), {
       status: upstream.status,

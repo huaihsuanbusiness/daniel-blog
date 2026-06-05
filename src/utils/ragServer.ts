@@ -101,10 +101,14 @@ async function getSupabaseAccessToken(): Promise<string> {
   return payload.access_token;
 }
 
-export async function postRagAsk(requestBody: Record<string, unknown>): Promise<{ status: number; payload: unknown }> {
+export async function postRagAsk(
+  requestBody: Record<string, unknown>,
+  options?: { signal?: AbortSignal }
+): Promise<{ status: number; payload: unknown }> {
   const token = await getSupabaseAccessToken();
   const response = await fetch(`${getRagApiBaseUrl()}/ask`, {
     method: 'POST',
+    signal: options?.signal,
     headers: {
       Authorization: `Bearer ${token}`,
       'X-Tenant-Id': getRagTenantId(),

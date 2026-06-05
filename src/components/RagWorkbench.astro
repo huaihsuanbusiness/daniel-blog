@@ -60,6 +60,7 @@ const copy = {
     dense: 'Dense only',
     askButton: 'Run this request',
     askingButton: 'Running…',
+    stopButton: 'Force stop',
     resetButton: 'Reset',
     answerLabel: 'Final answer',
     routeLabel: 'Request journey',
@@ -96,6 +97,7 @@ const copy = {
     metricsPolicy: 'Policy',
     metricsResolvedMode: 'Resolved mode',
     metricsLatency: 'Latency',
+    metricsToken: 'Token',
     metricsSources: 'Sources',
     connected: 'Connected',
     disconnected: 'Issue detected',
@@ -154,6 +156,7 @@ const copy = {
     dense: 'Dense only',
     askButton: '送出這次查詢',
     askingButton: '執行中…',
+    stopButton: '強制停止',
     resetButton: '重設',
     answerLabel: '最終回答',
     routeLabel: '這次請求的旅程',
@@ -190,6 +193,7 @@ const copy = {
     metricsPolicy: 'Policy',
     metricsResolvedMode: 'Resolved mode',
     metricsLatency: 'Latency',
+    metricsToken: 'Token',
     metricsSources: 'Sources',
     connected: '已連線',
     disconnected: '需檢查',
@@ -292,8 +296,9 @@ const copy = {
           </svg>
         </span>
         <div class="rag-metric-copy">
-        <span>{copy.metricsLatency}</span>
+        <span>Latency &amp; Token</span>
         <strong data-rag-metric-latency>—</strong>
+        <small data-rag-metric-tokens>{copy.metricsToken}: —</small>
         </div>
       </article>
       <article class="rag-metric-card rag-metric-card-sources">
@@ -593,6 +598,7 @@ const copy = {
       metricPolicy: root.querySelector('[data-rag-metric-policy]'),
       metricMode: root.querySelector('[data-rag-metric-mode]'),
       metricLatency: root.querySelector('[data-rag-metric-latency]'),
+      metricTokens: root.querySelector('[data-rag-metric-tokens]'),
       metricSources: root.querySelector('[data-rag-metric-sources]'),
       answer: root.querySelector('[data-rag-answer]'),
       route: root.querySelector('[data-rag-route]'),
@@ -606,6 +612,8 @@ const copy = {
       submit: root.querySelector('[data-rag-submit]'),
       reset: root.querySelector('[data-rag-reset]'),
     };
+
+    let inflightController = null;
 
     const defaultQuestion = copy.examples[0];
     elements.question.value = defaultQuestion;
@@ -761,11 +769,18 @@ const copy = {
       const runtimePolicyLive = Boolean(state.bootstrap?.capabilities?.runtimePolicyEndpoint);
       const resolvedMode = payload?.query_profile?.mode || state.selectedMode || AUTO_MODE;
       const observedLatency = payload?.runtime_budget?.postrun?.observed?.latency_ms ?? null;
+      const usageSummary = payload?.observability?.usage?.summary || {};
+      const observedTokens =
+        usageSummary.total_tokens ??
+        usageSummary.estimated_total_tokens ??
+        usageSummary.tokens_total ??
+        null;
       const sourcesCount = (payload?.sources || []).length;
       elements.metricHealth.textContent = healthy ? 'OK' : copy.disconnected;
       elements.metricPolicy.textContent = runtimePolicyLive ? copy.policyLive : copy.policyFallback;
       elements.metricMode.textContent = resolvedMode === AUTO_MODE ? 'Auto' : resolvedMode;
       elements.metricLatency.textContent = formatLatency(observedLatency);
+      elements.metricTokens.textContent = `${copy.metricsToken}: ${observedTokens ?? '—'}`;
       elements.metricSources.textContent = String(sourcesCount);
     };
 
@@ -934,13 +949,14 @@ const copy = {
 
     const setLoading = (loading) => {
       elements.submit.disabled = loading;
-      elements.reset.disabled = loading;
       elements.manualEnabled.disabled = loading;
       elements.manualFields.forEach((field) => {
         field.disabled = loading || !state.manualOverridesEnabled;
       });
       elements.question.disabled = loading;
       elements.submit.textContent = loading ? copy.askingButton : copy.askButton;
+      elements.submit.classList.toggle('is-running', loading);
+      elements.reset.textContent = loading ? copy.stopButton : copy.resetButton;
     };
 
     const resetManualControls = () => {
@@ -1063,7 +1079,13 @@ const copy = {
       }, 1200);
     });
 
-    elements.reset.addEventListener('click', resetDefaults);
+    elements.reset.addEventListener('click', () => {
+      if (inflightController) {
+        inflightController.abort();
+        return;
+      }
+      resetDefaults();
+    });
 
     elements.submit.addEventListener('click', async () => {
       const payload = getPayload();
@@ -1085,10 +1107,12 @@ const copy = {
       elements.raw.textContent = '';
 
       try {
+        inflightController = new AbortController();
         const response = await fetch('/api/rag/ask', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload),
+          signal: inflightController.signal,
         });
 
         if (!response.ok) {
@@ -1097,8 +1121,13 @@ const copy = {
           renderResponse(await response.json());
         }
       } catch (error) {
-        elements.answer.textContent = `${copy.failedPrefix}: ${String(error)}`;
+        if (error instanceof DOMException && error.name === 'AbortError') {
+          elements.answer.textContent = `${copy.failedPrefix}: ${copy.stopButton}`;
+        } else {
+          elements.answer.textContent = `${copy.failedPrefix}: ${String(error)}`;
+        }
       } finally {
+        inflightController = null;
         setLoading(false);
       }
     });
@@ -1696,6 +1725,18 @@ const copy = {
   .rag-primary:hover {
     transform: translateY(-1px);
     box-shadow: 0 18px 36px rgba(186, 110, 26, 0.28);
+  }
+
+  .rag-primary:disabled,
+  .rag-secondary:disabled,
+  .rag-mode-pill:disabled,
+  .rag-chip:disabled {
+    cursor: default;
+    transform: none;
+  }
+
+  .rag-primary.is-running {
+    cursor: default;
   }
 
   .rag-secondary {
