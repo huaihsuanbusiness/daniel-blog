@@ -1,12 +1,12 @@
 ---
-title: "This Isn’t Just an Article. It’s an Interactive RAG Workbench."
+title: "From RAG to Enterprise-Grade RAG Part 01 | This Isn’t Just an Article. It’s an Interactive RAG Workbench."
 description: "Open the RAG black box. You won’t just see the answer — you’ll see how query mode, workflow, tool routing, retry loop, and trace data shaped the request."
 categories: ["ai"]
 tags: ["ai", "rag", "production-rag", "llamaindex", "retrieval", "observability"]
 date: 2026-05-31T05:20:00
 featured: true
-subtitle: "From RAG to Production RAG | Part 1"
-series: "From RAG to Production RAG"
+subtitle: "From RAG to Enterprise-Grade RAG Part 01"
+series: "From RAG to Enterprise-Grade RAG"
 seriesOrder: 1
 ---
 

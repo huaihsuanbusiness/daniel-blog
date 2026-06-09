@@ -1,12 +1,12 @@
 ---
-title: "這不只是一篇文章，這是一個可互動的 RAG 實驗台"
+title: "從 RAG 到企業級 RAG Part 01 | 這不只是一篇文章，這是一個可互動的 RAG 實驗台"
 description: "把 RAG 的黑盒子打開。你不只會看到答案，也會看到 query mode、workflow、tool routing、retry loop 與 trace 是怎麼一路把這次請求推到終點。"
 categories: ["ai"]
 tags: ["ai", "rag", "production-rag", "llamaindex", "retrieval", "observability"]
 date: 2026-05-31T05:20:00
 featured: true
-subtitle: "從 RAG 到 Production RAG｜Part 1"
-series: "從 RAG 到 Production RAG"
+subtitle: "從 RAG 到企業級 RAG Part 01"
+series: "從 RAG 到企業級 RAG"
 seriesOrder: 1
 ---
 
