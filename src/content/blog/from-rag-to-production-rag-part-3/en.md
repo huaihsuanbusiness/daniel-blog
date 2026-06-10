@@ -3,7 +3,7 @@ title: "From RAG to Enterprise-Grade RAG Part 03 | The 14-Stop Journey of a RAG 
 description: "Naive RAG only covers 2 of the 14 stations a production pipeline needs. The other 12 are where retrieval engineering actually happens — and where the system has to be designed before it can stand up to real queries."
 categories: ["ai"]
 tags: ["ai", "rag", "production-rag", "llamaindex", "retrieval", "pipeline"]
-date: 2026-06-10
+date: 2026-06-10T12:30:00+08:00
 featured: true
 subtitle: "From RAG to Enterprise-Grade RAG Part 03"
 series: "From RAG to Enterprise-Grade RAG"
