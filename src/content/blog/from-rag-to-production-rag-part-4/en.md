@@ -3,7 +3,7 @@ title: "From RAG to Enterprise-Grade RAG Part 04 | LlamaIndex, LangGraph, n8n: A
 description: "Before I picked LlamaIndex, I had a serious look at LangGraph and n8n. The three tools solve different problems — and the right pick comes down to what your project is actually trying to do, not which one is strongest. This piece is a record of how I chose, not a tool showdown."
 categories: ["ai"]
 tags: ["ai", "rag", "production-rag", "llamaindex", "langgraph", "n8n", "tooling"]
-date: 2026-06-10T14:30:00+08:00
+date: 2026-06-10T14:30:00
 featured: true
 subtitle: "From RAG to Enterprise-Grade RAG Part 04"
 series: "From RAG to Enterprise-Grade RAG"

@@ -3,7 +3,7 @@ title: "From RAG to Enterprise-Grade RAG Part 02 | Chunking and Embedding Are St
 description: "The tech community says chunking and embedding are outdated, but that claim is only half right. What production RAG really adds is not a new technology — it is 12 stations of retrieval engineering."
 categories: ["ai"]
 tags: ["ai", "rag", "production-rag", "llamaindex", "retrieval", "observability"]
-date: 2026-06-10T10:30:00+08:00
+date: 2026-06-10T10:30:00
 featured: true
 subtitle: "From RAG to Enterprise-Grade RAG Part 02"
 series: "From RAG to Enterprise-Grade RAG"
