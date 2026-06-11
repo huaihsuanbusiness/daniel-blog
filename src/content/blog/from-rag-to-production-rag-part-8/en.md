@@ -1,6 +1,6 @@
 ---
-title: "From RAG to Enterprise-Grade RAG Part 08 | Five query modes: how to decide whether this query deserves a faithfulness check"
-description: "Part 07 split faithfulness, citation, tracing and cost into four separate capabilities. Part 08 wraps those four capabilities into five query modes (fast, safe, deep_eval, creative, agentic) and routes incoming /ask requests to one of them via six features. Same endpoint, different capability bundle per query. The piece works through a concrete workload per mode (Q3 contract clause → safe, FAQ → fast, debug → deep_eval, summary → creative, multi-step → agentic), four counter-examples (fast on a contract query, deep_eval synchronously on the user path, too many modes blowing up the codebase, too few modes sacrificing both faithfulness and latency), and a 5-mode decision tree. The routing pattern is grounded in the public LlamaIndex RouterQueryEngine and LangChain RouterChain patterns, but with the production twist that we are not routing between prompt templates — we are routing between capability bundles — and the asymmetry of routing error (wrong-safe → wasteful, wrong-fast → harmful) shapes the default-to-strict rule."
+title: "From RAG to Enterprise-Grade RAG Part 08 | One /ask endpoint, how do you know whether this query deserves a faithfulness check"
+description: "Part 07 wired up four production-grade capabilities — faithfulness, citation, Langfuse tracing, cost tracking — but running them on every query blew latency and cost. This post bundles the four into five query modes (fast / safe / deep_eval / creative / agentic) and routes automatically using six query features (cheap / medium / LLM-fallback). One /ask endpoint, dynamic per query. Concrete workloads: Q3 contract goes to safe, FAQ goes to fast, debug goes to deep_eval, summarisation goes to creative, multi-step tasks go to agentic. Five failure scenarios (router sends contract to fast / Step 6 default flipped to fast / fast gets rerank bolted on / deep_eval opened on user path / traffic spike triggers mode consolidation) and the guardrails for each. Routing concept aligns with LangChain RouterChain's official pattern and LlamaIndex's RouterQueryEngine workflow, not a new invention."
 categories: ["ai"]
 tags: ["ai", "rag", "production-rag", "llamaindex", "routing", "query-mode", "langfuse", "ragas", "observability", "cost-control"]
 date: 2026-06-10T22:30:00
@@ -10,173 +10,197 @@ series: "From RAG to Enterprise-Grade RAG"
 seriesOrder: 8
 ---
 
-## Part 07's capabilities are unused until you decide where to deploy them
+## After Part 07 wired up the four checks, the server slowed to the point where users started bouncing
 
-Part 07 split faithfulness checking, citation validation, Langfuse tracing and cost tracking into four capabilities, each implemented in its own module. After that work shipped, the next problem surfaced immediately: **running all four capabilities on every query breaks the budget**. Full eval, full trace, full citation check on every request pushes p95 latency from 1.5 s to 6 s and triples cost. The user experience collapses.
+Part 07 got faithfulness checking, citation checking, Langfuse tracing, and cost tracking all working in production. The moment we turned them on, though, **running full faithfulness + full trace + full citation on every query pushed p95 latency from 1.5s to 6s, tripled cost, and shot the bounce rate up**.
 
-**Part 07 gave us the capabilities. Part 08 gives us the routing.** Same `/ask` endpoint, but the capability bundle applied to each incoming query is decided at request time based on the query's nature. Router patterns in [LlamaIndex](https://developers.llamaindex.ai/python/examples/workflow/router_query_engine/) and [LangChain](https://reference.langchain.com/python/langchain-classic/chains/router) are well-documented and not something we invented here. The twist is that **we are not routing to "different prompt templates" — we are routing to "different capability bundles."** The router's output is not just "which query engine," it is "should this query run faithfulness at all, should we open stage-level tracing, what is the cost ceiling for this query."
+The problem wasn't that the capabilities were wired wrong. It was that they were wired uniformly. In practice, RAG queries naturally fall into a few clusters:
 
-That distinction matters because **RAG routers are not like general LLM routers** — the failure cost is asymmetric. An LLM giving a wrong answer can be retried; a RAG system giving a wrong answer about a contract, a legal clause, or a patient dose can cause real harm. So Part 08 is not "five modes at five speeds." It is a three-dimensional decision: 5 modes × 4 capabilities × N query features.
+- "How do I reset my VPN" / "What's our API rate limit" — FAQ style. Short answer, fixed source. Getting it wrong is rarely fatal.
+- "What does clause 3 of this MOU say" — Contract style. **Getting it wrong is expensive.** Faithfulness + citation both required.
+- "Help me debug why this query is slow" — Debug style. Needs stage-level trace and deep evaluation.
+- "What's this Q3 report actually about" — Summarisation style. No right answer, just usefulness.
+- "Compare the Q3 contract against the Q2 one" — Multi-step style. One retrieval pass can't carry it.
+
+Running the same checks on all five clusters is wrong. Running faithfulness on a VPN-reset question is burning money. Running pure vector search on a contract clause is dropping the safety net.
+
+So you split. **The way you split is what Part 08 is about**: a single `/ask` endpoint that decides, per query, which of the four capabilities to run and how. Routing is a well-trodden pattern — [LlamaIndex's RouterQueryEngine](https://developers.llamaindex.ai/python/examples/workflow/router_query_engine/) and [LangChain's RouterChain](https://reference.langchain.com/python/langchain-classic/chains/router) both ship official implementations. Not new.
+
+The twist here is what we're routing. We're not routing to different prompt templates — **we're routing to different capability bundles**. The router function looks at the query and answers four questions:
+
+- Does this one need faithfulness checking?
+- How deep does citation go?
+- Query-level or stage-level trace?
+- What's the cost ceiling for this call?
+
+The combination of those four answers is which mode this query should take.
 
 ---
 
-## The five modes are the five capability bundles that actually appeared in production logs
+## Five modes, four capabilities, mapped
 
-Here is the mode list (lifted from Part 07's closing summary — **that is a spec floor, not decoration**):
+The five modes from the end of Part 07 are the starting point for this post, **not a decorative recap** — turn each capability on, off, or weakened, and you land on five meaningful production modes:
 
-```text
-fast       (latency < 1s)    → skip faithfulness, skip tracing, pure vector search
-safe       (contracts/legal) → full faithfulness + citation check, async RAGAS
-deep_eval  (debug phase)     → sync RAGAS + LLM judge, full trace
-creative   (open-ended)      → skip faithfulness, switch to llm_first synthesis
-agentic    (multi-step)      → per-step trace, faithfulness per step
-```
-
-These five are not "five routes we thought up." They are the five capability bundles that **emerged from clustering real production queries by their capability needs**. The order of operations matters: we observed query clusters first, then mapped each cluster to a capability bundle. We did not start from capabilities and derive the modes.
-
-**Six-axis decision table** (these six axes are **a working criterion from this project, not a general industry definition** — another team might add a seventh axis for synthesis mode or chunk count, but six is the working set here):
-
-| mode | faithfulness | citation | tracing | cost / query | p95 latency | determinism |
+| mode | faithfulness | citation | tracing | cost / query | p95 latency | pipeline |
 |---|---|---|---|---|---|---|
-| **fast** | off | off | query-level | ≤ $0.001 | < 1 s | pure vector |
-| **safe** | full + async RAGAS | full | query + stage | ≤ $0.01 | < 3 s | hybrid + rerank + parent expansion |
-| **deep_eval** | sync RAGAS + LLM judge | full | full trace | ≤ $0.10 | 5–15 s | full pipeline + sync eval |
-| **creative** | off | weak (presence only) | query-level | ≤ $0.02 | < 2 s | llm_first + light retrieval |
-| **agentic** | per-step | per-step | per-step trace | ≤ $0.05 / step | < 4 s / step | multi-step planner |
+| **fast** | off | off | query-level | ~$0.001 | < 1s | pure vector search |
+| **safe** | full + async RAGAS | full | query + stage | ~$0.01 | < 3s | hybrid + rerank + parent expansion |
+| **deep_eval** | sync RAGAS + LLM judge | full | full trace | ~$0.10 | 5–15s | full pipeline + sync eval |
+| **creative** | off | weak (presence only) | query-level | ~$0.02 | < 2s | llm_first synthesis + light retrieval |
+| **agentic** | per-step | per-step | per-step trace | ~$0.05/step | < 4s/step | multi-step planner |
 
-The cost and latency ranges are **estimates from this project's measurements plus common industry baselines** ([thedataguy.pro on RAG cost optimisation](https://thedataguy.pro/writing/2025/07/the-economics-of-rag-cost-optimization-for-production-systems/), [Tetrate's RAG architecture patterns](https://tetrate.io/learn/ai/rag-architecture-patterns)). They are **not vendor SLAs and not platform guarantees** — the same query on Cohere, OpenAI, MiniMax, or a self-hosted LLM will produce cost and latency that vary by 2–5×. The $0.001 vs $0.10 gap on the same query is an architecture decision, not a model decision.
+A caveat on this table: **these numbers are from my own system's measurements and a rough read of common industry benchmarks** ([thedataguy.pro's RAG cost writeup](https://thedataguy.pro/writing/2025/07/the-economics-of-rag-cost-optimization-for-production-systems/) / [Tetrate's RAG architecture patterns](https://tetrate.io/learn/ai/rag-architecture-patterns)). They're not vendor SLAs and not platform guarantees. The same query run on Cohere / OpenAI / MiniMax / a self-hosted LLM can come back 2–5x different in latency and cost. The gap from $0.001 to $0.10 in the table is the gap from running one query in two different modes — that's an architecture decision, not a model decision, **and switching to a cheaper model won't close it**.
 
----
+The on/off settings for each mode's faithfulness and citation, and the strength of the retrieval pipeline, **aren't picked by gut feel — they map to the failure cost of the query**:
 
-## Where the router lives is the first design decision
+- **fast** maps to "wrong answer isn't fatal" queries — a VPN-reset answer gone wrong means the user asks again. So we drop every check and buy back 1s of latency.
+- **safe** maps to "wrong answer costs money" queries — a contract clause misread can cost the company real damages. All checks on, async RAGAS sampling, trace down to stage-level.
+- **deep_eval** maps to "something's broken and we need to know which stage" — not a user feature, it's a debugging tool. Sync RAGAS + LLM judge, every stage visible.
+- **creative** maps to "no right answer, just usefulness" — summarisation, brainstorming, marketing suggestions. Faithfulness has no meaning here (there's no "correct" source) but a thin layer of citation stays so the user can trace back.
+- **agentic** maps to "one retrieval pass can't carry it" — cross-document comparison, risk analysis. Has to be split into steps, each with its own trace and its own faithfulness check.
 
-Part 08 is not the same question as Part 04's "LlamaIndex vs LangGraph vs n8n" — that was about which framework to use. Part 08 is about **how the same framework, same `/ask` endpoint, splits internally**. There are three places the router can live:
-
-1. **URL endpoint split** (`/ask/fast`, `/ask/safe`, `/ask/agentic`) — front-end forces the mode. If the client picks wrong, the system breaks.
-2. **Mode field in request payload** (`{"query": "...", "mode": "safe"}`) — flexible, but if the client sends the wrong mode, fast mode runs on a contract clause.
-3. **Server-side auto-routing** (no mode parameter; routing decided from query features + business metadata) — production-friendly, but the router itself has to be written correctly. A wrong router here hurts more than 1 or 2.
-
-**This project chose option 3 — auto-routing — but added an escape hatch:** the request can carry a `mode` field that **force-overrides** the auto-routing decision. The reason: when auto-routing goes wrong (and in particular when fast mode is applied to a contract query), operations need to be able to flip the mode immediately. The escape hatch is not for end users; it is for incident response.
-
-**That is the core Part 08 design trade-off:** robustness and control from auto-routing do not come for free together. The escape hatch is what you pay for having both.
+The switch is keyed to "how bad is it if this answer is wrong."
 
 ---
 
-## Six query features decide which mode to run
+## Where you put the routing layer is the first design decision
 
-**Auto-routing is not "ask an LLM to pick the mode"** — that is a mistake. An LLM-based router has its own cost, its own latency, and its own failure mode. The order is: cheap features first, rule-based pre-filter, then LLM judge as a fallback for ambiguous cases. Six features, ordered by the cost of obtaining them:
+The first question for getting these five modes into production isn't "how do I design the routing logic" — it's "where does the routing layer live." Three options:
+
+1. **URL-level split** — `/ask/fast` / `/ask/safe` / `/ask/agentic`. The frontend picks the mode. A bad client choice breaks the query.
+2. **Request payload carries a `mode` field** — `{"query": "...", "mode": "safe"}`. Flexible API. A client that sends the wrong mode sends a contract through fast.
+3. **Server-side auto-detection** — the API doesn't take a mode parameter; it picks based on query features and business metadata. Production-friendly, but the router has to be written correctly.
+
+Options 1 and 2 push the decision to the client. Client engineers don't always know the risk profile of their own queries, and a wrong pick at request time breaks the contract. Option 3 (server-side) sounds ideal, but a router bug is just as bad as a client mistake — a contract landing in fast, a safe query landing in creative, both break the same way. **The difference is that a server-side bug is harder to find than a client mistake** — a client mistake shows up in the request log, a server-side bug hides inside the router logic. Part 08 goes with option 3, but with one safety net: the request can still carry a `mode` field to force-override the auto-detection.
+
+This force-override (commonly called an escape hatch) is not for the end user. It's for ops to grab when production monitoring shows "this query should have gone to safe but went to fast" and they need to flip it immediately — they can't wait for an engineer to change routing code and deploy. **You don't get both full automation and full control, and the escape hatch is the price of having both**.
+
+> This is the first failure scenario for routing: the auto-router gets it wrong and sends a contract query to fast. The guardrail is the escape hatch plus a post-hoc monitoring alert. Without the escape hatch, you're waiting for the next deploy to fix it — and that latency in production is a literal life-or-death issue.
+
+---
+
+## Six query features decide the path
+
+The easiest trap to fall into in auto-routing is "give the router an LLM, have it look at the query and pick a mode." **That path is wrong in three ways**:
+
+1. The router LLM itself has cost and latency — when you tally production cost, that call counts too. It's not free.
+2. The cost of a router LLM getting it wrong is high — misclassifying a contract as an FAQ makes the whole pipeline downstream fail in a chain.
+3. Router LLMs drift over time — model upgrades, small prompt changes, the router's behaviour shifts with them, and debugging router issues is worse than debugging query issues.
+
+The right order is **cheap features first to pre-filter, LLM fallback only when genuinely ambiguous**. Six query features, ordered by the cost of obtaining them:
 
 ```python
-# rag/router/features.py
+# router/features.py
 from dataclasses import dataclass
 
 @dataclass
 class QueryFeatures:
-    # Cheap features (no LLM call)
+    # Free features (no LLM needed)
     source_path: str              # "contract" / "faq" / "runbook" / "open"
-    has_explicit_citation: bool   # does the request ask for [1][2] citations?
+    has_explicit_citation: bool   # did the request ask for [1][2] citations
     query_length: int             # character count
     is_multi_step: bool           # detect "and then" / "next" / "step 1 step 2"
-    
-    # Medium features (one cheap call: regex / classifier)
+
+    # Medium-cost features (regex or a small classifier)
     has_numeric_constraints: bool # "60 days" / "6 months" / "$10,000"
-    domain_risk: str              # "high" / "medium" / "low" — derived from source_path
-    
-    # Expensive feature (LLM call, only for ambiguous cases)
-    intent_classifier: str        # "factual" / "summarisation" / "open-ended"
+    domain_risk: str              # "high" / "medium" / "low" - derived from source_path
+
+    # High-cost features (LLM call, only in genuinely ambiguous cases)
+    intent_classifier: str        # "factual" / "summarization" / "open-ended"
 ```
 
-**Router logic** (a working criterion from this project, not a general industry pattern):
+The decision tree:
 
 ```text
-Step 1: is_multi_step = True                                → agentic
-Step 2: domain_risk = "high"                                → safe
-Step 3: has_numeric_constraints AND source_path in contract/legal → safe
-Step 4: intent_classifier = "summarisation" AND source_path = "open" → creative
-Step 5: source_path in faq/runbook AND query_length < 50    → fast
-Step 6: default (including ambiguous)                       → safe (default strict)
+Step 1: is_multi_step = True                                 → agentic
+(is_multi_step uses regex to catch "and then / next / step 1 step 2" — **this is a known production failure mode** — a user writing "next" might mean a narrative, not a multi-step task. The threshold and keyword set have to be tuned on real query samples, you can't pick them out of the air. Misclassification either direction hurts: fast/safe wrongly routed to agentic gets 5–10x slower, agentic wrongly routed to fast/safe can't decompose the multi-step logic.)
+Step 2: domain_risk = "high"                                 → safe
+Step 3: has_numeric_constraints AND source_path ∈ contract/legal → safe
+Step 4: intent_classifier = "summarization" AND source_path = "open" → creative
+Step 5: source_path ∈ faq/runbook AND query_length < 50     → fast
+Step 6: everything else (including ambiguous)                → safe
 ```
 
-**Default-to-strict needs explaining.** Auto-routing is asymmetric: a router sending fast → safe wastes money; a router sending safe → fast causes harm. The default goes strict, and we loosen only when features clearly justify it. **This asymmetry is the part of Part 08 that differs most from a generic routing system.**
+A word on why Step 6 defaults to the strictest mode — **the cost of a wrong routing direction is asymmetric**: misrouting fast to safe just burns money, misrouting safe to fast gets people hurt. So default to strict, and only downgrade with a clear reason. This asymmetry runs against the usual instinct for routing system design (most routing systems default to the middle), **and the most common rookie mistake in RAG routing is setting the default to fast, planning to fall back to safe when needed** — that's exactly where the failures land.
 
-Step 6's intent-classifier LLM call is not optional. Steps 1–5 cannot always tell the difference — "what is this Q3 report about" looks like summarisation, but it could also be a factual lookup the user wants cited. The router has to make that LLM call when the cheap features are ambiguous. **The cost of that call is included in Part 08's cost model.** It is not free, and trying to skip it with a regex is what makes routing wrong in production.
+Why Step 4 needs an LLM call for intent classification: Steps 1–5 can't all classify every query. "What is this Q3 report about" — summarisation or factual lookup? Cheap features can't tell, the router has to make one LLM call. **You can't skip that call — skipping it means hard-guessing with regex** — and the failure cost of a wrong guess is the same as the Step 6 default being wrong. The cost model has to include that call.
 
----
-
-## Five modes: when to use, when not to, and how each one fails
-
-Per the rubric's section 3 requirement, each mode gets all three.
-
-### fast — pure vector, zero eval
-
-**When to use:** FAQ, known runbooks, internal knowledge bases with stable structure — "VPN reset steps", "API rate limit". Short query, short answer, concentrated source, low blast radius when wrong.
-
-**When not to use:** Anything where a wrong answer causes harm. Contract amounts, patient doses, customer PII. **Running fast on these queries gives a near-100% faithfulness failure rate.** The Part 07 Q3 early-termination contract, run through fast mode, would produce the same wrong-but-plausible answer we saw before Part 06's retrieval upgrades — because skipping faithfulness removes the only thing that would have caught it.
-
-**Failure modes:** (1) vector recall drops when synonyms are not covered ("early termination" missing from chunk titles → fast mode misses it); (2) no rerank → too much noise on multi-language or multi-section documents; (3) no trace → when something goes wrong, you cannot debug it. **Fast trades measurability for cost-control, and debuggability for latency.**
-
-### safe — contracts, legal, medical
-
-**When to use:** The Part 06 Q3 contract case, "what does Section 3 of this MOU say", legal clause lookup. **This is the workload Part 07's faithfulness and citation checks were designed for.**
-
-**When not to use:** Low-risk FAQ (running safe mode on FAQ is using a sledgehammer — 5–10× the cost, with no meaningful faithfulness improvement, because FAQ answers are already short and citation does not need deep checking). Also, real-time conversational "chat while asking" — 3 s latency instead of fast's 1 s breaks conversational rhythm.
-
-**Failure modes:** (1) faithfulness check false positives — the LLM judge says a claim is unsupported when it actually is, just phrased differently; (2) async RAGAS sampling rate too low, long-tail failure cases slip past; (3) **cost blow-up** — parent expansion runs away, context balloons to 100k tokens, the cost ceiling from Part 07 gets bypassed. **Safe is the easiest mode to blow the budget on, which is why Part 07's cost tracking has to be wired up before safe mode goes live.**
-
-### deep_eval — debug and regression, never the user path
-
-**When to use:** (1) before and after changing prompt, chunking, or rerank — offline comparison; (2) **5% deep_eval sampling in production when an incident is unfolding**, to get stage-level trace on which node broke; (3) CI on offline eval dataset of 50–100 questions.
-
-**When not to use:** **Never the general user path.** Sync RAGAS + LLM judge on every query: 5–15 s, 100× the cost of fast, 15× the latency. The async 5% sampling from Part 07 is the correct pattern; sync deep_eval is a debug tool, not a user feature.
-
-**Failure modes:** (1) operations accidentally switch deep_eval to 100% of user traffic, p95 jumps from 1.5 s to 12 s, users bounce, API quota burns; (2) LLM judge is non-deterministic — the same question run twice gives faithfulness scores that differ by 0.1, which makes a 0.05 CI threshold flaky; (3) **offline dataset goes stale** — chunking changes but the dataset is still keyed to the old chunks, so the "accurate" score is actually misleading. (This is the worst failure mode, because it gives false confidence.)
-
-### creative — open-ended, summarisation, no faithfulness
-
-**When to use:** "What does this Q3 report say", "give me three takeaways", "suggest a new marketing direction". The answer has no right/wrong, only useful/not-useful.
-
-**When not to use:** Any factual lookup, any query that needs citation. **Creative mode on the Q3 early-termination clause is dangerous** — faithfulness off means the LLM is free to hallucinate, and a contract clause will be freely reinterpreted.
-
-**Failure modes:** (1) switching synthesis to llm_first makes the LLM "over-expand" — user asks for three points, LLM gives eight, token cost and latency both blow the budget; (2) weak citation set too loose becomes no citation, the traceability users want disappears; (3) **the boundary with safe mode blurs** — "how should we interpret the pricing strategy in this report" is it summarisation or factual? The Part 08 rule is: creative mode is only allowed when `source_path = "open"`, everything else goes safe.
-
-### agentic — multi-step, cross-document reasoning
-
-**When to use:** "Compare Q3 and Q2 contracts and find the differences", "synthesise a risk matrix from three reports". Single retrieval cannot carry the weight — the task has to be split into steps.
-
-**When not to use:** Simple "find a passage" or "summarise a passage". **Agentic on FAQ is 5–10× slower and 5–10× more expensive than fast** — the planner and per-step faithfulness overhead is fixed, and it does not shrink just because the query is easy.
-
-**Failure modes:** (1) **planner splits steps wrong** — step 2's retrieval query does not match step 1's results, and the downstream faithfulness fails in a chain; (2) per-step faithfulness not designed carefully, **step 1 is wrong, step 2 cites step 1's wrong result**, errors compound; (3) **per-step trace without Langfuse parent-child spans** — debugging agentic is structurally different from debugging a single query, and **no per-step trace means giving up on agentic's debuggability entirely**.
+> The second failure scenario for routing: someone flips the Step 6 default to fast to "save cost." It might look fine for the first three months, but as contract query volume grows, the router doesn't get the message to flip it back, and faithfulness failure rate creeps up until something breaks. The guardrail is that "default strict" is a non-negotiable — and the Step 6 behaviour is pinned in CI, not left to memory.
 
 ---
 
-## Four counter-examples: when this decision tree breaks
+## For each mode: when to use it, when not to, and how it fails
 
-Per the rubric's section 5 requirement, **every criterion needs a counter-example.** Part 08 has to handle at least these four explicitly:
+Every mode needs all three, otherwise production breaks.
 
-**Counter 1: fast mode on a contract query.** "Early termination penalty" routed to fast — skip faithfulness, skip citation, vector recall hits the MOU but misses Section 3, the LLM invents a plausible-sounding 30-day / mutual-agreement answer. The user gets something **completely wrong that looks completely right.** This is the same case that opened Part 07. The Part 08 guardrail is `Step 2: domain_risk = "high" → safe`, but if the domain classification is wrong ("contract" tagged as "faq"), the entire guardrail collapses.
+### fast: pure vector, zero checks
 
-**Counter 2: deep_eval synchronously on the production user path.** Operations accidentally switches deep_eval to 100% of user traffic. p95 latency explodes from 1.5 s to 12 s — bounce rate spikes, API quota burns, the Langfuse dashboard shows rerank as the bottleneck (it is not, sync RAGAS is waiting on the LLM judge). The "async evaluator 5% sampling" pattern from Part 07 exists to prevent exactly this, but if someone bypasses async and calls sync directly, the guardrail is gone.
+**When to use it**: FAQ, known runbooks, internal knowledge bases with stable structure. Short query, short answer, concentrated sources, wrong answer isn't fatal.
 
-**Counter 3: too many modes, codebase explosion.** Once we tried splitting safe into three — "safe-contracts", "safe-legal", "safe-medical". The three modes ended up with almost identical capability bundles, debugging tripled in difficulty, and we eventually merged them back into a single safe mode. **Heuristic: number of modes = number of natural query clusters observed in production, not "the more the merrier."** If two modes have 80% the same capability bundle, merge them.
+**When not to use it**: any query where a wrong answer hurts. Contract amounts, patient dosages, customer PII — running these on fast means faithfulness failure rate near 100%. **The Q3 early-termination contract case from Part 07 would produce an answer under fast mode that looks exactly like what Part 06 produced before the retrieval fixes** — skipping faithfulness drops the safety net.
 
-**Counter 4: too few modes, sacrificing both faithfulness and latency.** Splitting into just "fast" and "slow" — fast runs FAQ but also runs contracts, slow runs every high-risk query. **This loses on both axes**: fast on a contract causes Counter 1; slow on creative (summary) gets dragged out 3 s by faithfulness checks the user does not need, and they bounce. **Five modes is the "right" granularity for the faithfulness-skip trade-off** — fewer than five sacrifices one side, more than five explodes the codebase.
+**Failure modes**: (1) vector recall drops when synonyms aren't covered ("early termination" isn't in the chunk title, fast misses it); (2) no rerank filter, multi-section documents pull in too much noise; (3) no trace, errors don't get debugged.
+
+> The third failure scenario for routing: once the system is live, an operator feels fast isn't accurate enough and bolts a rerank onto it — fast's cost and latency both go up, and the boundary between the five modes collapses. The fix for "fast isn't accurate enough" isn't to change fast, it's to reroute that query to safe.
+
+### safe: contracts, legal, medical
+
+**When to use it**: the Q3 contract case from Part 06, legal clause lookup, MOU clause query. **This is the main workload Part 07's faithfulness + citation checks were designed for**.
+
+**When not to use it**: low-risk FAQ. Running safe on FAQ is killing a mosquito with a cannon — 5–10x the cost, no meaningful faithfulness gain (FAQ answers are short to begin with and citation doesn't need to be that deep). Also, real-time back-and-forth chat — 3s latency versus fast's 1s slows down the user's conversational rhythm noticeably.
+
+**Failure modes**: (1) false-positive faithfulness — the LLM judge says a claim has no source backing when it does, just phrased differently; (2) async RAGAS sampling rate set too low, long-tail failure cases never get scanned; (3) cost blowout — parent expansion without budgeting, context stuffed with too many tokens, **safe mode is the most likely of the five to blow cost**.
+
+### deep_eval: debugging and regression
+
+**When to use it**: (1) before/after changing prompts / chunking / rerank, for offline A/B; (2) when production is misbehaving, open 5% sampling and pull stage-level trace to find the broken stage; (3) CI runs offline eval on 50–100 questions.
+
+**When not to use it**: **never on the production user path**. Deep_eval with sync RAGAS + LLM judge takes 5–15s per query, 100x the cost of fast, 15x the latency.
+
+> The fourth failure scenario for routing: ops opens deep_eval to 100% of user traffic to "see more trace," p95 jumps from 1.5s to 12s — bounce rate spikes, API quota burns through. The Langfuse dashboard will misdirect at the same time: stage-level trace shows rerank as the bottleneck, but it isn't — it's the sync RAGAS waiting on the LLM judge. The async 5% sampling pattern from Part 07 was designed exactly to avoid this, but anyone who bypasses async and calls sync directly defeats it. The guardrail is to wrap sync deep_eval behind `if user is internal_ops: ...` and never expose it to regular users.
+
+**Failure modes**: (1) LLM judge results aren't reproducible — running the same question twice can swing faithfulness scores by 0.1, which makes a 0.05 CI threshold flake; (2) the offline dataset goes stale, chunking changes but the dataset still scores against the old chunks, **and accurate-looking scores become misleading**; (3) sync deep_eval goes to the wrong path (the scenario above: ops accidentally opens it to 100% of user traffic).
+
+### creative: open-ended Q&A, summarisation
+
+**When to use it**: "What is this Q3 report about", "Give me three takeaways", "Suggest a new marketing direction." No right answer, just usefulness.
+
+**When not to use it**: factual lookup, anything needing citation. **Running creative on the Q3 early-termination penalty would be a disaster** — faithfulness off means the LLM is free to hallucinate, contract clauses get freely interpreted.
+
+**Failure modes**: (1) once you switch to llm_first synthesis, the LLM tends to "over-expand" — the user asks for three points, gets back eight, token cost and latency both overshoot; (2) weak citation set too loose becomes no citation, the traceability the user wanted is gone; (3) **the boundary with safe gets fuzzy** — "how do we read this report's pricing strategy" — summarisation or factual? The rule is: `source_path = "open"` is the only path that allows creative, anything else goes to safe.
+
+### agentic: multi-step tasks, cross-document reasoning
+
+**When to use it**: "Compare the Q3 contract against the Q2 one", "Pull a risk matrix out of three reports." A single retrieval pass can't carry it, you have to split into steps.
+
+**When not to use it**: pure "find me a passage" or "summarise this passage". **Agentic on FAQ is 5–10x slower and 5–10x more expensive than fast** — the planner and per-step faithfulness overhead are fixed costs, they don't shrink just because the query is simple.
+
+**Failure modes**: (1) **planner decomposes the steps wrong** — the retrieval query in step 2 doesn't connect to the result from step 1, and downstream faithfulness fails in a chain; (2) per-step faithfulness is poorly designed, **step 1 is wrong, step 2 quotes step 1's wrong result**, error compounds and amplifies; (3) **per-step trace is not modelled as Langfuse parent-child spans**, debugging agentic has a different structure from debugging normal queries, and no per-step trace means giving up on agentic debuggability.
 
 ---
 
-## Router implementation: avoid the obvious mistake
+## How the number five got pinned
 
-**The most common mistake is using an LLM to pick the mode directly**: "router LLM looks at the query, picks the mode." That fails on three levels:
+Fair question: why five and not three, not eight?
 
-1. **The router LLM has its own cost and latency** — when Part 08's cost model is built, the router LLM call has to be included. It is not free.
-2. **Router LLM mis-classification is expensive** — a contract classified as FAQ breaks the entire downstream pipeline.
-3. **Router LLM itself drifts over time** — model upgrades, prompt changes, router behaviour shifts. Debugging router problems is harder than debugging query problems.
+Starting coarse: in the early days we tried splitting into just "fast" and "slow" — fast ran FAQ but also contracts, slow ran every high-risk query. That sacrificed both ends at once: fast-on-contracts broke (the "when not to use" for fast covers this), slow-on-creative (summarisation) got dragged 3 seconds slower by faithfulness and users bounced. **Below five modes the granularity is too coarse** — some mode always pays a cost it shouldn't for some query cluster.
 
-**The order Part 08 actually uses:** cheap features → rule-based pre-filter → LLM as fallback for ambiguous cases. **The LLM is the fallback, not the default path.** This is the same design instinct as Part 04's "n8n uses pure visual flow, not an LLM router" — **deterministic first, LLM as fallback**.
+Starting fine: we also tried splitting safe into "safe-contract", "safe-legal", "safe-medical" — three modes whose capability bundles were almost identical, and debugging tripled in difficulty, so we merged them back into a single safe. **Above five modes the granularity is too fine** — each new mode adds a maintenance burden to the codebase with no meaningful capability difference.
 
-Implementation excerpt (from this project's `rag/router.py`):
+Two hard questions you can apply directly to "should this be split / should this be merged": (1) if two modes' capability bundles are 80% the same, merge (avoid stacking for the sake of stacking); (2) if the same mode running different queries has faithfulness and cost differences over 3x, split (one mode is covering too much and ends up torn between "backing the high-risk case" and "backing the low-cost case"). **That's also why five isn't a magic number** — it's the middle ground that survived both finer and coarser attempts, not a lucky observation.
+
+> The fifth failure scenario for routing: production traffic grows, someone notices a mode is over-represented in volume (say fast at 60%) and decides to "simplify by dropping the other modes and keeping only fast." That buries every high-risk query alongside it. The guardrail is that the number of modes is tied to the observed kinds of query risk, not to traffic share.
+
+---
+
+## Router implementation, the parts that matter
+
+The most common mistake, already covered above, is "shove an LLM into the routing layer and have it pick the mode" — that path is wrong in all three ways (cost, misjudgement, drift). **The right order is cheap features → rule-based pre-filter → LLM fallback only when ambiguous** — LLM is the fallback, not the default path. Same design instinct as "n8n uses pure visualisation, not an LLM router": deterministic first, LLM as fallback.
+
+A reference implementation (rewritten on top of the FastAPI server skeleton from Part 05 of this series, **not the production 1:1**):
 
 ```python
-# rag/router.py
+# router.py
 from dataclasses import dataclass
 from enum import Enum
 
@@ -188,60 +212,47 @@ class Mode(Enum):
     AGENTIC = "agentic"
 
 def route(features: QueryFeatures, override: Mode | None = None) -> Mode:
-    # Incident-response escape hatch: force-overrides from request
+    # Ops escape hatch: request carries a mode to force-override
     if override is not None:
         return override
-    
+
     # Step 1: multi-step → agentic
     if features.is_multi_step:
         return Mode.AGENTIC
-    
+
     # Step 2: high domain risk → safe
     if features.domain_risk == "high":
         return Mode.SAFE
-    
-    # Step 3: contracts/legal with numeric constraints → safe
+
+    # Step 3: contract / legal + numeric constraints → safe
     if features.has_numeric_constraints and features.source_path in {"contract", "legal"}:
         return Mode.SAFE
-    
-    # Step 4: summarisation over open source → creative
-    if features.intent_classifier == "summarisation" and features.source_path == "open":
+
+    # Step 4: summarisation + open source → creative
+    if features.intent_classifier == "summarization" and features.source_path == "open":
         return Mode.CREATIVE
-    
-    # Step 5: FAQ or runbook with short query → fast
+
+    # Step 5: faq / runbook + short query → fast
     if features.source_path in {"faq", "runbook"} and features.query_length < 50:
         return Mode.FAST
-    
-    # Step 6: default strict
+
+    # Step 6: everything else → safe (default strict)
     return Mode.SAFE
 ```
 
 ```python
-# /ask endpoint — pick mode then dispatch
+# /ask endpoint
 @app.post("/ask")
 async def ask(req: AskRequest):
-    features = extract_features(req.query, req.context)  # cheap features first
+    features = extract_features(req.query, req.context)   # cheap features first
     if needs_llm_fallback(features):
         features.intent_classifier = await llm_intent_classify(req.query)  # one LLM call
-    
+
     mode = route(features, override=req.mode)
-    return await dispatch(mode, req)  # each mode composes its own pipeline + eval/trace
+    return await dispatch(mode, req)   # each mode assembles its own pipeline + its own eval/trace
 ```
 
-**This is not a universal pattern** — `extract_features` and `llm_intent_classify` have different cost structures in every project. The faq / runbook / contract labels here come from document metadata we already have, not from an LLM. Other projects will need keyword pre-filters or a domain classifier.
+A few landmines to know about before implementing:
 
----
-
-## How Part 08 relates to Part 07: capabilities and routing
-
-**Part 07 is "how to write a faithfulness check, how to wire up Langfuse trace, how to compute cost tracking" — capability decomposition.** **Part 08 is "given those capabilities, how does the same `/ask` decide which to run on this query" — routing design.** The division of labour: Part 07 ships each capability as a stable module; Part 08 packages those modules into five modes and routes each query to one of them.
-
-**Without Part 07's capabilities, Part 08's routing is an empty shell** — mode-switching decides to run safe, but safe mode has no faithfulness check, so it is indistinguishable from fast. **Without Part 08's routing, Part 07's capabilities are wasted** — every query runs full eval and full trace, cost and latency both blow up. **The two are read together to understand the cost-vs-correctness trade-off in production RAG.**
-
-**Part 05 → Part 08 interface:** the moment Part 05 moves from demo to a FastAPI server, the `/ask` response should reserve a `mode` field — even if routing logic is not implemented yet, the schema is there. When Part 08 adds the router module, the response schema does not change, the API contract does not break. Part 07 reserved `faithfulness_check` / `citation_check` / `observability` in the response for capability placeholders; Part 08 reserves `mode` for the routing placeholder. **Two separate reservation lines, no interference when modules are added.**
-
-**Part 06 → Part 08 interface:** Part 06's four-layer retrieval upgrade (hybrid + rerank + parent expansion + citation assembly) is the default pipeline for safe mode and deep_eval mode. Fast mode uses just the first layer (pure vector); creative mode uses hybrid but skips rerank; agentic mode uses 2–3 layers per step. **The ROI of retrieval upgrades is not uniform across modes** — safe and deep_eval run all four layers, fast runs one, creative runs two. Part 06 is "what retrieval layers are available"; Part 08 is "which mode uses which layers".
-
-The Part 01 interactive demo runs both fast and safe modes — you can add `?mode=fast` or `?mode=safe` in the query box to see the latency, cost and faithfulness score differences directly. (This is also the prerequisite for Part 09's "demo for non-engineers" — mode switching has to be visible at the API layer for the UI to plug in.)
-
-**Part 08 is not the end of production work.** Part 09 is about wrapping these five modes into a UI a non-engineer can operate. Part 10 is about plugging this whole system into CI / monitoring / alerting as a complete ops loop. Part 08 is the dividing line: RAG without routing is a demo, RAG with routing is a production system.
+- The cost structure of `extract_features` and `llm_intent_classify` is project-specific — in the Part 05 skeleton, `source_path` is already present in the document metadata (FAQ / runbook / contract are tagged in metadata), so it's free; if you have to derive `source_path` via LLM, the whole cost model has to be redone.
+- If `domain_risk = "high"` is derived directly from `source_path` (contract / legal / medical metadata tagged as high), it's good enough; if you have to scan document contents for keywords, the false-positive rate goes up, and you need an offline dataset calibration pass first.
