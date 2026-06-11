@@ -32,6 +32,10 @@ const SERIES: Array<{ slug: RegExp; key: string; order: number; labelZh: string;
   { slug: /^what-reality-corrected-\d+$/, key: 'what-reality-corrected', order: 3, labelZh: '3. 被現實修正之後', labelEn: '3. What Reality Corrected' },
   { slug: /^local-llm-fine-tuning-(?:\d+|appendix-[ab])$/, key: 'local-llm-fine-tuning', order: 8, labelZh: '8. 本地 LLM 微調拆解：從 Modelfile、LoRA 到 DPO 的實戰', labelEn: '8. Local LLM Fine-Tuning Breakdown: From Modelfiles and LoRA to DPO' },
   { slug: /^behind-the-trend-\d+$/, key: 'behind-the-trend', order: 9, labelZh: '9. 趨勢的背後', labelEn: '9. Behind the Trend' },
+  { slug: /^from-rag-to-production-rag-part-\d+$/, key: 'from-rag-to-production-rag', order: 10, labelZh: '10. 從 RAG 到企業級 RAG', labelEn: '10. From RAG to Enterprise-Grade RAG' },
+  { slug: /^from-pain-to-venture-part\d+$/, key: 'from-pain-to-venture', order: 11, labelZh: '11. 從痛點到事業', labelEn: '11. From Pain to Venture' },
+  { slug: /^invisible-web3-\d+$/, key: 'invisible-web3', order: 12, labelZh: '12. x402：看不見的 Web3', labelEn: '12. x402: Invisible Web3' },
+  { slug: /^pm-product-rhythms-ai-\d+$/, key: 'pm-product-rhythms-ai', order: 13, labelZh: '13. AI 時代的產品節奏', labelEn: '13. Product Rhythms in the Age of AI' },
 ];
 
 export function getSeriesMeta(slug: string, lang: BlogLang, series?: string | null): SeriesMeta | null {
