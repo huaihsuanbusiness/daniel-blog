@@ -108,6 +108,9 @@ export const POST: APIRoute = async ({ request }) => {
       if (value !== null) payload[key] = value;
     }
 
+    const synthesisMode = asTrimmedString(body.synthesis_mode);
+    if (synthesisMode) payload.synthesis_mode = synthesisMode;
+
     const retrievalMode = asTrimmedString(body.retrieval_mode);
     if (retrievalMode) payload.retrieval_mode = retrievalMode;
 

@@ -38,6 +38,8 @@ const copy = {
     manualOpenButton: 'Open controls',
     manualCloseButton: 'Done',
     manualResetButton: 'Restore defaults',
+    deterministicOverride: 'Deterministic-first',
+    deterministicOverrideHelp: 'Use the older deterministic answer path for debugging or side-by-side comparison.',
     workflow: 'Workflow rail',
     workflowHelp: 'Route this request through the inspectable workflow rail instead of the direct engine path.',
     toolRouting: 'Tool routing',
@@ -134,6 +136,8 @@ const copy = {
     manualOpenButton: '開啟控制面板',
     manualCloseButton: '完成',
     manualResetButton: '還原預設',
+    deterministicOverride: 'Deterministic-first 覆寫',
+    deterministicOverrideHelp: '用舊的 deterministic 回答路徑做除錯或對照；一般查詢建議關閉。',
     workflow: 'Workflow rail',
     workflowHelp: '改走可觀察的 workflow rail，而不是直接的 engine path。',
     toolRouting: 'Tool routing',
@@ -399,6 +403,17 @@ const copy = {
         <div class="rag-manual-grid" data-rag-manual-fields-wrap>
           <article class="rag-manual-row">
             <div>
+              <h4>{copy.deterministicOverride}</h4>
+              <p>{copy.deterministicOverrideHelp}</p>
+            </div>
+            <label class="rag-switch">
+              <input type="checkbox" data-rag-deterministic />
+              <span class="rag-switch-track"></span>
+            </label>
+          </article>
+
+          <article class="rag-manual-row">
+            <div>
               <h4>{copy.workflow}</h4>
               <p>{copy.workflowHelp}</p>
             </div>
@@ -593,6 +608,7 @@ const copy = {
       manualResetButtons: Array.from(root.querySelectorAll('[data-rag-manual-reset]')),
       manualEnabled: root.querySelector('[data-rag-manual-enabled]'),
       manualFields: Array.from(root.querySelectorAll('[data-rag-field]')),
+      deterministic: root.querySelector('[data-rag-deterministic]'),
       manualState: root.querySelector('[data-rag-manual-state]'),
       metricHealth: root.querySelector('[data-rag-metric-health]'),
       metricPolicy: root.querySelector('[data-rag-metric-policy]'),
@@ -680,7 +696,9 @@ const copy = {
       return currentValue === expectedValue;
     };
 
-    const hasManualDiffs = () => elements.manualFields.some((field) => !fieldMatchesDefault(field));
+    const hasManualDiffs = () =>
+      elements.manualFields.some((field) => !fieldMatchesDefault(field)) ||
+      Boolean(elements.deterministic?.checked) !== Boolean(state.bootstrap?.defaults?.deterministic_first_override);
 
     const stageSummary = (stage) => {
       if (!stage) return '';
@@ -789,6 +807,9 @@ const copy = {
       elements.manualFields.forEach((field) => {
         field.disabled = !state.manualOverridesEnabled;
       });
+      if (elements.deterministic) {
+        elements.deterministic.disabled = !state.manualOverridesEnabled;
+      }
       elements.manualState.textContent = state.manualOverridesEnabled
         ? copy.manualStatusActive
         : hasManualDiffs()
@@ -933,6 +954,9 @@ const copy = {
             payload[key] = field.value;
           }
         }
+        if (elements.deterministic?.checked) {
+          payload.synthesis_mode = 'deterministic_first';
+        }
       }
 
       return payload;
@@ -953,6 +977,9 @@ const copy = {
       elements.manualFields.forEach((field) => {
         field.disabled = loading || !state.manualOverridesEnabled;
       });
+      if (elements.deterministic) {
+        elements.deterministic.disabled = loading || !state.manualOverridesEnabled;
+      }
       elements.question.disabled = loading;
       elements.submit.textContent = loading ? copy.askingButton : copy.askButton;
       elements.submit.classList.toggle('is-running', loading);
@@ -973,6 +1000,10 @@ const copy = {
         } else {
           field.value = String(value);
         }
+      }
+      if (elements.deterministic) {
+        elements.deterministic.checked = Boolean(defaults.deterministic_first_override);
+        elements.deterministic.disabled = true;
       }
 
       updateManualState();
@@ -1039,6 +1070,7 @@ const copy = {
       field.addEventListener('change', updateManualState);
       field.addEventListener('input', updateManualState);
     });
+    elements.deterministic?.addEventListener('change', updateManualState);
 
     elements.manualResetButtons.forEach((button) => {
       button.addEventListener('click', () => {

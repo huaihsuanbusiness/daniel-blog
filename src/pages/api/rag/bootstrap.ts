@@ -140,6 +140,7 @@ export const GET: APIRoute = async () => {
       use_parent_expansion: true,
       use_context_compression: false,
       use_long_context_reorder: false,
+      deterministic_first_override: false,
       min_score: 0.55,
       max_retries: null,
     };
