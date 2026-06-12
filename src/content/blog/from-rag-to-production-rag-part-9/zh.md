@@ -24,21 +24,7 @@ Part 08 把 faithfulness / citation / tracing / cost 4 個 capability 跟 5 種 
 
 ## 文件端的 7 站旅程（高層）
 
-Mermaid 圖（文件生命週期）：
-
-```mermaid
-flowchart LR
-    A[User upload<br/>PDF/docx/md] --> B[1. parsing<br/>→ parsed markdown]
-    B --> C[2. raw storage<br/>Supabase Storage / S3]
-    B --> D[3. Postgres metadata<br/>owner/tenant/source_path/version]
-    D --> E[4. ingestion queue<br/>async batch]
-    C --> E
-    E --> F[5. auth/permission<br/>JWT + RLS + tenant filter]
-    F --> G[6. document APIs<br/>list/upload/delete/update]
-    F --> H[7. citation viewer<br/>chunk ID + retrieval score]
-    H --> I[User asks<br/>Part 08 routing]
-    G --> I
-```
+![文件生命週期圖](./resource/part-09-document-lifecycle.png)
 
 7 站分成 3 條主線：
 - **進得來**（站 1-2）：檔案怎麼從硬碟變成可索引的東西
@@ -109,31 +95,7 @@ CREATE TABLE documents (
 
 Vector DB（Qdrant / Pinecone / Weaviate）設計的目的是 similarity search，不是 source of truth。**所以 metadata 一定要先在 Postgres 落地、Vector DB 是 Postgres 派生出來的檢索引擎**。
 
-Mermaid 圖（metadata 流向）：
-
-```mermaid
-flowchart TB
-    subgraph Postgres [Postgres = source of truth]
-        M[documents table<br/>id, tenant_id, owner_user_id,<br/>permission_groups, source_path,<br/>version, created_at, deleted_at]
-    end
-    subgraph VectorDB [Vector DB = 衍生]
-        V[chunks<br/>embedding + payload]
-    end
-    subgraph Storage [Object storage]
-        S[raw PDF / parsed markdown]
-    end
-
-    M -->|upsert with filter| V
-    V -->|metadata filter only| Q[query result]
-    S -->|reference path only| V
-
-    M -.->|rebuild from here| V
-    M -.->|rebuild from here| S
-
-    style Postgres fill:#e8f5e9
-    style VectorDB fill:#fff3e0
-    style Storage fill:#f3e5f5
-```
+![Metadata 流向圖](./resource/part-09-metadata-flow.png)
 
 metadata 拆成幾類：
 
@@ -185,32 +147,7 @@ qdrant.upsert(
 
 Incoming file 進到系統後，要走 parsing → store → metadata → index 這條 pipeline。**這條 pipeline 不該在 API request 同步觸發**。
 
-Mermaid 圖（ingestion flow）：
-
-```mermaid
-sequenceDiagram
-    participant U as User
-    participant API as /upload
-    participant Q as Job Queue
-    participant W as Worker
-    participant DB as Postgres
-    participant V as Vector DB
-    participant S as Object storage
-
-    U->>API: POST /upload (file)
-    API->>S: store raw file
-    API->>DB: insert row (status=pending)
-    API->>Q: enqueue ingestion job
-    API-->>U: 202 Accepted (job_id)
-
-    Note over Q,W: async
-    W->>Q: dequeue job
-    W->>S: fetch file
-    W->>W: parse → markdown
-    W->>DB: update status=processing
-    W->>V: upsert chunks + payload
-    W->>DB: update status=done
-```
+![Ingestion flow 圖](./resource/part-09-ingestion-flow.png)
 
 > **Takeaway**：upload API 只負責收檔 + enqueue job、不負責跑 ingestion。Worker 異步跑、status 寫回 Postgres、user 透過 `job_id` 查進度。
 
@@ -374,24 +311,7 @@ async def list_documents(req: Request):
     return await db.query("SELECT * FROM documents")
 ```
 
-Mermaid 圖（ACL 多層防護）：
-
-```mermaid
-flowchart TB
-    L1[1. JWT 驗證<br/>user_id 從 token.sub]
-    L2[2. Tenant membership check<br/>user 有沒有進這個 tenant]
-    L3[3. Postgres RLS<br/>documents table row filter]
-    L4[4. Vector DB payload filter<br/>chunks tenant_id filter]
-    L5[5. Storage signed URL<br/>raw file 限時 + 限 IP]
-
-    L1 --> L2 --> L3 --> L4 --> L5
-
-    style L1 fill:#ffcdd2
-    style L2 fill:#ffe0b2
-    style L3 fill:#fff9c4
-    style L4 fill:#c8e6c9
-    style L5 fill:#b3e5fc
-```
+![ACL 多層防護圖](./resource/part-09-acl-defense-in-depth.png)
 
 > **Takeaway**：ACL 不是一層就夠。**Postgres RLS + Vector DB payload filter + Storage signed URL + App-layer filter**四層各自擋不同情境。任何一層單獨 fail、其他三層還能擋住——這是 defense in depth 的真實意義。
 
@@ -483,22 +403,7 @@ Part 01 的 demo 後台就是用 document APIs 串的——使用者看到的「
 
 Payload 怎麼從 retrieve 流到 viewer——每個 stage 對 citation payload 貢獻一個欄位：
 
-```mermaid
-flowchart LR
-    A[Query] --> B[Hybrid retrieve<br/>top 50]
-    B --> C[Rerank<br/>top 10]
-    C --> D[Parent expansion<br/>補 section]
-    D --> E[LLM synthesize]
-    E --> F[Answer]
-
-    B -.->|file_name + chunk_id| P[citation payload]
-    C -.->|retrieval_score| P
-    D -.->|parent_content_preview + section| P
-    P --> V[viewer<br/>[1] [2] 引用 + 原文展開]
-
-    style P fill:#fff9c4
-    style V fill:#c8e6c9
-```
+![Citation payload flow 圖](./resource/part-09-citation-payload-flow.png)
 
 Payload 範例（不是 pseudo code、是實際送給 viewer 的 JSON shape）：
 

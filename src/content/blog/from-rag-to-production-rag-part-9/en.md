@@ -24,21 +24,7 @@ No matter how well Part 08 designed the four capabilities and the five query mod
 
 ## The seven-station document-side journey (high level)
 
-Mermaid diagram (document lifecycle):
-
-```mermaid
-flowchart LR
-    A[User upload<br/>PDF/docx/md] --> B[1. parsing<br/>→ parsed markdown]
-    B --> C[2. raw storage<br/>Supabase Storage / S3]
-    B --> D[3. Postgres metadata<br/>owner/tenant/source_path/version]
-    D --> E[4. ingestion queue<br/>async batch]
-    C --> E
-    E --> F[5. auth/permission<br/>JWT + RLS + tenant filter]
-    F --> G[6. document APIs<br/>list/upload/delete/update]
-    F --> H[7. citation viewer<br/>chunk ID + retrieval score]
-    H --> I[User asks<br/>Part 08 routing]
-    G --> I
-```
+![Document lifecycle](./resource/part-09-document-lifecycle.png)
 
 The seven stations split into three threads:
 - **Get in** (stations 1–2): how a file on disk becomes something indexable
@@ -109,31 +95,7 @@ This is the most commonly overlooked, most expensive-to-rebuild claim in Part 09
 
 The Vector DB (Qdrant / Pinecone / Weaviate) is designed for similarity search, not as a source of truth. **So metadata has to land in Postgres first, and the Vector DB is the retrieval engine that Postgres derives.**
 
-Mermaid diagram (metadata flow):
-
-```mermaid
-flowchart TB
-    subgraph Postgres [Postgres = source of truth]
-        M[documents table<br/>id, tenant_id, owner_user_id,<br/>permission_groups, source_path,<br/>version, created_at, deleted_at]
-    end
-    subgraph VectorDB [Vector DB = derivative]
-        V[chunks<br/>embedding + payload]
-    end
-    subgraph Storage [Object storage]
-        S[raw PDF / parsed markdown]
-    end
-
-    M -->|upsert with filter| V
-    V -->|metadata filter only| Q[query result]
-    S -->|reference path only| V
-
-    M -.->|rebuild from here| V
-    M -.->|rebuild from here| S
-
-    style Postgres fill:#e8f5e9
-    style VectorDB fill:#fff3e0
-    style Storage fill:#f3e5f7
-```
+![Metadata flow](./resource/part-09-metadata-flow.png)
 
 Metadata broken down:
 
@@ -185,32 +147,7 @@ Why it's wrong: when deleting, Postgres has no `tenant_id` → can't tell which 
 
 After an incoming file enters the system, it goes through parsing → store → metadata → index. **This pipeline should not be triggered synchronously in the API request.**
 
-Mermaid diagram (ingestion flow):
-
-```mermaid
-sequenceDiagram
-    participant U as User
-    participant API as /upload
-    participant Q as Job Queue
-    participant W as Worker
-    participant DB as Postgres
-    participant V as Vector DB
-    participant S as Object storage
-
-    U->>API: POST /upload (file)
-    API->>S: store raw file
-    API->>DB: insert row (status=pending)
-    API->>Q: enqueue ingestion job
-    API-->>U: 202 Accepted (job_id)
-
-    Note over Q,W: async
-    W->>Q: dequeue job
-    W->>S: fetch file
-    W->>W: parse → markdown
-    W->>DB: update status=processing
-    W->>V: upsert chunks + payload
-    W->>DB: update status=done
-```
+![Ingestion flow](./resource/part-09-ingestion-flow.png)
 
 > **Takeaway**: the upload API only accepts the file + enqueues the job, it doesn't run ingestion. Workers run asynchronously, status writes back to Postgres, the user polls progress via `job_id`.
 
@@ -374,24 +311,7 @@ async def list_documents(req: Request):
     return await db.query("SELECT * FROM documents")
 ```
 
-Mermaid diagram (ACL defense in depth):
-
-```mermaid
-flowchart TB
-    L1[1. JWT verification<br/>user_id from token.sub]
-    L2[2. Tenant membership check<br/>can this user enter this tenant]
-    L3[3. Postgres RLS<br/>row-level filter on documents]
-    L4[4. Vector DB payload filter<br/>chunks tenant_id filter]
-    L5[5. Storage signed URL<br/>raw file time-limited + IP-limited]
-
-    L1 --> L2 --> L3 --> L4 --> L5
-
-    style L1 fill:#ffcdd2
-    style L2 fill:#ffe0b2
-    style L3 fill:#fff9c4
-    style L4 fill:#c8e6c9
-    style L5 fill:#b3e5fc
-```
+![ACL defense in depth](./resource/part-09-acl-defense-in-depth.png)
 
 > **Takeaway**: ACL isn't done in one layer. **Postgres RLS + Vector DB payload filter + Storage signed URL + App-layer filter** — each of the four layers blocks a different scenario. If any one layer fails, the other three still hold — that's the real meaning of defense in depth.
 
@@ -483,22 +403,7 @@ Every answer carries [1] [2] citations, click through to see the source text + c
 
 How the payload flows from retrieve to viewer — each retrieval stage contributes one field to the citation payload:
 
-```mermaid
-flowchart LR
-    A[Query] --> B[Hybrid retrieve<br/>top 50]
-    B --> C[Rerank<br/>top 10]
-    C --> D[Parent expansion<br/>recover section]
-    D --> E[LLM synthesize]
-    E --> F[Answer]
-
-    B -.->|file_name + chunk_id| P[citation payload]
-    C -.->|retrieval_score| P
-    D -.->|parent_content_preview + section| P
-    P --> V[viewer<br/>[1] [2] citation + source text]
-
-    style P fill:#fff9c4
-    style V fill:#c8e6c9
-```
+![Citation payload flow](./resource/part-09-citation-payload-flow.png)
 
 Payload example (not pseudo code — the actual JSON shape sent to the viewer):
 
