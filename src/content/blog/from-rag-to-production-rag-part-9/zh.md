@@ -24,7 +24,7 @@ Part 08 把 faithfulness / citation / tracing / cost 4 個 capability 跟 5 種 
 
 ## 文件端的 7 站旅程（高層）
 
-![文件生命週期圖](./resource/part-09-document-lifecycle.png)
+![文件生命週期圖](/images/from-rag-to-production-rag-part-9/part-09-document-lifecycle.png)
 
 7 站分成 3 條主線：
 - **進得來**（站 1-2）：檔案怎麼從硬碟變成可索引的東西
@@ -95,7 +95,7 @@ CREATE TABLE documents (
 
 Vector DB（Qdrant / Pinecone / Weaviate）設計的目的是 similarity search，不是 source of truth。**所以 metadata 一定要先在 Postgres 落地、Vector DB 是 Postgres 派生出來的檢索引擎**。
 
-![Metadata 流向圖](./resource/part-09-metadata-flow.png)
+![Metadata 流向圖](/images/from-rag-to-production-rag-part-9/part-09-metadata-flow.png)
 
 metadata 拆成幾類：
 
@@ -147,7 +147,7 @@ qdrant.upsert(
 
 Incoming file 進到系統後，要走 parsing → store → metadata → index 這條 pipeline。**這條 pipeline 不該在 API request 同步觸發**。
 
-![Ingestion flow 圖](./resource/part-09-ingestion-flow.png)
+![Ingestion flow 圖](/images/from-rag-to-production-rag-part-9/part-09-ingestion-flow.png)
 
 > **Takeaway**：upload API 只負責收檔 + enqueue job、不負責跑 ingestion。Worker 異步跑、status 寫回 Postgres、user 透過 `job_id` 查進度。
 
@@ -311,7 +311,7 @@ async def list_documents(req: Request):
     return await db.query("SELECT * FROM documents")
 ```
 
-![ACL 多層防護圖](./resource/part-09-acl-defense-in-depth.png)
+![ACL 多層防護圖](/images/from-rag-to-production-rag-part-9/part-09-acl-defense-in-depth.png)
 
 > **Takeaway**：ACL 不是一層就夠。**Postgres RLS + Vector DB payload filter + Storage signed URL + App-layer filter**四層各自擋不同情境。任何一層單獨 fail、其他三層還能擋住——這是 defense in depth 的真實意義。
 
@@ -403,7 +403,7 @@ Part 01 的 demo 後台就是用 document APIs 串的——使用者看到的「
 
 Payload 怎麼從 retrieve 流到 viewer——每個 stage 對 citation payload 貢獻一個欄位：
 
-![Citation payload flow 圖](./resource/part-09-citation-payload-flow.png)
+![Citation payload flow 圖](/images/from-rag-to-production-rag-part-9/part-09-citation-payload-flow.png)
 
 Payload 範例（不是 pseudo code、是實際送給 viewer 的 JSON shape）：
 

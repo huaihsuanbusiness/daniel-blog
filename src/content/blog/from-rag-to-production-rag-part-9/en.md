@@ -24,7 +24,7 @@ No matter how well Part 08 designed the four capabilities and the five query mod
 
 ## The seven-station document-side journey (high level)
 
-![Document lifecycle](./resource/part-09-document-lifecycle.png)
+![Document lifecycle](/images/from-rag-to-production-rag-part-9/part-09-document-lifecycle.png)
 
 The seven stations split into three threads:
 - **Get in** (stations 1–2): how a file on disk becomes something indexable
@@ -95,7 +95,7 @@ This is the most commonly overlooked, most expensive-to-rebuild claim in Part 09
 
 The Vector DB (Qdrant / Pinecone / Weaviate) is designed for similarity search, not as a source of truth. **So metadata has to land in Postgres first, and the Vector DB is the retrieval engine that Postgres derives.**
 
-![Metadata flow](./resource/part-09-metadata-flow.png)
+![Metadata flow](/images/from-rag-to-production-rag-part-9/part-09-metadata-flow.png)
 
 Metadata broken down:
 
@@ -147,7 +147,7 @@ Why it's wrong: when deleting, Postgres has no `tenant_id` → can't tell which 
 
 After an incoming file enters the system, it goes through parsing → store → metadata → index. **This pipeline should not be triggered synchronously in the API request.**
 
-![Ingestion flow](./resource/part-09-ingestion-flow.png)
+![Ingestion flow](/images/from-rag-to-production-rag-part-9/part-09-ingestion-flow.png)
 
 > **Takeaway**: the upload API only accepts the file + enqueues the job, it doesn't run ingestion. Workers run asynchronously, status writes back to Postgres, the user polls progress via `job_id`.
 
@@ -311,7 +311,7 @@ async def list_documents(req: Request):
     return await db.query("SELECT * FROM documents")
 ```
 
-![ACL defense in depth](./resource/part-09-acl-defense-in-depth.png)
+![ACL defense in depth](/images/from-rag-to-production-rag-part-9/part-09-acl-defense-in-depth.png)
 
 > **Takeaway**: ACL isn't done in one layer. **Postgres RLS + Vector DB payload filter + Storage signed URL + App-layer filter** — each of the four layers blocks a different scenario. If any one layer fails, the other three still hold — that's the real meaning of defense in depth.
 
@@ -403,7 +403,7 @@ Every answer carries [1] [2] citations, click through to see the source text + c
 
 How the payload flows from retrieve to viewer — each retrieval stage contributes one field to the citation payload:
 
-![Citation payload flow](./resource/part-09-citation-payload-flow.png)
+![Citation payload flow](/images/from-rag-to-production-rag-part-9/part-09-citation-payload-flow.png)
 
 Payload example (not pseudo code — the actual JSON shape sent to the viewer):
 
