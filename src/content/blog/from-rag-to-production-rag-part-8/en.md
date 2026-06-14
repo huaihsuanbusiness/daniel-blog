@@ -1,8 +1,8 @@
 ---
-title: "From RAG to Enterprise-Grade RAG Part 08 | One /ask endpoint, how do you know whether this query deserves a faithfulness check"
-description: "Part 07 wired up four production-grade capabilities — faithfulness, citation, Langfuse tracing, cost tracking — but running them on every query blew latency and cost. This post bundles the four into five query modes (fast / safe / deep_eval / creative / agentic) and routes automatically using six query features (cheap / medium / LLM-fallback). One /ask endpoint, dynamic per query. Concrete workloads: Q3 contract goes to safe, FAQ goes to fast, debug goes to deep_eval, summarisation goes to creative, multi-step tasks go to agentic. Five failure scenarios (router sends contract to fast / Step 6 default flipped to fast / fast gets rerank bolted on / deep_eval opened on user path / traffic spike triggers mode consolidation) and the guardrails for each. Routing concept aligns with LangChain RouterChain's official pattern and LlamaIndex's RouterQueryEngine workflow, not a new invention."
+title: "From RAG to Enterprise-Grade RAG Part 08 | Query Router and Agentic RAG: how one /ask endpoint decides the next step"
+description: "Part 07 wired up faithfulness, citation, tracing, and cost tracking, but running every capability on every query made latency and cost unsustainable. Part 08 collapses those capabilities into five query modes (fast / safe / deep_eval / creative / agentic) and makes Agentic RAG explicit as a bounded multi-step runtime loop. This post adds two routing layers: a mode router that chooses the capability bundle, and a pattern router that decides whether the query should go to document RAG, SQL / API tools, long-context packing, or an agentic workflow. The point is not free-form agents; it is deterministic features, escape hatches, per-step traces, budgets, timeouts, and final verification around one production /ask endpoint."
 categories: ["ai"]
-tags: ["ai", "rag", "production-rag", "llamaindex", "routing", "query-mode", "langfuse", "ragas", "observability", "cost-control"]
+tags: ["ai", "rag", "production-rag", "llamaindex", "routing", "query-mode", "agentic-rag", "sql-rag", "langfuse", "ragas", "observability", "cost-control"]
 date: 2026-06-10T22:30:00
 featured: true
 subtitle: "From RAG to Enterprise-Grade RAG Part 08"
@@ -35,6 +35,8 @@ The twist here is what we're routing. We're not routing to different prompt temp
 
 The combination of those four answers is which mode this query should take.
 
+![Query Mode Router: how the five modes are selected](/images/from-rag-to-production-rag-part-8/part-08-query-mode-router.png)
+
 ---
 
 ## Five modes, four capabilities, mapped
@@ -43,13 +45,13 @@ The five modes from the end of Part 07 are the starting point for this post, **n
 
 | mode | faithfulness | citation | tracing | cost / query | p95 latency | pipeline |
 |---|---|---|---|---|---|---|
-| **fast** | off | off | query-level | ~$0.001 | < 1s | pure vector search |
-| **safe** | full + async RAGAS | full | query + stage | ~$0.01 | < 3s | hybrid + rerank + parent expansion |
-| **deep_eval** | sync RAGAS + LLM judge | full | full trace | ~$0.10 | 5–15s | full pipeline + sync eval |
-| **creative** | off | weak (presence only) | query-level | ~$0.02 | < 2s | llm_first synthesis + light retrieval |
-| **agentic** | per-step | per-step | per-step trace | ~$0.05/step | < 4s/step | multi-step planner |
+| **fast** | off | off | query-level | ~USD 0.001 | < 1s | pure vector search |
+| **safe** | full + async RAGAS | full | query + stage | ~USD 0.01 | < 3s | hybrid + rerank + parent expansion |
+| **deep_eval** | sync RAGAS + LLM judge | full | full trace | ~USD 0.10 | 5–15s | full pipeline + sync eval |
+| **creative** | off | weak (presence only) | query-level | ~USD 0.02 | < 2s | llm_first synthesis + light retrieval |
+| **agentic** | per-step | per-step | per-step trace | ~USD 0.05/step | < 4s/step | multi-step planner |
 
-A caveat on this table: **these numbers are from my own system's measurements and a rough read of common industry benchmarks** ([thedataguy.pro's RAG cost writeup](https://thedataguy.pro/writing/2025/07/the-economics-of-rag-cost-optimization-for-production-systems/) / [Tetrate's RAG architecture patterns](https://tetrate.io/learn/ai/rag-architecture-patterns)). They're not vendor SLAs and not platform guarantees. The same query run on Cohere / OpenAI / MiniMax / a self-hosted LLM can come back 2–5x different in latency and cost. The gap from $0.001 to $0.10 in the table is the gap from running one query in two different modes — that's an architecture decision, not a model decision, **and switching to a cheaper model won't close it**.
+A caveat on this table: **these numbers are from my own system's measurements and a rough read of common industry benchmarks** ([thedataguy.pro's RAG cost writeup](https://thedataguy.pro/writing/2025/07/the-economics-of-rag-cost-optimization-for-production-systems/) / [Tetrate's RAG architecture patterns](https://tetrate.io/learn/ai/rag-architecture-patterns)). They're not vendor SLAs and not platform guarantees. The same query run on Cohere / OpenAI / MiniMax / a self-hosted LLM can come back 2–5x different in latency and cost. The gap from USD 0.001 to USD 0.10 in the table is the gap from running one query in two different modes — that's an architecture decision, not a model decision, **and switching to a cheaper model won't close it**.
 
 The on/off settings for each mode's faithfulness and citation, and the strength of the retrieval pipeline, **aren't picked by gut feel — they map to the failure cost of the query**:
 
@@ -79,6 +81,26 @@ This force-override (commonly called an escape hatch) is not for the end user. I
 
 ---
 
+## Routing has two layers: mode router and pattern router
+
+The original Part 08 was mostly about the **mode router**: should this query run as fast, safe, deep_eval, creative, or agentic? That layer chooses the capability bundle: how much faithfulness, how much citation, how much trace, how much budget.
+
+But once a RAG system gets closer to production, a second layer appears: the **pattern router**. It does not ask "how many checks should we turn on?" It asks "what kind of thing should this query retrieve in the first place?"
+
+| routing layer | question it answers | typical outputs |
+|---|---|---|
+| **Mode router** | Which capability bundle should this query use? | fast / safe / deep_eval / creative / agentic |
+| **Pattern router** | What retrieval pattern should this query use? | document RAG / SQL or API tool / long-context pack / agentic workflow |
+
+Do not collapse these two into one blob. That collapse creates a very common failure mode: the user asks "which 10 tenants had the highest query cost last month," and the router sends it to vector search as if it were a document question. The vector database searches very earnestly, the LLM writes very earnestly, and the answer is still wrong because the source of truth should have been Postgres or a billing table.
+
+So the core of Part 08 becomes this:
+
+> The `/ask` endpoint should not only decide "does this query need checks?" It should also decide "which retrieval pattern should this query use?"
+
+This is also why agentic mode matters. Once a query crosses retrieval patterns — first query SQL to identify high-risk tenants, then search policy documents, then assemble a risk explanation — one retrieval pass cannot carry the task. The fix is not raising `top_k`; the fix is a bounded multi-step workflow.
+
+
 ## Six query features decide the path
 
 The easiest trap to fall into in auto-routing is "give the router an LLM, have it look at the query and pick a mode." **That path is wrong in three ways**:
@@ -102,7 +124,7 @@ class QueryFeatures:
     is_multi_step: bool           # detect "and then" / "next" / "step 1 step 2"
 
     # Medium-cost features (regex or a small classifier)
-    has_numeric_constraints: bool # "60 days" / "6 months" / "$10,000"
+    has_numeric_constraints: bool # "60 days" / "6 months" / "USD 10,000"
     domain_risk: str              # "high" / "medium" / "low" - derived from source_path
 
     # High-cost features (LLM call, only in genuinely ambiguous cases)
@@ -126,6 +148,104 @@ A word on why Step 6 defaults to the strictest mode — **the cost of a wrong ro
 Why Step 4 needs an LLM call for intent classification: Steps 1–5 can't all classify every query. "What is this Q3 report about" — summarisation or factual lookup? Cheap features can't tell, the router has to make one LLM call. **You can't skip that call — skipping it means hard-guessing with regex** — and the failure cost of a wrong guess is the same as the Step 6 default being wrong. The cost model has to include that call.
 
 > The second failure scenario for routing: someone flips the Step 6 default to fast to "save cost." It might look fine for the first three months, but as contract query volume grows, the router doesn't get the message to flip it back, and faithfulness failure rate creeps up until something breaks. The guardrail is that "default strict" is a non-negotiable — and the Step 6 behaviour is pinned in CI, not left to memory.
+
+---
+
+## One important branch: Structured / SQL RAG
+
+Not every question should go through vector retrieval.
+
+Some answers live in a database, an API, a metrics table, or a billing table, not in document chunks. Examples:
+
+- "How much query cost did each tenant generate last month?"
+- "Which 10 users have the highest citation failure rate?"
+- "What is the failure distribution for ingestion jobs this week?"
+- "How many Q3 contracts have `status = expired`?"
+
+If you send these to a vector DB, the retriever may find documents about cost, failures, or jobs, but those documents are not the source of truth. The right route is **Structured / SQL RAG**:
+
+```text
+User query
+→ structured intent
+→ readonly SQL / API allowlist
+→ tenant / user permission filter
+→ timeout + row limit
+→ structured result table
+→ answer with query provenance
+```
+
+The key point: **SQL RAG does not mean letting the LLM freely write SQL**. In production, the safer pattern is to have the LLM produce a structured intent, then let the backend map that intent to reviewed SQL templates or approved API functions.
+
+For example:
+
+```python
+class PatternRoute(Enum):
+    DOC_RAG = "doc_rag"
+    SQL_TOOL = "sql_tool"
+    LONG_CONTEXT = "long_context"
+    AGENTIC = "agentic"
+
+@dataclass
+class RouteDecision:
+    mode: Mode
+    pattern: PatternRoute
+    reason: str
+```
+
+If the query contains KPI, count, top N, group by, time range, or status distribution signals, and the source of truth is the app DB, the pattern router should choose `SQL_TOOL`, while the mode might still be `safe`. In other words: **SQL is the data acquisition pattern; safe is the checking intensity**. Keep those two layers separate.
+
+That separation is one of the differences between a demo and a production system. Demos often have one road: query → vector → LLM. Production should be: query → route → choose tool / retriever / checking depth.
+
+---
+
+## Agentic RAG is not permission for the agent to roam free
+
+The `agentic` mode is easy to misunderstand as "let the LLM decide what to do next." That is charming in a demo and dangerous in production.
+
+In this project, the useful version of agentic RAG is not an unbounded agent. It is a bounded multi-step workflow:
+
+![Agentic RAG Runtime Loop](/images/from-rag-to-production-rag-part-8/part-08-agentic-rag-runtime-loop.png)
+
+```text
+Planner
+→ Tool routing
+→ Retrieve / tool call
+→ Evaluate evidence
+→ Reflect / retry when needed
+→ Assemble context
+→ Verify + answer
+```
+
+Every step needs boundaries. A boundaryless agentic workflow grows three monsters:
+
+1. **Step explosion** — the planner keeps decomposing until one query becomes a tiny workflow storm.
+2. **Tool explosion** — the LLM starts calling tools it should never call for this task.
+3. **Error compounding** — step 1 is wrong, step 2 quotes step 1's wrong intermediate conclusion, and the final answer looks polished while the whole chain is tilted.
+
+So production agentic mode needs at least these guardrails:
+
+| guardrail | purpose |
+|---|---|
+| `max_steps` | cap the number of steps |
+| `retry_limit` | prevent infinite reflect / retry loops |
+| `allowed_tools` | restrict tools by tenant and mode |
+| per-step budget | cap token and latency per step |
+| tool timeout | keep a stuck tool from blocking the whole request |
+| per-step trace | record each step as a Langfuse parent-child span |
+| per-step evidence | store citation / source snapshots per step |
+| final verifier | still run citation / faithfulness before the final answer |
+
+The difference between normal RAG and Agentic RAG is not that agentic is "smarter." It is that the error surface is bigger, so it needs more tracing, budgeting, and verification.
+
+| Normal RAG | Agentic RAG |
+|---|---|
+| one query, one retrieval pass | one task split into multiple steps |
+| fixed retriever | each step can choose a different tool / retriever |
+| context is assembled directly | each step checks whether evidence is enough |
+| final answer is generated | intermediate results affect later steps |
+| debug one trace | debug parent-child spans |
+
+Without these guardrails, agentic mode is not a production upgrade. It is a larger error surface with a better name.
 
 ---
 
@@ -255,4 +375,68 @@ async def ask(req: AskRequest):
 A few landmines to know about before implementing:
 
 - The cost structure of `extract_features` and `llm_intent_classify` is project-specific — in the Part 05 skeleton, `source_path` is already present in the document metadata (FAQ / runbook / contract are tagged in metadata), so it's free; if you have to derive `source_path` via LLM, the whole cost model has to be redone.
+
 - If `domain_risk = "high"` is derived directly from `source_path` (contract / legal / medical metadata tagged as high), it's good enough; if you have to scan document contents for keywords, the false-positive rate goes up, and you need an offline dataset calibration pass first.
+- `override=req.mode` should not be exposed to every user. It is an ops escape hatch, not an end-user feature. Every override should write an audit log: who overrode it, what the original mode was, what it became, and what the route reason was.
+- The router output should not be just a mode. It should include `route_reason`, `features_snapshot`, and `fallback_used`. Without those three fields, routing failures are hard to replay.
+
+---
+
+## Dispatch should not become a pile of if-else
+
+After the mode router is written, the next trap is that `dispatch(mode, req)` easily becomes a pile of if-else. Five modes are manageable at first, but once SQL tools, long-context packing, and agentic workflows arrive, dispatch becomes the new mudball.
+
+A cleaner pattern is to turn mode into a pipeline config:
+
+```python
+@dataclass
+class PipelineConfig:
+    use_hybrid: bool
+    use_rerank: bool
+    use_parent_expansion: bool
+    citation_level: str        # "off" / "weak" / "full" / "per_step"
+    faithfulness_level: str    # "off" / "async" / "sync" / "per_step"
+    trace_level: str           # "query" / "stage" / "full" / "per_step"
+    max_cost_usd: float
+    timeout_seconds: int
+    max_steps: int | None = None
+    allowed_tools: list[str] | None = None
+```
+
+Then:
+
+```python
+mode = route(features, override=req.mode)
+pattern = choose_pattern(features)
+config = build_pipeline_config(mode, pattern)
+return await run_pipeline(config, req)
+```
+
+The upside:
+
+- mode logic and pipeline assembly stay separate
+- SQL / long-context / agentic additions do not blow up the router
+- config can be written directly into the trace
+- CI can test the full chain: `query → features → mode → pattern → config`
+
+At this point, `/ask` starts to look like a production router, not a demo endpoint wearing a production jacket.
+
+---
+
+## Where this post sits in the series
+
+Part 08 turns the capabilities from Part 07 into runtime decisions.
+
+- Part 06 answers: how do we retrieve better?
+- Part 07 answers: how do we know the answer is grounded?
+- **Part 08 answers: when should a query pay for each of those capabilities?**
+- Part 09 moves to the document side: ingestion, metadata, ACL, document APIs, and citation viewer.
+
+If reduced to one sentence:
+
+> Production RAG does not run the full pipeline for every query; it routes every query to the pipeline it deserves.
+
+The query router is the system's brain. Agentic RAG is what happens when the question can no longer be answered by "retrieve once, synthesize once": the brain decomposes, calls tools, checks intermediate evidence, and still stays bounded.
+
+Part 09 moves to the other side. If the query-time router is the decision layer, ingestion / metadata / ACL are the governance layer. Without that layer, even a strong router cannot guarantee that documents actually enter, stay governed, and stay queryable.
+
