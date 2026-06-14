@@ -1,6 +1,6 @@
 ---
-title: "從 RAG 到企業級 RAG Part 11 | 走完一輪之後：我從這個專案帶走的 3 件事"
-description: "Part 02-10 走完了 RAG 從最小可用到 production 的整段旅程。這篇系列收束講 3 件我做完才真正看懂的事：(1) 11 個 capability flag 收成 5 種 query mode——從功能導向到系統導向的轉折、(2) 跑完一輪再回頭重排整個學習路徑——教學者自己重新設計的過程、(3) 什麼我選擇不做——坦誠列出被擱置的項目。系列完整 closure。Part 01 互動 demo 是入口，Part 11 是座標系。"
+title: "從 RAG 到企業級 RAG Part 11 | 系列收束：從 5 種 Query Mode 到 2026 Production RAG Landscape"
+description: "Part 02-10 走完了 RAG 從最小可用到 production 的整段旅程。這篇把系列收束成一張座標系：11 個 capability flag 如何收成 5 種 query mode、為什麼跑完一輪後要重排學習路徑、哪些事我選擇暫時不做，以及 2026 Production RAG landscape 裡 shared backbone、Agentic RAG、Structured / SQL RAG、Multimodal / Document RAG、Long-context Hybrid、GraphRAG、Hierarchical RAG / RAPTOR 各自站在哪裡。"
 categories: ["ai"]
 tags: ["ai", "rag", "production-rag", "llamaindex", "query-mode", "learning-path", "retrospective", "capability-framework"]
 date: 2026-06-12T13:45:00
@@ -12,7 +12,7 @@ seriesOrder: 11
 
 ## 故事：寫完最後一行的那天
 
-從第一行程式碼，到 production HTTPS endpoint，到最後一份「Production Checklist」蓋上 ✅——整個專案跑完一輪。
+從第一行程式碼，到 production HTTPS endpoint，到最後一份「Production Checklist」蓋上——整個專案跑完一輪。
 
 那天我打開 dev notes 從頭翻。**看起來像完成品，但越看越像座標系。**
 
@@ -25,6 +25,8 @@ seriesOrder: 11
 1. **能力可以收**：11 個 flag 收成 5 種 mode，是從「功能導向」到「系統導向」的轉折
 2. **學習路徑可以重排**：跑完一輪再回頭重排整個學習順序，是教學者必經的一次重構
 3. **什麼不做比做什麼更重要**：被擱置跟明確不做的清單，比做掉的清單更值得講
+
+但這篇還要多做一件事：把 Part 12 原本想談的 landscape 收回 Part 11。因為系列收束不只需要回顧「我做了什麼」，也要誠實標出「這套 production core RAG backbone 在 2026 的 RAG 地圖裡站在哪裡」。
 
 寫在前面：這 3 件事不是「我的成功經驗」，是「做完才看出來的結構」。如果你現在正在做一個 RAG 專案，希望這 3 件事能幫你少走一段。
 
@@ -46,7 +48,6 @@ use_faithfulness_check
 use_ragas_check
 use_citation_check
 use_llm_citation_judge
-RAG_SYNTHESIS_MODE
 ```
 
 每個 flag 開 / 關是一種行為，排列組合是幾十種 query pipeline。**聽起來很彈性，實際上是在把決策外包給 caller。**
@@ -65,6 +66,8 @@ deep_eval — 同步跑 RAGAS、citation judge
 creative  — LLM-first synthesis
 agentic   — 允許 multi-step workflow、tool routing
 ```
+
+![11 個 capability flags 如何收斂成 5 種 query modes](/images/from-rag-to-production-rag-part-11/part-11-flags-to-modes.png)
 
 **收完之後的差別：**
 
@@ -180,6 +183,48 @@ Part 10 結尾講了 4 個架構選型（Oracle VM / Qdrant Cloud / Cloudflare /
 **同樣的原則**：這 3 條是「我為什麼這樣選」，不是「你應該這樣做」。如果你正在做不同的 RAG 專案，結論可能完全相反——例如你的 caller 是工程師團隊、11 個 flag 也許 OK；你的課表是給 expert 看的、production 順序不一定是對的；你的「沒做」也許根本不需要被擱置。
 
 > 這 3 條的共同點不是「我的答案是對的」，是「**我做完之後真的知道自己選了什麼、也知道自己放棄了什麼**」。這才是 closure。
+
+---
+
+## 2026 Production RAG Landscape：這個系列站在哪裡
+
+如果只看 Part 02-10，這個系列像是一條完整的 production RAG 實作路線：從 chunk / embedding / retrieval，到 query router、ingestion、ACL、deployment。這條路線很重要，但它不是 2026 production RAG 的全部。
+
+更準確的說法是：這個系列完成的是 **Production Core RAG Backbone**。
+
+這個 backbone 包含六層：
+
+| 層級 | 這個系列裡對應的位置 | 解的問題 |
+|---|---|---|
+| Ingestion | Part 03、Part 09 | 文件怎麼進來、怎麼保存、怎麼帶 metadata / ACL |
+| Retrieval | Part 02、Part 06 | 怎麼從 dense-only 走到 hybrid / rerank / parent expansion |
+| Context Assembly | Part 03、Part 06 | 怎麼把候選內容組成 LLM 能可靠使用的 context |
+| Verification | Part 07、Part 08 | 怎麼檢查 groundedness、citation、final answer |
+| Observability | Part 07、Part 10 | 怎麼 trace、debug、量測成本與延遲 |
+| Deployment | Part 10 | 怎麼讓 API、DB、vector store、HTTPS、worker 真的活在 production |
+
+![2026 Production RAG Landscape](/images/from-rag-to-production-rag-part-11/part-11-production-rag-landscape.png)
+
+在 backbone 之外，2026 的 production RAG 還有幾個 specialized patterns。它們不是互相取代，而是長在同一條 backbone 上，解不同類型的問題。
+
+| Pattern | 在這個系列的位置 | 這次深入程度 | 什麼時候需要 |
+|---|---|---|---|
+| Agentic RAG | Part 08 主舞台，Part 07 / 11 補觀測與 landscape | 深入 | query 需要 planning、tool routing、retry、final verifier |
+| Structured / SQL RAG | Part 08 主放，Part 03 補入口 | 中等 | 問題答案在 table、DB、API，而不是文件段落 |
+| Multimodal / Document RAG | Part 09 主放，Part 03 補入口 | 中等 | 文件裡有表格、圖片、版面、OCR、bbox citation |
+| Long-context Hybrid | Part 06 主放，Part 08 補 routing decision | 中等 | top-k 太碎，但全文件塞進 context 又太貴 |
+| GraphRAG | Part 11 landscape 定位 | 只定位 | 答案依賴 entity / relationship / community structure |
+| Hierarchical RAG / RAPTOR | Part 11 landscape 定位 | 只定位 | 長文件或大型語料需要 tree summaries / multi-level retrieval |
+
+這個表的重點不是「本系列沒有講完所有東西」。相反，它是在做 closure 時最該講清楚的事：**我深入的是哪一層，我只是標出位置的是哪一層。**
+
+如果你正在規劃自己的 RAG 系統，我會建議先問這個問題：
+
+> 我現在缺的是 backbone，還是 specialized pattern？
+
+很多團隊其實還沒有穩定的 ingestion、metadata、citation、trace，就急著上 GraphRAG 或 agent。這通常不是升級，而是把尚未穩定的問題搬到更複雜的層上。反過來，如果你的 backbone 已經穩了，specialized pattern 就是下一個真正拉開上限的地方。
+
+這也是為什麼這個系列的主線不是「追最新名詞」，而是先把 backbone 講完整，再把 specialized patterns 放回正確位置。
 
 ---
 

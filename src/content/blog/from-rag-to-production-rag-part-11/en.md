@@ -1,18 +1,18 @@
 ---
-title: "From RAG to Enterprise RAG Part 11 | After Finishing a Round: 3 Things I Took Away From This Project"
-description: "Parts 02-10 walked through the complete journey from minimum viable to production. This series closer articulates 3 things I only understood after doing them: (1) collapsing 11 capability flags into 5 query modes—the shift from feature-oriented to system-oriented design, (2) re-encoding the entire learning path after one round—the teacher's own re-design, (3) what I chose NOT to build—the deferred list is more honest than the done list. Full series closure. Part 01 is the interactive demo entry; Part 11 is the coordinate system."
+title: "From RAG to Enterprise-Grade RAG Part 11 | Series Closure: From 5 Query Modes to the 2026 Production RAG Landscape"
+description: "Parts 02-10 walked through the complete journey from minimum viable RAG to production. This closer turns the series into a coordinate system: how 11 capability flags collapse into 5 query modes, why the learning path has to be re-sorted after one full round, what I deliberately chose not to build, and where the shared production backbone, Agentic RAG, Structured / SQL RAG, Multimodal / Document RAG, Long-context Hybrid, GraphRAG, and Hierarchical RAG / RAPTOR sit in the 2026 Production RAG landscape."
 categories: ["ai"]
 tags: ["ai", "rag", "production-rag", "llamaindex", "query-mode", "learning-path", "retrospective", "capability-framework"]
 date: 2026-06-12T13:45:00
 featured: true
-subtitle: "From RAG to Enterprise RAG Part 11"
-series: "From RAG to Enterprise RAG"
+subtitle: "From RAG to Enterprise-Grade RAG Part 11"
+series: "From RAG to Enterprise-Grade RAG"
 seriesOrder: 11
 ---
 
 ## Story: The Day I Finished the Last Line
 
-From the first line of code to a production HTTPS endpoint, to the final "Production Checklist" stamping ✅—one full round of the project.
+From the first line of code to a production HTTPS endpoint, to the final "Production Checklist" stamped complete, one full round of the project.
 
 That day I opened the dev notes and read from the top. **It looked like a finished product, but the more I read, the more it looked like a coordinate system.**
 
@@ -25,6 +25,8 @@ These 3 things are:
 1. **Capabilities can be collapsed**: 11 flags collapsed into 5 modes—the shift from feature-oriented to system-oriented design
 2. **Learning paths can be re-encoded**: re-sort the entire learning order after one round of implementation—a refactoring the teacher has to go through
 3. **What you don't do matters more than what you do**: the deferred and explicitly-not-now list is more worth talking about than the done list
+
+But this post needs to do one more thing: bring the original Part 12 landscape idea back into Part 11. A proper series closure should not only review what I built. It should also mark where this production core RAG backbone sits in the broader 2026 RAG map.
 
 A note up front: these 3 things aren't "my success story"—they're "the structure I only saw after finishing". If you're in the middle of building a RAG project right now, I hope these 3 observations save you a stretch.
 
@@ -46,7 +48,6 @@ use_faithfulness_check
 use_ragas_check
 use_citation_check
 use_llm_citation_judge
-RAG_SYNTHESIS_MODE
 ```
 
 Each flag on/off is a behavior, and the combinations are dozens of query pipelines. **Sounds flexible, but in practice it's outsourcing decisions to the caller.**
@@ -65,6 +66,8 @@ deep_eval — runs RAGAS and citation judge synchronously
 creative  — LLM-first synthesis
 agentic   — allows multi-step workflow, tool routing
 ```
+
+![How 11 capability flags collapse into 5 query modes](/images/from-rag-to-production-rag-part-11/part-11-flags-to-modes.png)
 
 **The difference after the collapse:**
 
@@ -180,6 +183,48 @@ Part 10's closing covered 4 architecture choices (Oracle VM / Qdrant Cloud / Clo
 **Same principle applies:** these 3 are "why I chose this", not "you should do this". If you're building a different RAG project, the conclusions may flip entirely—for example, if your caller is an engineering team, 11 flags might be fine; if your curriculum is for experts, the production sequence might not be right; your deferred list might not need to be deferred at all.
 
 > What these 3 have in common isn't "my answer is right"—it's "**after finishing, I really know what I chose, and what I gave up**". That is closure.
+
+---
+
+## 2026 Production RAG Landscape: Where This Series Fits
+
+If you only read Parts 02-10, this series looks like a complete implementation path for production RAG: from chunking, embeddings, and retrieval to query routing, ingestion, ACL, and deployment. That path matters, but it is not the whole 2026 production RAG landscape.
+
+The more precise statement is: this series builds the **Production Core RAG Backbone**.
+
+That backbone has six layers:
+
+| Layer | Where it appears in this series | Problem it solves |
+|---|---|---|
+| Ingestion | Part 03, Part 09 | How documents enter, persist, and carry metadata / ACL |
+| Retrieval | Part 02, Part 06 | How the system moves from dense-only to hybrid / rerank / parent expansion |
+| Context Assembly | Part 03, Part 06 | How candidates become context the LLM can reliably use |
+| Verification | Part 07, Part 08 | How groundedness, citations, and final answers are checked |
+| Observability | Part 07, Part 10 | How traces, debugging, cost, and latency become visible |
+| Deployment | Part 10 | How the API, DB, vector store, HTTPS, and workers actually live in production |
+
+![2026 Production RAG Landscape](/images/from-rag-to-production-rag-part-11/part-11-production-rag-landscape.png)
+
+Outside that backbone, 2026 production RAG has several specialized patterns. They do not replace each other. They grow from the same backbone and solve different classes of problems.
+
+| Pattern | Where it sits in this series | Depth in this series | When it becomes necessary |
+|---|---|---|---|
+| Agentic RAG | Part 08 as the main stage, with Part 07 / 11 adding observability and landscape | Deep | The query needs planning, tool routing, retry, and a final verifier |
+| Structured / SQL RAG | Mainly Part 08, with Part 03 as the entry point | Medium | The answer lives in tables, databases, or APIs, not document paragraphs |
+| Multimodal / Document RAG | Mainly Part 09, with Part 03 as the entry point | Medium | Documents contain tables, images, layout, OCR, and bbox citations |
+| Long-context Hybrid | Mainly Part 06, with Part 08 adding the routing decision | Medium | Top-k is too fragmented, but packing whole documents is too expensive |
+| GraphRAG | Positioned in the Part 11 landscape | Positioned only | The answer depends on entities, relationships, or community structure |
+| Hierarchical RAG / RAPTOR | Positioned in the Part 11 landscape | Positioned only | Long documents or large corpora need tree summaries and multi-level retrieval |
+
+The point of this table is not that this series covered everything. The point is the more useful closure question: **which layers did I go deep on, and which layers did I only position?**
+
+If you are planning your own RAG system, I would start with this question:
+
+> Am I missing the backbone, or am I missing a specialized pattern?
+
+Many teams do not yet have stable ingestion, metadata, citation, or traces, but already want to add GraphRAG or agents. That is usually not an upgrade. It is moving an unstable problem into a more complex layer. On the other hand, once the backbone is stable, specialized patterns are where the next real ceiling lift comes from.
+
+That is why this series does not chase the newest term first. It builds the backbone, then places the specialized patterns where they belong.
 
 ---
 
