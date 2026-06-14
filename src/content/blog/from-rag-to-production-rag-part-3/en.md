@@ -1,6 +1,6 @@
 ---
 title: "From RAG to Enterprise-Grade RAG Part 03 | The 14-Stop Journey of a RAG Request: From Document In to Answer Out"
-description: "Naive RAG only covers 2 of the 14 stations a production pipeline needs. The other 12 are where retrieval engineering actually happens — and where the system has to be designed before it can stand up to real queries."
+description: "Naive RAG only covers 2 of the 14 stations a production pipeline needs. The other 12 form the factory around ingestion, query planning, retrieval, context assembly, verification, and tracing. This post turns the 14 stations into a structural map and shows where Multimodal / Document RAG, Structured / SQL RAG, Long-context Hybrid, and Agentic RAG naturally attach."
 categories: ["ai"]
 tags: ["ai", "rag", "production-rag", "llamaindex", "retrieval", "pipeline"]
 date: 2026-06-10T12:30:00
@@ -12,7 +12,9 @@ seriesOrder: 3
 
 Part 02 ended with a 14-station table, but that table was the query side only — it only showed how the answer comes out. The four stations covering how documents enter the system, how metadata gets attached, and how the index gets built were never unfolded in Part 02.
 
-This piece lays the whole road out. From the moment a PDF enters the system to the moment the answer goes back to the user — 14 stations in total.
+This piece lays the whole road out. From the moment a PDF enters the system to the moment the answer goes back to the user, 14 stations in total.
+
+![The 14-station journey of Production RAG](/images/from-rag-to-production-rag-part-3/part-03-14-station-journey.png)
 
 ```text
 Build side (4 stations)
@@ -36,6 +38,15 @@ Query side (10 stations)
 
 Naive RAG only covers stations 6 and 11. Lose any one of the other 12 and answer quality drops a notch. Lose three or more and the system should not be called a production RAG at all.
 
+The same map also tells you where specialized patterns belong, instead of treating them as standalone buzzwords.
+
+| Specialized pattern | Where it attaches | Why it belongs there |
+|---|---|---|
+| Multimodal / Document RAG | Stations 2, 3, 10 | It extends parsing, metadata, and citation payloads, not just retrieval |
+| Structured / SQL RAG | Stations 5, 6 | It is a routing pattern: some questions should hit SQL / APIs, not document paragraphs |
+| Long-context Hybrid | Stations 8, 9, 10 | It retrieves first, then packs smarter; it does not stuff everything into context |
+| Agentic RAG | Stations 5, 6, 12, 14 | It is a query-time workflow for planning, tool routing, evaluation, retry, and tracing |
+
 Walked in order below.
 
 ---
@@ -55,6 +66,8 @@ Turn the document into clean structured content.
 A lot of PDFs look like text, but in reality they are a chaotic mix of layers, tables, headers, footers and two-column layouts. A basic parser will pull it out looking like the data has been through a blender — the table becomes a single line, the section order scrambles, the footnotes stick to the body. The LLM receives that input and starts making things up.
 
 In practice, split the work by document type. For plain text (Markdown / Google Docs), a basic parser is enough. For contracts, reports and slide decks, use a layout-aware parser such as LlamaParse, Unstructured or Docling. For scanned documents, invoices and financial reports, route to Mistral OCR, Azure Document Intelligence or AWS Textract. Do not slice tables as if they were ordinary text — keep them as a Markdown table or JSON, or the downstream LLM's citations will fall out of place.
+
+This is also where Multimodal / Document RAG enters. Documents are not only text. Production documents often contain tables, images, layout, captions and page coordinates. The hard part is not just whether a model can see an image; it is how non-text content gets preserved as something retrievable, citable and permission-aware. Part 09 will go deeper on this inside ingestion and document APIs. For now, mark the location: it mainly attaches to stations 2, 3 and 10.
 
 **Station 3 — Chunking + metadata + ACL**
 
@@ -88,6 +101,8 @@ That is not one question. It is three. Query planning is the system thinking cle
 
 In implementation, that breaks into four jobs: Classification (judge the question type), Rewrite (turn natural language into something the search engine can chew on), Decomposition (split complex questions into subquestions), Routing (decide where to go). The four can be done by a single LLM emitting a structured plan in one go, or split into a multi-step workflow. LangGraph, LlamaIndex Workflow, CrewAI and AutoGen can all do it, but do not start with agentic — for a newcomer, a simple router node in LlamaIndex RouterQueryEngine or LangGraph is plenty.
 
+Structured / SQL RAG enters at this station too. When a user asks, "what was churn rate by plan last month" or "list customers with ARR above 100k and a support escalation in the last 30 days", the answer is not in document paragraphs. It is in tables, SQL, BI layers or internal APIs. That query should route to a SQL / API tool, not be forced through vector retrieval. Part 08 is where that routing decision becomes the main topic.
+
 **Station 6 — Hybrid retrieval**
 
 This is the step that actually "goes and finds the data".
@@ -101,7 +116,7 @@ dense vector search top 50
 
 Why not just dense? Different questions need different weapons. A semantic question like "how does early termination work" plays to dense's strengths; an exact-string question like `GET /users/me/profile` or `SKU-9921` plays to BM25's. In production, it is not either/or — they run together.
 
-The ACL filter runs at this step. Do not tell the LLM in the prompt "do not look at document A" — handing the door lock to a forgetful dog is the same trick. Let the retrieval layer enforce it.
+The ACL filter runs at this step. Do not tell the LLM in the prompt "do not look at document A". Permissions should be enforced by the retrieval layer, not by asking a text generation model to remember the boundary at answer time.
 
 **Station 7 — Reranking**
 
@@ -122,6 +137,8 @@ The search pulls a single line: "no platform fee shall be charged". Hand just th
 **Station 9 — Context compression**
 
 Once the whole section is back, half of it may have nothing to do with the question. Compression filters out the unrelated sentences and keeps only the parts that are actually relevant to the query. It saves tokens, cuts noise, and reduces the chance of the LLM citing the wrong thing. LangChain's ContextualCompressionRetriever or a self-written LLM compressor can both do the job.
+
+Long-context Hybrid also lives here. It does not mean stuffing every document into the context window. It means retrieval first, then smarter packing of a small set of highly relevant parent documents through compression, ordering and budget guards. When top-k chunks are too fragmented but the whole corpus is too expensive to pack, this pattern starts to make sense. Part 06 is where the trade-off gets unpacked.
 
 **Station 10 — Citation assembly**
 
@@ -166,9 +183,13 @@ Without tracing, when the answer is wrong there is nothing to do but pray to the
 
 Tracing records the full path of each query: classification, rewrite, retrieval top chunks, reranked top chunks, LLM input, faithfulness result. Langfuse is open source, LangSmith integrates deeper with LangChain — pick one.
 
+Agentic RAG should not be understood as "the model runs a few more steps by itself". In this 14-station map, it crosses stations 5, 6, 12 and 14: plan first, decide whether to retrieve or call a tool, evaluate after execution, retry or change strategy when evidence is insufficient, and trace every step. Without those stations, agentic is just a harder-to-debug query pipeline. Part 08 turns it into an explicit runtime loop.
+
 Eval is running a regression against a test set before going live. A 50–100 question test set is enough to start; rerun it on every pipeline change. The four metrics to compare are at least: Retrieval Recall, Answer Correctness, Faithfulness, Permission Leakage. Skip eval, and improving the pipeline is just vibes.
 
 ---
+
+![Minimum viable and high-ROI RAG stations](/images/from-rag-to-production-rag-part-3/part-03-minimum-vs-high-roi-stations.png)
 
 ## 5. Minimum viable: the three stations you have to ship
 
