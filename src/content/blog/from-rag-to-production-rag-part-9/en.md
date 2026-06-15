@@ -1,8 +1,8 @@
 ---
 title: "From RAG to Enterprise-Grade RAG Part 09 | Make documents actually enter, stay governed, and stay queryable: from ingestion to document APIs"
-description: "Part 08 bundled four capabilities into five query modes, but no matter how strict the query-side routing gets, a broken document side still breaks the system — user A pulling user B's contract, header spoofing to impersonate other users, deleting a file and losing the chunks. This post walks through the seven stations a document actually travels after upload (parsing → raw storage → Postgres metadata → ingestion queue → auth/permission → document APIs → citation viewer), with the focus on the often-overlooked claim that the Vector DB cannot be the source of truth, four ACL failure scenarios (header spoofing / no tenant filter / app-layer filter with no RLS / JWT without membership check), and the citation viewer's payload as the last mile of explainability. Document-side seven stations (Part 09) + query-side five modes (Part 08) = the full production RAG closure."
+description: "Part 08 collapsed capabilities into five query modes, but strict query-side routing cannot save a broken document side. This post walks through the seven stations a document travels after upload: parsing, raw storage, Postgres metadata, ingestion queue, auth/permission, document APIs, and citation viewer. It also places Multimodal / Document RAG in the right layer, explains what text / table / image / layout signals must survive ingestion, and shows why the Vector DB cannot be the source of truth and ACL cannot rely on one filter."
 categories: ["ai"]
-tags: ["ai", "rag", "production-rag", "llamaindex", "document-management", "acl", "permission", "postgres", "ingestion", "citation-viewer", "observability"]
+tags: ["ai", "rag", "production-rag", "llamaindex", "document-management", "document-rag", "multimodal-rag", "ocr", "acl", "permission", "postgres", "ingestion", "citation-viewer", "observability"]
 date: 2026-06-11T15:40:00
 featured: true
 subtitle: "From RAG to Enterprise-Grade RAG Part 09"
@@ -55,6 +55,59 @@ A layer of parsed markdown is needed in between: convert PDF / docx into structu
 Lazy parsing at query time looks like it saves space, but in practice every query re-does the parsing, latency spikes; changing chunking strategy re-parses every file (tens of thousands of PDFs, wait till the heat death of the universe). **Parsing is a one-time job, its output has to be reused.**
 
 > **Failure scenario**: in the early days, lazy parsing at query time was tried. Every query slowed by 800ms, changing chunking once took six hours. The decision was made to parse once at ingestion.
+
+### One more positioning note: Multimodal / Document RAG is not just "chat with images"
+
+One term has to be clarified here because it becomes easy to confuse in 2026-style document RAG: **Multimodal / Document RAG**.
+
+It does not simply mean "the chatbot can look at images." In the context of Part 09, it means: **when a document enters the system, do not extract only text; preserve table, image, and layout signals that affect answers and citations.**
+
+If a PDF is flattened into one long text stream, many enterprise documents break at ingestion:
+
+| Content type | What ingestion should preserve | What retrieval / citation uses later |
+|---|---|---|
+| text | paragraph, heading, section path | normal chunk retrieval, parent expansion |
+| table | table JSON, markdown table, row / column headers | amounts, clause comparison, specification lookup |
+| image | image caption, figure pointer, alt text, OCR text | charts, flow diagrams, screenshot-heavy docs |
+| layout | page, bbox, reading order, OCR confidence | citation viewer highlights, audit, low-confidence reprocessing |
+
+I would still use parsed markdown as the main spine, but I would keep element-level metadata beside it. Conceptually:
+
+```json
+{
+  "document_id": "doc_123",
+  "elements": [
+    {
+      "type": "table",
+      "section_path": ["MSA", "Termination"],
+      "page": 12,
+      "bbox": [88, 140, 512, 430],
+      "ocr_confidence": 0.97,
+      "table_markdown": "| Term | Notice | Fee | ... |",
+      "table_json": {
+        "columns": ["Term", "Notice", "Fee"],
+        "rows": [["Early termination", "30 days", "2 months"]]
+      }
+    },
+    {
+      "type": "image",
+      "section_path": ["Architecture", "Network"],
+      "page": 18,
+      "bbox": [72, 96, 540, 620],
+      "image_caption": "Cloudflare -> FastAPI -> Qdrant request path",
+      "figure_pointer": "s3://bucket/doc_123/page_18_fig_02.png"
+    }
+  ]
+}
+```
+
+Those fields are not there to make the database look complete. They support three later jobs:
+
+1. **retrieval can choose the right representation**: text uses text chunks, tables use table rows, figures use captions / OCR / figure pointers.
+2. **the citation viewer can actually locate evidence**: not just "page 12", but a bbox or section path that can be highlighted.
+3. **eval can identify parser failure**: if OCR confidence is low or table headers disappear, that is an ingestion failure, not an LLM failure.
+
+> **Takeaway**: The first dividing line in Document RAG is not model strength. It is whether ingestion preserves document structure. If text / table / image / layout are flattened into the same plain-text stream during parsing, even strong retrieval can only guess later.
 
 ### Station 2: raw storage — object storage and Postgres split the work
 
@@ -383,6 +436,29 @@ async def update_metadata(doc_id: str, req: MetadataUpdate, auth: AuthContext = 
 ```
 
 > **Takeaway**: document APIs are the only interface between the user and the system — all ACL is enforced at the API layer, all audit logs are written at the API layer. **Management UI hits DB directly = ACL bypass, no audit log.**
+
+
+Document APIs have one more easy-to-miss responsibility: **they should not only return document lists; they should expose the document's verifiable structural state.** If Part 09 preserved page / bbox / section path / OCR confidence earlier, the management API should make that state visible.
+
+```json
+{
+  "document_id": "doc_123",
+  "title": "Q3 supplier contract.pdf",
+  "ingestion_status": "done",
+  "modalities": ["text", "table", "image", "layout"],
+  "element_counts": {
+    "text": 84,
+    "table": 6,
+    "image": 3
+  },
+  "quality_flags": {
+    "low_ocr_confidence_pages": [7, 18],
+    "tables_without_headers": 1
+  }
+}
+```
+
+That contract gives three groups a shared view of system state: users know whether the document is queryable, admins know which document needs parsing re-run, and developers know whether a bad answer should be debugged from ingestion or retrieval first.
 
 **Failure case (must-read)**: writing an admin script that hits DB directly to "manage things quickly."
 

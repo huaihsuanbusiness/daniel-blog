@@ -1,8 +1,8 @@
 ---
 title: "從 RAG 到企業級 RAG Part 09 | 讓文件真的進得來、管得住、查得到：從 ingestion 到 document APIs"
-description: "Part 08 把 4 個 capability 包成 5 種 query mode，但 query 端 routing 再怎麼嚴格，文件端沒設計好就是會出事——A 公司 user 撈到 B 公司的合約、header 假冒身份撈別人的文件、刪文件連 chunk 都找不回。本文拆文件進系統後實際走過的 7 站（parsing → raw storage → Postgres metadata → ingestion queue → auth/permission → document APIs → citation viewer），重點放在「Vector DB 不能當 source of truth」這個常被忽略的論點、4 個 ACL 失敗情境（header spoofing / 無 tenant filter / app-layer filter 沒 RLS / JWT 沒 membership check）、citation viewer payload 的可解釋性。文件端 7 站（Part 09）+ query 端 5 mode（Part 08）= production RAG 完整迴路。"
+description: "Part 08 把 capability 收成 5 種 query mode，但 query 端 routing 再嚴格，文件端沒設計好還是會出事。本文拆文件進系統後的 7 站：parsing、raw storage、Postgres metadata、ingestion queue、auth/permission、document APIs、citation viewer；補上 Multimodal / Document RAG 的正確位置，說明 text / table / image / layout 在 ingestion 階段要保留哪些結構訊號，以及為什麼 Vector DB 不能當 source of truth、ACL 不能只靠一層 filter。"
 categories: ["ai"]
-tags: ["ai", "rag", "production-rag", "llamaindex", "document-management", "acl", "permission", "postgres", "ingestion", "citation-viewer", "observability"]
+tags: ["ai", "rag", "production-rag", "llamaindex", "document-management", "document-rag", "multimodal-rag", "ocr", "acl", "permission", "postgres", "ingestion", "citation-viewer", "observability"]
 date: 2026-06-11T15:40:00
 featured: true
 subtitle: "從 RAG 到企業級 RAG Part 09"
@@ -55,6 +55,59 @@ Part 08 把 faithfulness / citation / tracing / cost 4 個 capability 跟 5 種 
 query 時才 parse 聽起來省空間，實際上每次 query 都要重做一次 parsing、latency 飆高；改 chunking 策略要重 parse 所有文件（幾萬份 PDF 等到天荒地老）。**parsing 是一次性工作、結果要 reuse**。
 
 > **反例情境**：早期試過 query 時 lazy parse，發現每次 query 慢 800ms、改 chunking 一次跑了 6 小時，後來決定 ingestion 階段一次性 parse 完。
+
+### 補一個定位：Multimodal / Document RAG 不是「多模態聊天」
+
+這裡要補一個 2026 之後做文件型 RAG 很容易混淆的名詞：**Multimodal / Document RAG**。
+
+它不是「讓 chatbot 可以看圖片」這麼簡單。放在 Part 09 的語境裡，它指的是：**文件進系統時，不只把文字抽出來，還要保留 table、image、layout 這些會影響答案與 citation 的結構訊號。**
+
+如果只把 PDF parse 成一大段文字，很多企業文件會壞在這裡：
+
+| 內容類型 | ingestion 時要保留什麼 | retrieval / citation 會用到什麼 |
+|---|---|---|
+| text | paragraph、heading、section path | 一般 chunk retrieval、parent expansion |
+| table | table JSON、markdown table、row / column header | 金額、條款比較、規格表查詢 |
+| image | image caption、figure pointer、alt text、OCR text | 圖表、流程圖、截圖型文件 |
+| layout | page、bbox、reading order、OCR confidence | citation viewer 高亮、審計、低信心重處理 |
+
+我會把 parsed markdown 當成主幹，但旁邊一定要保留一份 element-level metadata。概念上像這樣：
+
+```json
+{
+  "document_id": "doc_123",
+  "elements": [
+    {
+      "type": "table",
+      "section_path": ["MSA", "Termination"],
+      "page": 12,
+      "bbox": [88, 140, 512, 430],
+      "ocr_confidence": 0.97,
+      "table_markdown": "| Term | Notice | Fee | ... |",
+      "table_json": {
+        "columns": ["Term", "Notice", "Fee"],
+        "rows": [["Early termination", "30 days", "2 months"]]
+      }
+    },
+    {
+      "type": "image",
+      "section_path": ["Architecture", "Network"],
+      "page": 18,
+      "bbox": [72, 96, 540, 620],
+      "image_caption": "Cloudflare -> FastAPI -> Qdrant request path",
+      "figure_pointer": "s3://bucket/doc_123/page_18_fig_02.png"
+    }
+  ]
+}
+```
+
+這些欄位不是為了資料庫看起來很完整，而是為了後面三件事：
+
+1. **retrieval 可以選對 representation**：文字走 text chunk，表格查 table row，圖表走 caption / OCR / figure pointer。
+2. **citation viewer 可以真的定位**：不是只顯示「第 12 頁」，而是能 highlight 到 bbox 或 section path。
+3. **eval 能判斷 parser 失敗**：如果 OCR confidence 低、table header 消失，這是 ingestion failure，不是 LLM failure。
+
+> **Takeaway**：Document RAG 的第一個分水嶺不是 model 有多強，而是 ingestion 有沒有保住文件結構。text / table / image / layout 如果在 parsing 階段被壓成同一段 plain text，後面再強的 retrieval 都只能猜。
 
 ### 第 2 站：raw storage——物件儲存 + Postgres 分工
 
@@ -383,6 +436,29 @@ async def update_metadata(doc_id: str, req: MetadataUpdate, auth: AuthContext = 
 ```
 
 > **Takeaway**：document APIs 是 user 跟系統之間唯一的接口——所有 ACL 都在 API 層強制、所有 audit log 都在 API 層記錄。**管理後台直接戳 DB = ACL 繞過、audit log 沒留**。
+
+
+Document APIs 還有一個容易漏掉的責任：**不要只回傳文件列表，也要回傳文件可被查證的結構狀態**。如果 Part 09 前面保留了 page / bbox / section path / OCR confidence，管理端 API 就要讓這些狀態可見。
+
+```json
+{
+  "document_id": "doc_123",
+  "title": "Q3 supplier contract.pdf",
+  "ingestion_status": "done",
+  "modalities": ["text", "table", "image", "layout"],
+  "element_counts": {
+    "text": 84,
+    "table": 6,
+    "image": 3
+  },
+  "quality_flags": {
+    "low_ocr_confidence_pages": [7, 18],
+    "tables_without_headers": 1
+  }
+}
+```
+
+這個 contract 讓三種人都知道系統狀態：user 知道文件是否可查，admin 知道哪份文件要重跑 parsing，developer 知道答案錯時該先查 ingestion 還是 retrieval。
 
 **反例（必看）**：為了「快速管理」寫 admin script 直接戳 DB。
 
