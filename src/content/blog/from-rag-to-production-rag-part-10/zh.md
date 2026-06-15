@@ -2,7 +2,7 @@
 title: "從 RAG 到企業級 RAG Part 10 | 把 RAG 推上線：我踩過的 10 個坑"
 description: "從本機 prototype 到公開 API，不是最後一步，是另一場考試。本文用 10 個真實踩坑案例（Oracle VM 搶規格、Docker env shadowing、Nginx + Cloudflare HTTPS trust chain、Qdrant payload index bootstrap、Compose healthcheck 連帶擋整個 stack 等）拆解部署過程中每個 stack 層會卡在哪裡，以及如何設計可預防的思路。個人選型（Oracle VM / Qdrant Cloud / Cloudflare）明標「這是我的選擇，不是通用建議」。"
 categories: ["ai"]
-tags: ["ai", "rag", "production-rag", "deployment", "oracle-cloud", "docker", "nginx", "cloudflare", "qdrant", "smoke-test", "infrastructure"]
+tags: ["ai", "rag", "production-rag", "deployment", "oracle-cloud", "docker", "nginx", "cloudflare", "qdrant", "smoke-test", "infrastructure", "agentic-rag", "observability", "worker-queue"]
 date: 2026-06-12T12:00:00
 featured: true
 subtitle: "從 RAG 到企業級 RAG Part 10"
@@ -32,6 +32,10 @@ Part 09 走完了文件端的 7 站——parsing、raw storage、Postgres metada
 - 整合層（2 個）—— Qdrant payload index、production-style smoke test
 
 每個坑都是真的。每個預防框架都是用時間跟錯誤換來的。
+
+![Production RAG 部署踩坑地圖：把 10 個坑分成環境層、容器層、網路層與整合層](/images/from-rag-to-production-rag-part-10/part-10-deployment-trouble-map.png)
+
+先把這 10 個坑畫成地圖，讀者會比較快看懂這篇不是在列流水帳。部署問題通常不是「API 壞了」這麼單純，而是某一層的邊界沒有被驗證：環境層拿不到穩定資源、容器層沒收到正確 runtime 設定、網路層 trust chain 斷掉、整合層沒有證明資料路徑真的通。
 
 寫在前面：10 個坑裡有 2 個（坑 4、坑 5）來自 L34 那輪我反覆套 patch 的真實記錄。「4-2」「4-3」是我開發筆記的章節編號，「L27394-L27576」是行號——這是個人 case，讀者不用真的去查。**重要的是結果**：Compose healthcheck 寫得不好，會把整個 stack 拖死。
 
@@ -385,6 +389,33 @@ curl -s -X POST "$BASE_URL/ask" \
 ```
 
 Smoke test 不是「有拿到答案就好」——它必須確認 citation 存在。有答案不等於 RAG 資料路徑完整。
+
+---
+
+## 補一層：Agentic / tool workflow 上線後，最先壞的是 timeout
+
+上面 10 個坑是把 RAG API 推上線會遇到的基礎設施問題。但如果你的 RAG 已經像 Part 08 那樣有 agentic mode、像 Part 09 那樣有 ingestion queue、像 Part 07 那樣有 offline eval，deployment 還會多一個問題：**哪些事情可以留在 `/ask`，哪些事情一定要移到 worker？**
+
+![Production RAG request path：線上 /ask 路徑、背景 worker queue、timeout boundary 與 observability 欄位](/images/from-rag-to-production-rag-part-10/part-10-request-deployment-path.png)
+
+我的經驗是：線上 `/ask` 只應該承擔「有明確 timeout budget 的 blocking path」。只要工作具備下面任一特徵，就不要讓它卡在同一個 HTTP request 裡：
+
+- 會跑 ingestion、chunking、embedding、payload index bootstrap
+- 會做 RAGAS / offline eval / regression suite
+- 會呼叫不穩定或不可預期延遲的外部 tool
+- 需要 retry、人工審核、或可能跑超過 10 秒
+- 失敗後不能只回 502，而要保留 job 狀態與可重跑線索
+
+我會把 production path 分成兩條：
+
+| 路徑 | 放什麼 | 成功條件 |
+| --- | --- | --- |
+| Online `/ask` path | auth、routing、retrieval、rerank、generation、citation assembly | bounded latency、可觀測 trace、失敗時回可解釋錯誤 |
+| Background worker path | ingestion、offline eval、long tool call、index bootstrap、批次 regression | 有 `job_id`、可 retry、可查狀態、可回補結果 |
+
+這裡最重要的不是用了哪個 queue，而是你有沒有把 timeout、retry、trace 這三件事從一開始就當成產品邏輯。最少我會在每個 request/job 記這些欄位：`trace_id`、`run_id`、`job_id`、`mode`、`step_name`、`tenant_id`、`latency_ms`、`timeout_reason`、`retry_count`、`cost_usd`。
+
+Part 07 的 per-step trace、Part 08 的 query mode、Part 09 的 ingestion queue，到了部署層其實會合成同一個要求：**不要只問服務有沒有活，要問每一段工作有沒有被限制、被記錄、被驗證。**
 
 ---
 

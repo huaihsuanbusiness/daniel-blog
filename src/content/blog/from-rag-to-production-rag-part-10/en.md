@@ -1,12 +1,12 @@
 ---
-title: "From RAG to Enterprise RAG Part 10 | Deploying My RAG: 10 Pits I Fell Into"
-description: "Going from a local prototype to a public API isn't the final step—it's another exam. This article walks through 11 real deployment pitfalls (Oracle VM capacity, Docker env shadowing, Compose healthcheck cascading failures, Nginx + Cloudflare HTTPS trust chain, Qdrant payload index bootstrap, etc.) across four infrastructure layers, with prevention frameworks for each. Personal architecture choices (Oracle VM / Qdrant Cloud / Cloudflare / Docker Compose) explicitly marked as 'my choices, not general advice'."
+title: "From RAG to Enterprise-Grade RAG Part 10 | Deploying My RAG: 10 Pits I Fell Into"
+description: "Going from a local prototype to a public API isn't the final step—it's another exam. This article walks through 10 real deployment pitfalls (Oracle VM capacity, Docker env shadowing, Compose healthcheck cascading failures, Nginx + Cloudflare HTTPS trust chain, Qdrant payload index bootstrap, etc.) across four infrastructure layers, with prevention frameworks for each. It also adds the production request path for agentic/tool workflows: timeout boundaries, worker queues, retries, and observability."
 categories: ["ai"]
-tags: ["ai", "rag", "production-rag", "deployment", "oracle-cloud", "docker", "nginx", "cloudflare", "qdrant", "smoke-test", "infrastructure"]
+tags: ["ai", "rag", "production-rag", "deployment", "oracle-cloud", "docker", "nginx", "cloudflare", "qdrant", "smoke-test", "infrastructure", "agentic-rag", "observability", "worker-queue"]
 date: 2026-06-12T12:00:00
 featured: true
-subtitle: "From RAG to Enterprise RAG Part 10"
-series: "From RAG to Enterprise RAG"
+subtitle: "From RAG to Enterprise-Grade RAG Part 10"
+series: "From RAG to Enterprise-Grade RAG"
 seriesOrder: 10
 ---
 
@@ -24,7 +24,7 @@ Part 09 walked through the 7 stations of the document side (parsing → raw stor
 
 But on the deployment side, **the distance between "running" and "production-ready" was much larger than I expected**.
 
-This Part walks through 11 real pits, distributed across 4 stack layers:
+This Part walks through 10 real pits, distributed across 4 stack layers:
 
 - **Environment layer** (2): VM capacity, deploy key
 - **Container layer** (3): env not reaching the container, Compose healthcheck cascading failures, build context bloat
@@ -32,6 +32,10 @@ This Part walks through 11 real pits, distributed across 4 stack layers:
 - **Integration layer** (2): Qdrant payload index, production-style smoke test
 
 Every pit was real. Every prevention framework was bought with time and error.
+
+![Production RAG deployment trouble map grouping 10 pitfalls into environment, container, network, and integration layers](/images/from-rag-to-production-rag-part-10/part-10-deployment-trouble-map.png)
+
+Once the 10 pits are drawn as a map, the article becomes easier to read: this is not a random list of outages. Deployment problems usually mean one boundary was never proven. The environment layer may not have stable capacity, the container layer may not receive runtime configuration, the network layer may have a broken trust chain, or the integration layer may never have proven the data path end to end.
 
 One note up front: 2 of these 10 pits (Pit 4, Pit 5) come from my real L34 patch series. The "4-2" / "4-3" / "L27394-L27576" references are my dev-note section numbers and line ranges—you don't need to look them up; they're just provenance markers. The important part: **a poorly written Compose healthcheck can drag down the entire stack**, and no article warned me about this before I hit it myself.
 
@@ -385,6 +389,33 @@ curl -s -X POST "$BASE_URL/ask" \
 ```
 
 Smoke test isn't just "got an answer"—it must confirm citations are present; having an answer doesn't mean the RAG data path is complete.
+
+---
+
+## One More Layer: In Production, Agentic / Tool Workflows Break on Timeout First
+
+The 10 pits above are infrastructure problems you hit when pushing a RAG API online. But if your RAG already has an agentic mode like Part 08, an ingestion queue like Part 09, and offline eval like Part 07, deployment adds one more question: **which work belongs inside `/ask`, and which work must move to a worker?**
+
+![Production RAG request path showing the online /ask path, background worker queue, timeout boundary, and observability fields](/images/from-rag-to-production-rag-part-10/part-10-request-deployment-path.png)
+
+My rule of thumb: online `/ask` should only own the blocking path with a clear timeout budget. If a task has any of the traits below, it should not block the same HTTP request:
+
+- It runs ingestion, chunking, embedding, or payload index bootstrap
+- It runs RAGAS, offline eval, or a regression suite
+- It calls an external tool with unpredictable latency
+- It needs retries, human review, or may run longer than 10 seconds
+- Failure cannot be reduced to a 502; you need job state and replay clues
+
+I split the production path into two lanes:
+
+| Path | What belongs there | Success condition |
+| --- | --- | --- |
+| Online `/ask` path | auth, routing, retrieval, rerank, generation, citation assembly | bounded latency, observable trace, explainable failure |
+| Background worker path | ingestion, offline eval, long tool call, index bootstrap, batch regression | has `job_id`, retryable, status-readable, result can be backfilled |
+
+The queue technology is not the important part. The important part is whether timeout, retry, and trace are treated as product logic from the beginning. At minimum I would record these fields on every request/job: `trace_id`, `run_id`, `job_id`, `mode`, `step_name`, `tenant_id`, `latency_ms`, `timeout_reason`, `retry_count`, `cost_usd`.
+
+Part 07's per-step trace, Part 08's query modes, and Part 09's ingestion queue become one deployment requirement: **do not only ask whether the service is alive; ask whether each unit of work is bounded, recorded, and verified.**
 
 ---
 
