@@ -1,6 +1,6 @@
 ---
 title: "從 RAG 到企業級 RAG Part 06 | 為什麼 retrieval 比 model 更決定 RAG 表現"
-description: "Vector search 找的是「語意相近」，不是「真的能回答問題」。本文從一個具體失敗案例出發，拆解 retrieval layer 的 4 個強化（hybrid retrieval、reranking、parent expansion、citation assembly），以及它們對品質、成本、可解釋性的具體 tradeoff。retrieval 強化每加一層都還有明顯邊際效益，LLM 換強 model 反而邊際效益低——錢花在 retrieval 比花在 LLM 划算。"
+description: "Vector search 找的是「語意相近」，不是「真的能回答問題」。本文從具體失敗案例出發，拆解 retrieval enhancement pipeline：hybrid retrieval 提高 recall、reranking 提高 precision、parent expansion + compression 提高 answerability、citation assembly 提高 explainability，並補上 Long-context Hybrid 的使用時機與品質 / 延遲 / 成本 tradeoff。"
 categories: ["ai"]
 tags: ["ai", "rag", "production-rag", "llamaindex", "retrieval", "hybrid-search", "reranking", "citation"]
 date: 2026-06-10T18:30:00
@@ -43,6 +43,12 @@ naive RAG 把這兩件事當同一件事：撈到 top 5 → 餵給 LLM。但 pro
 ## 這個專案加的 4 個 retrieval 強化
 
 純 vector search 不夠。**4 個強化**加上去後，剛才那個 early termination query 答對了。
+
+![Retrieval Enhancement Pipeline](/images/from-rag-to-production-rag-part-6/part-06-retrieval-enhancement-pipeline.png)
+
+這條 pipeline 的順序很重要：先把 recall 拉起來，再用 reranker 拉 precision，接著用 parent expansion / compression 讓答案有足夠上下文，最後用 citation assembly 讓每個重要主張都能追回來源。這不是「多加幾個 feature」，而是把 retrieval 從「找相近」變成「找得到、排得準、答得完整、查得到根據」。
+
+![四種 retrieval 強化各自解什麼問題](/images/from-rag-to-production-rag-part-6/part-06-four-retrieval-upgrades.png)
 
 ### 強化 1：Hybrid retrieval（dense + BM25 + metadata）
 
@@ -160,6 +166,28 @@ async def expand_to_parent(node: TextNode, docstore) -> TextNode:
 
 Compression 把不相關的句子過濾掉，只留跟 query 有關的內容。**好處**：省 token、降低雜訊、減少 LLM 亂引用的機率——特別是 chunking 切得比較大的時候，compression 效果最明顯。
 
+### 補一個 pattern：Long-context Hybrid
+
+Long-context Hybrid 不是「把所有文件都塞進 context window」。那只是把 retrieval 問題改名成 token 問題。
+
+比較準確的定義是：**先 retrieval，再對少數高相關 parent docs 做 smarter packing。** 它通常長在 parent expansion 和 context compression 之間：先用 hybrid + rerank 找到候選，再把最有可能回答問題的 parent section / document 拉回來，最後用 compression、ordering、budget guard 決定哪些內容真的進 prompt。
+
+什麼時候適合一般 top-k retrieval？
+
+- 問題只需要一兩段明確 evidence
+- 答案集中在單一 section
+- 使用者要的是精準引用，不是整體歸納
+- latency / token budget 很緊
+
+什麼時候適合 Long-context Hybrid？
+
+- top-k chunk 很碎，單段 evidence 不足以回答
+- 問題需要跨同一份文件的多個 section
+- 文件本身有強烈順序，例如合約、政策、規格書、研究報告
+- 你需要保留前後文，避免 LLM 斷章取義
+
+一個簡單決策規則是：**如果 rerank 後 top chunks 來自同一份文件、相鄰 section，而且每段分數都不低，就不要只丟 top-k；改拉 parent document，再做 compression。** 這樣比「全文件塞入」便宜，也比「碎片 top-k」穩。
+
 ### 強化 4：Citation assembly（自訂 citation mapper）
 
 把每個答案綁回 source。**這不只是顯示「來源 [1]」給使用者看——是讓你能驗證 LLM 到底憑什麼答**。
@@ -206,10 +234,11 @@ def map_citations(response) -> list[CitationItem]:
 | Hybrid retrieval | retrieval recall +20-30% | Storage 2x（dense + sparse vectors）；查詢 latency +50-100ms；中文需額外斷詞驗證 | 中（合併規則 RRF 簡單）|
 | Reranking | top-k 排序正確率 +25-35% | Cohere Rerank $0.001-0.005/query（per 1000 tokens）；自架 BGE reranker 加 GPU 成本；latency +200-500ms | 低（cross-encoder 黑盒）|
 | Parent expansion | 答案完整度 ↑；LLM 亂引用率 ↓ | Token 花費 5-10x（每個 chunk 從 100 字變 1000 字）；latency +100-300ms | **高**（能追到 section）|
+| Long-context Hybrid | 跨 section answerability ↑；斷章取義 ↓ | Token 花費介於 top-k 與 full-doc stuffing 之間；需要 budget guard / ordering | 高（保留 parent doc 與 section path）|
 | Context compression | 雜訊 ↓；亂引用 ↓ | 略增 reranker 呼叫（$0.0001/query）；latency +50-150ms | 中（要看 compressor 邏輯）|
 | Citation assembly | 可驗證答案來源 | 低（純 mapping）；latency +10-50ms | **最高**（直接綁回 source）|
 
-**預算有限的取捨**：先做 hybrid retrieval（找得到是基本盤）→ 再做 citation assembly（成本最低、可解釋性最高）→ 然後再做 reranking（品質提升明顯但有成本）→ 最後做 parent expansion（看 token 預算）。
+**預算有限的取捨**：先做 hybrid retrieval（找得到是基本盤）→ 再做 citation assembly（成本最低、可解釋性最高）→ 然後再做 reranking（品質提升明顯但有成本）→ 最後做 parent expansion / Long-context Hybrid（看 token 預算與問題型態）。
 
 **另一個關鍵觀察**：LLM 換成更強的 model 對答案品質的邊際效益越來越低，但 retrieval 強化每加一層都還有明顯邊際效益。**當 LLM 已經是 GPT-4 等級，再花錢升級 model 帶來的答案品質提升 < 加一層 reranking 帶來的提升**——預算有限時，錢花在 retrieval 比花在 LLM 划算。
 

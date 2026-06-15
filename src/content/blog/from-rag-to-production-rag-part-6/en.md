@@ -1,6 +1,6 @@
 ---
 title: "From RAG to Enterprise-Grade RAG Part 06 | Why Retrieval Decides RAG Quality More Than the Model Does"
-description: "Vector search finds semantic neighbours, not answers. This piece opens with a concrete failure case, then breaks down the four retrieval-layer upgrades (hybrid retrieval, reranking, parent expansion, citation assembly) and the specific trade-offs they carry across quality, cost and explainability. Each retrieval layer still has clear marginal upside; upgrading the LLM does not — and the budget line that follows from that."
+description: "Vector search finds semantic neighbours, not answers. This piece starts from a concrete failure case and turns the retrieval layer into an enhancement pipeline: hybrid retrieval improves recall, reranking improves precision, parent expansion + compression improve answerability, and citation assembly improves explainability. It also adds when to use Long-context Hybrid and how to think about the quality / latency / cost trade-off."
 categories: ["ai"]
 tags: ["ai", "rag", "production-rag", "llamaindex", "retrieval", "hybrid-search", "reranking", "citation"]
 date: 2026-06-10T18:30:00
@@ -43,6 +43,12 @@ This project puts 70% of its effort into the retrieval layer (hybrid search, rer
 ## Four retrieval upgrades this project added
 
 Pure vector search is not enough. With the **four upgrades** below, the early-termination query above finally got answered correctly.
+
+![Retrieval Enhancement Pipeline](/images/from-rag-to-production-rag-part-6/part-06-retrieval-enhancement-pipeline.png)
+
+The order matters: improve recall first, then use a reranker to improve precision, use parent expansion and compression to make the evidence answerable, and finally use citation assembly to make every important claim traceable. This is not a pile of extra features. It is the path from “find something similar” to “find the right evidence, rank it, make it answerable, and show where it came from.”
+
+![Four retrieval upgrades and the jobs they do](/images/from-rag-to-production-rag-part-6/part-06-four-retrieval-upgrades.png)
 
 ### Upgrade 1: hybrid retrieval (dense + BM25 + metadata)
 
@@ -160,6 +166,28 @@ async def expand_to_parent(node: TextNode, docstore) -> TextNode:
 
 Compression filters out sentences that are not relevant to the query. **Why it matters**: cheaper tokens, less noise, fewer hallucinated citations — the benefit is most obvious when the underlying chunks are large.
 
+### One more pattern: Long-context Hybrid
+
+Long-context Hybrid does not mean stuffing every document into the context window. That just renames the retrieval problem as a token problem.
+
+A better definition is: **retrieve first, then smarter-pack a small set of highly relevant parent documents.** It usually lives between parent expansion and context compression: hybrid + rerank finds candidates, parent expansion pulls back the sections or documents most likely to answer, and compression, ordering, and budget guards decide what actually enters the prompt.
+
+When is ordinary top-k retrieval enough?
+
+- The question needs one or two clear evidence snippets
+- The answer is concentrated in one section
+- The user needs precise citation more than broad synthesis
+- Latency or token budget is tight
+
+When does Long-context Hybrid make sense?
+
+- Top-k chunks are too fragmented to answer well
+- The question needs several sections from the same document
+- The document has important sequence, such as contracts, policies, specs, or research reports
+- You need surrounding context to prevent out-of-context answers
+
+A practical decision rule: **if the reranked top chunks come from the same document, adjacent sections, and each has a strong score, do not send only top-k chunks. Pull the parent document or parent section, then compress.** That is cheaper than full-document stuffing and more stable than fragmented top-k.
+
 ### Upgrade 4: citation assembly (custom citation mapper)
 
 Bind every answer back to a source. **This is not just showing "source [1]" to the user — it is what lets you verify what the LLM actually answered against.**
@@ -206,10 +234,11 @@ More is not always better. **Each layer has a cost** — the numbers below come 
 | Hybrid retrieval | retrieval recall +20-30% | Storage 2x (dense + sparse vectors); query latency +50-100ms; Chinese needs extra tokenisation verification | medium (RRF merge is simple) |
 | Reranking | top-k ordering accuracy +25-35% | Cohere Rerank $0.001-0.005 / query (per 1000 tokens); self-hosted BGE reranker adds GPU cost; latency +200-500ms | low (cross-encoder is a black box) |
 | Parent expansion | answer completeness up; LLM citation-hallucination rate down | Token cost 5-10x (chunk grows from 100 chars to 1000); latency +100-300ms | **high** (traceable to section) |
+| Long-context Hybrid | cross-section answerability up; out-of-context quoting down | Token cost sits between top-k and full-document stuffing; needs budget guard / ordering | high (keeps parent doc and section path) |
 | Context compression | noise down; hallucinated citations down | Small extra reranker call ($0.0001 / query); latency +50-150ms | medium (depends on compressor logic) |
 | Citation assembly | answers become verifiable | low (pure mapping); latency +10-50ms | **highest** (direct link to source) |
 
-**Budget-constrained ordering**: hybrid retrieval first (finding anything is baseline) → citation assembly next (cheapest, highest explainability) → reranking after that (clear quality lift, but it costs) → parent expansion last (depends on token budget).
+**Budget-constrained ordering**: hybrid retrieval first (finding anything is baseline) → citation assembly next (cheapest, highest explainability) → reranking after that (clear quality lift, but it costs) → parent expansion / Long-context Hybrid last (depends on token budget and query shape).
 
 **One more thing to keep in mind**: upgrading the LLM has diminishing returns on answer quality, while every retrieval layer still has visible marginal upside. **Once your LLM is GPT-4 class, another model upgrade gives less answer-quality lift than adding a rerank layer does** — when the budget is tight, money on retrieval beats money on the LLM.
 
