@@ -1,6 +1,6 @@
 ---
 title: "AI Agentic Workflow Series 6 — When should you use a Workflow, and when do you actually need an Agent?"
-description: "Not every multi-step system is an agent, and a human approval step does not magically make one. This article combines Daniel’s practical heuristics with Anthropic and OpenAI’s guidance to offer a more useful way to decide between workflows and agents."
+description: "This article combines my practical heuristics with mainstream definitions from Anthropic and OpenAI to decide when a workflow is enough and when an agent is justified."
 categories: ["ai"]
 tags: ["ai", "agent", "workflow", "automation", "architecture", "openai", "anthropic", "make"]
 date: 2026-04-02T09:58:00
