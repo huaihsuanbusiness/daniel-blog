@@ -1,6 +1,6 @@
 ---
-title: "From RAG to Enterprise-Grade RAG Part 01 | This Isn’t Just an Article. It’s an Interactive RAG Workbench."
-description: "Open the RAG black box. You won’t just see the answer — you’ll see how query mode, workflow, tool routing, retry loop, and trace data shaped the request."
+title: "From RAG to Enterprise-Grade RAG Part 01 | An Interactive RAG Workbench"
+description: "Use an interactive RAG workbench to inspect how query mode, workflow, tool routing, retry loops, and trace data shape a real request."
 categories: ["ai"]
 tags: ["ai", "rag", "production-rag", "llamaindex", "retrieval", "observability"]
 date: 2026-05-31T05:20:00
@@ -14,7 +14,7 @@ I did not want to open this series with a static technical article full of terms
 
 Because the most interesting thing about RAG is not how many diagrams you have seen, or how many new labels you can repeat back. The interesting part is this: **when a real question comes in, how does the system actually move, where does it make decisions, where does it stay conservative, and where does it spend extra effort for quality?**
 
-So for this first piece, I wanted to invert the usual order.
+So this first piece intentionally reverses the usual order.
 
 Not definition first.  
 Not architecture first.  
@@ -26,7 +26,7 @@ You can ask it a live question.
 You can switch `query_mode`.  
 You can decide whether this run should turn on `workflow`, `tool routing`, or `retry loop`.
 
-And when you send the request, you will not only get an answer. You will also see:
+When you send the request, the answer is only one part of the output. You also see:
 
 - how the planner rewrote the question
 - which retrieval path it took
@@ -81,7 +81,7 @@ The later pieces will unpack the design behind these capabilities:
 - how `retry loop` changes both answer quality and latency
 - why `citation check`, `faithfulness`, and `runtime budget` are not optional if you care about production RAG
 
-But before we get there, I would rather let you watch the system once with your own eyes.
+Before we get there, the series starts by letting you inspect one real request path.
 
 Watch what a real request actually does on its way through.
 

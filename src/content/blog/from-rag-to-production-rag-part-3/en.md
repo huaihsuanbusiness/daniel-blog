@@ -1,6 +1,6 @@
 ---
 title: "From RAG to Enterprise-Grade RAG Part 03 | The 14-Stop Journey of a RAG Request: From Document In to Answer Out"
-description: "Naive RAG only covers 2 of the 14 stations a production pipeline needs. The other 12 form the factory around ingestion, query planning, retrieval, context assembly, verification, and tracing. This post turns the 14 stations into a structural map and shows where Multimodal / Document RAG, Structured / SQL RAG, Long-context Hybrid, and Agentic RAG naturally attach."
+description: "Naive RAG usually covers only a small subset of the capabilities a production pipeline needs. This post turns 14 stations into a structural map across ingestion, query planning, retrieval, context assembly, verification, and tracing, then shows where Multimodal / Document RAG, Structured / SQL RAG, Long-context Hybrid, and Agentic RAG attach."
 categories: ["ai"]
 tags: ["ai", "rag", "production-rag", "llamaindex", "retrieval", "pipeline"]
 date: 2026-06-10T12:30:00
@@ -12,7 +12,7 @@ seriesOrder: 3
 
 Part 02 ended with a 14-station table, but that table was the query side only — it only showed how the answer comes out. The four stations covering how documents enter the system, how metadata gets attached, and how the index gets built were never unfolded in Part 02.
 
-This piece lays the whole road out. From the moment a PDF enters the system to the moment the answer goes back to the user, 14 stations in total.
+This piece lays out the end-to-end request path. From the moment a PDF enters the system to the moment the answer goes back to the user, the map contains 14 stations.
 
 ![The 14-station journey of Production RAG](/images/from-rag-to-production-rag-part-3/part-03-14-station-journey.png)
 
@@ -36,7 +36,7 @@ Query side (10 stations)
 14. Tracing + eval
 ```
 
-Naive RAG only covers stations 6 and 11. Lose any one of the other 12 and answer quality drops a notch. Lose three or more and the system should not be called a production RAG at all.
+Naive RAG usually covers only stations 6 and 11. The other stations are capabilities that become more important as the system moves into higher-risk or higher-scale use cases.
 
 The same map also tells you where specialized patterns belong, instead of treating them as standalone buzzwords.
 
@@ -57,13 +57,13 @@ Walked in order below.
 
 This is not an AI problem. It is a data-governance problem. Where the data lives, what format it is in, who is allowed to see it, how often it updates, which copy is the latest, whether there are duplicates — get any of these wrong and no amount of cleverness in the next 13 stations will save you.
 
-The most common trap: dump the entire Google Drive folder into the RAG. Just the two holes called "duplicate documents" and "out-of-date versions" can swallow three weeks of cleanup. The first step at the data source layer is to define a connector, not to write code. Google Drive, PDF, Notion, Slack, DB — each source has its own update cadence and permission model. They need to be wired up separately, not mixed in one go.
+The most common trap is dumping the entire Google Drive folder into the RAG. Two governance gaps — duplicate documents and out-of-date versions — can easily turn into weeks of cleanup. The first step at the data source layer is to define a connector, not to write code. Google Drive, PDF, Notion, Slack, DB — each source has its own update cadence and permission model. They need to be wired up separately, not mixed in one go.
 
 **Station 2 — Parser / OCR**
 
 Turn the document into clean structured content.
 
-A lot of PDFs look like text, but in reality they are a chaotic mix of layers, tables, headers, footers and two-column layouts. A basic parser will pull it out looking like the data has been through a blender — the table becomes a single line, the section order scrambles, the footnotes stick to the body. The LLM receives that input and starts making things up.
+A lot of PDFs look like text, but in reality they are a chaotic mix of layers, tables, headers, footers and two-column layouts. A basic parser often produces broken structure: the table becomes a single line, the section order scrambles, and footnotes stick to the body. The LLM then receives unreliable input and produces unreliable answers.
 
 In practice, split the work by document type. For plain text (Markdown / Google Docs), a basic parser is enough. For contracts, reports and slide decks, use a layout-aware parser such as LlamaParse, Unstructured or Docling. For scanned documents, invoices and financial reports, route to Mistral OCR, Azure Document Intelligence or AWS Textract. Do not slice tables as if they were ordinary text — keep them as a Markdown table or JSON, or the downstream LLM's citations will fall out of place.
 
@@ -75,13 +75,13 @@ A naive chunk is just text. A production chunk carries three extra things on top
 
 Metadata is the chunk's identity card: document title, page number, section, heading path, date, language, doc_type, tenant_id, source_url. Without metadata, the moment a user asks "in the cooperation agreement signed in 2024 Q3, how does early termination work", dense embedding alone will not get close — you need filters to narrow it down.
 
-ACL is access control. An enterprise RAG cannot let everyone see everything. Every chunk carries `access_roles` and `tenant_id`, and the filter is applied at the retrieval layer. An RAG without ACL is a data-leakage machine disguised as a librarian who cannot keep a secret.
+ACL is access control. An enterprise RAG cannot let everyone see everything. Every chunk carries `access_roles` and `tenant_id`, and the filter is applied at the retrieval layer. An RAG system without ACL is a data-leakage risk, even if the retrieval quality looks strong.
 
 The parent-child structure is paving the way for station 8: small chunks are easy to search, large parents are easy to answer from. Every chunk has to carry a parent_id, so the query stage can walk back from a small chunk to the full section.
 
 **Station 4 — Index**
 
-Naive RAG has only a dense vector index. Production RAG runs at least three indexes side by side:
+Naive RAG often has only a dense vector index. A production-oriented design usually needs three index types side by side:
 
 - **Dense vector** — handles semantic search, synonyms and fuzzy concepts. Weakness: it does not hold up on exact strings such as `GET /users/me/profile`, `INV-2025-003` or contract clause numbers.
 - **Sparse / BM25** — the upgraded form of classic keyword search. Specialised in proper nouns, API endpoints, names, IDs, numbers and clause numbers. What dense cannot find, this can.
@@ -114,7 +114,7 @@ dense vector search top 50
 → RRF merge
 ```
 
-Why not just dense? Different questions need different weapons. A semantic question like "how does early termination work" plays to dense's strengths; an exact-string question like `GET /users/me/profile` or `SKU-9921` plays to BM25's. In production, it is not either/or — they run together.
+Why not just dense? Different questions need different retrieval signals. A semantic question like "how does early termination work" plays to dense's strengths; an exact-string question like `GET /users/me/profile` or `SKU-9921` plays to BM25's. In production, it is not either/or — they run together.
 
 The ACL filter runs at this step. Do not tell the LLM in the prompt "do not look at document A". Permissions should be enforced by the retrieval layer, not by asking a text generation model to remember the boundary at answer time.
 
@@ -179,7 +179,7 @@ The common error: the answer says A, but the cited source only supports B. This 
 
 **Station 14 — Tracing and eval**
 
-Without tracing, when the answer is wrong there is nothing to do but pray to the AI gods.
+Without tracing, a wrong answer becomes difficult to diagnose.
 
 Tracing records the full path of each query: classification, rewrite, retrieval top chunks, reranked top chunks, LLM input, faithfulness result. Langfuse is open source, LangSmith integrates deeper with LangChain — pick one.
 
@@ -213,6 +213,6 @@ Add these three and the system is close to production-grade. The other stations 
 
 ---
 
-A production RAG request is not a line — it is a small factory. From the document coming in to the answer going out, each of the 14 stations solves a specific problem. Naive RAG only sees 2 of them. Lose any one of the other 12 and the answer drops a notch.
+A production RAG request is not a single line of execution — it is a coordinated pipeline. From the document coming in to the answer going out, each of the 14 stations solves a specific problem. Naive RAG usually exposes only a small part of that pipeline; the other stations are where reliability, governance, and debuggability enter.
 
 The interactive demo in Part 01 runs exactly this 14-station production pipeline — you can query the RAG system directly in the article and watch the trace flow. Part 04 will break down how the 14 stations are split across LlamaIndex, LangGraph and n8n — which of these three tools owns which lines, and which scene calls for which one.

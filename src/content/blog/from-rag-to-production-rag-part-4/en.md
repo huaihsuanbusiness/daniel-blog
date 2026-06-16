@@ -12,7 +12,7 @@ seriesOrder: 4
 
 Before I picked LlamaIndex, I had a serious look at LangGraph and n8n. This is a record of how I chose, not a tool showdown.
 
-The three tools solve different problems — they are not in a "which one replaces which" contest. Pitting them against each other is like asking whether a wrench, a screwdriver or a saw is the better tool. It depends on the screw.
+The three tools solve different problems — they are not in a "which one replaces which" contest. The useful question is which job the project actually needs done.
 
 ---
 
@@ -54,9 +54,9 @@ I picked LlamaIndex, did not pick LangGraph, and did not pick n8n. Every rejecti
 
 **Why I picked LlamaIndex**
 
-The brief of this project: take a PDF in, attach metadata, run hybrid retrieval, rerank, cite, faithfulness-check, wrap it in FastAPI. LlamaIndex's framework covers the lot — document loading, indexing, retrieval, synthesis, citation, and now LlamaIndex Workflows. **Almost every part a RAG pipeline needs is already in the box**. The official docs also describe Workflows as event-driven, step-based, and capable of branches, loops, state and human-in-the-loop. In other words, **document-centric agentic RAG it can swallow on its own**, no LangGraph needed.
+The brief of this project: take a PDF in, attach metadata, run hybrid retrieval, rerank, cite, faithfulness-check, wrap it in FastAPI. LlamaIndex covers most of that path — document loading, indexing, retrieval, synthesis, citation, and now LlamaIndex Workflows. The official docs also describe Workflows as event-driven, step-based, and capable of branches, loops, state and human-in-the-loop. In other words, for this document-centric agentic RAG project, LlamaIndex was enough without adding LangGraph.
 
-More importantly, LlamaIndex is mature on the document axis: parser, metadata, parent-child structure, citation, docstore, raw storage, permission filter. Those are the core demands of this project, and LlamaIndex is the only framework that has all of them covered on the document-RAG axis.
+More importantly, LlamaIndex is mature on the document axis: parser, metadata, parent-child structure, citation, docstore, raw storage, permission filter. Those are the core demands of this project, and among the frameworks I evaluated, LlamaIndex was the best fit on the document-RAG axis.
 
 **Why LangGraph was rejected**
 
@@ -64,7 +64,7 @@ LangGraph is strong at general agent orchestration — durable execution, branch
 
 The more practical reason: **LlamaIndex Workflows plus AgentWorkflow already cover the agentic surface this project needs**. Later in the build, the project started using Workflows (Planner → Rewrite → Decompose → Retrieve → Rerank → Answer → Verify) — all of it inside the LlamaIndex ecosystem. Bringing in LangGraph would mean maintaining two workflow abstractions, higher cognitive cost, more edge cases to test.
 
-From the agentic layer all the way to the deployment layer (auth, containers, cloud, CI) the whole road stays inside LlamaIndex. **LangGraph does not have a single hole in this project that nothing else can fill**. Part 08 will break down query-mode design, and we will see how LlamaIndex Workflows handles the five modes (fast / safe / deep_eval / creative / agentic) — exactly the slot LangGraph would normally take in a production RAG, but stitched together in LlamaIndex Workflows instead.
+From the agentic layer to the deployment layer (auth, containers, cloud, CI), this project can stay within the LlamaIndex-centered stack. **LangGraph did not fill a gap that was important enough for this project's scope**. Part 08 will break down query-mode design, and we will see how LlamaIndex Workflows handles the five modes (fast / safe / deep_eval / creative / agentic) — exactly the slot LangGraph would normally take in a production RAG, but stitched together in LlamaIndex Workflows instead.
 
 **That judgement only holds for this project's document-RAG system**. A different project — say, one that has to branch across CRM, ERP and a support system on a long-running flow — would put LangGraph in the lead, and LlamaIndex would only own the document-query leg.
 
@@ -94,9 +94,9 @@ They answer different questions:
 - LangGraph answers: how do you keep an agent running long, steady and recoverable
 - n8n answers: how do you wire SaaS and internal systems together without writing code
 
-Comparing them is like asking "is a wrench, a screwdriver or a saw the better tool". It depends on the screw.
+Comparing them as direct substitutes hides the more important question: which layer of the system are you trying to solve?
 
-This project is screwed together with RAG. LlamaIndex is the workhorse, and LangGraph and n8n are not strictly necessary.
+This project is document-RAG centered. LlamaIndex is the main framework, while LangGraph and n8n are useful only if the project scope expands into their layers.
 
 But a different project? A customer-support agent that has to branch across Slack, Zendesk, a CRM and an internal database on a long-running flow — that one puts LangGraph in the lead, and LlamaIndex only owns the document-query leg. An in-house "every Friday, turn this Notion into a Slack digest" — n8n does that in five minutes of dragging, and writing code would be slower.
 

@@ -1,6 +1,6 @@
 ---
 title: "From RAG to Enterprise-Grade RAG Part 05 | From Minimum-Viable RAG to an Extensible Project Skeleton"
-description: "This project did not start out looking like this — it began as a 30-line app.py printing answers in a local terminal, and it took three weeks to grow into 5 files plus a FastAPI server. This piece walks through those three weeks: when to stay at the minimum version, when to push forward, and which abstractions to leave for later."
+description: "This project began as a small app.py script that printed answers in a local terminal, then grew into five files plus a FastAPI server. This piece explains when to stay with the minimum version, when to move forward, and which abstractions to leave for later."
 categories: ["ai"]
 tags: ["ai", "rag", "production-rag", "llamaindex", "fastapi", "learning-path"]
 date: 2026-06-10T16:30:00
@@ -26,7 +26,7 @@ First: pick a home for the project. An LLM program is not a SaaS product — it 
 
 Second: stand up a Python virtual environment. `python3 -m venv .venv` then `source .venv/bin/activate`. This step is **not boilerplate you can skip** — by the third week, when you have installed `llama-index`, a HuggingFace embedding, FastAPI and a Qdrant client, package versions will start fighting each other and you will be deleting `__pycache__` directories trying to fix it.
 
-Third: write `.gitignore` correctly. `.env` (the API key), `.venv/` (the virtual environment) and `__pycache__/` (the compiled cache) **must not be committed**. Skip this on the first commit and the day the PR review lands, you will see the API key sitting in the GitHub commit history. By then you are rotating keys, scrubbing git history and cleaning up every fork's local clone — **that whole cleanup arc is a week-long nightmare**.
+Third: write `.gitignore` correctly. `.env` (the API key), `.venv/` (the virtual environment) and `__pycache__/` (the compiled cache) **must not be committed**. Skip this on the first commit and a PR review may expose the API key in GitHub history. By then you are rotating keys, scrubbing git history, and cleaning up every fork's local clone — a costly cleanup path that should be avoided upfront.
 
 The concrete five steps look like this:
 
@@ -57,7 +57,7 @@ data/.ipynb_checkpoints/
 EOF
 ```
 
-None of these five steps is writing code. **Skip them and you will be backfilling for the next 30 days.**
+None of these five steps is application logic, but skipping them creates avoidable cleanup work later.
 
 ---
 
@@ -119,7 +119,7 @@ The script does four things:
 - `index.as_query_engine()`: produce a query engine you can throw questions at
 - `query_engine.query(...)`: run retrieval, then feed the results to the LLM for the final answer
 
-**Why set the LLM and the embedding separately?** RAG needs two different models: the LLM generates the final answer, the embedding model converts text to vectors for semantic search. OpenAI's `text-embedding-3-small` and MiniMax's chat model do not share an embedding dimension, so mixing them silently breaks retrieval. **The least-buggy pairing is LLM on MiniMax, embeddings on a local BGE.**
+**Why set the LLM and the embedding separately?** RAG needs two different models: the LLM generates the final answer, the embedding model converts text to vectors for semantic search. OpenAI's `text-embedding-3-small` and MiniMax's chat model do not share an embedding dimension, so mixing them silently breaks retrieval. **For this project, the most stable pairing was MiniMax for the LLM and a local BGE model for embeddings.**
 
 Once `app.py` runs, you will start to see what comes next: metadata, hybrid search, reranking, citation, ACL — none of that surfaces before the minimum version actually runs.
 
@@ -138,7 +138,7 @@ Query Engine = Retriever + LLM, in charge of producing the answer
 Response     = the final answer the Query Engine emits (may carry citations / sources)
 ```
 
-Calling each of these objects out individually is how you see the RAG engine's gears turning:
+Calling each of these objects out individually makes the RAG engine easier to inspect:
 
 ```python
 from llama_index.core import Settings
@@ -173,7 +173,7 @@ After running this you will see: the retriever pulls 5 chunks (each with a score
 
 The retrieval engineering Part 06 will break down, and the citation assembly Part 07 will break down, are both layers built on top of these six objects. **Once you have them, the other nine pieces read much more easily.**
 
-But these six objects **do not have to click immediately**. Get `app.py` running first, then come back to the six objects with context. **Run first, understand second.** Get that order right and the learning curve is three times easier.
+These six objects **do not have to click immediately**. Get `app.py` running first, then come back to the six objects with context. **Run first, inspect second.** That order makes the learning curve much easier.
 
 ---
 
@@ -183,7 +183,7 @@ Not everything has to be learned on day one. **These three abstractions** are th
 
 1. **LlamaCloud / LlamaParse** — the official cloud platform, doing PDF parsing and managed ingestion under the hood. **Do not touch this on day one.** Get comfortable running LlamaIndex on your own machine first; once you understand how the RAG layer grows from the bottom up, then decide whether cloud acceleration is worth it.
 2. **Qdrant / a proper vector database** — the minimum version uses `VectorStoreIndex` (in-memory) and that is enough. A few hundred documents fit comfortably; switch to Qdrant when document count climbs into the thousands, ACL starts to matter, and you need to share the index across processes.
-3. **Agentic RAG / LangGraph / LlamaIndex Workflows** — these are advanced RAG features (query planning, tool routing, reflect / refine / retry loops). **Get RAG working first, then add agentic.** Stacking agents at the start is like hiring a crowd of interns to run around the library — lively, but not actually more accurate.
+3. **Agentic RAG / LangGraph / LlamaIndex Workflows** — these are advanced RAG features (query planning, tool routing, reflect / refine / retry loops). **Get RAG working first, then add agentic.** Adding agents too early increases moving parts before retrieval quality is measurable.
 
 The reverse curriculum: a **six-step learning order** (compiled from the source library) — fix one step at a time, no skipping:
 
@@ -196,7 +196,7 @@ The reverse curriculum: a **six-step learning order** (compiled from the source 
 6. agentic RAG              ← only then add query planning
 ```
 
-The order is **foundation first, walls later**. Skip a step and the price is debugging later without knowing which layer is on fire.
+The order is **foundation first, higher-level workflow later**. Skip a step and debugging later becomes harder because the failing layer is unclear.
 
 ---
 
@@ -205,7 +205,7 @@ The order is **foundation first, walls later**. Skip a step and the price is deb
 After `app.py` runs, **for a while** you will stay in the terminal asking questions. Three signals tell you it is time to push forward.
 
 **Signal 1: you want to use curl / Postman to test.**  
-Every time you tweak a prompt, you have to run `python app.py` by hand, change the question, print the answer — at that point **it is time to wrap the RAG in an HTTP API**. FastAPI is not hard: one `@app.post("/ask")` route, one `rag_engine.ask(question)` call, JSON response. **Thirty minutes from demo to server.**
+Every time you tweak a prompt, you have to run `python app.py` by hand, change the question, print the answer — at that point **it is time to wrap the RAG in an HTTP API**. FastAPI is not hard: one `@app.post("/ask")` route, one `rag_engine.ask(question)` call, JSON response. For a small local prototype, this can be a short transition from demo script to server.
 
 Once it is running, hit it with curl:
 
@@ -403,7 +403,7 @@ The path from here is not a single line:
 - **Signal 3 appears (you want to demo to a non-engineer) → Part 09**: permission-aware retrieval, document ACL, document APIs, citation source viewer. Part 09 is "who is allowed to ask, and which documents are they allowed to reach".
 - **Anytime you want → Part 06**: retrieval engineering — hybrid search, reranking, parent-doc expansion, context compression. **A server makes debugging easier**, but these are not triggered by a signal — you reach for them when "the answer quality should be better".
 
-The n8n tool division Part 04 talked about is also part of this path — n8n goes its own way, with ingestion and webhook picked up in Part 09 and Part 10. How n8n connects to FastAPI, how it consumes eval results — that gets broken down later.
+The n8n tool division from Part 04 is also part of this path — n8n stays outside the query path, with ingestion and webhooks picked up in Part 09 and Part 10. How n8n connects to FastAPI, how it consumes eval results — that gets broken down later.
 
 ---
 

@@ -1,6 +1,6 @@
 ---
-title: "From RAG to Enterprise-Grade RAG Part 07 | Where Production RAG Dies: Measurability, Debuggability, Controllability"
-description: "Demo-stage RAG looks reasonable, but production-grade RAG dies from answers that look correct but are not. This article turns the Production RAG quality control stack into six layers: retrieval evidence, synthesis, faithfulness check, citation check, tracing, and offline eval. It explains why RAGAS / LLM judges should stay out of the synchronous user path, and adds Agentic RAG per-step trace / per-step check: every step must be replayable, evaluable, and stoppable."
+title: "From RAG to Enterprise-Grade RAG Part 07 | Where Production RAG Fails: Measurability, Debuggability, Controllability"
+description: "Demo-stage RAG may look reasonable, but production-grade RAG fails when answers look correct while remaining unsupported. This article turns the Production RAG quality control stack into six layers: retrieval evidence, synthesis, faithfulness check, citation check, tracing, and offline eval. It explains why RAGAS / LLM judges should stay out of the synchronous user path, and adds Agentic RAG per-step trace / per-step check: every step must be replayable, evaluable, and stoppable."
 categories: ["ai"]
 tags: ["ai", "rag", "production-rag", "llamaindex", "evaluation", "faithfulness", "citation", "langfuse", "ragas", "observability", "agentic-rag", "tracing"]
 date: 2026-06-10T20:30:00
@@ -10,17 +10,17 @@ series: "From RAG to Enterprise-Grade RAG"
 seriesOrder: 7
 ---
 
-## What actually kills RAG in production
+## What actually breaks RAG in production
 
 The biggest pain point of naive RAG isn't "the LLM cannot answer" — in the demo stage, give it a document and a question, and it almost always produces an answer.
 
-**What kills RAG is "answers that look correct but aren't."**
+**The production risk is "answers that look correct but are not supported."**
 
 An internal test on this project surfaced a real failure (the same Q3 contract case from Part 06's retrieval-strengthening article): a user asked "how is the early termination penalty calculated?" The LLM replied "30 days written notice, penalty by mutual agreement" — **but the contract actually said 60 days notice and 6 months of subscription fee**. Part 06 fixed the retrieval; Part 07 catches it via faithfulness: **the LLM fabricated a plausible detail**, because vector search hit the MOU but missed the explicit clause in section three.
 
-Without a faithfulness check, this kind of error only gets caught by the user. **Without eval and tracing, you cannot tell where it went wrong** — was the parser broken, retrieval off-target, rerank mis-ordered, or did the LLM genuinely confabulate? Guesswork. Put differently: naive RAG treats "the answer sounds reasonable" as the production bar, **and even upgrading to a stronger LLM cannot rescue a faithfulness failure** — these three capabilities are what separate production from demo.
+Without a faithfulness check, this kind of error only gets caught by the user. **Without eval and tracing, you cannot tell where it went wrong** — was the parser broken, retrieval off-target, rerank mis-ordered, or did the LLM genuinely confabulate? Without those signals, the team is guessing. Put differently: naive RAG treats "the answer sounds reasonable" as the production bar, **and a stronger LLM does not solve a missing faithfulness layer** — these three capabilities are what separate production from demo.
 
-Catching "looks correct but isn't" doesn't need a stronger LLM — it needs **three production-grade capabilities**: **Measurable** (faithfulness / citation check), **Debuggable** (tracing), and **Controllable** (deterministic-first + async evaluator + cost tracking). **Faithfulness / Citation check + RAGAS offline eval + Langfuse tracing is the industry-standard RAG evaluation workflow** (alignable with RAGAS, Langfuse, and DeepEval official documentation) — not something this project invented.
+Catching "looks correct but unsupported" is not mainly a model-strength problem — it needs **three production-grade capabilities**: **Measurable** (faithfulness / citation check), **Debuggable** (tracing), and **Controllable** (deterministic-first + async evaluator + cost tracking). **Faithfulness / Citation check + RAGAS offline eval + Langfuse tracing is the industry-standard RAG evaluation workflow** (alignable with RAGAS, Langfuse, and DeepEval official documentation) — not something this project invented.
 
 
 ![Production RAG Quality Control Stack](/images/from-rag-to-production-rag-part-7/part-07-quality-control-stack.png)
@@ -44,7 +44,7 @@ Once these six layers connect, RAG moves from "sounds reasonable" to "measurable
 
 ## Build order: custom first, LLM second; schema first, framework second
 
-Doing eval and tracing all at once blows up. **The industry-recommended two-step path**: first ship controllable app-layer checks (rule-based + LLM-judge pre-screening), then plug in frameworks (RAGAS / Langfuse) for offline eval. Custom checks are transparent to the response schema and debugging; frameworks installed all at once become a black box.
+Doing eval and tracing all at once can make the system difficult to reason about. **The industry-recommended two-step path**: first ship controllable app-layer checks (rule-based + LLM-judge pre-screening), then plug in frameworks (RAGAS / Langfuse) for offline eval. Custom checks are transparent to the response schema and debugging; frameworks installed all at once become a black box.
 
 ```text
 Step 1: local faithfulness check — split answer into claims, check each claim has source support
@@ -172,7 +172,7 @@ This is an engineering switch, not a prompt preference. The day the LLM stabilis
 
 ---
 
-## Tracing: without it, you are praying to the AI gods
+## Tracing: without it, debugging becomes guesswork
 
 Langfuse 22A is a **query-level trace foundation** — one /ask sends one trace with full metadata, but it is not broken into per-stage spans. 22B is when stage-level spans land (planner / retrieval / rerank / synthesis / eval each get their own millisecond count).
 
@@ -263,7 +263,7 @@ If credentials are not yet set, the API does not break:
 }
 ```
 
-**A real debug case**: 50-question offline eval ran p95 latency = 90 seconds. **22B stage-level trace spotted in one second that RAGAS was running synchronously in the user path and eating 75 seconds.** After splitting it to async, latency dropped to 8 seconds. Without tracing, how would you chase down that 90 seconds — line by line in terminal logs? **This is the "no trace, you are praying to the AI gods" real case** — to be precise, "no 22B stage-level trace, you are praying to the AI gods"; 22A only shows the total 90 seconds, not which stage.
+**A real debug case**: 50-question offline eval ran p95 latency = 90 seconds. **22B stage-level trace showed immediately that RAGAS was running synchronously in the user path and consuming 75 seconds.** After splitting it to async, latency dropped to 8 seconds. Without stage-level tracing, that diagnosis would have required slow manual log inspection. To be precise: 22A only showed the total 90 seconds, while 22B exposed the failing stage.
 
 ---
 
@@ -314,7 +314,7 @@ def run_ragas_eval(eval_questions: list[dict], query_engine) -> dict:
     return {"faithfulness": scores["faithfulness"], "context_precision": scores["context_precision"]}
 ```
 
-RAGAS takes 2-5 extra LLM calls per run, +2-10 seconds of latency, and doubles cost. A production system running 1000 queries/day with synchronous RAGAS on each one = **2000-5000 extra LLM calls per day, $300-1500 extra per month**.
+In this project's cost model, RAGAS adds roughly 2-5 extra LLM calls per run, +2-10 seconds of latency, and can double evaluation cost. A production system running 1000 queries/day with synchronous RAGAS on each one can add **2000-5000 extra LLM calls per day and roughly $300-1500 per month**, depending on model and token volume.
 
 The offline eval dataset is the lifeline — start with 50-100 questions; each one needs `question` + `expected_answer_term_groups` + `expected_sources`. CI runs regression, and every prompt or retrieval change triggers a fresh run:
 
@@ -370,7 +370,7 @@ def cost_calc(model: str, input_tokens: int, output_tokens: int) -> float:
     return (input_tokens / 1_000_000) * p["input"] + (output_tokens / 1_000_000) * p["output"]
 ```
 
-Three common cost blow-up patterns: (1) RAGAS runs synchronously in the user path without being split out; (2) parent expansion has no ceiling, context balloons to 100k tokens; (3) the faithfulness check failure fallback has no retry cap. **Each of these needs an architectural guardrail.** In other words, **cost control is an architectural decision — a prompt tweak or a stronger LLM cannot rescue it.** Each failure mode maps to one architectural guardrail; treat them separately or you are not really architecting, you are just adding another prompt line.
+Three common cost blow-up patterns: (1) RAGAS runs synchronously in the user path without being split out; (2) parent expansion has no ceiling, context balloons to 100k tokens; (3) the faithfulness check failure fallback has no retry cap. **Each of these needs an architectural guardrail.** In other words, **cost control is an architectural decision — a prompt tweak or a stronger LLM cannot rescue it.** Each failure mode maps to one architectural guardrail; treating them separately is the difference between architecture and another prompt tweak.
 
 ---
 
@@ -383,7 +383,7 @@ Demo stage: it runs, and the answer looks reasonable — that counts as done.
 - **Debuggable** = Langfuse trace on the dashboard, every query's path is queryable
 - **Controllable** = deterministic-first by default, async evaluator, cost tracking feeding alerts
 
-**Production-readiness bar** (not an SLO standard — an estimate grounded in this project's actual measurements plus common industry baselines): faithfulness score ≥ 0.9, citation pass rate ≥ 95%, per-query cost ≤ $0.01, p95 latency ≤ 3 seconds. **Each project's threshold should tune to its own domain risk: legal / medical needs 0.95+, FAQ / knowledge base gets away with 0.85+.** Four numbers quantified, gated by CI — miss any one and you are not at production yet.
+**Production-readiness bar** (not an SLO standard — an estimate grounded in this project's actual measurements plus common industry baselines): faithfulness score ≥ 0.9, citation pass rate ≥ 95%, per-query cost ≤ $0.01, p95 latency ≤ 3 seconds. **Each project's threshold should tune to its own domain risk: legal / medical needs 0.95+, FAQ / knowledge base gets away with 0.85+.** Four numbers quantified and gated by CI make production-readiness testable instead of subjective.
 
 **These three capabilities are not something you bolt on after launch.** Retrofitting eval, tracing, and cost control is roughly three times harder than building them in from day one. **Production launch checklist** (six items): Faithfulness / Citation present in the `/ask` response ✓, Langfuse trace visible on the dashboard ✓, offline eval dataset ≥ 50 questions with CI gating ✓, token / cost tracking feeding alerts ✓, async evaluator sampling 5% of traffic ✓, PR triggers the eval pipeline ✓.
 

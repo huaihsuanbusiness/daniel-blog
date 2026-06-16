@@ -18,17 +18,17 @@ That day I opened the dev notes and read from the top. **It looked like a finish
 
 Every change is a capability point. But "running" and "understanding why others designed it this way" are two different things. A finished product is "do we have these capabilities"; a coordinate system is "how do these capabilities interact, which is the base layer, which is the top, which can be split, which can't".
 
-This Part 11 isn't a summary index of Parts 02-10—it's **re-encoding the whole project into the 3 highest-level observations**. The specific technical details were covered in each Part; this one is about the things I only saw clearly after doing them.
+This Part 11 is not a summary index of Parts 02-10; it reframes the project into **three higher-level observations**. The specific technical details were covered in each Part; this one is about the things I only saw clearly after doing them.
 
 These 3 things are:
 
 1. **Capabilities can be collapsed**: 11 flags collapsed into 5 modes—the shift from feature-oriented to system-oriented design
 2. **Learning paths can be re-encoded**: re-sort the entire learning order after one round of implementation—a refactoring the teacher has to go through
-3. **What you don't do matters more than what you do**: the deferred and explicitly-not-now list is more worth talking about than the done list
+3. **What you choose not to do shapes the system**: the deferred and explicitly-not-now list is as important as the done list
 
 But this post needs to do one more thing: bring the original Part 12 landscape idea back into Part 11. A proper series closure should not only review what I built. It should also mark where this production core RAG backbone sits in the broader 2026 RAG map.
 
-A note up front: these 3 things aren't "my success story"—they're "the structure I only saw after finishing". If you're in the middle of building a RAG project right now, I hope these 3 observations save you a stretch.
+A note up front: these 3 things are not a success story. They are the structure that became visible after implementation. If you are building a RAG project right now, these observations may help you avoid some rework.
 
 ---
 
@@ -77,7 +77,7 @@ agentic   — allows multi-step workflow, tool routing
 
 > Takeaway: **When your system has more than 5 independent binary switches, users have effectively given up trying to understand it.** Collapsing into modes turns "combinatorial explosion" back into "a few paths".
 
-This is the thing I only truly understood after finishing: **Not every capability should be a user-facing switch.** Collapsing it into modes is system design, not interface polish.
+This is the design lesson that became clear after implementation: **Not every capability should be a user-facing switch.** Collapsing it into modes is system design, not interface polish.
 
 ---
 
@@ -125,15 +125,15 @@ So I broke up the entire path and re-sorted it. The re-sorted order is by "**whe
 
 > FastAPI Auth moved from position 5 to "just before Dockerization"—because auth can't use loopback inside a container, a coupling that only surfaces at deploy time.
 
-**This wasn't covered in Part 03 or Part 04, and is only covered here in Part 11**—because this isn't teaching content, it's teaching design itself.
+**This was not covered in Part 03 or Part 04, and only appears here in Part 11** because it is about curriculum design, not a single technical component.
 
 **Takeaway:** Re-sorting the learning path after one round of implementation is a refactoring the teacher has to go through. The first path is sorted by "what I know"; the re-sort is sorted by "where students get stuck". **The latter matters more than the former.**
 
 ---
 
-## Observation 3: What You Don't Do Matters More Than What You Do
+## Observation 3: What You Choose Not To Do Shapes the System
 
-Parts 02-10 walked through "building it". But a production RAG that's actually stable to run isn't just because of what you built—**it's because of what you explicitly chose not to build.**
+Parts 02-10 walked through "building it". But a production RAG that is stable to run is shaped not only by what you build, but also by what you explicitly defer.
 
 Only the **deferred items** (out of scope for this series) are listed here:
 
@@ -152,9 +152,9 @@ Only the **deferred items** (out of scope for this series) are listed here:
 
 Each of these is "buildable". Each is "not building right now".
 
-**Why this matters more than Done:**
+**Why this matters:**
 
-The existence of Deferred means you **know what you're not doing**. A RAG project's "not done" list tells you more about the system's maturity than its "done" list.
+The existence of a deferred list means you **know what you are not doing yet**. A RAG project's "not done" list is a useful signal of system maturity, because it makes scope explicit.
 
 - "We're in production" → What does that mean? How much traffic? What SLA? Unspecified
 - "We have 10 capability flags" → So what? How does the caller use them? Unspecified
@@ -162,7 +162,7 @@ The existence of Deferred means you **know what you're not doing**. A RAG projec
 
 > **Source materials:** 3-3/Deferred / Not Now section + implicit assumptions in 4-1's closing section.
 
-**Takeaway:** **A RAG project's "not done" list IS its design philosophy.** Writing this list down is harder than writing the Done list, and far more valuable.
+**Takeaway:** **A RAG project's "not done" list is part of its design philosophy.** Writing this list down is harder than writing the Done list, and often more useful for planning.
 
 ---
 
@@ -182,7 +182,7 @@ Part 10's closing covered 4 architecture choices (Oracle VM / Qdrant Cloud / Clo
 
 **Same principle applies:** these 3 are "why I chose this", not "you should do this". If you're building a different RAG project, the conclusions may flip entirely—for example, if your caller is an engineering team, 11 flags might be fine; if your curriculum is for experts, the production sequence might not be right; your deferred list might not need to be deferred at all.
 
-> What these 3 have in common isn't "my answer is right"—it's "**after finishing, I really know what I chose, and what I gave up**". That is closure.
+> What these 3 have in common is not "my answer is right." It is: **after finishing, I can state what I chose, what I deferred, and why.** That is closure.
 
 ---
 
@@ -242,7 +242,7 @@ My own way of entering:
 4. **Want to see how the whole project reads, how to assess your own progress** → Part 11 (this Part)
 5. **Want to compare framework choices** → Part 04 (looking back)
 
-Readers can enter from anywhere. **Part 11 isn't "the last article", it's "the first page of the coordinate system"**—after you finish Parts 02-10, if you want the panoramic view, come back here; after you read this, if any section interests you, jump back to Parts 02-10.
+Readers can enter from anywhere. **Part 11 is less a final article than an orientation page for the coordinate system**: after you finish Parts 02-10, come back here for the panoramic view; after you read this, jump back to whichever layer you need.
 
 ---
 
@@ -256,4 +256,4 @@ If I had to summarize these 3 things for readers in the middle of building a RAG
 
 **The third one ("not done" list) is a reminder for project owners**: the Done list is "we've built it"; **the "not done" list is "we haven't built it, and we know why we haven't"**. The latter is harder to write and better at helping you locate your own progress.
 
-If any of these 3 makes you stop and think for a moment, **that's the value of closure**.
+If any of these 3 changes how you plan your own RAG system, then the closure has done its job.

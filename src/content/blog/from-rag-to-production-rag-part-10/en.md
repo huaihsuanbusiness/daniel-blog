@@ -1,6 +1,6 @@
 ---
-title: "From RAG to Enterprise-Grade RAG Part 10 | Deploying My RAG: 10 Pits I Fell Into"
-description: "Going from a local prototype to a public API isn't the final step—it's another exam. This article walks through 10 real deployment pitfalls (Oracle VM capacity, Docker env shadowing, Compose healthcheck cascading failures, Nginx + Cloudflare HTTPS trust chain, Qdrant payload index bootstrap, etc.) across four infrastructure layers, with prevention frameworks for each. It also adds the production request path for agentic/tool workflows: timeout boundaries, worker queues, retries, and observability."
+title: "From RAG to Enterprise-Grade RAG Part 10 | Deploying My RAG: 10 Production Pitfalls"
+description: "Going from a local prototype to a public API is not the final step; it is another engineering review. This article walks through 10 real deployment pitfalls (Oracle VM capacity, Docker env shadowing, Compose healthcheck cascading failures, Nginx + Cloudflare HTTPS trust chain, Qdrant payload index bootstrap, etc.) across four infrastructure layers, with prevention frameworks for each. It also adds the production request path for agentic/tool workflows: timeout boundaries, worker queues, retries, and observability."
 categories: ["ai"]
 tags: ["ai", "rag", "production-rag", "deployment", "oracle-cloud", "docker", "nginx", "cloudflare", "qdrant", "smoke-test", "infrastructure", "agentic-rag", "observability", "worker-queue"]
 date: 2026-06-12T12:00:00
@@ -10,7 +10,7 @@ series: "From RAG to Enterprise-Grade RAG"
 seriesOrder: 10
 ---
 
-## Story: The API Is Alive, But It Stopped Responding
+## Story: The API Is Alive, But /ask Is Failing
 
 One afternoon, the RAG API's health check was still returning 200, but `/ask` started throwing 502s across the board.
 
@@ -18,20 +18,20 @@ No code change. No docker-compose change. No Nginx change. No Qdrant config chan
 
 It was fine an hour ago.
 
-I stared at that 502 for a long time. Eventually I figured out: this wasn't one bug—it was the 4 stack layers (environment, container, network, integration), each in a perfectly reasonable way, deciding to break on the same day.
+The 502 looked like a single bug at first. Eventually it became clear that four stack layers — environment, container, network, and integration — were each failing at a different boundary.
 
 Part 09 walked through the 7 stations of the document side (parsing → raw storage → Postgres metadata → ingestion queue → auth/permission → document APIs → citation viewer). Part 08 wrapped 4 capabilities into 5 query modes; the routing looked strict.
 
 But on the deployment side, **the distance between "running" and "production-ready" was much larger than I expected**.
 
-This Part walks through 10 real pits, distributed across 4 stack layers:
+This Part walks through 10 real deployment pitfalls, distributed across 4 stack layers:
 
 - **Environment layer** (2): VM capacity, deploy key
 - **Container layer** (3): env not reaching the container, Compose healthcheck cascading failures, build context bloat
 - **Network layer** (3): Oracle Ingress, Nginx reverse proxy, Cloudflare HTTPS trust chain
 - **Integration layer** (2): Qdrant payload index, production-style smoke test
 
-Every pit was real. Every prevention framework was bought with time and error.
+Each case came from deployment work, and each prevention framework is the pattern I would apply earlier next time.
 
 ![Production RAG deployment trouble map grouping 10 pitfalls into environment, container, network, and integration layers](/images/from-rag-to-production-rag-part-10/part-10-deployment-trouble-map.png)
 
@@ -47,7 +47,7 @@ One note up front: 2 of these 10 pits (Pit 4, Pit 5) come from my real L34 patch
 
 Oracle Cloud's Always Free plan offers up to 4 OCPUs and 24 GB RAM on ARM Ampere A1 shapes (you allocate 1/2/3/4 OCPUs + matching RAM yourself—not a fixed 4+24). Sounds like plenty for a small RAG API.
 
-First reality check: **you often can't get one**.
+First reality check: **capacity is not always available when you need it**.
 
 Popular regions (us-ashburn-1, us-phoenix-1) return a very quiet error:
 
@@ -192,7 +192,7 @@ Another real record from the L34 series: the first `docker compose up --build` p
 transferring context: 4.31GB
 ```
 
-Took 335 seconds. **That was moving the entire repository, foundation and all, into Docker.**
+Took 335 seconds. **That meant the Docker build context was carrying the entire repository into the build.**
 
 The `Dockerfile` was fine, the image built successfully. But `.dockerignore` was never written, so:
 
@@ -202,7 +202,7 @@ The `Dockerfile` was fine, the image built successfully. But `.dockerignore` was
 - `__pycache__` shipped in
 - `.git` shipped in
 
-Every `docker build` did a meaningless full transfer.
+Every `docker build` repeated a large transfer that did not help the image.
 
 > **Scenario source:** 4-3 L17200-L17420. The L34G patch was mainly about `.dockerignore` and build context.
 
@@ -353,7 +353,7 @@ If the payload index wasn't bootstrapped, the filter fails—and that's one of t
 
 ### Pit 10: Ingestion Smoke Test—Verifying `/health` Alone Isn't Enough
 
-The most important thing after deployment isn't "API is alive"—it's "RAG data path is alive." **A deployment without a smoke test is an unverified deployment.**
+The most important thing after deployment is not only "the API is alive"; it is "the RAG data path is alive." **A deployment without a smoke test is an unverified deployment.**
 
 **What smoke test must confirm (not just `/health`):**
 
@@ -421,7 +421,7 @@ Part 07's per-step trace, Part 08's query modes, and Part 09's ingestion queue b
 
 ## These Are My Choices, Not General Advice
 
-These 4 choices aren't "how to do it" tutorials—they're "why I chose this" disclosures. If your conditions differ (budget, team size, data compliance, expected traffic), the conclusions may flip entirely.
+These 4 choices are not universal deployment instructions; they are disclosures about why I chose this stack. If your conditions differ (budget, team size, data compliance, expected traffic), the conclusions may flip entirely.
 
 **Oracle VM (not AWS / GCP / Azure)**
 I chose Oracle Cloud Always Free not because it's the most stable, but because it's free and the specs are sufficient for a small RAG API. The downside: unstable availability in popular regions, no SLA, complex documentation. If your project needs 99.9% uptime or your team needs better migration paths, this isn't the first choice.
@@ -433,6 +433,6 @@ I chose Qdrant Cloud because I didn't want to maintain a vector DB myself (backu
 I chose Cloudflare because I was already using it to manage my domain, and Origin Certificate setup is simpler than Certbot (no DNS challenge handling, no certificate renewal worry). The downside: you're tying your entire DNS lifecycle to Cloudflare—if Cloudflare has an outage, your API goes down with it.
 
 **Docker Compose + L34 patches (not k8s)**
-For this project's scale, k8s is over-engineering. Compose + one VM is the sweet spot for a single RAG API. The downside: horizontal scaling has to be done manually, but this project isn't at that scale yet.
+For this project's scale, k8s is over-engineering. Compose + one VM is a reasonable fit for this single RAG API at its current scale. The downside: horizontal scaling has to be done manually, but this project isn't at that scale yet.
 
 ---

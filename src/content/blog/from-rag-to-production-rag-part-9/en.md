@@ -14,9 +14,9 @@ seriesOrder: 9
 
 One afternoon, the business team was testing the RAG system in a demo environment. They typed in "What's the termination clause in our Q3 supplier contract" — RAG returned a passage, citation [1] pointed to a file, they opened it: the contract number was `NatyNites-Q3-2024`, not theirs.
 
-Demo environment. No user separation. **The RAG system ran fine, the answer looked reasonable, the citation was there, but it pulled another company's data.** This bug doesn't surface in the demo phase — the demo environment only has your own documents.
+Demo environment. No user separation. **The RAG system appeared to run correctly: the answer looked reasonable and the citation was present, but the retrieved content belonged to another company.** This bug doesn't surface in the demo phase — the demo environment only has your own documents.
 
-But in production, it can't stay hidden. User A, user B, user C are all using the system at the same time, and the chunks in Qdrant aren't separated by who owns them; the same day a user complained "the answer looks like it's from another company," and pulling up the log showed users from three different companies (nattynites, company-a, company-b) all hitting the same chunk batch. **Re-tagging every chunk's `tenant_id`, re-running ingestion, and three full days of debugging before the polluted chunks were cleanly isolated.** This bug isn't RAG written wrong — it's the document-side metadata design never being treated as a production-grade concern. The demo environment only ever has your own documents, so nobody designs cross-tenant test cases upfront.
+But in production, it can't stay hidden. User A, user B, user C are all using the system at the same time, and the chunks in Qdrant aren't separated by who owns them; the same day a user complained "the answer looks like it's from another company," and pulling up the log showed users from three different companies (nattynites, company-a, company-b) all hitting the same chunk batch. **The fix required re-tagging every chunk's `tenant_id`, re-running ingestion, and spending three days isolating the polluted chunks.** This bug isn't RAG written wrong — it's the document-side metadata design never being treated as a production-grade concern. The demo environment only ever has your own documents, so nobody designs cross-tenant test cases upfront.
 
 No matter how well Part 08 designed the four capabilities and the five query modes, **query-side routing can't fix what the document side never designed.** This post, Part 09, walks through the seven stations a document actually travels after upload, why the Vector DB cannot be the source of truth, and why ACL in production is not a single filter.
 
@@ -45,14 +45,14 @@ A layer of parsed markdown is needed in between: convert PDF / docx into structu
 
 > **Takeaway**: parsed markdown is a good intermediate format — it preserves structure (heading hierarchy, tables, code blocks), chunks well (cuts by heading or paragraph both make sense), and is re-processable (changing chunking strategy doesn't require re-parsing).
 
-**Failure case (must-read)**: storing PDF binary into object storage, parsing at query time.
+**Failure case**: storing PDF binary into object storage, parsing at query time.
 
 ```text
 ❌ PDF into object storage → parse at query time → chunking
 ✅ PDF into object storage → parse once into markdown → store markdown
 ```
 
-Lazy parsing at query time looks like it saves space, but in practice every query re-does the parsing, latency spikes; changing chunking strategy re-parses every file (tens of thousands of PDFs, wait till the heat death of the universe). **Parsing is a one-time job, its output has to be reused.**
+Lazy parsing at query time looks like it saves space, but in practice every query re-does the parsing and latency spikes; changing chunking strategy also re-parses every file. At larger document counts, that becomes operationally expensive. **Parsing should be a one-time ingestion job whose output is reused.**
 
 > **Failure scenario**: in the early days, lazy parsing at query time was tried. Every query slowed by 800ms, changing chunking once took six hours. The decision was made to parse once at ingestion.
 
@@ -124,7 +124,7 @@ Object storage (Supabase Storage / S3 / GCS) and RDB split the work:
 
 > **Takeaway**: Postgres stores metadata, not content. Object storage stores content, not metadata. **The Vector DB is a derivative of the metadata, not the source of truth** (this point gets expanded in station 3).
 
-**Failure case (must-read)**: dumping markdown into Postgres BYTEA, metadata all in JSONB.
+**Failure case**: dumping markdown into Postgres BYTEA, metadata all in JSONB.
 
 ```sql
 -- ❌ Failure case
@@ -174,7 +174,7 @@ CREATE TABLE documents (
 
 > **Takeaway**: Postgres is the source of truth, the Vector DB is a derivative, object storage is the content carrier. **When deleting a file: mark `deleted_at` in Postgres first, then delete Vector DB chunks, then delete object storage content** — get the order wrong and you get orphans.
 
-**Failure case (must-read)**: stuffing `tenant_id` / `owner_user_id` into the Vector DB's payload, Postgres only storing the file name.
+**Failure case**: stuffing `tenant_id` / `owner_user_id` into the Vector DB's payload, Postgres only storing the file name.
 
 ```python
 # ❌ Failure case
@@ -192,7 +192,7 @@ qdrant.upsert(
 )
 ```
 
-Why it's wrong: when deleting, Postgres has no `tenant_id` → can't tell which chunks in Vector DB to delete; ACL queries (can user A see this file) have to go through Vector DB payload filter, **10x slower than a Postgres indexed column**; when Qdrant has to rebuild, all the metadata has to be re-stuffed. **Putting metadata in the wrong place is the smell of a future rebuild.**
+Why it's wrong: when deleting, Postgres has no `tenant_id` → can't tell which chunks in Vector DB to delete; ACL queries (can user A see this file) have to go through Vector DB payload filter, **10x slower than a Postgres indexed column**; when Qdrant has to rebuild, all the metadata has to be re-stuffed. **Putting metadata in the wrong place is an early signal that a rebuild may be needed later.**
 
 > **Failure scenario**: in the early days, all metadata was stuffed in Qdrant payload and Postgres only stored file names. Deleting one file meant going to Postgres to look up the file name, then to Qdrant to find all chunks with that file name in the payload, then deleting them one by one. **Qdrant can't filter by file name (no payload index), so it has to full-scan**. Deleting 10,000 files took 40 minutes. The decision was made: Postgres is the source of truth, the Vector DB is a derivative, delete a file uses Postgres `id` to query Qdrant directly for `chunk_ids` and batch-delete.
 
@@ -204,7 +204,7 @@ After an incoming file enters the system, it goes through parsing → store → 
 
 > **Takeaway**: the upload API only accepts the file + enqueues the job, it doesn't run ingestion. Workers run asynchronously, status writes back to Postgres, the user polls progress via `job_id`.
 
-**Failure case (must-read)**: API request synchronously triggers the entire ingestion (parse + chunk + embed + upsert).
+**Failure case**: API request synchronously triggers the entire ingestion (parse + chunk + embed + upsert).
 
 ```python
 # ❌ Failure case
@@ -225,7 +225,7 @@ Why it's wrong: 20 seconds synchronous → user-side timeout, upload fails but t
 
 Part 08's query-side routing decides which mode a query takes, **the document-side ACL decides which documents this user can pull.** The two sides are independent; together they make up the full access control.
 
-ACL design in production has four places it commonly dies, ordered by when the breakage surfaces: header spoofing → no tenant filter → app-layer filter with no RLS → JWT without membership check. **Each one causes cross-tenant data leaks — the trigger is just different.** The four sub-sections below break each one down.
+ACL design in production commonly fails in four places, ordered by when the breakage surfaces: header spoofing → no tenant filter → app-layer filter with no RLS → JWT without membership check. **Each one causes cross-tenant data leaks — the trigger is just different.** The four sub-sections below break each one down.
 
 #### Three terms first: user_id, tenant_id, permission_groups
 
@@ -247,9 +247,9 @@ A user can belong to multiple tenants; a tenant can have multiple permission_gro
 }
 ```
 
-The core questions behind the four ACL defense layers all revolve around these three fields: **who gets the user_id (authentication), whether they can enter the tenant (authorisation), what they can do inside it (role).** The four failure scenarios below are different death points for those three questions.
+The core questions behind the four ACL defense layers all revolve around these three fields: **who gets the user_id (authentication), whether they can enter the tenant (authorisation), what they can do inside it (role).** The four failure scenarios below are different breakpoints for those three questions.
 
-#### Failure 1: header spoofing (the dev-stage ACL death)
+#### Failure 1: header spoofing (a common dev-stage ACL failure)
 
 ```bash
 # ❌ Failure case: dev stage uses headers to fake identity
@@ -460,7 +460,7 @@ Document APIs have one more easy-to-miss responsibility: **they should not only 
 
 That contract gives three groups a shared view of system state: users know whether the document is queryable, admins know which document needs parsing re-run, and developers know whether a bad answer should be debugged from ingestion or retrieval first.
 
-**Failure case (must-read)**: writing an admin script that hits DB directly to "manage things quickly."
+**Failure case**: writing an admin script that hits DB directly to "manage things quickly."
 
 ```python
 # ❌ Failure case: admin cleans up test data quickly
@@ -505,7 +505,7 @@ Payload example (not pseudo code — the actual JSON shape sent to the viewer):
 
 > **Takeaway**: a citation is not just "file name + line number" — it has to have `chunk_id` (for debugging), `retrieval_score` (so you know whether it was vector recall or keyword), `parent_content_preview` (so the user can verify without downloading the file), `highlights` (so the user can see at a glance which passage was cited).
 
-**Failure case (must-read)**: citation only gives "file name + line number".
+**Failure case**: citation only gives "file name + line number".
 
 ```json
 // ❌ Failure case
@@ -517,7 +517,7 @@ Payload example (not pseudo code — the actual JSON shape sent to the viewer):
 }
 ```
 
-Why it's wrong: the user sees "line 42" and has to dig through the PDF to find the 42nd line; when debugging, you don't know whether this chunk was pulled by vector recall (score 0.92) or keyword (score 0.4), so you can't tell which part of retrieval went wrong; auditors verifying the answer's truth have no source text and can only trust the LLM. **Bad citation design = outsourcing explainability to the LLM and the user.**
+Why it's wrong: the user sees "line 42" and has to dig through the PDF to find the 42nd line; when debugging, you don't know whether this chunk was pulled by vector recall (score 0.92) or keyword (score 0.4), so you can't tell which part of retrieval went wrong; auditors verifying the answer's truth have no source text and can only trust the LLM. **Bad citation design pushes explainability onto the LLM and the user instead of the system.**
 
 > **Failure scenario**: in the early days, citation only had file name + line number, and when users complained "the AI is making things up," we had to dig through PDFs to find the source for each case — 20 minutes per debug. After `chunk_id` and `retrieval_score` were added to the payload, debug took 30 seconds — query Qdrant payload directly and you know which station went wrong.
 
@@ -536,6 +536,6 @@ User asks         → Part 08 5-mode routing
                   → answer + [1] [2] citations back to the user
 ```
 
-The two sides are independent, and one missing breaks it: the document side isn't designed (Part 09) → cross-tenant leak, deleting a file can't even find the chunks; the query side isn't designed (Part 08) → every query runs the same set. Both sides done well is exactly what the Part 01 interactive demo runs.
+The two sides are independent, and either one can fail the system: the document side isn't designed (Part 09) → cross-tenant leak, deleting a file can't even find the chunks; the query side isn't designed (Part 08) → every query runs the same set. Both sides done well is exactly what the Part 01 interactive demo runs.
 
 Part 10 then takes apart "the 3 months and 11 pitfalls of pushing this closure into production" — what each of these 7 stations breaks during deployment, which ACL layer fails first, how the citation viewer gets monitored, how the ingestion queue scales.

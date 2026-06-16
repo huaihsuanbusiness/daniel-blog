@@ -1,6 +1,6 @@
 ---
 title: "From RAG to Enterprise-Grade RAG Part 02 | Chunking and Embedding Are Still Here: The Layers That Enterprise-Grade RAG Actually Adds"
-description: "The tech community says chunking and embedding are outdated, but that claim is only half right. What production RAG really adds is not a new technology — it is 12 stations of retrieval engineering."
+description: "Chunking and embedding are not obsolete, but they are only the starting point. This article reframes production RAG as a capability map across retrieval, routing, context assembly, verification, and tracing."
 categories: ["ai"]
 tags: ["ai", "rag", "production-rag", "llamaindex", "retrieval", "observability"]
 date: 2026-06-10T10:30:00
@@ -18,7 +18,7 @@ The half that is right: a naive RAG (chunking + embedding + vector top-k → LLM
 
 The half that is wrong: lumping "chunking is outdated", "embedding is outdated" and "vector DB is outdated" into a single claim.
 
-In fact, all three are still the foundation of a production RAG (enterprise-grade RAG). **What is actually outdated is not any one of those technologies — it is the combination of using only those three and pretending it is a production RAG.**
+In practice, all three still belong in the foundation of production RAG. **What is outdated is treating those three components as the whole system.**
 
 What this piece wants to make clear: what chunking, embedding and the vector DB actually do in a production setting, and what layers have to be stacked on top of them before a system can stand up to real queries.
 
@@ -38,9 +38,9 @@ Dense embeddings handle semantic search. But they frequently miss proper nouns, 
 
 **What does the vector DB do in production?**
 
-The vector DB is still the best tool for semantic search. But it should not be the only source of truth. In production systems, raw documents, metadata, permissions, parent documents and eval results all live in Postgres, S3 or object storage. The vector DB is only responsible for the vector search leg.
+A vector DB remains a strong tool for semantic search, but it should not be the only source of truth. In production systems, raw documents, metadata, permissions, parent documents and eval results all live in Postgres, S3 or object storage. The vector DB is only responsible for the vector search leg.
 
-**Short version: all three are alive. What is outdated is just the thin combination of using only those three.**
+**Short version: all three still matter. The weak pattern is relying on only those three.**
 
 ---
 
@@ -81,7 +81,7 @@ Another common query in B2B sales is:
 
 In a production setting this kind of query pulls across multiple interview notes, multiple business-model write-ups and multiple customer cases — a genuinely multi-source, cross-document, multi-step reasoning problem. Naive RAG almost always answers this kind of question superficially.
 
-**These 14 stations are the minimum set for production RAG. The stripped-down naive version only covers stations 6 and 11.** Lose any one of the other 12 and answer quality drops a notch. Lose three or more and the system should not be in production at all.
+**These 14 stations are a capability map for production RAG, not a claim that every request must execute every station. The stripped-down naive version usually covers only stations 6 and 11.** The more high-risk the query, the more of the remaining capabilities need to be present somewhere in the system.
 
 ---
 
@@ -120,7 +120,7 @@ The typical V0 failure modes: questions with specific numbers go unanswered, cro
 + reranker (pull 100, rerank to 10)
 ```
 
-V1 fixes roughly 60% of V0's failure modes — exact terms are caught now, and rerank brings the most relevant 10 to the top. But citation and eval are still missing.
+In this project, V1 addressed roughly 60% of the V0 failure modes — exact terms were caught more reliably, and rerank brought the most relevant candidates to the top. But citation and eval were still missing.
 
 ### V2 — adding context assembly and citation
 
@@ -142,7 +142,7 @@ V2 is where answers become trustworthy — every answer carries source / page / 
 + cost / latency tracking
 ```
 
-After V3, debugging and optimisation finally have data to look at, instead of "let me just try a different prompt and see".
+After V3, debugging and optimisation finally have measurable data instead of trial-and-error prompt changes.
 
 ### V4 — adding query planning and agentic
 
@@ -161,10 +161,10 @@ V0 to V4 is the actual evolution of this project. **Part 02 only gives the overv
 
 Chunking and embedding are still the foundation of RAG in 2026 — they are not outdated. What is outdated is the thin approach of using only those two and pretending it is production.
 
-**What really sets the ceiling on RAG is the 12 retrieval-engineering stations in the middle.**
+**For this project, the biggest quality ceiling came from the retrieval-engineering capabilities in the middle.**
 
 This 14-station pipeline is not just for RAG internals. Pitch deck design checks, customer switching-cost analysis, interview-method validation, workflow tool selection — all of these scenarios run on the same retrieval-engineering logic. The difference is only how routing and context assembly are designed.
 
-The next piece (Part 03) will draw out a full 14-station pipeline diagram and walk through what each station does, how to implement it, and which tools to use.
+The next piece (Part 03) turns this 14-station capability map into a pipeline diagram and walks through what each station does, how to implement it, and which tools to consider.
 
-If you want to see the production 14 stations in action, start with the interactive demo in Part 01 — that demo is running exactly the full production pipeline this piece describes.
+If you want to see these capabilities in action, start with the interactive demo in Part 01 — it exposes the request path, mode, trace, and checks that later articles unpack.

@@ -22,7 +22,7 @@ The contract actually says it clearly: early termination needs 60 days notice an
 
 Why? Walking the trace showed that vector search pulled in the "scope of collaboration" and "payment terms" sections of the MOU — both in the top five — but the LLM never saw **the third section**, which is the one that explicitly covers early termination and the penalty. Why not? Because the dense embedding of "early termination penalty" was closer to the embedding of the "scope of collaboration" paragraph than to the dense embedding of that third section.
 
-Put differently: a dense vector captures "semantic similarity", not "the ability to actually answer this question". Close in vector space ≠ the paragraph can answer the query. **Vector search has no notion of "right" or "wrong"; it only computes "how alike"** — and that gap is the root cause of naive RAG's systematic failure.
+Put differently: a dense vector captures "semantic similarity", not "the ability to actually answer this question". Close in vector space ≠ the paragraph can answer the query. **Vector search does not know whether a passage answers the question; it only computes similarity** — and that gap is a common root cause of naive RAG failure.
 
 **This is the ceiling of pure vector search: it finds "related" documents, but not necessarily the "right" passage.**
 
@@ -32,17 +32,17 @@ Put differently: a dense vector captures "semantic similarity", not "the ability
 
 **Vector search finds semantic neighbours, not actually answerable content.**
 
-Naive RAG collapses the two into one step: pull the top 5, feed them to the LLM. In production that assumption almost always breaks — you either get "semantically near but unable to answer" or "the answer is in there but the vector is too far to be retrieved".
+Naive RAG collapses the two into one step: pull the top 5, feed them to the LLM. In production that assumption often breaks — you either get "semantically near but unable to answer" or "the answer is in there but the vector is too far to be retrieved".
 
-**The retrieval layer sets the ceiling on answer quality, not the LLM.** No matter how strong the LLM is, if retrieval feeds it the wrong passage, it can only generate an answer based on the wrong passage. Swapping in a bigger model does not save you — **if retrieval misses, no model can recover it.**
+**The retrieval layer often sets the practical ceiling on answer quality.** If retrieval feeds the LLM the wrong passage, even a stronger model is constrained by the wrong evidence. Model upgrades help less when the relevant passage never enters the context.
 
-This project puts 70% of its effort into the retrieval layer (hybrid search, reranking, parent expansion, context compression, citation assembly) — that is what it takes to get "found it" right. The LLM side is 30%.
+In this project, roughly 70% of the engineering effort went into the retrieval layer (hybrid search, reranking, parent expansion, context compression, citation assembly). The LLM side was closer to 30%.
 
 ---
 
 ## Four retrieval upgrades this project added
 
-Pure vector search is not enough. With the **four upgrades** below, the early-termination query above finally got answered correctly.
+Pure vector search was not enough for this project. With the **four upgrades** below, the early-termination query above became answerable.
 
 ![Retrieval Enhancement Pipeline](/images/from-rag-to-production-rag-part-6/part-06-retrieval-enhancement-pipeline.png)
 
@@ -88,7 +88,7 @@ def get_hybrid_store(client: QdrantClient, name: str) -> QdrantVectorStore:
     )
 ```
 
-**Why BM25 is not optional.** The same query, asked different ways:
+**Why BM25 matters.** The same query, asked different ways:
 
 | Query | Dense vector | BM25 |
 |---|---|---|
@@ -97,7 +97,7 @@ def get_hybrid_store(client: QdrantClient, name: str) -> QdrantVectorStore:
 | `INV-2025-003` | weak | strong |
 | "What is the procedure to terminate the contract" | strong | weak (does not hit "terminate") |
 
-Dense is strong where BM25 is weak, and BM25 is strong where dense is weak. **Production is not either/or.** Early RAG systems ran dense-only search; when they failed, **9 times out of 10 the failure was dense search missing an exact-string clause that should have been retrieved.**
+Dense is strong where BM25 is weak, and BM25 is strong where dense is weak. **Production retrieval is rarely either/or.** In this project, many dense-only failures came from missing exact-string clauses that should have been retrieved.
 
 **The Chinese + BM25 trap.** A lot of BM25 setups default to English tokenisation; Chinese needs extra handling. The LlamaIndex Qdrant hybrid integration uses the `Qdrant/bm25` model through FastEmbed, but the Chinese tokenisation is uneven. In practice, **verify** that the sparse vector is actually non-zero:
 
@@ -118,7 +118,7 @@ non_zero = sum(1 for v in sparse_vec.values if v > 0)
 assert non_zero >= 3, f"BM25 Chinese tokenisation failed: {non_zero} non-zero (expected ≥3)"
 ```
 
-**Do not assume "hybrid" means Chinese works.** Skip this verification and you will hit "hybrid also cannot find Chinese exact terms" in production.
+**Do not assume "hybrid" automatically solves Chinese retrieval.** Verify sparse vector behaviour early, or Chinese exact-term retrieval can still fail in production.
 
 ### Upgrade 2: reranking (coarse-to-fine)
 
@@ -144,7 +144,7 @@ query_engine = RetrieverQueryEngine.from_args(
 )
 ```
 
-**Why rerank on top of hybrid?** RRF after hybrid is a coarse merge — it fuses multiple ranked lists, but the reranker's cross-encoder (query, candidate) comparison is **substantially more accurate than pure vector comparison**. Hybrid + rerank together outperform either alone by 20-30%.
+**Why rerank on top of hybrid?** RRF after hybrid is a coarse merge — it fuses multiple ranked lists, but the reranker's cross-encoder (query, candidate) comparison is **substantially more accurate than pure vector comparison**. In this project, hybrid + rerank together outperformed either layer alone by roughly 20-30%.
 
 Mainstream options: Cohere Rerank (managed, ready in minutes), BGE reranker (self-hosted, cost under control), Jina / Voyage (multilingual or retrieval-heavy). Qdrant also has ColBERT / multivector options, but those are advanced — start with an external reranker.
 
@@ -221,7 +221,7 @@ def map_citations(response) -> list[CitationItem]:
     ]
 ```
 
-**Why not just use LlamaIndex's built-in `CitationQueryEngine`?** This project's context runs through Qdrant → reranker → parent expansion → compression → LongContextReorder → custom prompt before the LLM ever sees it. The actual sources that reach the prompt do not line up with `response.source_nodes`, and the built-in citation engine's marker regex breaks after long-context reorder and marker substitution. That counter-example is a real one, not a theoretical risk. **A custom citation mapper is the production-grade answer.**
+**Why not just use LlamaIndex's built-in `CitationQueryEngine`?** This project's context runs through Qdrant → reranker → parent expansion → compression → LongContextReorder → custom prompt before the LLM ever sees it. The actual sources that reach the prompt do not line up with `response.source_nodes`, and the built-in citation engine's marker regex breaks after long-context reorder and marker substitution. That counter-example is a real one, not a theoretical risk. **For this pipeline, a custom citation mapper was the more reliable production choice.**
 
 ---
 
@@ -240,7 +240,7 @@ More is not always better. **Each layer has a cost** — the numbers below come 
 
 **Budget-constrained ordering**: hybrid retrieval first (finding anything is baseline) → citation assembly next (cheapest, highest explainability) → reranking after that (clear quality lift, but it costs) → parent expansion / Long-context Hybrid last (depends on token budget and query shape).
 
-**One more thing to keep in mind**: upgrading the LLM has diminishing returns on answer quality, while every retrieval layer still has visible marginal upside. **Once your LLM is GPT-4 class, another model upgrade gives less answer-quality lift than adding a rerank layer does** — when the budget is tight, money on retrieval beats money on the LLM.
+**One more thing to keep in mind**: upgrading the LLM has diminishing returns on answer quality, while every retrieval layer still has visible marginal upside. **Once the LLM is already strong enough for the task, another model upgrade may produce less answer-quality lift than adding a rerank layer** — when the budget is tight, retrieval improvements often deserve priority over model upgrades.
 
 That is also why this project has run the same LLM settings from V0 through V3, and swapped out the retrieval layer four times — retrieval is where the gap opens up, and LLM upgrades are not where the budget should go next.
 

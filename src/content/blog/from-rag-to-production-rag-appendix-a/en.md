@@ -1,6 +1,6 @@
 ---
 title: "From RAG to Enterprise-Grade RAG Appendix A | Production RAG Tool Index"
-description: "This appendix turns Production RAG into a searchable engineering matrix: ingestion and indexing, query planning and retrieval, context and answer generation, evaluation and observability, and application infrastructure. The point is not to chase tool names, but to understand what each step solves, what to start with, when to switch, and what usually breaks."
+description: "This appendix turns Production RAG into a searchable engineering matrix across ingestion and indexing, query planning and retrieval, context and answer generation, evaluation and observability, and application infrastructure. The goal is not to chase tool names, but to understand what each step solves, what to start with, when to switch, and what usually breaks."
 categories: ["ai"]
 tags: ["ai", "rag", "production-rag", "tooling", "llamaindex", "vector-database", "evaluation", "observability"]
 date: 2026-06-15T22:30:00
@@ -39,7 +39,7 @@ For each row, use the same order of questions:
 4. What situation tells me to switch?
 5. What usually goes wrong?
 
-That order matters. Many RAG projects get stuck not because there are too few tools, but because the team has not named the layer that is actually failing.
+That order matters. Many RAG projects get stuck not because tools are missing, but because the team has not named the layer that is actually failing.
 
 ![RAG Tool Selection Ladder](/images/from-rag-to-production-rag-appendix-a/appendix-a-rag-tool-selection-ladder.png)
 
@@ -107,7 +107,7 @@ This is the boundary between demo RAG and production RAG. Without eval and traci
 
 ## E. Application and infrastructure
 
-This layer is rarely the focus of RAG tutorials, but it decides whether the system can actually be used.
+This layer is rarely the focus of RAG tutorials, but it decides whether the system can be operated reliably.
 
 | Step | Problem solved | Common tools | My starting choice | Switch when | Common trap |
 |---|---|---|---|---|---|
@@ -142,7 +142,7 @@ If I were starting from zero and wanted a production-capable small to medium RAG
 | Storage | S3 / R2 |
 | Workflow | Start with cron / GitHub Actions / RQ; move to Temporal when workflows become complex |
 
-This is not the only correct stack, but it has one advantage: every layer can be replaced independently. The real danger in Production RAG is not picking an unfashionable tool. It is coupling every layer so tightly that any single failure forces a rewrite of the whole system.
+This is not the only correct stack, but it has one advantage: every layer can be replaced independently. The larger risk in Production RAG is not picking an unfashionable tool. It is coupling every layer so tightly that a single failure forces a broad rewrite.
 
 ---
 
@@ -159,13 +159,13 @@ If you do not yet have:
 
 then do not rush into GraphRAG, agents, multi-vector retrieval, long-context, or knowledge graphs.
 
-Not because those patterns are bad. Because without instrumentation, you cannot tell whether they improved anything. Tool upgrades without eval often make errors more expensive, slower, and harder to debug.
+Not because those patterns are bad. Because without instrumentation, you cannot tell whether they improved anything. Tool upgrades without eval often make errors more expensive, slower, and harder to diagnose.
 
 ---
 
 ## The real job of this tool index
 
-The point of this appendix is not to memorise tool names. It is to turn RAG back into engineering problems.
+The purpose of this appendix is not to memorise tool names. It is to turn RAG back into engineering problems.
 
 When the answer is wrong, do not ask only whether you need a stronger model. Ask:
 
