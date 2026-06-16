@@ -1,6 +1,6 @@
 ---
 title: "MCP 工程深化 03：Contract design / schema discipline / versioning 決定工具能不能長大"
-description: "Part 03 of the MCP Engineering Deep Dive series."
+description: "說明 MCP 工具契約如何設計 schema、錯誤格式與版本策略，讓 client、server 與 agent 能穩定演進。"
 categories: ["ai"]
 tags: ["ai", "mcp", "agent", "workflow", "automation", "architecture"]
 date: 2026-03-31T20:12:00
