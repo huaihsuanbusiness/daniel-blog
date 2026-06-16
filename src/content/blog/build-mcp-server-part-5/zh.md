@@ -1,6 +1,6 @@
 ---
 title: "自主建造 MCP Server — Part 5：Oracle VM 與 FastMCP 上線過程中的坑與維運手冊"
-description: "Part 5 of the MCP Server build series."
+description: "整理 Oracle VM 上部署與維運 FastMCP 的實際流程，包括啟動、日誌、更新、復原與常見故障排查。"
 categories: ["ai"]
 tags: ["ai", "mcp", "agent", "workflow", "automation", "architecture"]
 date: 2026-03-31T19:29:00
