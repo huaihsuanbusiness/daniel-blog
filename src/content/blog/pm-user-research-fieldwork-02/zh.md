@@ -1,16 +1,12 @@
 ---
 title: "PM 用戶研究與田野訪查 02 － Qualitative、Quantitative、Mixed Methods：PM 不是要二選一，而是要知道各自回答什麼問題"
-description: "很多 PM 聽到「定性」和「定量」，腦中浮出的不是研究問題，而是立場。"
+description: "依照要做的決策選擇質化、量化或混合方法，而不是先選自己熟悉的方法，再勉強套用研究問題。"
 categories: ["pm"]
 tags: []
 date: 2026-04-05T16:15:00
 series: "PM 用戶研究與田野訪查"
 seriesOrder: 2
 ---
-
-## 文章類型
-
-方法文 / 概念校準文
 
 ## 這篇想解的誤會
 

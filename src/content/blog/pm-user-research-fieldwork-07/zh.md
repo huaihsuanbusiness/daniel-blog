@@ -1,16 +1,12 @@
 ---
 title: "PM 用戶研究與田野訪查 08 － 從逐字稿到洞察：PM 怎麼做研究分析、thematic analysis、affinity mapping，而不是只貼幾句金句"
-description: "很多團隊其實不是沒做研究，而是研究做完之後，分析像沒有真的開始過。"
+description: "提供一套從逐字稿與田野筆記整理出證據、模式、洞察與決策的 synthesis 流程，避免跳過中間推理。"
 categories: ["pm"]
 tags: []
 date: 2026-04-05T16:20:00
 series: "PM 用戶研究與田野訪查"
 seriesOrder: 7
 ---
-
-## 文章類型
-
-分析方法文 / 研究 synthesis 文
 
 ## 這篇想先講的一句話
 
