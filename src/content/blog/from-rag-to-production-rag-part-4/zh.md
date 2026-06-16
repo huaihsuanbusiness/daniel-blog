@@ -59,7 +59,7 @@ n8n       = 業務流程自動化（拖拉 UI）
 
 這個專案的需求是：一份 PDF 進來、metadata 掛好、hybrid retrieval、rerank、citation、faithfulness check、FastAPI 包起來。LlamaIndex 整套 framework 從文件讀取、indexing、retrieval、synthesis、citation 到 LlamaIndex Workflows 都包了，**RAG pipeline 需要的零件它幾乎都有**。官方文件也明確把 Workflows 定位成 event-driven、step-based、支援 branches / loops / state / human-in-the-loop 的 query workflow——也就是說，**文件型 agentic RAG 它自己就能吃下來**，不需要另外接 LangGraph。
 
-更關鍵的是，LlamaIndex 對文件這條線已經很熟：parser、metadata、parent-child、citation、docstore、raw storage、permission filter——這些是這個專案的核心訴求，LlamaIndex 是唯一一個在「文件 RAG」這條軸上全套都做到位的框架。
+更關鍵的是，LlamaIndex 對文件這條線已經很熟：parser、metadata、parent-child、citation、docstore、raw storage、permission filter——這些是這個專案的核心訴求。在我評估的框架裡，LlamaIndex 是最貼近這個專案文件 RAG 軸線的選擇之一，能把大多數核心零件放在同一套抽象裡。
 
 **為什麼淘汰 LangGraph**
 

@@ -165,7 +165,7 @@ query_engine = RetrieverQueryEngine.from_args(
 )
 ```
 
-**為什麼 hybrid 之後還要 rerank？** Hybrid 合併 RRF 是粗排——把多個排序融合成一個，但 rerank 用 cross-encoder 對（query, candidate）做語意比對，**比純向量比對精準很多**。Hybrid + Rerank 一起做，跟單獨做差距 20-30%。
+**為什麼 hybrid 之後還要 rerank？** Hybrid 合併 RRF 是粗排——把多個排序融合成一個，但 rerank 用 cross-encoder 對（query, candidate）做語意比對，**比純向量比對精準很多**。以這個專案的量測來看，Hybrid + Rerank 一起做，跟單獨做差距約 20-30%。
 
 主流選項：Cohere Rerank（managed，馬上能跑）、BGE reranker（自架，成本可控）、Jina / Voyage（多語或重檢索場景）。Qdrant 有 ColBERT / multivector 內建選項但比較進階，新手先用外部 reranker。
 
@@ -248,16 +248,16 @@ def map_citations(response) -> list[CitationItem]:
 
 ## 這些強化的 tradeoff（具體數字）
 
-不是加了越多越好。**每一層強化都有成本**——下面數字是根據這個專案實際測量 + 常見業界基準的估算（不是官方保證值）：
+不是加了越多越好。**每一層強化都有成本**——下面數字會標出性質：**專案實測**代表這個實作裡觀察到的結果，**起步 heuristic**代表上線前可先採用但必須用自己的 workload 驗證的預設值，**外部價格 / benchmark**代表供應商價格或常見業界基準，不是官方保證值。
 
 | 強化 | 品質影響 | 成本影響 | 可解釋性影響 |
 |---|---|---|---|
-| Hybrid retrieval | retrieval recall +20-30% | Storage 2x（dense + sparse vectors）；查詢 latency +50-100ms；中文需額外斷詞驗證 | 中（合併規則 RRF 簡單）|
-| Reranking | top-k 排序正確率 +25-35% | Cohere Rerank $0.001-0.005/query（per 1000 tokens）；自架 BGE reranker 加 GPU 成本；latency +200-500ms | 低（cross-encoder 黑盒）|
-| Parent expansion | 答案完整度 ↑；LLM 亂引用率 ↓ | Token 花費 5-10x（每個 chunk 從 100 字變 1000 字）；latency +100-300ms | **高**（能追到 section）|
+| Hybrid retrieval | 專案實測：retrieval recall +20-30% | 起步 heuristic：Storage 約 2x（dense + sparse vectors）；專案實測：查詢 latency +50-100ms；中文需額外斷詞驗證 | 中（合併規則 RRF 簡單）|
+| Reranking | 專案實測：top-k 排序正確率 +25-35% | 外部價格 / benchmark：Cohere Rerank $0.001-0.005/query（per 1000 tokens）；自架 BGE reranker 加 GPU 成本；專案實測：latency +200-500ms | 低（cross-encoder 黑盒）|
+| Parent expansion | 專案實測：答案完整度 ↑；LLM 亂引用率 ↓ | 起步 heuristic：Token 花費 5-10x（每個 chunk 從 100 字變 1000 字）；專案實測：latency +100-300ms | **高**（能追到 section）|
 | Long-context Hybrid | 跨 section answerability ↑；斷章取義 ↓ | Token 花費介於 top-k 與 full-doc stuffing 之間；需要 budget guard / ordering | 高（保留 parent doc 與 section path）|
-| Context compression | 雜訊 ↓；亂引用 ↓ | 略增 reranker 呼叫（$0.0001/query）；latency +50-150ms | 中（要看 compressor 邏輯）|
-| Citation assembly | 可驗證答案來源 | 低（純 mapping）；latency +10-50ms | **最高**（直接綁回 source）|
+| Context compression | 專案實測：雜訊 ↓；亂引用 ↓ | 外部價格 / benchmark：略增 reranker 呼叫（$0.0001/query）；專案實測：latency +50-150ms | 中（要看 compressor 邏輯）|
+| Citation assembly | 專案實測：可驗證答案來源 | 專案實測：低成本（純 mapping）；latency +10-50ms | **最高**（直接綁回 source）|
 
 **預算有限的取捨**：先做 hybrid retrieval（找得到是基本盤）→ 再做 citation assembly（成本最低、可解釋性最高）→ 然後再做 reranking（品質提升明顯但有成本）→ 最後做 parent expansion / Long-context Hybrid（看 token 預算與問題型態）。
 

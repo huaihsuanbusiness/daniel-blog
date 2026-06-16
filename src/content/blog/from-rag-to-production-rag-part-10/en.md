@@ -37,7 +37,7 @@ Each case came from deployment work, and each prevention framework is the patter
 
 Once the 10 pits are drawn as a map, the article becomes easier to read: this is not a random list of outages. Deployment problems usually mean one boundary was never proven. The environment layer may not have stable capacity, the container layer may not receive runtime configuration, the network layer may have a broken trust chain, or the integration layer may never have proven the data path end to end.
 
-One note up front: 2 of these 10 pits (Pit 4, Pit 5) come from my real L34 patch series. The "4-2" / "4-3" / "L27394-L27576" references are my dev-note section numbers and line ranges—you don't need to look them up; they're just provenance markers. The important part: **a poorly written Compose healthcheck can drag down the entire stack**, and no article warned me about this before I hit it myself.
+One note up front: 2 of these 10 pits (Pit 4, Pit 5) come from a real deployment cleanup, not from a synthetic checklist. The important part is the operational lesson: **a poorly written Compose healthcheck can drag down the entire stack**, and no article warned me about this before I hit it myself.
 
 
 > **Version note:** deployment commands age faster than architecture. Treat Docker, Cloudflare, Qdrant Cloud, and hosting examples here as tested operational patterns; before copying a command into production, check the current provider docs and run it in a staging environment first.
@@ -60,7 +60,7 @@ Popular regions (us-ashburn-1, us-phoenix-1) return a very quiet error:
 
 You didn't do anything wrong. This is Oracle's resource scheduling for Always Free quotas—paid users get priority in high-demand regions.
 
-> **Scenario source:** 4-2 part7 + 4-3 L19845-L21687. Daniel cycled through multiple regions, waited, retried, and eventually secured a usable node.
+> **Real deployment note:** this case came from cycling through multiple Oracle regions, waiting, retrying, and eventually securing a usable Always Free node.
 
 **Prevention framework:**
 
@@ -82,7 +82,7 @@ The most frequent auth failure from localhost to VM: wrong deploy key format, mi
 - Wrong key format (ED25519 vs RSA—fingerprint comparison fails because of format mismatch)
 - `.env` not in the repo, so the cloned repo on VM has no `.env`—production env didn't travel with the code
 
-> **Source materials:** 4-2 part9 / part10. Any single step in the SSH handshake going wrong causes clone to fail.
+> **Real deployment note:** this section condenses deploy-key failures where a single broken SSH handshake step made `git clone` fail on the VM.
 
 **Prevention framework:**
 
@@ -105,7 +105,7 @@ The single most common Docker + FastAPI deployment failure: **API key works loca
 - `docker-compose.yml`'s `environment:` block is runtime injection, not written into the image
 - `.env` file auto-interpolates on `docker-compose up`, but if you use `--env-file` specifying a path, that path is relative to the **execution directory**, not the compose file location
 
-> **Source materials:** 4-2 part11 + 4-3 L27394-L27576. Port 8000 conflict and env not being delivered happened the same night.
+> **Real deployment note:** this pattern came from a deploy where a port conflict and missing runtime environment variables appeared during the same production-debugging session.
 
 **Prevention framework:**
 
@@ -156,7 +156,7 @@ And Qdrant's image doesn't have `curl/wget`. **Service is alive, healthcheck too
 
 Docker official docs confirm: `curl` is not present in minimal images (Alpine, scratch) by default—you need to switch to `wget`, install `curl`, or use `CMD-SHELL` with `cat` / `grep` for healthcheck.
 
-> **Scenario source:** 4-3 L18332-L19862. The L34 → L34B → L34G → L34I patch series was about getting this cleaned up.
+> **Real deployment note:** this case came from an iterative Compose cleanup where the service was alive, but the healthcheck definition made Compose treat it as unhealthy.
 
 **Prevention framework:**
 
@@ -207,7 +207,7 @@ The `Dockerfile` was fine, the image built successfully. But `.dockerignore` was
 
 Every `docker build` repeated a large transfer that did not help the image.
 
-> **Scenario source:** 4-3 L17200-L17420. The L34G patch was mainly about `.dockerignore` and build context.
+> **Real deployment note:** this case came from a Docker build that succeeded but spent minutes transferring avoidable local artifacts because `.dockerignore` was incomplete.
 
 **Prevention framework:**
 
@@ -255,7 +255,7 @@ An Ingress Rule is "who is allowed to come in through which door."
 - **18000**: the internal port mapped for the FastAPI container, used by Nginx inside the VM only; external traffic should only hit 80/443
 - **6333 / 6334**: Qdrant's REST/gRPC ports; this project uses Qdrant Cloud (not self-hosted Qdrant), so these ports don't need to be open on the VM at all
 
-> **Scenario source:** 4-3 L27944-L28400. Daniel hit "VM internal Nginx responded but public IP didn't"—root cause was Oracle Cloud Security List didn't have port 80 open.
+> **Real deployment note:** this case came from a VM where Nginx responded internally, but the public IP did not respond because the Oracle Cloud Security List did not allow port 80.
 
 **Prevention framework:**
 
@@ -269,7 +269,7 @@ An Ingress Rule is "who is allowed to come in through which door."
 
 External traffic hits your VM through an Nginx reverse proxy before reaching the FastAPI container. Nginx itself needs HTTPS configured, but there are **two layers of HTTPS** here that need separate handling: Cloudflare ↔ external user (Full strict), and Cloudflare ↔ Oracle VM (Origin Certificate).
 
-> **Scenario source:** 4-3 L30495-L31200 + 4-2 part18. Daniel encountered "origin certificate didn't match the private key" and "SSL mode wasn't Full strict" during Cloudflare Origin Certificate setup.
+> **Real deployment note:** this case came from Cloudflare Origin Certificate setup errors: a certificate/key mismatch and an SSL/TLS mode that had not been set to Full (strict).
 
 **The two-layer HTTPS architecture:**
 
@@ -324,7 +324,7 @@ This is a sub-problem of the previous pit but deserves its own section, because 
 - The origin certificate was created, the files were transferred, but the Nginx config pointed to the wrong PEM/KEY files
 - Or the Cloudflare SSL/TLS mode wasn't changed to Full strict, causing traffic to stall in Flexible mode
 
-> **Source materials:** 4-3 L31004-L31189. The troubleshooting process for "Cloudflare is Full strict but origin HTTPS doesn't connect" was mainly about these two errors.
+> **Real deployment note:** the troubleshooting path for "Cloudflare is Full (strict), but origin HTTPS still fails" usually collapses to two checks: certificate/key pairing and whether Nginx points at the intended files.
 
 **Prevention framework:**
 
@@ -351,7 +351,7 @@ Qdrant Cloud is a managed service—you don't maintain the vector DB yourself—
 2. **Collection doesn't exist**: on first deploy, Qdrant Cloud collection is empty; `/ask` returns `index_ready: false` (not 500—it's a graceful error response)
 3. **Runtime env shadowing**: if another service on the VM also uses `QDRANT_API_KEY` as an env variable name, docker-compose env gets overridden
 
-> **Source materials:** 4-2 part8 / part9. Complete troubleshooting process for Qdrant Cloud connection and API key issues.
+> **Real deployment note:** this section condenses Qdrant Cloud connection failures around API-key formatting, runtime environment injection, and first-deploy collection state.
 
 **Payload index isn't just a performance issue—it's an ACL issue.**
 
@@ -383,7 +383,7 @@ The most important thing after deployment is not only "the API is alive"; it is 
 3. Post a test query to `/ask` → gets an answer (Qdrant Cloud has data, payload index bootstrapped)
 4. Citations are present (`citations` array non-empty)
 
-> **Source materials:** 4-2 part14 / part15 / part16. Complete ingestion smoke test script and payload index bootstrap process.
+> **Real deployment note:** this smoke-test shape came from validating not only the HTTP service, but also the Qdrant collection, payload index, and citation path after deployment.
 
 **Prevention framework:**
 

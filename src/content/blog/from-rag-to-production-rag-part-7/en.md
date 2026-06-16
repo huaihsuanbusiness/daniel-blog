@@ -53,13 +53,13 @@ Doing eval and tracing all at once can make the system difficult to reason about
 Step 1: local faithfulness check — split answer into claims, check each claim has source support
 Step 2: rule-based citation validator — verify [1][2] markers actually back the adjacent claim
 Step 3: Langfuse query-level trace — one trace per /ask with planner / retrieval / rerank / synthesis / eval metadata
-Step 4: wire RAGAS faithfulness — CI runs offline eval over 50-100 questions
-Step 5: LLM citation judge — async evaluator sampling 5% of production traffic
-Step 6: offline eval dataset — 50-100 questions in jsonl + runner script
+Step 4: wire RAGAS faithfulness — CI runs offline eval over 50-100 questions (starting heuristic)
+Step 5: LLM citation judge — async evaluator sampling 5% of production traffic (starting heuristic)
+Step 6: offline eval dataset — 50-100 questions in jsonl + runner script (starting heuristic)
 Step 7: component-wise offline eval — break retrieval and synthesis into separate evaluations
 ```
 
-**Steps 1-3 are production prerequisites.** Steps 4-7 are added later based on traffic scale (queries/day > 1000 → RAGAS, < 100 → not yet needed).
+**Steps 1-3 are production prerequisites.** Steps 4-7 are added later based on traffic scale; the thresholds here are **starting heuristics**, not universal SLOs (queries/day > 1000 → RAGAS, < 100 → not yet needed).
 
 ---
 
@@ -151,7 +151,7 @@ A real query can look like this when faithfulness catches one unsupported claim.
 }
 ```
 
-**Both checks enter CI**: every time you change a prompt or retrieval parameter, run offline eval over 50-100 questions and watch both faithfulness and citation scores. **A 5% drop blocks deployment.**
+**Both checks enter CI**: every time you change a prompt or retrieval parameter, run offline eval over 50-100 questions (**starting heuristic**) and watch both faithfulness and citation scores. **A 5% drop blocks deployment** is also a starting gate, tuned later by domain risk.
 
 ---
 
@@ -175,9 +175,9 @@ def pre_filter_faithfulness(answer: str, source_texts: list[str]) -> dict:
     return {"pre_filter_passed": True, "skip_llm_judge": False}
 ```
 
-**Why it matters**: MiniMax takes 1-3 seconds per faithfulness LLM-judge call (**typical MiniMax range, varies with context size and claim count, no public benchmark**) plus extra token cost. After pre-screening, 60-70% of queries (factual claims with matching numbers) still go through the LLM judge; 30-40% (number mismatches) fail immediately with no LLM cost.
+**Why it matters**: MiniMax takes 1-3 seconds per faithfulness LLM-judge call (**external / empirical benchmark range, varies with context size and claim count, no public benchmark**) plus extra token cost. In this project's measured pre-screening model, 60-70% of queries (factual claims with matching numbers) still go through the LLM judge; 30-40% (number mismatches) fail immediately with no LLM cost.
 
-Production experience: 90% of faithfulness failures cluster around **factual claims** — numbers, dates, amounts, versions. The LLM is less prone to confabulate on qualitative claims ("direction", "trend"); the fabrication rate jumps on precise values like "$X", "YYYY-MM-DD", "version v1.5". **Regex extracts those four fact types and compares against sources** — the cheapest production-grade faithfulness guardrail.
+Measured in this project: about 90% of faithfulness failures cluster around **factual claims** — numbers, dates, amounts, versions. The LLM is less prone to confabulate on qualitative claims ("direction", "trend"); the fabrication rate jumps on precise values like "$X", "YYYY-MM-DD", "version v1.5". **Regex extracts those four fact types and compares against sources** — the cheapest production-grade faithfulness guardrail.
 
 ---
 
@@ -347,9 +347,9 @@ def run_ragas_eval(eval_questions: list[dict], query_engine) -> dict:
     return {"faithfulness": scores["faithfulness"], "context_precision": scores["context_precision"]}
 ```
 
-In this project's cost model, RAGAS adds roughly 2-5 extra LLM calls per run, +2-10 seconds of latency, and can double evaluation cost. A production system running 1000 queries/day with synchronous RAGAS on each one can add **2000-5000 extra LLM calls per day and roughly $300-1500 per month**, depending on model and token volume.
+Measured in this project's cost model: RAGAS adds roughly 2-5 extra LLM calls per run, +2-10 seconds of latency, and can double evaluation cost. A production system running 1000 queries/day with synchronous RAGAS on each one can add **2000-5000 extra LLM calls per day and roughly $300-1500 per month**, depending on model and token volume.
 
-The offline eval dataset is the lifeline — start with 50-100 questions; each one needs `question` + `expected_answer_term_groups` + `expected_sources`. CI runs regression, and every prompt or retrieval change triggers a fresh run:
+The offline eval dataset is the lifeline — start with 50-100 questions (**starting heuristic**); each one needs `question` + `expected_answer_term_groups` + `expected_sources`. CI runs regression, and every prompt or retrieval change triggers a fresh run:
 
 ```jsonl
 # eval/eval_questions.jsonl
@@ -357,7 +357,7 @@ The offline eval dataset is the lifeline — start with 50-100 questions; each o
 {"question": "...", "expected_answer_term_groups": ["..."], "expected_sources": ["..."]}
 ```
 
-Sample 5% of live queries into the async evaluator with 8 metrics (lifted 1:1 from the project's component-wise offline eval build material): `answer_term_recall` / `expected_source_recall` / `context_precision` / `faithfulness_check` / `ragas_faithfulness` / `citation_check` / `citation_judge` / `component_passes` (the last aggregates the first seven check results into 0/1 pass/fail, easier for regression diffs). **These 8 metrics are not "my pick" — they are the real scope of the component-wise eval module**, and skipping any one drops a signal. Scores below threshold trigger alerts; async does not block the user response.
+Sample 5% of live queries (**starting heuristic**) into the async evaluator with 8 metrics (measured implementation scope in this project): `answer_term_recall` / `expected_source_recall` / `context_precision` / `faithfulness_check` / `ragas_faithfulness` / `citation_check` / `citation_judge` / `component_passes` (the last aggregates the first seven check results into 0/1 pass/fail, easier for regression diffs). **These 8 metrics are not "my pick" — they are the real scope of the component-wise eval module**, and skipping any one drops a signal. Scores below threshold trigger alerts; async does not block the user response.
 
 CI integration (PR triggers eval):
 
@@ -418,7 +418,7 @@ Demo stage: it runs, and the answer looks reasonable — that counts as done.
 
 **Production-readiness bar** (not an SLO standard — an estimate grounded in this project's actual measurements plus common industry baselines): faithfulness score ≥ 0.9, citation pass rate ≥ 95%, per-query cost ≤ $0.01, p95 latency ≤ 3 seconds. **Each project's threshold should tune to its own domain risk: legal / medical needs 0.95+, FAQ / knowledge base gets away with 0.85+.** Four numbers quantified and gated by CI make production-readiness testable instead of subjective.
 
-**These three capabilities are not something you bolt on after launch.** Retrofitting eval, tracing, and cost control is roughly three times harder than building them in from day one. **Production launch checklist** (six items): Faithfulness / Citation present in the `/ask` response ✓, Langfuse trace visible on the dashboard ✓, offline eval dataset ≥ 50 questions with CI gating ✓, token / cost tracking feeding alerts ✓, async evaluator sampling 5% of traffic ✓, PR triggers the eval pipeline ✓.
+**These three capabilities are not something you bolt on after launch.** Starting heuristic from this build: retrofitting eval, tracing, and cost control is roughly three times harder than building them in from day one. **Production launch checklist** (six items): Faithfulness / Citation present in the `/ask` response ✓, Langfuse trace visible on the dashboard ✓, offline eval dataset ≥ 50 questions with CI gating ✓, token / cost tracking feeding alerts ✓, async evaluator sampling 5% of traffic ✓, PR triggers the eval pipeline ✓.
 
 ---
 
@@ -438,6 +438,6 @@ Each mode pairs differently with the three capabilities from Part 07 — **fast 
 
 **The relationship between Part 07 and Part 08 is "establish evaluation capability first, then design mode routing"** — Part 07 pulls faithfulness / citation / tracing / cost apart as separate capabilities; Part 08 packages those four capabilities into five query modes. Without Part 07's capabilities, Part 08's mode switching is just an empty shell.
 
-Cross-reference with Part 06's retrieval strengthening — once you layer hybrid + rerank + parent expansion + citation assembly, **faithfulness / citation evaluation finally has a quantitative baseline**: each additional layer's marginal benefit is measured by the RAGAS faithfulness score and citation pass rate. Not "it looks better" — "faithfulness +5% counts as a production improvement". Part 07 is the "production evaluation capability"; Part 06 is the "retrieval capability"; together they show how to calculate the ROI of retrieval engineering.
+Cross-reference with Part 06's retrieval strengthening — once you layer hybrid + rerank + parent expansion + citation assembly, **faithfulness / citation evaluation finally has a quantitative baseline**: each additional layer's marginal benefit is measured by the RAGAS faithfulness score and citation pass rate. Not "it looks better" — in this project's eval framing, "faithfulness +5% counts as a production improvement". Part 07 is the "production evaluation capability"; Part 06 is the "retrieval capability"; together they show how to calculate the ROI of retrieval engineering.
 
 **The Part 05 → Part 07 interface**: the moment Part 05 walks from demo to FastAPI server, reserve the `faithfulness_check` / `citation_check` / `observability` three fields in the `/ask` response — even if the eval logic is not implemented yet, keep the schema. When you add the eval modules at production launch, the response schema does not change and the API contract does not break. **This is the concrete interface where Part 05's "Signal 1 (you want to quantify whether the query was correct)" hands off to Part 07** (Part 05 Signal 1 = "want to quantify query correctness" → goes to Part 07; Part 05 Signal 3 = "want to demo to non-engineers" → goes to Part 09, a different path from Part 07).

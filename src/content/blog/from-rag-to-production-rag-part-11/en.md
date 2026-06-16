@@ -163,7 +163,7 @@ The existence of a deferred list means you **know what you are not doing yet**. 
 - "We have 10 capability flags" → So what? How does the caller use them? Unspecified
 - "We didn't do multi-LLM abstraction" → Why? Cost? Time? Vendor lock-in? **That reason is the real information**
 
-> **Source materials:** 3-3/Deferred / Not Now section + implicit assumptions in 4-1's closing section.
+> **Series design note:** this list is distilled from the deferred scope and closing assumptions that shaped the project, rewritten here as explicit product and architecture boundaries.
 
 **Takeaway:** **A RAG project's "not done" list is part of its design philosophy.** Writing this list down is harder than writing the Done list, and often more useful for planning.
 

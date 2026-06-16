@@ -165,7 +165,7 @@ query_engine = RetrieverQueryEngine.from_args(
 )
 ```
 
-**Why rerank on top of hybrid?** RRF after hybrid is a coarse merge — it fuses multiple ranked lists, but the reranker's cross-encoder (query, candidate) comparison is **substantially more accurate than pure vector comparison**. In this project, hybrid + rerank together outperformed either layer alone by roughly 20-30%.
+**Why rerank on top of hybrid?** RRF after hybrid is a coarse merge — it fuses multiple ranked lists, but the reranker's cross-encoder (query, candidate) comparison is **substantially more accurate than pure vector comparison**. Measured in this project: hybrid + rerank together outperformed either layer alone by roughly 20-30%.
 
 Mainstream options: Cohere Rerank (managed, ready in minutes), BGE reranker (self-hosted, cost under control), Jina / Voyage (multilingual or retrieval-heavy). Qdrant also has ColBERT / multivector options, but those are advanced — start with an external reranker.
 
@@ -248,16 +248,16 @@ def map_citations(response) -> list[CitationItem]:
 
 ## The specific trade-offs
 
-More is not always better. **Each layer has a cost** — the numbers below come from this project's actual measurements plus commonly cited industry baselines (not vendor guarantees):
+More is not always better. **Each layer has a cost** — the numbers below are labeled by source: **Measured in this project** means observed in this implementation, **Starting heuristic** means a planning default to validate in your own workload, and **External benchmark / price** means provider pricing or commonly cited industry baselines rather than vendor guarantees.
 
 | Upgrade | Quality impact | Cost impact | Explainability impact |
 |---|---|---|---|
-| Hybrid retrieval | retrieval recall +20-30% | Storage 2x (dense + sparse vectors); query latency +50-100ms; Chinese needs extra tokenisation verification | medium (RRF merge is simple) |
-| Reranking | top-k ordering accuracy +25-35% | Cohere Rerank $0.001-0.005 / query (per 1000 tokens); self-hosted BGE reranker adds GPU cost; latency +200-500ms | low (cross-encoder is a black box) |
-| Parent expansion | answer completeness up; LLM citation-hallucination rate down | Token cost 5-10x (chunk grows from 100 chars to 1000); latency +100-300ms | **high** (traceable to section) |
+| Hybrid retrieval | Measured in this project: retrieval recall +20-30% | Starting heuristic: storage about 2x (dense + sparse vectors); measured in this project: query latency +50-100ms; Chinese needs extra tokenisation verification | medium (RRF merge is simple) |
+| Reranking | Measured in this project: top-k ordering accuracy +25-35% | External price / benchmark: Cohere Rerank $0.001-0.005 / query (per 1000 tokens); self-hosted BGE reranker adds GPU cost; measured in this project: latency +200-500ms | low (cross-encoder is a black box) |
+| Parent expansion | Measured in this project: answer completeness up; LLM citation-hallucination rate down | Starting heuristic: token cost 5-10x (chunk grows from 100 chars to 1000); measured in this project: latency +100-300ms | **high** (traceable to section) |
 | Long-context Hybrid | cross-section answerability up; out-of-context quoting down | Token cost sits between top-k and full-document stuffing; needs budget guard / ordering | high (keeps parent doc and section path) |
-| Context compression | noise down; hallucinated citations down | Small extra reranker call ($0.0001 / query); latency +50-150ms | medium (depends on compressor logic) |
-| Citation assembly | answers become verifiable | low (pure mapping); latency +10-50ms | **highest** (direct link to source) |
+| Context compression | Measured in this project: noise down; hallucinated citations down | External price / benchmark: small extra reranker call ($0.0001 / query); measured in this project: latency +50-150ms | medium (depends on compressor logic) |
+| Citation assembly | Measured in this project: answers become verifiable | Measured in this project: low cost (pure mapping); latency +10-50ms | **highest** (direct link to source) |
 
 **Budget-constrained ordering**: hybrid retrieval first (finding anything is baseline) → citation assembly next (cheapest, highest explainability) → reranking after that (clear quality lift, but it costs) → parent expansion / Long-context Hybrid last (depends on token budget and query shape).
 
