@@ -329,5 +329,3 @@ If I had to close with one compact rule, it would be this:
 Once that clicks, the rest of the conversation around skill-first design, FastMCP, Make, or gateway servers becomes much less muddy.
 
 ---
-
----

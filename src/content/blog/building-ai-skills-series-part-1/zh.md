@@ -371,7 +371,3 @@ MCP 幫你標準化能力暴露，但不會替你做工具分群、skill selecti
 當這個分層站穩之後，後面不管你是要談 skill-first、tool exposure policy、FastMCP、Make integration，還是自己架 skill gateway，才會有共同語言。
 
 ---
-
-## 延伸閱讀與參考方式
-
----

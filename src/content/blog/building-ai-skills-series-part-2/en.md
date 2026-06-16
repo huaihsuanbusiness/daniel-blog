@@ -333,6 +333,3 @@ The path I trust more is:
 That is not extra bureaucracy. It is what turns “the model improvises over tools” into “the system exposes governed task capabilities”.
 
 ---
-
-
----
