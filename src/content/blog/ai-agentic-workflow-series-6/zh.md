@@ -1,6 +1,6 @@
 ---
 title: "AI代理工作流系列 6 — 什麼時候該用 Workflow，什麼時候才真的需要 Agent？"
-description: "不是多步就叫 agent，也不是有人審核就不叫 agent。這篇用 Daniel 的實作經驗，結合 Anthropic 與 OpenAI 的主流定義，整理一套更實用的 workflow vs agent 判斷方法。"
+description: "這篇結合我的實作經驗，以及 Anthropic 與 OpenAI 的主流定義，說明何時 workflow 已經足夠，何時才值得引入 agent。"
 categories: ["ai"]
 tags: ["ai", "agent", "workflow", "automation", "openai", "anthropic", "make"]
 date: 2026-04-02T09:58:00
