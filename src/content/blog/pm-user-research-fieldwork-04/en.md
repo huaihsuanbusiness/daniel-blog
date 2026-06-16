@@ -1,361 +1,266 @@
 ---
-title: "PM User Research and Fieldwork 05 － Outreach, Screeners, Incentives, and Consent: Turn Research Recruitment into a Repeatable System"
-description: "A practical guide to outreach, screeners, incentives, and consent so research recruitment is ethical, efficient, and aligned with the study goal."
+title: "PM User Research and Fieldwork 04 － Five Participants Is Not a Recruitment Strategy: How PMs Find the Right Users, Screen Them Properly, and Avoid the Wrong Ones"
+description: "Recruiting five participants is not a strategy. This article explains how research goals, segment variation, risk, and saturation should shape participant selection."
 categories: ["pm"]
 tags: []
-date: 2026-04-05T16:17:00
+date: 2026-04-05T16:22:00
 series: "PM User Research and Fieldwork"
 seriesOrder: 4
 ---
 
 ## The one thing this piece is trying to say
 
-A lot of PMs assume the hardest part of user research is the interview itself.
+A great many research rounds do not fail at the discussion guide. They fail earlier.
 
-Quite often, the study has already gone wrong before that.
+They fail because the wrong people walked into the room.
 
-- nobody was clear where to find participants
-- one invitation email went out and everyone waited for luck to do the rest
-- the screener effectively told people which answers would get them in
-- scheduling became chaotic and no-shows wrecked the round
-- incentives were paid late, making the next study harder to recruit for
-- consent and data handling were treated as an afterthought
+- you spoke to people with no relevant recent experience
+- you recruited loyal existing users when you needed novices
+- you found articulate participants rather than appropriate ones
+- you recruited whoever was easiest to book rather than whoever could answer the question
 
-So outreach, screeners, incentives, and consent are not administrative debris sitting next to research.  
-They are the minimum viable research-ops layer that turns recruitment from a one-off scramble into something **repeatable, predictable, and sustainable**.
+So recruitment is not just logistics. It is a more fundamental activity:
 
-## Start with the core judgement: recruitment is not scheduling, it is part of study design
+**define the evidence your study actually needs, then use recruiting and screening to keep the wrong people out before the session even begins.**
 
-I no longer think of recruitment as “getting a few sessions into the calendar”. I think of it as three linked questions:
+## Start by dismantling a very common myth: it is not “five people”, it is “which five”
 
-1. What kind of evidence does this study actually need?
-2. Which people are most likely to provide that evidence?
-3. Which process will reliably let the right people in and keep the wrong people out?
+The phrase “let’s just test it with five users” is dangerous not because the number is always wrong, but because it conceals the harder and more important question:
 
-If those questions are still fuzzy, a polished outreach email will only scale the fuzziness.
+**who exactly are those five people, how recently have they done the thing you care about, and how well do they match the decision you are trying to make?**
 
-Recruitment needs to answer five practical questions:
+If you are studying new-user onboarding and recruit experienced customers;
+if you are trying to understand churn and only speak to active users;
+if you are looking at a B2B admin workflow and recruit someone adjacent to the job rather than the person doing it;
+if you are researching a high-stakes choice and the participant has no authority to make that choice;
 
-- where will participants come from
-- how will the screener qualify them
-- what communication rhythm will keep the process moving
-- how will incentives be handled fairly
-- what consent and privacy boundaries need to be clear from the start
+then the sessions may run smoothly, but the evidence will still be badly misaligned.
 
-Those five decisions together are what make a recruitment system.
+That is why I prefer to think of recruitment as a question of criteria design, not diary management.
 
-## Step 1: write the recruitment brief before you write the invitation
+## Step one is not sending invitations. It is defining recruitment criteria.
 
-Teams in a hurry often do the reverse.
+I usually split the criteria into three layers.
 
-They draft the invitation first, then work out the details later.
+### 1. Core fit: is this actually the kind of person this study needs?
 
-The more dependable order is to write the recruitment brief first.
+This is the most basic layer.
 
-That brief is not only for agencies. Even if you are recruiting participants yourself, it forces you to answer the questions that matter:
+For example, perhaps you need people who:
 
-- what this round is trying to learn
-- which participant groups are needed
-- the inclusion and exclusion criteria
-- what variation should be preserved
-- whether the sessions are remote or in person
-- what access needs need to be supported
-- what the incentive is
-- how the study will be scheduled
-- what personal data is genuinely necessary
+- genuinely booked accommodation in the last three months
+- abandoned payment in the last month
+- still rely on spreadsheet-based workarounds for operational work
+- are actively evaluating alternatives but have not switched yet
+- tried your product for the first time and did not reach activation within a week
 
-If that is all still vague, the invitation tends to become something woolly like “we’d love to chat about your experience”, and the participant pool becomes equally woolly.
+The most important principle here is to define fit through **recent behaviour and actual experience**, not through self-description or vague identity labels.
 
-### A practical rule
+“Are you someone who travels often?” is usually too soft.
+“Have you personally completed three or more online accommodation bookings in the last six months?” is much sharper.
 
-I like a brief that can answer this sentence clearly:
+### 2. Variation: which differences need to be preserved in this round?
 
-**Which participants will move this study closer to an answer, and which participants will distort it?**
+Not every sample should be uniform.
 
-If you cannot answer that, the screener will not save you.
+Depending on the question, you may need meaningful variation across factors such as:
 
-## Step 2: choose recruitment sources deliberately, rather than assuming there is only one route
+- novice versus experienced users
+- high-frequency versus low-frequency users
+- business accounts versus individual accounts
+- mobile-first versus desktop-first behaviour
+- decision-makers versus executors
+- urban versus non-urban contexts
+- participants with accessibility needs or assistive-technology use
 
-There is no universal channel for finding research participants. For PMs, there are usually five practical options.
+This is not about ticking a neat diversity box. It is about protecting the differences that genuinely affect friction, choice, and behaviour.
 
-### 1. Existing user lists or product data
+### 3. Exclusion: who would distort the study if they were included?
+
+This is the layer teams neglect most often.
+
+Common exclusion candidates include:
+
+- people too close to the product team
+- people who have participated in too much recent research
+- enthusiasts who are interested in the topic but are not target users
+- people whose professional expertise makes them unusually sophisticated or forgiving
+- people standing in for the real role without the same responsibilities or permissions
+
+Not everyone who is willing to join should be recruited.
+Willingness only tells you they are willing. It tells you nothing about whether they can answer your question.
+
+## Only then should you decide where to find them
+
+There is rarely one perfect recruitment channel. I tend to think about six broad sources, each with different trade-offs.
+
+### 1. Existing user lists
 
 This is often the fastest route.
 
-It works well when you need:
+It is useful when you need:
 
-- people who recently completed a behaviour
-- users who dropped off, cancelled, churned, or requested a refund
-- active users of a particular feature
-- people who completed or failed onboarding recently
+- active users
+- people in a known behavioural segment
+- recent completers of a specific action
+- recent cancellations, refunds, or drop-offs
 
-The benefit is precision.  
-The risk is that you only hear from people who are already visible to you.
+The advantage is targeting precision. The risk is that you only hear from people already within reach, while missing non-users, lapsed users, switchers, or potential customers.
 
-### 2. CRM lists, newsletters, or research opt-in pools
+### 2. CRM, newsletters, and research opt-in pools
 
-If you already have a research opt-in pool, that is a genuine operational asset.
+If you already maintain a research opt-in pool, this can save a lot of time.
 
-But these participants are often more feedback-friendly and more comfortable with research than the average user. Sometimes that is fine. Sometimes it softens the evidence.
+But these participants are often more feedback-friendly, more research-literate, and sometimes more forgiving than your average user. For some studies that is perfectly workable. For others it softens the evidence.
 
-### 3. Third-party communities, professional bodies, or partners
+### 3. Recruitment agencies or research panels
 
-If your study concerns a specific role or context, such as:
+These become especially useful when you need:
 
-- freelancers
-- teachers
-- accommodation hosts
-- carers
-- specialist-tool users
-
-then communities and professional groups can be more efficient than a broad email blast.
-
-But being in the community does not automatically mean someone fits the research question.
-
-### 4. Recruitment agencies or panels
-
-These become useful when you need:
-
-- general-public participants
-- specific geographies
-- particular professions
-- assistive-technology users
+- members of the general public
+- particular professions or contexts
+- multiple regions
+- participants with accessibility requirements
 - harder-to-reach audiences
 
-Agencies are not magic, though.  
-A vague brief and a bad screener will simply help them recruit the wrong people more efficiently.
+An agency can be very effective, but only if your brief and screener are precise. Otherwise they will simply find the wrong people very efficiently.
 
-### 5. Situational or in-the-moment recruitment
+### 4. Communities, professional bodies, and third-party organisations
 
-Some questions depend heavily on fresh memory and real context. For example:
+If your users sit within a clear social or professional context, this route can be more accurate than broad outreach. Teachers, carers, freelancers, software engineers, people using certain assistive technologies, patient groups, and specialist communities often fall into this bucket.
 
-- just after a booking flow
-- right after a checkout
-- after a clinic visit
-- after completing an application
-- while leaving a physical service environment
+Still, access to a community is not the same thing as relevance. Not everyone in the community will fit your study.
 
-In those cases, event-triggered or contextual recruitment can be more truthful than a broad batch email.
+### 5. Pop-up or intercept recruitment
 
-## Step 3: the screener is not a form, it is the first methodological gate
-
-PMs usually make one of two mistakes with screeners.
-
-Either they write a sign-up form.  
-Or they write a mini personality test.
-
-Neither is the point.
-
-A screener exists to do one thing well:  
-**use the smallest number of questions possible to determine whether someone is qualified to answer the research question.**
-
-### Principles of a good screener
-
-#### 1. Ask about past behaviour before future intention
-
-Instead of asking:
-
-- would you use a product like this?
-- do you care about accommodation information?
-
-it is usually better to ask:
-
-- when did you last complete an accommodation booking yourself?
-- what made you abandon the last booking you did not finish?
-- what do you currently use to compare listings or organise a trip?
-
-Past behaviour is far more dependable than future promises.
-
-#### 2. Do not reveal the “right” answer
-
-If the screener effectively signals:
-
-- we are looking for people with this pain
-- we prefer this type of answer
-- tell us you are frustrated and you might get selected
-
-then you risk recruiting people who are good at being recruited rather than people who are good for the study.
-
-#### 3. Put eligibility first and opinions later
-
-Confirm fit first.  
-Collect richer descriptive detail afterwards.
-
-Otherwise you end up with lots of attractive information about people who should never have been in scope.
-
-#### 4. Keep it short, but make it discriminating
-
-I would rather have a shorter screener with sharper cuts than a long one that behaves like a survey.
-
-Long screeners reduce completion, increase fatigue, and attract people who are mainly chasing the incentive.
-
-### A practical reminder
-
-The screener is not there to identify the most articulate participant.
-
-It is there to identify **the participant best placed to answer the study’s question**.
-
-## Step 4: outreach should not read like marketing copy, but it should not sound like cold admin either
-
-Good research outreach helps the recipient understand four things quickly:
-
-- who you are
-- what the study is broadly about
-- why they were invited
-- what participation involves and what they will receive
-
-If the email sounds like a campaign, people may assume you are selling something.  
-If it sounds like sterile internal admin, response rates tend to collapse.
-
-### The core elements I keep
-
-- one clear sentence on the study purpose
-- why this person is receiving the invitation
-- session format and duration
-- the incentive
-- a brief note on confidentiality and data handling
-- a simple call to action, usually the screener or a reply of interest
-
-### Tone rules for outreach
-
-- be transparent, not theatrical
-- do not pretend to know the person
-- do not downplay the effort by calling it “just a quick chat”
-- do not imply that some answers are more welcome than others
-- do not treat participants like free consultants
-
-## Step 5: scheduling, reminders, and backups often determine whether the round survives contact with reality
-
-This is the least glamorous part, which is precisely why it causes so much damage when neglected.
-
-If you are recruiting yourself, I would suggest doing at least three things.
-
-### 1. Keep backup participants
-
-Not everyone who agrees to take part will turn up.
-
-If the timeline is tight and you have no backups, you are basically hoping for good weather.
-
-### 2. Use a consistent reminder cadence
+If you need people who have just completed a behaviour or are currently in the relevant setting, intercept recruiting can be powerful.
 
 For example:
 
-- one confirmation when booked
-- one reminder the day before
-- one short reminder one to two hours before the session
+- someone who has just completed a counter-service process
+- someone currently in a library, shop, clinic, school, or office carrying out the activity you care about
+- someone who has just finished an application or purchase flow
 
-That is not pestering. It is basic no-show prevention.
+The advantage here is freshness of context and memory.
+The downside is that it is poorly suited to long, sensitive, or highly complex sessions.
 
-### 3. Make the session logistics explicit
+### 6. Internal users
 
-Especially:
+If you are working on internal tooling, your colleagues may indeed be real users.
+If you are working on public or customer-facing products, however, internal staff are rarely a safe stand-in. Their knowledge, motivations, vocabulary, and tolerance for friction are often too different.
 
-- time zone
-- meeting link or location
-- anything they need to prepare
-- whether camera is required
-- whether the session will be recorded
-- what to do if they need to cancel
+## A screener is not an admin form. It is your first methodological filter.
 
-When these details are vague, participant experience deteriorates very quickly, and poor participant experience makes future recruitment harder.
+The purpose of screening questions is not to collect tidy paperwork. It is to decide whether this person belongs in the study.
 
-## Step 6: incentives are not for buying answers, they are for respecting time and effort
+I tend to use a few simple principles.
 
-I dislike the idea that an incentive is simply “a small thank-you gift”.
+### Principle 1: ask about past behaviour, not future intention
 
-That framing often leads to bad decisions.
+Instead of asking:
 
-An incentive does not buy an opinion. It acknowledges that participants are spending time, attention, context-switching energy, and sometimes travel, equipment, care, or emotional effort.
+- would you consider using a product like this
+- are you interested in travel planning research
 
-### When setting an incentive, I look at:
+you are usually better off asking:
 
-- session length
-- opportunity cost
-- topic sensitivity
-- recruitment difficulty
-- whether travel or in-person attendance is required
-- whether the audience is harder to reach
+- have you arranged accommodation for yourself in the last three months
+- when did you last compare accommodation options
+- what was the last time you abandoned a booking, and why
 
-### Two principles matter most
+Past behaviour is usually far more reliable than stated intention.
 
-#### 1. Do not set it too low
+### Principle 2: avoid making the “right” answer obvious
 
-An incentive that is too low makes it harder to recruit appropriate participants and increases the chance of drawing from a distorted slice of the market.
+If your screener asks things like:
 
-#### 2. Do not pay late
+- do you often struggle with accommodation comparison
+- do you frequently feel frustrated by poor transparency
 
-Slow incentive fulfilment does real reputational damage.
+you are effectively coaching people on how to qualify.
 
-In the short term it looks like a minor process issue. In the long term it erodes trust and makes participant recruitment progressively harder, especially if you are trying to build your own pool.
+A good screener sketches someone’s experience profile. It should not teach them the winning lines.
 
-## Step 7: consent and privacy are not a final form to bolt on afterwards
+### Principle 3: put eligibility first, softer questions later
 
-At this point many PMs have the same instinct:
+Confirm that the person is the right fit before gathering richer preference or attitudinal detail. Otherwise you end up collecting attractive data in the wrong place while failing to establish fit.
 
-“Surely we do not need to be that formal. This is only product research.”
+### Principle 4: do not rely on a single item; use a pattern
 
-But user research still involves personal data, recordings, transcripts, internal sharing, cloud tools, third-party transcription, and sometimes sensitive material.
+Very few people should be included or excluded based on one answer alone.
 
-So consent is not just a tick box. Participants need to understand:
+What tends to matter is the combination of:
 
-- what the study is for
-- what data will be collected
+- how recently they performed the behaviour
+- how often they do it
+- which role they play in the process
+- which tools or workarounds they use
+- where decision authority sits
+- whether they match the variation your study needs
+
+## The types of participants PMs most often recruit badly
+
+### 1. Loyal power users
+
+These people are easy to book, articulate, and usually generous with feedback.
+But if your question is about novices, switchers, people at risk, or high-anxiety decision-making, they are often the wrong sample.
+
+### 2. People who speak well but lack real experience
+
+Some participants are excellent at conversation and opinion, but have not actually done the thing you are studying. That kind of data feels smooth and polished, but is often misleading.
+
+### 3. Proxy participants
+
+This happens a lot in B2B and household decision contexts. The true decision-maker is absent and you speak to an executor, or the reverse. Both roles may matter, but they do not produce the same evidence and should not be treated as interchangeable.
+
+### 4. Professional research participants
+
+People who have done a great deal of research are not automatically unusable, but they may be more adept at interviews, more familiar with common task patterns, and more aware of what researchers are looking for. Depending on the question, that can distort the evidence.
+
+## Incentives, consent, and privacy are not side notes
+
+I do not think of these as legal appendices. I think of them as part of research quality.
+
+### Incentives
+
+A sensible incentive improves show-up rates and makes it more feasible to recruit harder-to-reach participants.
+But the incentive should not be structured in a way that encourages people to game the screener or exaggerate fit.
+
+### Consent
+
+Participants should understand:
+
+- what the research is for
 - whether audio or video will be recorded
-- how the data will be stored and who can access it
-- whether they can skip questions
+- how the data will be stored
 - whether they can withdraw
-- what anonymisation or deletion looks like later
+- what may be quoted anonymously afterwards
 
-### My minimum-viable rules
+### Privacy
 
-- do not collect personal data you do not need
-- do not be vague about recordings
-- do not treat consent as something you mention in passing
-- do not scatter participant data across random spreadsheets and chats
-- do not quietly repurpose research contact lists as marketing lists
+Recruitment often involves personal contact details, work background, accessibility needs, or other sensitive information.
+That data should not simply be dumped into a spreadsheet and forgotten. Even a lean PM-led process needs a minimum level of data-handling discipline.
 
-This may not look like interviewing craft, but it directly affects participant trust and whether research can become a sustainable practice inside the team.
+## A practical recruiting workflow for PMs
 
-## The thing PMs should build is not a single invitation, but a recruitment system
+If you are a PM trying to run a lean round of user research yourself, I would suggest a flow like this:
 
-You do not need a fully fledged research-ops platform on day one.
+1. write the research questions before writing the invite
+2. define core fit, variation, and exclusion
+3. decide which participant groups the round genuinely needs
+4. write the screener, starting with recent behaviour and role
+5. choose the source: existing users, agencies, communities, intercepts, internal users, or a mix
+6. prepare the invitation, reminders, and a backup list
+7. be explicit about incentive, duration, format, consent, and privacy
+8. confirm eligibility again before the session so you do not discover the mismatch at the last minute
 
-But it is worth building a small set of reusable assets:
+## One final reminder for PMs
 
-- a recruitment-brief template
-- a screener template
-- outreach email templates
-- reminder templates
-- a consent template
-- an incentive policy
-- a participant tracker
-- a cancellation and no-show rule
+A lot of PMs find recruitment irritating because it lacks the glamour of insight and the rhythm of experimentation.
 
-Once those exist, every future round starts with more signal and less chaos.
+But research quality often turns on this exact stage.
 
-That is why I think this is such a worthwhile PM skill.  
-Do not treat recruitment as a recurring emergency. Treat it as standing infrastructure for discovery work.
+You can have a strong guide, thoughtful facilitation, and a neat analysis framework.
+If you recruited the wrong people, all that competence will merely scale the wrong conclusion more elegantly.
 
-## When not to force self-recruitment
-
-This piece is not arguing that all studies should be recruited in-house.
-
-In some situations I would actively recommend against it:
-
-- highly sensitive or high-risk participant groups
-- very specialised or hard-to-reach audiences
-- large samples across regions under tight timelines
-- studies requiring explicit accessibility support
-- work with heavy legal or privacy constraints
-
-In those situations, agencies, specialist partners, or a proper research team are usually the more sensible route.
-
-## Stop here for now
-
-This piece deliberately stops at the recruitment system.
-
-The next piece moves one step earlier in the study itself, into another common mistake:
-
-**many people think they are writing an interview guide when they are really just listing questions.**
-
-A proper interview guide is not about ordering prompts neatly. It is about helping you uncover usable evidence without steering the participant into your own assumptions.
+The next piece picks up exactly where this one leaves off: how outreach, screening, incentives, and consent can become a repeatable operating system rather than a frantic last-minute scramble.

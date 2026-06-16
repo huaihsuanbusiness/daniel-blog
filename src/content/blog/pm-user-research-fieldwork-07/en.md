@@ -1,268 +1,292 @@
 ---
-title: "PM User Research and Fieldwork 08 － From Transcript to Insight: How PMs Use Thematic Analysis and Affinity Mapping Instead of Cherry-Picking Quotes"
-description: "A practical synthesis workflow for turning transcripts and field notes into evidence, patterns, insights, and decisions without skipping the reasoning chain."
+title: "PM User Research and Fieldwork 07 － Interviews and Fieldwork Are Not Casual Conversations: How PMs Facilitate, Observe, Take Notes, and Avoid Distorting the Session"
+description: "Good interviews and fieldwork require disciplined facilitation. This article covers rapport, neutrality, probing, observation, and session control."
 categories: ["pm"]
 tags: []
-date: 2026-04-05T16:20:00
+date: 2026-04-05T16:19:00
 series: "PM User Research and Fieldwork"
 seriesOrder: 7
 ---
 
 ## The one thing this piece is trying to say
 
-A lot of teams are not failing to do research.  
-They are failing to really begin the analysis.
+When PMs first start running interviews, the most common mistake is not “having too few questions”.  
+It is treating the session as a natural conversation.
 
-The interview was recorded, the notes exist, the Miro board is full, and yet the output somehow collapses into one of a few familiar forms:
+Natural conversation can feel warm and easy. But a research session is not meant to be merely pleasant. Its job is to **collect analysable evidence without distorting the situation you are trying to understand**.
 
-- a handful of dramatic quotes
-- vague claims that “lots of people mentioned this”
-- plausible-sounding interpretations with unclear evidence behind them
-- a whiteboard labelled pain points
+That is why the same interview guide can produce very different-quality material depending on who runs it.
 
-That kind of material may create energy, but it rarely supports serious product judgement.
+The difference usually has less to do with charisma than with very practical craft:
 
-Research analysis is not about making the material look tidier.  
-Its real job is this:
+- how you build rapport without becoming overly affirming
+- when to probe and when to stay quiet
+- when to ask for a demonstration instead of another explanation
+- what to notice in the field, not just what to listen for
+- how to take notes without turning yourself into a transcription machine
+- how observers can be present without changing the temperature of the room
 
-**to turn dense, messy, context-heavy qualitative data into an evidence structure that can be compared, traced back, and used for judgement.**
+So this piece is not about “becoming a better host”. It is about this:
 
-That is why I care so much about one thing:
+**how PMs can run research sessions as research, rather than as friendly conversations that happen to produce weak evidence.**
 
-if the work ends with good quotes, the analysis probably did not get finished.
+## Start by dropping a common misunderstanding: friendliness matters, but “natural” is not the highest principle
 
-## Start by separating analysis from synthesis, otherwise they blur immediately
+Many people reduce moderation to two goals:
 
-Teams often collapse these two activities together:
+- make the participant comfortable
+- let the conversation flow naturally
 
-- analysis
-- synthesis
+Neither goal is wrong. But if you stop there, sessions often drift into one of two failure modes.
 
-Once that happens, people start drawing conclusions the moment they open the transcript, and the work slides into solution mode far too early.
+The first is over-accommodation. The moderator wants to keep things comfortable, so they nod too hard, complete sentences, and continually mirror the participant’s language. Before long, the participant is speaking into the moderator’s frame rather than their own.
 
-A steadier sequence is this:
+The second is over-control. The moderator is so focused on “getting through the guide” that the session becomes a sequence of efficient prompts. The participant cooperates, but the surrounding context never really surfaces.
 
-### Analysis
-Break the material apart. Tag it, sort it, and organise it. Work out what observations, behaviours, wording, and contexts are appearing repeatedly.
+A steadier research session sits somewhere in the middle:
 
-### Synthesis
-Then rebuild those pieces into higher-level themes, structures, patterns, explanations, and next-step judgements.
+- relaxed enough for honest disclosure
+- structured enough to stay purposeful
+- curious without steering
+- open to the participant’s language and pace
+- disciplined enough not to dissolve into vagueness
 
-This distinction matters because many so-called insights are really just synthesis happening too early on top of thin analysis.
+A less romantic but more accurate way to describe moderation is this:  
+it is **a structured way of helping someone open up their world without rewriting it for them**.
 
-## Why qualitative data is so easy to mishandle
+## The real job of facilitation is not to talk more, but to distort less
 
-Because it is rich, and because it tempts you.
+This is the plainest way I know to think about it:
 
-Unlike a dashboard, qualitative data does not arrive as a neat number.  
-It arrives as:
+**you are not there to demonstrate understanding; you are there to reduce your own contamination of the evidence.**
 
-- long transcripts
-- partial notes
-- field observations
-- the participant’s own language
-- your in-session impressions
-- observer additions
+Once that mindset is in place, a lot of in-session decisions become clearer.
 
-The difficulty is not that there is too little. It is that there is a lot, and almost every part of it feels meaningful.
+### Do not summarise too early on the participant’s behalf
 
-That is why the most common analysis errors are often not technical at all:
+PMs often hear something familiar and immediately want to help by saying:
 
-- being overly influenced by the participant who spoke most clearly
-- over-weighting the most dramatic case
-- deciding the conclusion first and then hunting for supporting quotes
-- confusing your interpretation with an observation
-- collapsing very different frictions into one safe category
+- so what you mean is …
+- it sounds like the real issue was …
+- so basically the flow felt too complicated, right?
 
-So if you asked me for the single most important first step in qualitative analysis, I would say:
+That kind of question can occasionally help confirm understanding. Used too early or too often, it pours your interpretation back into the participant’s mouth.
 
-**slow down the feeling that you already understand it.**
+More reliable prompts usually sound like this instead:
 
-## Thematic analysis matters not because “coding” sounds rigorous, but because it helps patterns emerge
+- you said you got stuck. Where exactly did that happen?
+- what was going through your mind at that point?
+- you said it felt risky. What kind of risk did it feel like?
+- can you take me back to that moment and walk me through it from the start?
 
-The term thematic analysis can sound remote from day-to-day PM work.
+The difference is subtle but important.  
+The first group translates the experience into your frame. The second asks the participant to complete their own.
 
-But said plainly, it is doing something PMs should find very familiar:
+### Do not fill every gap; protect useful silence
 
-**taking mixed-up raw signals, breaking them apart, tagging them, and seeing which patterns are strong enough to support a judgement.**
+New moderators often panic at silence.  
+But some of the richest material in research shows up a few seconds after the pause.
 
-Three layers are worth keeping separate:
+A participant who stops is not always empty. Often they are reconstructing the situation properly. If you rush in too quickly, you usually get the flattened, cleaner, less useful version.
 
-### 1. Observation
-What happened in a concrete sense.
+In research, silence is not necessarily awkwardness. Quite often it is part of the work.
+
+## The biggest difference between fieldwork and interviews is not the location; it is that context becomes visible
+
+This is where many PMs initially underestimate fieldwork.
+
+They think field research is just an interview moved into a home, workplace, shop floor, or real operating environment.  
+But the real difference is not the backdrop. It is that **context suddenly becomes observable**.
+
+In a meeting room or on a video call, what you usually hear is a participant’s remembered and interpreted version of events.  
+In the field, you often encounter something else:
+
+- they say the process is routine, but the desk is covered in workarounds
+- they say the system is straightforward, but a colleague prompts them at every step
+- they say the task only takes three minutes, but all the preparation work is scattered across the previous half hour
+- they say a certain piece of information is unimportant, but keep checking it throughout the workflow
+
+This does not mean participants are being deceptive. Many behaviours have simply become automatic and invisible to the person doing them.
+
+So in fieldwork, do not think of yourself as “taking the interview guide to another place”.  
+What you are really collecting is:
+
+- what artefacts are present
+- which tools, scraps of paper, spreadsheets, chats, and improvised aids quietly hold the workflow together
+- where the handoffs, waits, interruptions, and switches happen
+- who patches over which failures
+- which workarounds have become so normal that nobody calls them workarounds any more
+
+## What should you pay attention to in the field? I usually start with five categories
+
+### 1. The tools and objects actually being used
+
+Do not only ask which tools people use.  
+Look at what they truly touch.
+
+That might include:
+- browser tabs
+- handwritten notes
+- spreadsheets
+- internal forms
+- Slack or WhatsApp threads
+- printed procedures
+- personal cheat sheets
+
+Real workflows are often less like the tidy arrow in a product diagram and more like a stitched-together patchwork.
+
+### 2. Switching costs
+
+A lot of friction is not that a single step is hard. It is that the user is constantly switching.
+
+- between phone and desktop
+- between system and paper
+- between search, comparison, asking, confirming, and waiting
+- between front-stage and back-stage tools
+
+That sort of friction is not always obvious in analytics, but it is often painfully visible in the room.
+
+### 3. How exceptions get absorbed
+
+People are usually happy to describe the normal flow.  
+The deeper insight often sits in the exceptions:
+
+- what happens when something fails
+- how people improvise when information is missing
+- who they ask when permissions are insufficient
+- how complaints or unusual cases are handled
+
+A product’s maturity often shows up in how exception cases are absorbed.  
+Does the system absorb them, or do people absorb them through experience, anxiety, and manual effort?
+
+### 4. The participant’s own language and categories
+
+How users name things matters.
+
+“Leave it there for now” and “save it” may not mean the same thing.  
+“Compare a few options” may actually contain filtering, sharing, discussion, and waiting for someone else’s response.
+
+If you translate too quickly into the product’s vocabulary, you can easily lose the participant’s mental model.
+
+### 5. Time
+
+Many problems are not about missing features. They are about fragmented time.
+
+- waiting for someone else to reply
+- needing a particular moment before feeling safe to proceed
+- tasks squeezed into commuting time or meeting gaps
+- steps postponed until the weekend or month-end
+
+This temporal context is often one of the blind spots that analytics cannot show and interviews alone may oversimplify.
+
+## Note-taking is not a transcription contest; it is how you preserve the structure needed for analysis
+
+I have seen two common note-taking failures.
+
+The first is over-recording.  
+The moderator types furiously throughout the session and ends up missing expressions, pauses, gestures, and environmental cues.
+
+The second is under-recording.  
+Everything feels memorable in the moment, but later all that remains is a blur of impressions.
+
+A more workable approach is usually:
+
+- the moderator notes only key triggers, follow-up points, and salient observations
+- if someone else is helping, they can separate notes into observations, quotes, and timestamps
+- if recording is possible, get consent and let the recording protect you from turning into a stenographer
+- immediately after the session, create a short debrief note while the context is still warm
+
+I find it useful to separate notes into three layers:
+
+- **Observation**: what the participant did, looked at, switched to, or referenced
+- **Quote**: representative wording in their own language
+- **Interpretation / open question**: your tentative sense-making, clearly marked as yours
+
+The most dangerous thing is to mix those together. Afterwards you can no longer tell what counted as evidence and what was simply your in-the-moment theory.
+
+## Observers are not just extra eyes; they are also an extra risk
+
+An observer does not automatically improve research quality.  
+Sometimes they make it worse.
+
+The common observer problems are predictable:
+
+- visible reactions that influence the room
+- interruptions or stakeholder questions during the session
+- selective memory afterwards, where only evidence supporting an existing view is retained
+
+So if observers are present, it helps to set the rules before the session starts:
+
+- who is moderating
+- who is taking notes
+- observers do not intervene
+- questions wait until debrief
+- notes should focus on observations, not solution ideas
+
+That is how observers become evidence multipliers rather than contamination sources.
+
+## A solid session usually does three things before it ends
+
+### 1. It grounds itself in at least one concrete episode
+
+If a session ends with “overall it was fine” or “most of it worked”, that is rarely enough.
+
+I usually want to leave with one of these:
+- the most recent time
+- the most difficult time
+- the moment they almost gave up
+- the last abandoned attempt
+
+That is what makes the later analysis useful.
+
+### 2. It circles back to clarify what the room revealed
 
 For example:
-- the participant repeatedly switched into an external chat while comparing listings
-- the participant paused before payment and searched for the cancellation policy
-- the operations user handled exception bookings in a spreadsheet before returning to the back office
+- you kept checking that sheet. What role does it usually play?
+- I noticed you switched into another system there. Was that because you could not find the information here?
+- you mentioned waiting for approval. How long does that normally take?
 
-### 2. Code
-A short, reusable label for a type of phenomenon.
+These are often the most valuable follow-ups in fieldwork.
 
-For example:
-- external confirmation
-- pre-payment risk check
-- back-office tool cannot handle exception flow
+### 3. It is followed by an immediate debrief
 
-### 3. Theme
-A higher-order pattern that connects multiple codes.
+Treat the debrief as part of the research, not as optional admin.
 
-For example:
-- users actively rebuild safety before making high-risk decisions
-- exception cases are being absorbed by manual workarounds rather than the system
-- the product does not provide enough comparison and confirmation scaffolding
+After a field session, details cool down very quickly.  
+I usually spend 10 to 15 minutes capturing three things:
 
-Without those layers, it becomes dangerously easy to promote a single memorable quote into an “insight”.
+- what I am most confident I observed
+- what I still cannot conclude
+- what I need to ask differently next time
 
-## Coding is not about colouring every sentence; it is about creating units that can be compared later
+This is not only about organisation. It is also about slowing down your certainty before it hardens too soon.
 
-There is a common misunderstanding here.  
-People often think coding means diligently highlighting every line of a transcript.
+## When should PMs not run the session themselves?
 
-That is not the point.
+This is not an argument that PMs should become universal researchers.
 
-Useful coding is not there to make the research look thorough. It is there to help you:
+There are situations where a PM-led session is especially risky:
 
-- compare participants against one another
-- see under what conditions a problem appears
-- distinguish one kind of friction from another
-- trace evidence later without rereading the entire corpus
+- the PM is the strongest internal defender of the concept being discussed
+- the topic is sensitive enough that participants may not speak freely
+- the method requires stronger moderation craft than the team currently has
+- the political pressure in the room is high
+- the PM is already too invested in validating a particular hypothesis
 
-So the quality of codes usually matters more than the quantity.
+In those cases, it is often wiser for a UXR to moderate while the PM participates as an observer.
 
-If codes are too broad, everything turns into labels like pain point, inconvenient, or needs reassurance.  
-If they are too narrow, you end up with a hundred tiny labels that cannot be compared.
+So the real claim here is not “PMs should do everything themselves”.  
+It is this:
 
-A simple test I use is this:
-
-**does this label help me compare across sessions?**  
-If not, it is probably not a useful code yet.
-
-## Affinity mapping is valuable not because the wall looks full, but because patterns become visible
-
-Affinity mapping is often misused as a kind of ceremony.
-
-People cover a wall in sticky notes, move things around, take a photo, and stop there.  
-It looks productive, but it does not necessarily produce synthesis.
-
-More useful affinity mapping usually depends on a few principles:
-
-- what goes on the wall should be observations, quotes, or codes, not solution ideas
-- grouping should be based on underlying patterns, not superficial wording
-- material that does not fit should be preserved, not forced into the biggest cluster
-- the final clusters should still be traceable back to evidence
-
-One thing I care about here is this:
-
-**do not turn affinity mapping into a consensus machine too early.**
-
-Teams often feel pressure to name clusters quickly, align quickly, and decide quickly.  
-If that happens before the evidence has stabilised, the cleanest-sounding story can easily replace the truest one.
-
-## A good insight is not a quote; it can answer four questions at once
-
-When I judge whether a qualitative insight is actually standing up, I look for whether it can answer four questions:
-
-### 1. What is the pattern?
-What exactly are we seeing?
-
-### 2. In what context does it happen?
-Not with everyone, and not always.  
-So in what task, flow stage, decision condition, or risk context does it show up?
-
-### 3. What evidence supports it?
-Which observations, quotes, and behavioural context are doing the lifting?
-
-### 4. What judgement does it change?
-Does it change the priority, the framing, the target user, the problem definition, or the next research step?
-
-If something only answers the first question, it may still sound sharp, but it is usually just a well-phrased impression.  
-If it can answer all four, it is much closer to decision-ready evidence.
-
-## Do not only look for commonality; deliberately look for negative cases
-
-This is one of the most important and least respected parts of the work.
-
-Analysis naturally drifts towards “what everyone mentioned”.  
-That matters, but qualitative research cannot only be about the lowest common denominator.
-
-Sometimes the real correction comes from the exceptions:
-
-- the same flow exists, but one group is not blocked at all
-- everyone complains about one issue, but the actual drop-off happens elsewhere
-- most users work around the problem, but one segment simply abandons the task
-- the same wording appears across interviews, but it points to different underlying issues
-
-Negative cases force your themes to become more precise.  
-Without them, you can end up with conclusions that are broad, agreeable, and much less useful than they look.
-
-## The point of qualitative analysis is not to produce “research-like” artefacts; it is to produce decision-ready evidence
-
-I have very little patience for research outputs that look substantial but are hard to use.
-
-For example:
-- fifty quote cards
-- an entire wall of sticky notes labelled pain points
-- a long appendix of transcripts
-- a dozen elegantly written insight statements with no clear consequence
-
-These things are not worthless. But if they do not improve decision-making, research slowly starts to be seen as interesting but non-decisive.
-
-That is why the final stage is not only about naming themes. It is also about asking:
-
-- what level of problem does this pattern represent
-- who does it affect
-- which quantitative signals could triangulate with it
-- what next step should it trigger  
-  - more research  
-  - better tracking  
-  - reframing the problem  
-  - solution testing  
-  - a change in priority
-
-That is how research moves off the wall.
-
-## A practical analysis workflow for PMs can look like this
-
-If you want a minimum viable process a PM could actually follow, I would suggest this:
-
-1. do a short debrief immediately after each session  
-2. consolidate observations, quotes, recordings, and field notes  
-3. run a first round of rough coding without rushing to name big themes  
-4. compare across participants, contexts, and user types  
-5. cluster related codes  
-6. identify patterns and deliberately search for negative cases  
-7. lift the clusters into themes  
-8. connect each theme back to the product problem and decision space  
-9. only then write the insight memo or readout
-
-Notice what this really is.  
-It is not a journey from notes to report. It is a journey **from raw material to judgement**.
-
-## When should you avoid rushing into a big affinity workshop?
-
-I have become much more cautious about this over time.
-
-Some teams love workshops so much that the moment data arrives, they gather everyone in a room and start clustering sticky notes. That is not always wrong, but there are situations where I would slow down:
-
-- the number of sessions is still too small
-- most people in the room have not seen the raw material
-- the team is already impatient to move into solutioning
-- the room has obvious power dynamics that will shape the clusters too quickly
-- the sticky notes contain interpretations rather than evidence
-
-In those cases, it is usually better to do a smaller round of disciplined analysis first, then invite wider participation afterwards.
+**if PMs are going to enter the research room, they should at least know how not to bend the evidence out of shape.**
 
 ## Closing thought
 
-The hardest part of moving from transcript to insight is not the tool, and it is not the Miro template.  
-It is whether you are willing to let the evidence acquire structure before you rush it into the conclusion you already wanted.
+The most valuable thing in interviews and fieldwork is not the memorable quote.  
+It is the piece of context that survived the session without being flattened into your script.
 
-That is the heart of qualitative analysis for me.
+That is what good facilitation protects.
 
-It is not there to make research look professional.  
-It is there to stop teams from mistaking the most memorable sentence for the most important truth.
+In the next piece, I will move one step further down the workflow and talk about the part many teams underestimate even more:
 
-In the next piece, I will move into one of the most useful and most over-sloganised parts of product research:
-
-**how PMs can use research to confirm JTBD, switching moments, and pain intensity without jumping prematurely into solutions.**
+**how PMs turn transcripts, notes, recordings, and observations into real analysis instead of a handful of dramatic quotes and a slide deck full of impressions.**

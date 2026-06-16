@@ -1,299 +1,361 @@
 ---
-title: "PM User Research and Fieldwork 06 － An Interview Guide Is Not a List of Questions: How PMs Design Non-Leading Prompts That Surface Real Evidence"
-description: "An interview guide is a decision tool, not a list of questions. This article shows how to structure prompts, probes, and follow-ups without leading participants."
+title: "PM User Research and Fieldwork 05 － Outreach, Screeners, Incentives, and Consent: Turn Research Recruitment into a Repeatable System"
+description: "A practical guide to outreach, screeners, incentives, and consent so research recruitment is ethical, efficient, and aligned with the study goal."
 categories: ["pm"]
 tags: []
-date: 2026-04-05T16:18:00
+date: 2026-04-05T16:17:00
 series: "PM User Research and Fieldwork"
 seriesOrder: 5
 ---
 
 ## The one thing this piece is trying to say
 
-After many interviews, teams are left with a familiar feeling:
+A lot of PMs assume the hardest part of user research is the interview itself.
 
-the conversation was pleasant, the notes are extensive, and the recording sounds lively.  
-Yet when it is time to make a decision, the usable evidence is thinner than everyone expected.
+Quite often, the study has already gone wrong before that.
 
-Often the problem is not that the participant was inarticulate. The problem is that the interview guide itself was weak.
+- nobody was clear where to find participants
+- one invitation email went out and everyone waited for luck to do the rest
+- the screener effectively told people which answers would get them in
+- scheduling became chaotic and no-shows wrecked the round
+- incentives were paid late, making the next study harder to recruit for
+- consent and data handling were treated as an afterthought
 
-- the questions sounded more like a survey
-- the session narrowed too early
-- there were too many hypotheticals
-- “clarifying” questions quietly smuggled in interpretations
-- multiple questions were bundled into one
-- prompts were vague enough to mean almost anything afterwards
+So outreach, screeners, incentives, and consent are not administrative debris sitting next to research.  
+They are the minimum viable research-ops layer that turns recruitment from a one-off scramble into something **repeatable, predictable, and sustainable**.
 
-So an interview guide is not just an ordered list of prompts.  
-Its real job is this:
+## Start with the core judgement: recruitment is not scheduling, it is part of study design
 
-**help you surface evidence that can be analysed, compared, and used for judgement without steering participants into your own assumptions.**
+I no longer think of recruitment as “getting a few sessions into the calendar”. I think of it as three linked questions:
 
-## Start by dropping a common misunderstanding: an interview guide is not a question bank, it is evidence design
+1. What kind of evidence does this study actually need?
+2. Which people are most likely to provide that evidence?
+3. Which process will reliably let the right people in and keep the wrong people out?
 
-If you treat the guide as a neat checklist of things to ask, it quickly becomes something like this:
+If those questions are still fuzzy, a polished outreach email will only scale the fuzziness.
 
-- 2 warm-up questions
-- 3 pain-point questions
-- 4 feature questions
-- 2 wrap-up questions
+Recruitment needs to answer five practical questions:
 
-It looks complete on paper, but it tends to loosen badly in the room.
+- where will participants come from
+- how will the screener qualify them
+- what communication rhythm will keep the process moving
+- how will incentives be handled fairly
+- what consent and privacy boundaries need to be clear from the start
 
-Research is not about “getting through the questions”. It is about helping participants surface **relevant experiences, context, decision processes, workarounds, emotions, and constraints**.
+Those five decisions together are what make a recruitment system.
 
-So when I write an interview guide, I do not start by brainstorming questions. I start by working through three layers:
+## Step 1: write the recruitment brief before you write the invitation
 
-1. what exactly are we trying to learn
-2. what kind of answer would count as evidence
-3. what sequence is most likely to surface that evidence cleanly
+Teams in a hurry often do the reverse.
 
-That is what keeps the guide from becoming a pretty but empty prompt list.
+They draft the invitation first, then work out the details later.
 
-## Begin with the research objective, not with “what should we ask?”
+The more dependable order is to write the recruitment brief first.
 
-Weak interview guides often begin with vague goals such as:
+That brief is not only for agencies. Even if you are recruiting participants yourself, it forces you to answer the questions that matter:
 
-- let’s see what people think
-- let’s understand user needs
-- let’s ask whether they like the feature
+- what this round is trying to learn
+- which participant groups are needed
+- the inclusion and exclusion criteria
+- what variation should be preserved
+- whether the sessions are remote or in person
+- what access needs need to be supported
+- what the incentive is
+- how the study will be scheduled
+- what personal data is genuinely necessary
 
-Objectives like that are too soft, and the guide quickly drifts with them.
+If that is all still vague, the invitation tends to become something woolly like “we’d love to chat about your experience”, and the participant pool becomes equally woolly.
 
-More useful objectives tend to sound like this instead:
+### A practical rule
 
-- understand where new users begin to lose confidence during their first attempt to complete a task
-- learn the context, triggers, and alternatives around the last abandoned booking
-- clarify how people compare listings and which pieces of information affect the final decision
-- understand how operations staff currently handle exception cases with workarounds
+I like a brief that can answer this sentence clearly:
 
-Notice what changed. These objectives are about **behaviour and judgement in a particular slice of reality**, not about gathering general opinions.
+**Which participants will move this study closer to an answer, and which participants will distort it?**
 
-## The main design principle: go broad before narrow, story before judgement
+If you cannot answer that, the screener will not save you.
 
-This is one of the most valuable principles to preserve.
+## Step 2: choose recruitment sources deliberately, rather than assuming there is only one route
 
-Do not open an interview by charging straight into narrow questions.  
-A steadier sequence is usually:
+There is no universal channel for finding research participants. For PMs, there are usually five practical options.
 
-- get the participant back into context
-- ask for a recent, concrete, specific episode
-- let them tell the story of what happened
-- gradually narrow into decision points, emotions, friction, and workarounds
-- only then move into more targeted clarifying questions
+### 1. Existing user lists or product data
 
-Why does that matter?
+This is often the fastest route.
 
-Because if you narrow too early, participants start responding to your framing rather than revealing their own.
+It works well when you need:
 
-### Example
+- people who recently completed a behaviour
+- users who dropped off, cancelled, churned, or requested a refund
+- active users of a particular feature
+- people who completed or failed onboarding recently
 
-Instead of beginning with:
+The benefit is precision.  
+The risk is that you only hear from people who are already visible to you.
 
-- do you find comparison difficult?
-- would you want the system to recommend the best listing for you?
+### 2. CRM lists, newsletters, or research opt-in pools
 
-a better opening is usually closer to:
+If you already have a research opt-in pool, that is a genuine operational asset.
 
-- talk me through the last time you booked accommodation
-- when you compared listings last time, what did you do step by step?
-- what information did you look at before deciding?
-- was there a point where you began to hesitate or considered giving up?
+But these participants are often more feedback-friendly and more comfortable with research than the average user. Sometimes that is fine. Sometimes it softens the evidence.
 
-That kind of prompt produces process, language, and context instead of prompted opinions.
+### 3. Third-party communities, professional bodies, or partners
 
-## Ask fewer hypotheticals and more about recent behaviour
+If your study concerns a specific role or context, such as:
 
-This is one of the most common traps in user interviews.
+- freelancers
+- teachers
+- accommodation hosts
+- carers
+- specialist-tool users
 
-PMs naturally ask things like:
+then communities and professional groups can be more efficient than a broad email blast.
 
-- would you use this if we built it?
-- would one-click comparison be useful?
-- if we added more filters, would you be more likely to buy?
+But being in the community does not automatically mean someone fits the research question.
 
-These questions feel natural, but the evidence they produce is often weak.
+### 4. Recruitment agencies or panels
 
-That is not because participants are dishonest. It is because people are poor at predicting themselves in future, imagined situations.
+These become useful when you need:
 
-So instead of leaning on hypotheticals, I would much rather ask:
+- general-public participants
+- specific geographies
+- particular professions
+- assistive-technology users
+- harder-to-reach audiences
 
-- how did you compare options last time?
-- how did you eventually make that decision?
-- did you create any workaround yourself?
-- what did you do instead after giving up?
+Agencies are not magic, though.  
+A vague brief and a bad screener will simply help them recruit the wrong people more efficiently.
 
-Hypotheticals are not forbidden, but they should not be the main course.  
-The main course should still be recent behaviour and specific incidents.
+### 5. Situational or in-the-moment recruitment
 
-## Watch out for these common question types that quietly contaminate answers
+Some questions depend heavily on fresh memory and real context. For example:
 
-### 1. Leading questions
+- just after a booking flow
+- right after a checkout
+- after a clinic visit
+- after completing an application
+- while leaving a physical service environment
+
+In those cases, event-triggered or contextual recruitment can be more truthful than a broad batch email.
+
+## Step 3: the screener is not a form, it is the first methodological gate
+
+PMs usually make one of two mistakes with screeners.
+
+Either they write a sign-up form.  
+Or they write a mini personality test.
+
+Neither is the point.
+
+A screener exists to do one thing well:  
+**use the smallest number of questions possible to determine whether someone is qualified to answer the research question.**
+
+### Principles of a good screener
+
+#### 1. Ask about past behaviour before future intention
+
+Instead of asking:
+
+- would you use a product like this?
+- do you care about accommodation information?
+
+it is usually better to ask:
+
+- when did you last complete an accommodation booking yourself?
+- what made you abandon the last booking you did not finish?
+- what do you currently use to compare listings or organise a trip?
+
+Past behaviour is far more dependable than future promises.
+
+#### 2. Do not reveal the “right” answer
+
+If the screener effectively signals:
+
+- we are looking for people with this pain
+- we prefer this type of answer
+- tell us you are frustrated and you might get selected
+
+then you risk recruiting people who are good at being recruited rather than people who are good for the study.
+
+#### 3. Put eligibility first and opinions later
+
+Confirm fit first.  
+Collect richer descriptive detail afterwards.
+
+Otherwise you end up with lots of attractive information about people who should never have been in scope.
+
+#### 4. Keep it short, but make it discriminating
+
+I would rather have a shorter screener with sharper cuts than a long one that behaves like a survey.
+
+Long screeners reduce completion, increase fatigue, and attract people who are mainly chasing the incentive.
+
+### A practical reminder
+
+The screener is not there to identify the most articulate participant.
+
+It is there to identify **the participant best placed to answer the study’s question**.
+
+## Step 4: outreach should not read like marketing copy, but it should not sound like cold admin either
+
+Good research outreach helps the recipient understand four things quickly:
+
+- who you are
+- what the study is broadly about
+- why they were invited
+- what participation involves and what they will receive
+
+If the email sounds like a campaign, people may assume you are selling something.  
+If it sounds like sterile internal admin, response rates tend to collapse.
+
+### The core elements I keep
+
+- one clear sentence on the study purpose
+- why this person is receiving the invitation
+- session format and duration
+- the incentive
+- a brief note on confidentiality and data handling
+- a simple call to action, usually the screener or a reply of interest
+
+### Tone rules for outreach
+
+- be transparent, not theatrical
+- do not pretend to know the person
+- do not downplay the effort by calling it “just a quick chat”
+- do not imply that some answers are more welcome than others
+- do not treat participants like free consultants
+
+## Step 5: scheduling, reminders, and backups often determine whether the round survives contact with reality
+
+This is the least glamorous part, which is precisely why it causes so much damage when neglected.
+
+If you are recruiting yourself, I would suggest doing at least three things.
+
+### 1. Keep backup participants
+
+Not everyone who agrees to take part will turn up.
+
+If the timeline is tight and you have no backups, you are basically hoping for good weather.
+
+### 2. Use a consistent reminder cadence
 
 For example:
 
-- did that part of the flow feel confusing?
-- that reminder feature would be helpful, wouldn’t it?
-- would you prefer more transparent pricing?
+- one confirmation when booked
+- one reminder the day before
+- one short reminder one to two hours before the session
 
-These are not neutral prompts. They imply a direction.
+That is not pestering. It is basic no-show prevention.
 
-### 2. Clarifying questions that smuggle in interpretation
+### 3. Make the session logistics explicit
 
-Sometimes you think you are simply checking understanding when in fact you are handing the participant a conclusion.
+Especially:
 
-For example:
+- time zone
+- meeting link or location
+- anything they need to prepare
+- whether camera is required
+- whether the session will be recorded
+- what to do if they need to cancel
 
-- so you abandoned because you did not trust the platform?
-- so what you really wanted was a simpler interface?
-- so the main problem was lack of pricing transparency?
+When these details are vague, participant experience deteriorates very quickly, and poor participant experience makes future recruitment harder.
 
-These are dangerous because participants often accommodate the framing rather than challenge it.
+## Step 6: incentives are not for buying answers, they are for respecting time and effort
 
-### 3. Compound questions
+I dislike the idea that an incentive is simply “a small thank-you gift”.
 
-Such as:
+That framing often leads to bad decisions.
 
-- did you abandon because the price was too high, the information was messy, or the flow was too complicated?
-- how do you normally search, compare, plan, and track your trip?
+An incentive does not buy an opinion. It acknowledges that participants are spending time, attention, context-switching energy, and sometimes travel, equipment, care, or emotional effort.
 
-Once one question contains three or four others, the answer usually becomes flattened and partial.
+### When setting an incentive, I look at:
 
-### 4. Ambiguous questions
+- session length
+- opportunity cost
+- topic sensitivity
+- recruitment difficulty
+- whether travel or in-person attendance is required
+- whether the audience is harder to reach
 
-For example:
+### Two principles matter most
 
-- how do you usually use it?
-- what do you think of the experience?
-- what are your thoughts on this feature?
+#### 1. Do not set it too low
 
-These are so broad that the participant has to guess which slice of experience you are after.
+An incentive that is too low makes it harder to recruit appropriate participants and increases the chance of drawing from a distorted slice of the market.
 
-## Open questions should carry the weight; closed questions should add precision
+#### 2. Do not pay late
 
-My rule here is simple.
+Slow incentive fulfilment does real reputational damage.
 
-If you need the participant to organise a story, reveal context, and show what mattered to them, start with open-ended prompts.  
-If you merely need to pin down timing, frequency, role, or whether something happened, closed questions can be useful follow-up tools.
+In the short term it looks like a minor process issue. In the long term it erodes trust and makes participant recruitment progressively harder, especially if you are trying to build your own pool.
 
-### Open prompts tend to sound like this
+## Step 7: consent and privacy are not a final form to bolt on afterwards
 
-- tell me about the last time…
-- walk me through what you did
-- what did you look at first, and what happened next?
-- where did things start to feel difficult?
-- how did you decide whether to continue or stop?
+At this point many PMs have the same instinct:
 
-### Closed questions are better for detail
+“Surely we do not need to be that formal. This is only product research.”
 
-- was that last week?
-- was that the first time it happened?
-- did you decide alone or with someone else?
-- were you on a phone or a computer?
+But user research still involves personal data, recordings, transcripts, internal sharing, cloud tools, third-party transcription, and sometimes sensitive material.
 
-Closed questions are not bad.  
-But when they dominate the opening of the session, the interview starts to feel like an oral questionnaire.
+So consent is not just a tick box. Participants need to understand:
 
-## How I usually structure an interview guide
+- what the study is for
+- what data will be collected
+- whether audio or video will be recorded
+- how the data will be stored and who can access it
+- whether they can skip questions
+- whether they can withdraw
+- what anonymisation or deletion looks like later
 
-Every study is different, of course, but I often use this rhythm.
+### My minimum-viable rules
 
-### 1. Warm-up
+- do not collect personal data you do not need
+- do not be vague about recordings
+- do not treat consent as something you mention in passing
+- do not scatter participant data across random spreadsheets and chats
+- do not quietly repurpose research contact lists as marketing lists
 
-Not just polite small talk. The point is to ease the participant back into a relevant context.
+This may not look like interviewing craft, but it directly affects participant trust and whether research can become a sustainable practice inside the team.
 
-### 2. Context
+## The thing PMs should build is not a single invitation, but a recruitment system
 
-Understand role, environment, task, and frequency before diving straight into pain.
+You do not need a fully fledged research-ops platform on day one.
 
-### 3. Recent episode or critical incident
+But it is worth building a small set of reusable assets:
 
-This is usually the most important section.  
-Ask for the last time, the most memorable time, or the most difficult recent time.
+- a recruitment-brief template
+- a screener template
+- outreach email templates
+- reminder templates
+- a consent template
+- an incentive policy
+- a participant tracker
+- a cancellation and no-show rule
 
-### 4. Decision points, frictions, and workarounds
+Once those exist, every future round starts with more signal and less chaos.
 
-This is where you start digging into turning points, hesitations, alternatives, and coping behaviour.
+That is why I think this is such a worthwhile PM skill.  
+Do not treat recruitment as a recurring emergency. Treat it as standing infrastructure for discovery work.
 
-### 5. Clarifying detail
+## When not to force self-recruitment
 
-Only now do more targeted follow-up questions become useful.
+This piece is not arguing that all studies should be recruited in-house.
 
-### 6. Light wrap-up
+In some situations I would actively recommend against it:
 
-Check whether anything important was missed and allow the participant to add context.
+- highly sensitive or high-risk participant groups
+- very specialised or hard-to-reach audiences
+- large samples across regions under tight timelines
+- studies requiring explicit accessibility support
+- work with heavy legal or privacy constraints
 
-## Good probing is not just asking “why” again and again
-
-Many novice guides are filled with “why” questions.
-
-In practice, repeated “why” often pushes participants into post-rationalisation or makes the conversation feel like an interrogation.
-
-I tend to rely more on probes like these:
-
-- can you tell me a bit more about that moment?
-- what did you do first?
-- what happened after that?
-- how did you decide whether to continue?
-- what other options were you considering?
-- was that typical for you, or unusual?
-
-These prompts help people unpack the experience rather than force them into instant explanations.
-
-## Do not smuggle solutioning into a discovery interview
-
-This is another trap PMs fall into very easily.
-
-A session that is meant to understand the problem gradually starts to ask things like:
-
-- what if we built it this way?
-- would you prefer this version?
-- which of these features would you choose?
-
-That is not always forbidden.  
-But once you start doing it too early, the participant stops recalling lived experience and starts reviewing your ideas.
-
-Those are completely different forms of evidence.
-
-Since you are planning a separate series on problem solving and design thinking, it is especially useful to stop deliberately here.  
-This piece should remain about problem understanding, not solution evaluation.
-
-## An interview guide does not need to be read out verbatim
-
-This matters a great deal.
-
-The value of the guide is not that you follow it like a script. It is that you know:
-
-- what each section is trying to validate
-- which questions are essential for evidence
-- which prompts are optional probes
-- what can be skipped if it emerges naturally
-- how to follow a rich thread without losing the study
-
-That is why a good guide is better thought of as an evidence map with rhythm, rather than as a script.
-
-## When interviews should not be the main method
-
-Even though this piece is about interview guides, there is an important boundary to state.
-
-If your real question is:
-
-- whether a prototype is usable
-- where a task flow breaks down
-- what situated behaviour looks like in the real environment
-- how a behaviour evolves over time
-
-then interviews may not be the primary method at all.  
-You may need usability testing, field studies, or diary studies instead.
-
-So before writing the guide, it is still worth returning to the previous article: **did you choose the right method in the first place?**
+In those situations, agencies, specialist partners, or a proper research team are usually the more sensible route.
 
 ## Stop here for now
 
-This piece deliberately stays with one question:
+This piece deliberately stops at the recruitment system.
 
-how do you ask for less distorted evidence?
+The next piece moves one step earlier in the study itself, into another common mistake:
 
-The next natural step is the one after the guide is written:
+**many people think they are writing an interview guide when they are really just listing questions.**
 
-**when the session starts, how should a PM facilitate, observe, and take notes without distorting the room?**
+A proper interview guide is not about ordering prompts neatly. It is about helping you uncover usable evidence without steering the participant into your own assumptions.

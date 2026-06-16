@@ -1,274 +1,268 @@
 ---
-title: "PM User Research and Fieldwork 09 － A Complaint Is Not Yet a Job: How PMs Confirm JTBD, Switching Moments, and Pain Intensity Without Jumping to Solutions"
-description: "A complaint is raw input, not yet a problem definition. This article shows how to distinguish symptoms, needs, jobs, constraints, and actionable opportunities."
+title: "PM User Research and Fieldwork 08 － From Transcript to Insight: How PMs Use Thematic Analysis and Affinity Mapping Instead of Cherry-Picking Quotes"
+description: "A practical synthesis workflow for turning transcripts and field notes into evidence, patterns, insights, and decisions without skipping the reasoning chain."
 categories: ["pm"]
 tags: []
-date: 2026-04-05T16:21:00
+date: 2026-04-05T16:20:00
 series: "PM User Research and Fieldwork"
 seriesOrder: 8
 ---
 
 ## The one thing this piece is trying to say
 
-After a few interviews, PMs can leave with an overly optimistic feeling:
+A lot of teams are not failing to do research.  
+They are failing to really begin the analysis.
 
-- users voiced frustrations
-- those frustrations sounded reasonable
-- the team can already imagine features that respond to them
-- so this must be the next problem to solve
+The interview was recorded, the notes exist, the Miro board is full, and yet the output somehow collapses into one of a few familiar forms:
 
-But research does not work that neatly.
+- a handful of dramatic quotes
+- vague claims that “lots of people mentioned this”
+- plausible-sounding interpretations with unclear evidence behind them
+- a whiteboard labelled pain points
 
-Because:
+That kind of material may create energy, but it rarely supports serious product judgement.
 
-- a complaint is not necessarily a high-weight problem
-- friction does not automatically mean the friction changed behaviour
-- a need statement does not mean you have found the job
-- an opinion does not mean you understand the context it came from
-- a solution request definitely does not mean you should build exactly that
+Research analysis is not about making the material look tidier.  
+Its real job is this:
 
-So this piece is trying to make one thing clear:
+**to turn dense, messy, context-heavy qualitative data into an evidence structure that can be compared, traced back, and used for judgement.**
 
-**a pain point is not just a complaint, and JTBD is not a more sophisticated way of rewriting user requests.**  
-Both require you to return to the real context and confirm:
+That is why I care so much about one thing:
 
-- what progress the person was actually trying to make
-- what event made the existing approach feel insufficient
-- how they weighed risk, alternatives, and switching cost
-- how heavy the pain really was
-- whether it was strong enough to push search, switching, delay, abandonment, or workaround behaviour
+if the work ends with good quotes, the analysis probably did not get finished.
 
-## First, let’s make one thing plain: JTBD is not a rewritten persona, and it is not a feature-request collection method
+## Start by separating analysis from synthesis, otherwise they blur immediately
 
-JTBD is easy to make mystical and just as easy to make empty.
+Teams often collapse these two activities together:
 
-I prefer a more grounded reading.  
-It is not asking “what features do users want?”  
-It is asking this:
+- analysis
+- synthesis
 
-**when a person hires a product, service, or workaround, what progress are they actually trying to make in their life or work?**
+Once that happens, people start drawing conclusions the moment they open the transcript, and the work slides into solution mode far too early.
 
-The emphasis is not the product. The emphasis is progress.
+A steadier sequence is this:
 
-So if an interview only yields statements like:
+### Analysis
+Break the material apart. Tag it, sort it, and organise it. Work out what observations, behaviours, wording, and contexts are appearing repeatedly.
 
-- I want it to be more convenient
-- I need more filters
-- I want easier comparison
-- I want clearer information
+### Synthesis
+Then rebuild those pieces into higher-level themes, structures, patterns, explanations, and next-step judgements.
 
-those statements may still be true, but they are usually too shallow.  
-They have not yet reached the job.
+This distinction matters because many so-called insights are really just synthesis happening too early on top of thin analysis.
 
-A job tends to sound more like this:
+## Why qualitative data is so easy to mishandle
 
-- reduce uncertainty to an acceptable level before making a high-risk booking
-- narrow options quickly because I do not want to spend my evening comparing everything
-- leave an accountable trail for a team decision so I do not have to defend the process afterwards
-- prove the tool can get me into real work before I commit to paying for it
+Because it is rich, and because it tempts you.
 
-Those statements sound less like a feature wishlist and more like movement towards an intended outcome.
+Unlike a dashboard, qualitative data does not arrive as a neat number.  
+It arrives as:
 
-## Why I say a complaint is not yet a pain point
+- long transcripts
+- partial notes
+- field observations
+- the participant’s own language
+- your in-session impressions
+- observer additions
 
-Because many complaints are surface-level noise. They have not yet become heavy enough to change behaviour.
+The difficulty is not that there is too little. It is that there is a lot, and almost every part of it feels meaningful.
 
-A user might complain that:
+That is why the most common analysis errors are often not technical at all:
 
-- there are too many options
-- search results are not precise enough
-- the homepage feels messy
-- comparison is tedious
-- the information before payment is incomplete
+- being overly influenced by the participant who spoke most clearly
+- over-weighting the most dramatic case
+- deciding the conclusion first and then hunting for supporting quotes
+- confusing your interpretation with an observation
+- collapsing very different frictions into one safe category
 
-All of that deserves attention.  
-But the real PM question is different:
+So if you asked me for the single most important first step in qualitative analysis, I would say:
 
-- is this merely annoying, or does it drive abandonment?
-- is it a preference, or does it trigger switching?
-- is it verbal irritation, or has it already produced a workaround?
-- is it low-cost frustration, or high-cost friction?
+**slow down the feeling that you already understand it.**
 
-For me, a pain point is better understood as **a form of resistance strong enough to alter behaviour**.  
-Not simply because it feels negative, but because it carries weight.
+## Thematic analysis matters not because “coding” sounds rigorous, but because it helps patterns emerge
 
-## How do I judge whether a problem has weight? I usually look at four things
+The term thematic analysis can sound remote from day-to-day PM work.
 
-### 1. Frequency
+But said plainly, it is doing something PMs should find very familiar:
 
-Is this a one-off oddity, or a recurring problem?
+**taking mixed-up raw signals, breaking them apart, tagging them, and seeing which patterns are strong enough to support a judgement.**
 
-A powerful story can still be misleading if it is unusual and not representative of the relevant context.
+Three layers are worth keeping separate:
 
-### 2. Severity
+### 1. Observation
+What happened in a concrete sense.
 
-Does it merely slow people down, or does it genuinely block, derail, or stop progress?
+For example:
+- the participant repeatedly switched into an external chat while comparing listings
+- the participant paused before payment and searched for the cancellation policy
+- the operations user handled exception bookings in a spreadsheet before returning to the back office
 
-### 3. Workaround cost
+### 2. Code
+A short, reusable label for a type of phenomenon.
 
-How are people already compensating for the problem?
+For example:
+- external confirmation
+- pre-payment risk check
+- back-office tool cannot handle exception flow
 
-- notes, screenshots, spreadsheets, colleague reminders
-- additional time spent comparing
-- switching into other tools
-- extra rounds of confirmation before proceeding
+### 3. Theme
+A higher-order pattern that connects multiple codes.
 
-If a workaround exists consistently and carries a real cost, the pain is probably not imaginary.
+For example:
+- users actively rebuild safety before making high-risk decisions
+- exception cases are being absorbed by manual workarounds rather than the system
+- the product does not provide enough comparison and confirmation scaffolding
 
-### 4. Behavioural consequence
+Without those layers, it becomes dangerously easy to promote a single memorable quote into an “insight”.
 
-Did it actually change what happened next?
+## Coding is not about colouring every sentence; it is about creating units that can be compared later
 
-- delay
-- abandonment
-- movement to a competitor
-- reliance on human assistance
-- reduced usage frequency
-- failure to begin at all
+There is a common misunderstanding here.  
+People often think coding means diligently highlighting every line of a transcript.
 
-This is often the moment when a research synthesis suddenly becomes clearer.  
-Not every negative feeling grows into a product problem worth prioritising.
+That is not the point.
 
-## Switching moments matter because they uncover the middle stretch between “something feels off” and actual change
+Useful coding is not there to make the research look thorough. It is there to help you:
 
-I like to treat switching moments as their own object of study.
+- compare participants against one another
+- see under what conditions a problem appears
+- distinguish one kind of friction from another
+- trace evidence later without rereading the entire corpus
 
-PMs often know that users eventually switched tools, changed process, or started looking elsewhere, but they do not know what happened in the stretch between dissatisfaction and movement.
+So the quality of codes usually matters more than the quantity.
 
-If you do not reconstruct that stretch, it becomes easy to believe things like:
+If codes are too broad, everything turns into labels like pain point, inconvenient, or needs reassurance.  
+If they are too narrow, you end up with a hundred tiny labels that cannot be compared.
 
-- users switched because one feature was missing
-- users switched because a competitor looked more attractive
-- searching began the moment dissatisfaction appeared
+A simple test I use is this:
 
-Real decisions are rarely that crisp.  
-They often look more like accumulation:
+**does this label help me compare across sessions?**  
+If not, it is probably not a useful code yet.
 
-- a first thought that something is no longer good enough
-- a period of inertia or distraction
-- several small frictions building over time
-- a trigger event
-- the beginning of search
-- comparison, delay, hesitation, and back-and-forth
-- finally, a decision point
+## Affinity mapping is valuable not because the wall looks full, but because patterns become visible
 
-That is why switch interviews are so useful.  
-They stop you from only asking “why did you switch?” and force you to reconstruct the timeline.
+Affinity mapping is often misused as a kind of ceremony.
 
-## Time, events, and sequence are often more useful than asking what people want
+People cover a wall in sticky notes, move things around, take a photo, and stop there.  
+It looks productive, but it does not necessarily produce synthesis.
 
-This is one of the easiest places to write JTBD research badly.
+More useful affinity mapping usually depends on a few principles:
 
-As soon as the interview keeps asking:
-- what do you want?
-- what feature matters most to you?
-- what would your ideal solution look like?
+- what goes on the wall should be observations, quotes, or codes, not solution ideas
+- grouping should be based on underlying patterns, not superficial wording
+- material that does not fit should be preserved, not forced into the biggest cluster
+- the final clusters should still be traceable back to evidence
 
-you quickly collect abstract, hypothetical, solution-shaped answers.
+One thing I care about here is this:
 
-More useful prompts usually stay closer to events:
+**do not turn affinity mapping into a consensus machine too early.**
 
-- when did you first feel the old approach was no longer enough?
-- what happened that day?
-- what else was going on? Who else was involved?
-- how did you start looking for alternatives?
-- did you delay? Why?
-- what finally pushed you into a real decision?
-- continuing with the old way was still possible, so why didn’t you?
+Teams often feel pressure to name clusters quickly, align quickly, and decide quickly.  
+If that happens before the evidence has stabilised, the cleanest-sounding story can easily replace the truest one.
 
-Those questions are not collecting opinions.  
-They are reconstructing **how progress became blocked and how change became possible**.
+## A good insight is not a quote; it can answer four questions at once
 
-## The four forces are useful, but they should not become poster slogans
+When I judge whether a qualitative insight is actually standing up, I look for whether it can answer four questions:
 
-JTBD discussions quickly reach push, pull, habit, and anxiety.  
-That framework is useful because it reminds you to ask:
+### 1. What is the pattern?
+What exactly are we seeing?
 
-- what is pushing someone away from the current situation
-- what is pulling them towards a new one
-- what habits are keeping them where they are
-- what anxieties are making change feel risky
+### 2. In what context does it happen?
+Not with everyone, and not always.  
+So in what task, flow stage, decision condition, or risk context does it show up?
 
-But the framework becomes shallow very quickly if used too early.
+### 3. What evidence supports it?
+Which observations, quotes, and behavioural context are doing the lifting?
 
-The more useful move is to excavate the story properly first, then use the four forces to organise it afterwards.  
-Otherwise you flatten a participant’s world into four boxes before the evidence has earned that simplification.
+### 4. What judgement does it change?
+Does it change the priority, the framing, the target user, the problem definition, or the next research step?
 
-## Pain intensity is not just emotional intensity; it is whether the problem changes reality
+If something only answers the first question, it may still sound sharp, but it is usually just a well-phrased impression.  
+If it can answer all four, it is much closer to decision-ready evidence.
 
-You specifically wanted pain intensity included, and I think that is worth doing.  
-But it should not become a loose “how much did it hurt?” scale.
+## Do not only look for commonality; deliberately look for negative cases
 
-Tone alone is unreliable.
+This is one of the most important and least respected parts of the work.
 
-Some participants sound calm while carrying very heavy workarounds.  
-Others complain vividly but continue to behave exactly as before.
+Analysis naturally drifts towards “what everyone mentioned”.  
+That matters, but qualitative research cannot only be about the lowest common denominator.
 
-So I do not usually ask pain intensity in the abstract.  
-I break it down into more concrete dimensions:
+Sometimes the real correction comes from the exceptions:
 
-- how often it happens
-- how expensive each occurrence is
-- whether it affects task success
-- whether it increases uncertainty or risk
-- whether it has already created workarounds
-- whether it has already triggered search, switching, abandonment, or delay
+- the same flow exists, but one group is not blocked at all
+- everyone complains about one issue, but the actual drop-off happens elsewhere
+- most users work around the problem, but one segment simply abandons the task
+- the same wording appears across interviews, but it points to different underlying issues
 
-If none of those show up, the issue may still be irritating, but it is not necessarily a top-tier pain.
+Negative cases force your themes to become more precise.  
+Without them, you can end up with conclusions that are broad, agreeable, and much less useful than they look.
 
-## When should you stop and refuse to jump into solutions too early?
+## The point of qualitative analysis is not to produce “research-like” artefacts; it is to produce decision-ready evidence
 
-This is one of the hardest and most important disciplines for PMs.
+I have very little patience for research outputs that look substantial but are hard to use.
 
-Once you understand the user’s context, solution ideas arrive quickly:
+For example:
+- fifty quote cards
+- an entire wall of sticky notes labelled pain points
+- a long appendix of transcripts
+- a dozen elegantly written insight statements with no clear consequence
 
-- perhaps we need a comparison feature
-- perhaps we need a template
-- perhaps we need a reminder
-- perhaps the paywall should move later
+These things are not worthless. But if they do not improve decision-making, research slowly starts to be seen as interesting but non-decisive.
 
-Those ideas are not forbidden.  
-But if you move into solving before the job, switch trigger, and pain weight are properly established, two things often happen:
+That is why the final stage is not only about naming themes. It is also about asking:
 
-First, you solve a symptom rather than a real progress barrier.  
-Second, you translate the participant’s workaround into a feature far too quickly.
+- what level of problem does this pattern represent
+- who does it affect
+- which quantitative signals could triangulate with it
+- what next step should it trigger  
+  - more research  
+  - better tracking  
+  - reframing the problem  
+  - solution testing  
+  - a change in priority
 
-So the boundary of this piece is deliberate:  
-we stop at **whether the problem definition is solid enough**.  
-We do not step into solution ideation yet.
+That is how research moves off the wall.
 
-## What should a more reliable JTBD / pain-research output look like?
+## A practical analysis workflow for PMs can look like this
 
-If I want this kind of work to support product judgement, I would usually expect the output to include:
+If you want a minimum viable process a PM could actually follow, I would suggest this:
 
-- the progress the target user is trying to make
-- the current approach used to make that progress imperfectly
-- the events that made the old approach feel insufficient
-- the shape of the switching timeline
-- evidence for push, pull, habit, and anxiety
-- the pain’s frequency, severity, workaround cost, and behavioural consequences
-- which complaints are merely complaints and which carry decision weight
-- what further research or quantitative validation is still needed
+1. do a short debrief immediately after each session  
+2. consolidate observations, quotes, recordings, and field notes  
+3. run a first round of rough coding without rushing to name big themes  
+4. compare across participants, contexts, and user types  
+5. cluster related codes  
+6. identify patterns and deliberately search for negative cases  
+7. lift the clusters into themes  
+8. connect each theme back to the product problem and decision space  
+9. only then write the insight memo or readout
 
-That kind of output creates a much steadier handoff into later problem-solving and design-thinking work.
+Notice what this really is.  
+It is not a journey from notes to report. It is a journey **from raw material to judgement**.
+
+## When should you avoid rushing into a big affinity workshop?
+
+I have become much more cautious about this over time.
+
+Some teams love workshops so much that the moment data arrives, they gather everyone in a room and start clustering sticky notes. That is not always wrong, but there are situations where I would slow down:
+
+- the number of sessions is still too small
+- most people in the room have not seen the raw material
+- the team is already impatient to move into solutioning
+- the room has obvious power dynamics that will shape the clusters too quickly
+- the sticky notes contain interpretations rather than evidence
+
+In those cases, it is usually better to do a smaller round of disciplined analysis first, then invite wider participation afterwards.
 
 ## Closing thought
 
-The hardest thing for PMs in research is usually not getting users to mention problems.  
-It is that there are too many problems, too many complaints, and too many plausible interpretations.
+The hardest part of moving from transcript to insight is not the tool, and it is not the Miro template.  
+It is whether you are willing to let the evidence acquire structure before you rush it into the conclusion you already wanted.
 
-Product decisions are not complaint management.  
-They have to return to a firmer question:
+That is the heart of qualitative analysis for me.
 
-**is this barrier heavy enough to stop the user making progress?**
+It is not there to make research look professional.  
+It is there to stop teams from mistaking the most memorable sentence for the most important truth.
 
-JTBD is useful not because the term is fashionable.  
-It is useful because it drags your attention away from feature wishlists and back towards the progress people are genuinely trying to make.  
-Pain intensity matters for a similar reason.  
-It reminds you that not every dissatisfaction deserves the same priority.
+In the next piece, I will move into one of the most useful and most over-sloganised parts of product research:
 
-At this point, the main arc of the series is complete.  
-We started with data blind spots, moved through method choice, recruitment, guide design, facilitation, and analysis, and ended where good research should end: with a stronger definition of the problem.
-
-That is exactly where your later problem-solving and design-thinking chapters can take over.  
-Because now, at least, the team has earned the right to move towards solutions.
+**how PMs can use research to confirm JTBD, switching moments, and pain intensity without jumping prematurely into solutions.**

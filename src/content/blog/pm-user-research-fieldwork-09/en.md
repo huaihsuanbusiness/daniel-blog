@@ -1,266 +1,274 @@
 ---
-title: "PM User Research and Fieldwork 04 － Five Participants Is Not a Recruitment Strategy: How PMs Find the Right Users, Screen Them Properly, and Avoid the Wrong Ones"
-description: "Recruiting five participants is not a strategy. This article explains how research goals, segment variation, risk, and saturation should shape participant selection."
+title: "PM User Research and Fieldwork 09 － A Complaint Is Not Yet a Job: How PMs Confirm JTBD, Switching Moments, and Pain Intensity Without Jumping to Solutions"
+description: "A complaint is raw input, not yet a problem definition. This article shows how to distinguish symptoms, needs, jobs, constraints, and actionable opportunities."
 categories: ["pm"]
 tags: []
-date: 2026-04-05T16:22:00
+date: 2026-04-05T16:21:00
 series: "PM User Research and Fieldwork"
 seriesOrder: 9
 ---
 
 ## The one thing this piece is trying to say
 
-A great many research rounds do not fail at the discussion guide. They fail earlier.
+After a few interviews, PMs can leave with an overly optimistic feeling:
 
-They fail because the wrong people walked into the room.
+- users voiced frustrations
+- those frustrations sounded reasonable
+- the team can already imagine features that respond to them
+- so this must be the next problem to solve
 
-- you spoke to people with no relevant recent experience
-- you recruited loyal existing users when you needed novices
-- you found articulate participants rather than appropriate ones
-- you recruited whoever was easiest to book rather than whoever could answer the question
+But research does not work that neatly.
 
-So recruitment is not just logistics. It is a more fundamental activity:
+Because:
 
-**define the evidence your study actually needs, then use recruiting and screening to keep the wrong people out before the session even begins.**
+- a complaint is not necessarily a high-weight problem
+- friction does not automatically mean the friction changed behaviour
+- a need statement does not mean you have found the job
+- an opinion does not mean you understand the context it came from
+- a solution request definitely does not mean you should build exactly that
 
-## Start by dismantling a very common myth: it is not “five people”, it is “which five”
+So this piece is trying to make one thing clear:
 
-The phrase “let’s just test it with five users” is dangerous not because the number is always wrong, but because it conceals the harder and more important question:
+**a pain point is not just a complaint, and JTBD is not a more sophisticated way of rewriting user requests.**  
+Both require you to return to the real context and confirm:
 
-**who exactly are those five people, how recently have they done the thing you care about, and how well do they match the decision you are trying to make?**
+- what progress the person was actually trying to make
+- what event made the existing approach feel insufficient
+- how they weighed risk, alternatives, and switching cost
+- how heavy the pain really was
+- whether it was strong enough to push search, switching, delay, abandonment, or workaround behaviour
 
-If you are studying new-user onboarding and recruit experienced customers;
-if you are trying to understand churn and only speak to active users;
-if you are looking at a B2B admin workflow and recruit someone adjacent to the job rather than the person doing it;
-if you are researching a high-stakes choice and the participant has no authority to make that choice;
+## First, let’s make one thing plain: JTBD is not a rewritten persona, and it is not a feature-request collection method
 
-then the sessions may run smoothly, but the evidence will still be badly misaligned.
+JTBD is easy to make mystical and just as easy to make empty.
 
-That is why I prefer to think of recruitment as a question of criteria design, not diary management.
+I prefer a more grounded reading.  
+It is not asking “what features do users want?”  
+It is asking this:
 
-## Step one is not sending invitations. It is defining recruitment criteria.
+**when a person hires a product, service, or workaround, what progress are they actually trying to make in their life or work?**
 
-I usually split the criteria into three layers.
+The emphasis is not the product. The emphasis is progress.
 
-### 1. Core fit: is this actually the kind of person this study needs?
+So if an interview only yields statements like:
 
-This is the most basic layer.
+- I want it to be more convenient
+- I need more filters
+- I want easier comparison
+- I want clearer information
 
-For example, perhaps you need people who:
+those statements may still be true, but they are usually too shallow.  
+They have not yet reached the job.
 
-- genuinely booked accommodation in the last three months
-- abandoned payment in the last month
-- still rely on spreadsheet-based workarounds for operational work
-- are actively evaluating alternatives but have not switched yet
-- tried your product for the first time and did not reach activation within a week
+A job tends to sound more like this:
 
-The most important principle here is to define fit through **recent behaviour and actual experience**, not through self-description or vague identity labels.
+- reduce uncertainty to an acceptable level before making a high-risk booking
+- narrow options quickly because I do not want to spend my evening comparing everything
+- leave an accountable trail for a team decision so I do not have to defend the process afterwards
+- prove the tool can get me into real work before I commit to paying for it
 
-“Are you someone who travels often?” is usually too soft.
-“Have you personally completed three or more online accommodation bookings in the last six months?” is much sharper.
+Those statements sound less like a feature wishlist and more like movement towards an intended outcome.
 
-### 2. Variation: which differences need to be preserved in this round?
+## Why I say a complaint is not yet a pain point
 
-Not every sample should be uniform.
+Because many complaints are surface-level noise. They have not yet become heavy enough to change behaviour.
 
-Depending on the question, you may need meaningful variation across factors such as:
+A user might complain that:
 
-- novice versus experienced users
-- high-frequency versus low-frequency users
-- business accounts versus individual accounts
-- mobile-first versus desktop-first behaviour
-- decision-makers versus executors
-- urban versus non-urban contexts
-- participants with accessibility needs or assistive-technology use
+- there are too many options
+- search results are not precise enough
+- the homepage feels messy
+- comparison is tedious
+- the information before payment is incomplete
 
-This is not about ticking a neat diversity box. It is about protecting the differences that genuinely affect friction, choice, and behaviour.
+All of that deserves attention.  
+But the real PM question is different:
 
-### 3. Exclusion: who would distort the study if they were included?
+- is this merely annoying, or does it drive abandonment?
+- is it a preference, or does it trigger switching?
+- is it verbal irritation, or has it already produced a workaround?
+- is it low-cost frustration, or high-cost friction?
 
-This is the layer teams neglect most often.
+For me, a pain point is better understood as **a form of resistance strong enough to alter behaviour**.  
+Not simply because it feels negative, but because it carries weight.
 
-Common exclusion candidates include:
+## How do I judge whether a problem has weight? I usually look at four things
 
-- people too close to the product team
-- people who have participated in too much recent research
-- enthusiasts who are interested in the topic but are not target users
-- people whose professional expertise makes them unusually sophisticated or forgiving
-- people standing in for the real role without the same responsibilities or permissions
+### 1. Frequency
 
-Not everyone who is willing to join should be recruited.
-Willingness only tells you they are willing. It tells you nothing about whether they can answer your question.
+Is this a one-off oddity, or a recurring problem?
 
-## Only then should you decide where to find them
+A powerful story can still be misleading if it is unusual and not representative of the relevant context.
 
-There is rarely one perfect recruitment channel. I tend to think about six broad sources, each with different trade-offs.
+### 2. Severity
 
-### 1. Existing user lists
+Does it merely slow people down, or does it genuinely block, derail, or stop progress?
 
-This is often the fastest route.
+### 3. Workaround cost
 
-It is useful when you need:
+How are people already compensating for the problem?
 
-- active users
-- people in a known behavioural segment
-- recent completers of a specific action
-- recent cancellations, refunds, or drop-offs
+- notes, screenshots, spreadsheets, colleague reminders
+- additional time spent comparing
+- switching into other tools
+- extra rounds of confirmation before proceeding
 
-The advantage is targeting precision. The risk is that you only hear from people already within reach, while missing non-users, lapsed users, switchers, or potential customers.
+If a workaround exists consistently and carries a real cost, the pain is probably not imaginary.
 
-### 2. CRM, newsletters, and research opt-in pools
+### 4. Behavioural consequence
 
-If you already maintain a research opt-in pool, this can save a lot of time.
+Did it actually change what happened next?
 
-But these participants are often more feedback-friendly, more research-literate, and sometimes more forgiving than your average user. For some studies that is perfectly workable. For others it softens the evidence.
+- delay
+- abandonment
+- movement to a competitor
+- reliance on human assistance
+- reduced usage frequency
+- failure to begin at all
 
-### 3. Recruitment agencies or research panels
+This is often the moment when a research synthesis suddenly becomes clearer.  
+Not every negative feeling grows into a product problem worth prioritising.
 
-These become especially useful when you need:
+## Switching moments matter because they uncover the middle stretch between “something feels off” and actual change
 
-- members of the general public
-- particular professions or contexts
-- multiple regions
-- participants with accessibility requirements
-- harder-to-reach audiences
+I like to treat switching moments as their own object of study.
 
-An agency can be very effective, but only if your brief and screener are precise. Otherwise they will simply find the wrong people very efficiently.
+PMs often know that users eventually switched tools, changed process, or started looking elsewhere, but they do not know what happened in the stretch between dissatisfaction and movement.
 
-### 4. Communities, professional bodies, and third-party organisations
+If you do not reconstruct that stretch, it becomes easy to believe things like:
 
-If your users sit within a clear social or professional context, this route can be more accurate than broad outreach. Teachers, carers, freelancers, software engineers, people using certain assistive technologies, patient groups, and specialist communities often fall into this bucket.
+- users switched because one feature was missing
+- users switched because a competitor looked more attractive
+- searching began the moment dissatisfaction appeared
 
-Still, access to a community is not the same thing as relevance. Not everyone in the community will fit your study.
+Real decisions are rarely that crisp.  
+They often look more like accumulation:
 
-### 5. Pop-up or intercept recruitment
+- a first thought that something is no longer good enough
+- a period of inertia or distraction
+- several small frictions building over time
+- a trigger event
+- the beginning of search
+- comparison, delay, hesitation, and back-and-forth
+- finally, a decision point
 
-If you need people who have just completed a behaviour or are currently in the relevant setting, intercept recruiting can be powerful.
+That is why switch interviews are so useful.  
+They stop you from only asking “why did you switch?” and force you to reconstruct the timeline.
 
-For example:
+## Time, events, and sequence are often more useful than asking what people want
 
-- someone who has just completed a counter-service process
-- someone currently in a library, shop, clinic, school, or office carrying out the activity you care about
-- someone who has just finished an application or purchase flow
+This is one of the easiest places to write JTBD research badly.
 
-The advantage here is freshness of context and memory.
-The downside is that it is poorly suited to long, sensitive, or highly complex sessions.
+As soon as the interview keeps asking:
+- what do you want?
+- what feature matters most to you?
+- what would your ideal solution look like?
 
-### 6. Internal users
+you quickly collect abstract, hypothetical, solution-shaped answers.
 
-If you are working on internal tooling, your colleagues may indeed be real users.
-If you are working on public or customer-facing products, however, internal staff are rarely a safe stand-in. Their knowledge, motivations, vocabulary, and tolerance for friction are often too different.
+More useful prompts usually stay closer to events:
 
-## A screener is not an admin form. It is your first methodological filter.
+- when did you first feel the old approach was no longer enough?
+- what happened that day?
+- what else was going on? Who else was involved?
+- how did you start looking for alternatives?
+- did you delay? Why?
+- what finally pushed you into a real decision?
+- continuing with the old way was still possible, so why didn’t you?
 
-The purpose of screening questions is not to collect tidy paperwork. It is to decide whether this person belongs in the study.
+Those questions are not collecting opinions.  
+They are reconstructing **how progress became blocked and how change became possible**.
 
-I tend to use a few simple principles.
+## The four forces are useful, but they should not become poster slogans
 
-### Principle 1: ask about past behaviour, not future intention
+JTBD discussions quickly reach push, pull, habit, and anxiety.  
+That framework is useful because it reminds you to ask:
 
-Instead of asking:
+- what is pushing someone away from the current situation
+- what is pulling them towards a new one
+- what habits are keeping them where they are
+- what anxieties are making change feel risky
 
-- would you consider using a product like this
-- are you interested in travel planning research
+But the framework becomes shallow very quickly if used too early.
 
-you are usually better off asking:
+The more useful move is to excavate the story properly first, then use the four forces to organise it afterwards.  
+Otherwise you flatten a participant’s world into four boxes before the evidence has earned that simplification.
 
-- have you arranged accommodation for yourself in the last three months
-- when did you last compare accommodation options
-- what was the last time you abandoned a booking, and why
+## Pain intensity is not just emotional intensity; it is whether the problem changes reality
 
-Past behaviour is usually far more reliable than stated intention.
+You specifically wanted pain intensity included, and I think that is worth doing.  
+But it should not become a loose “how much did it hurt?” scale.
 
-### Principle 2: avoid making the “right” answer obvious
+Tone alone is unreliable.
 
-If your screener asks things like:
+Some participants sound calm while carrying very heavy workarounds.  
+Others complain vividly but continue to behave exactly as before.
 
-- do you often struggle with accommodation comparison
-- do you frequently feel frustrated by poor transparency
+So I do not usually ask pain intensity in the abstract.  
+I break it down into more concrete dimensions:
 
-you are effectively coaching people on how to qualify.
+- how often it happens
+- how expensive each occurrence is
+- whether it affects task success
+- whether it increases uncertainty or risk
+- whether it has already created workarounds
+- whether it has already triggered search, switching, abandonment, or delay
 
-A good screener sketches someone’s experience profile. It should not teach them the winning lines.
+If none of those show up, the issue may still be irritating, but it is not necessarily a top-tier pain.
 
-### Principle 3: put eligibility first, softer questions later
+## When should you stop and refuse to jump into solutions too early?
 
-Confirm that the person is the right fit before gathering richer preference or attitudinal detail. Otherwise you end up collecting attractive data in the wrong place while failing to establish fit.
+This is one of the hardest and most important disciplines for PMs.
 
-### Principle 4: do not rely on a single item; use a pattern
+Once you understand the user’s context, solution ideas arrive quickly:
 
-Very few people should be included or excluded based on one answer alone.
+- perhaps we need a comparison feature
+- perhaps we need a template
+- perhaps we need a reminder
+- perhaps the paywall should move later
 
-What tends to matter is the combination of:
+Those ideas are not forbidden.  
+But if you move into solving before the job, switch trigger, and pain weight are properly established, two things often happen:
 
-- how recently they performed the behaviour
-- how often they do it
-- which role they play in the process
-- which tools or workarounds they use
-- where decision authority sits
-- whether they match the variation your study needs
+First, you solve a symptom rather than a real progress barrier.  
+Second, you translate the participant’s workaround into a feature far too quickly.
 
-## The types of participants PMs most often recruit badly
+So the boundary of this piece is deliberate:  
+we stop at **whether the problem definition is solid enough**.  
+We do not step into solution ideation yet.
 
-### 1. Loyal power users
+## What should a more reliable JTBD / pain-research output look like?
 
-These people are easy to book, articulate, and usually generous with feedback.
-But if your question is about novices, switchers, people at risk, or high-anxiety decision-making, they are often the wrong sample.
+If I want this kind of work to support product judgement, I would usually expect the output to include:
 
-### 2. People who speak well but lack real experience
+- the progress the target user is trying to make
+- the current approach used to make that progress imperfectly
+- the events that made the old approach feel insufficient
+- the shape of the switching timeline
+- evidence for push, pull, habit, and anxiety
+- the pain’s frequency, severity, workaround cost, and behavioural consequences
+- which complaints are merely complaints and which carry decision weight
+- what further research or quantitative validation is still needed
 
-Some participants are excellent at conversation and opinion, but have not actually done the thing you are studying. That kind of data feels smooth and polished, but is often misleading.
+That kind of output creates a much steadier handoff into later problem-solving and design-thinking work.
 
-### 3. Proxy participants
+## Closing thought
 
-This happens a lot in B2B and household decision contexts. The true decision-maker is absent and you speak to an executor, or the reverse. Both roles may matter, but they do not produce the same evidence and should not be treated as interchangeable.
+The hardest thing for PMs in research is usually not getting users to mention problems.  
+It is that there are too many problems, too many complaints, and too many plausible interpretations.
 
-### 4. Professional research participants
+Product decisions are not complaint management.  
+They have to return to a firmer question:
 
-People who have done a great deal of research are not automatically unusable, but they may be more adept at interviews, more familiar with common task patterns, and more aware of what researchers are looking for. Depending on the question, that can distort the evidence.
+**is this barrier heavy enough to stop the user making progress?**
 
-## Incentives, consent, and privacy are not side notes
+JTBD is useful not because the term is fashionable.  
+It is useful because it drags your attention away from feature wishlists and back towards the progress people are genuinely trying to make.  
+Pain intensity matters for a similar reason.  
+It reminds you that not every dissatisfaction deserves the same priority.
 
-I do not think of these as legal appendices. I think of them as part of research quality.
+At this point, the main arc of the series is complete.  
+We started with data blind spots, moved through method choice, recruitment, guide design, facilitation, and analysis, and ended where good research should end: with a stronger definition of the problem.
 
-### Incentives
-
-A sensible incentive improves show-up rates and makes it more feasible to recruit harder-to-reach participants.
-But the incentive should not be structured in a way that encourages people to game the screener or exaggerate fit.
-
-### Consent
-
-Participants should understand:
-
-- what the research is for
-- whether audio or video will be recorded
-- how the data will be stored
-- whether they can withdraw
-- what may be quoted anonymously afterwards
-
-### Privacy
-
-Recruitment often involves personal contact details, work background, accessibility needs, or other sensitive information.
-That data should not simply be dumped into a spreadsheet and forgotten. Even a lean PM-led process needs a minimum level of data-handling discipline.
-
-## A practical recruiting workflow for PMs
-
-If you are a PM trying to run a lean round of user research yourself, I would suggest a flow like this:
-
-1. write the research questions before writing the invite
-2. define core fit, variation, and exclusion
-3. decide which participant groups the round genuinely needs
-4. write the screener, starting with recent behaviour and role
-5. choose the source: existing users, agencies, communities, intercepts, internal users, or a mix
-6. prepare the invitation, reminders, and a backup list
-7. be explicit about incentive, duration, format, consent, and privacy
-8. confirm eligibility again before the session so you do not discover the mismatch at the last minute
-
-## One final reminder for PMs
-
-A lot of PMs find recruitment irritating because it lacks the glamour of insight and the rhythm of experimentation.
-
-But research quality often turns on this exact stage.
-
-You can have a strong guide, thoughtful facilitation, and a neat analysis framework.
-If you recruited the wrong people, all that competence will merely scale the wrong conclusion more elegantly.
-
-The next piece picks up exactly where this one leaves off: how outreach, screening, incentives, and consent can become a repeatable operating system rather than a frantic last-minute scramble.
+That is exactly where your later problem-solving and design-thinking chapters can take over.  
+Because now, at least, the team has earned the right to move towards solutions.
