@@ -1,10 +1,12 @@
 ---
 title: "Building AI Skills Series Part 2: Why ChatGPT should not connect directly to low-level tools"
-description: "Building AI Skills Series Part 2: Why ChatGPT should not connect directly to low-level tools"
+description: "Why exposing low-level tools directly to ChatGPT becomes difficult to govern, and how a thin skill gateway creates safer task boundaries."
 categories: ["ai"]
 tags: ["ai", "mcp", "skill", "agent", "workflow", "architecture"]
 date: 2026-04-01T20:12:00
 featured: false
+seriesOrder: 2
+series: "Building AI Skills Series"
 ---
 
 If you already have a handful of working tools, the first instinct is perfectly understandable:
@@ -332,10 +334,5 @@ That is not extra bureaucracy. It is what turns “the model improvises over too
 
 ---
 
-## Further reading
-
-The official docs and tutorial references I used are collected in:
-
-`./resource/references.md`
 
 ---

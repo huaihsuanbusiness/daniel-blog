@@ -5,6 +5,8 @@ categories: ["ai"]
 tags: ["ai", "mcp", "skill", "agent", "workflow", "architecture"]
 date: 2026-04-01T20:11:00
 featured: false
+seriesOrder: 1
+series: "打造AI Skill 系列"
 ---
 
 我剛開始接觸這些詞的時候，其實也是一團霧。
@@ -371,9 +373,5 @@ MCP 幫你標準化能力暴露，但不會替你做工具分群、skill selecti
 ---
 
 ## 延伸閱讀與參考方式
-
-本文用到的官方文件與我參考的教學文，已整理在：
-
-`./resource/references.md`
 
 ---

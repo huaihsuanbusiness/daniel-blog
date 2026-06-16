@@ -1,10 +1,12 @@
 ---
 title: "Building AI Skills Series Part 1: What is the actual difference between a Skill, Tool, MCP, Runtime, and Orchestrator?"
-description: "Building AI Skills Series Part 1: What is the actual difference between a Skill, Tool, MCP, Runtime, and Orchestrator?"
+description: "A practical framework for distinguishing skills, tools, MCP, runtimes, and orchestrators, and understanding which responsibility belongs at each architectural layer."
 categories: ["ai"]
 tags: ["ai", "mcp", "skill", "agent", "workflow", "architecture"]
 date: 2026-04-01T20:11:00
 featured: false
+seriesOrder: 1
+series: "Building AI Skills Series"
 ---
 
 When I first ran into these words, I was properly lost.
@@ -327,7 +329,5 @@ If I had to close with one compact rule, it would be this:
 Once that clicks, the rest of the conversation around skill-first design, FastMCP, Make, or gateway servers becomes much less muddy.
 
 ---
-
-## Further reading
 
 ---

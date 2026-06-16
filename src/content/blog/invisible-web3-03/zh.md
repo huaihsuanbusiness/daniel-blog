@@ -293,6 +293,3 @@ Invisible Web3 的終點，不是把這些都藏掉。
 這大概是我現在最相信的版本：Web3 可以看不見，但控制權不能看不見。
 
 ---
-
-參考資料放在 `resource/references.md`。  
-圖片規格放在 `resource/image-asset-plan.md`。

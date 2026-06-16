@@ -428,6 +428,3 @@ Invisible Web3 很迷人，但如果使用者不知道自己用了 Web3，產品
 真正成熟的 invisible infrastructure，不只是看起來順。它要在看不見的地方，把控制權留下來。
 
 ---
-
-參考資料放在 `resource/references.md`。  
-圖片規格放在 `resource/image-asset-plan.md`。

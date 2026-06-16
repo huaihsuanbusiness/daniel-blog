@@ -1,10 +1,12 @@
 ---
 title: "Building AI Skills Series Part 3: Designing a skill layer from existing tools, using a Make-based job workflow as the example"
-description: "Building AI Skills Series Part 3: Designing a skill layer from existing tools, using a Make-based job workflow as the example"
+description: "A practical method for designing a skill layer above existing APIs, automations, and Make workflows without rebuilding the execution stack."
 categories: ["ai"]
 tags: ["ai", "mcp", "skill", "agent", "workflow", "architecture"]
 date: 2026-04-01T20:13:00
 featured: false
+seriesOrder: 3
+series: "Building AI Skills Series"
 ---
 
 When teams start talking about skills, the first practical question is usually this:
@@ -457,10 +459,5 @@ Long term, it makes the system freer.
 
 ---
 
-## Further reading
-
-The repo, project files, official docs, and tutorial references used in this article are collected in:
-
-`./resource/references.md`
 
 ---

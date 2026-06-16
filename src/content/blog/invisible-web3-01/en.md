@@ -220,6 +220,3 @@ The next piece moves closer to x402 itself. My claim is:
 That phrasing is less flashy, but more accurate. Stripe is a full commercial system. x402 standardises a payment handshake between client and server. Understanding that boundary prevents us from mistaking “payment works” for “commerce is solved”.
 
 ---
-
-References are in `resource/references.md`.  
-Image specifications are in `resource/image-asset-plan.md`.
