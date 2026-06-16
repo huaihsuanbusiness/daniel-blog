@@ -1,6 +1,6 @@
 ---
 title: "OpenClaw 快速上手 04｜OpenClaw 新手第一週怎麼用：從 CLI、Dashboard、Memory、Browser 到 Discord 的正確開啟順序"
-description: "給已完成安裝的技術型讀者。這篇不是功能總表，而是用 Daniel 的實際部署路線，帶你把 OpenClaw 在第一週從「會動」推進到「真的開始上工」。"
+description: "給已完成安裝的技術型讀者。這篇不是功能總表，而是以我的實際部署路線，帶你把 OpenClaw 在第一週從「會動」推進到「真的開始上工」。"
 categories: ["openclaw"]
 tags: ["openclaw", "agent", "gateway", "self-hosted", "tools", "memory"]
 date: 2026-04-02T14:43:00
@@ -108,7 +108,7 @@ openclaw dashboard
 結果什麼都摸到一點，卻沒有一條真正每天會走的工作路線。
 
 我現在會建議，**第二天只選一個主要前端**。  
-對 Daniel 這條主線來說，我會偏向：
+以我的部署需求來說，我會偏向：
 
 - **主前端：Dashboard**
 - **輔助前端：TUI**
