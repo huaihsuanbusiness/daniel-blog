@@ -1,6 +1,6 @@
 ---
 title: "打造AI Skill 系列 Part 2：為什麼 ChatGPT 不該直連底層工具：打造 Skill-first 架構"
-description: "打造AI Skill 系列 Part 2：為什麼 ChatGPT 不該直連底層工具：打造 Skill-first 架構"
+description: "說明為什麼 ChatGPT 不應直接連接底層工具，以及如何用受控的 skill layer 降低權限、耦合與維運風險。"
 categories: ["ai"]
 tags: ["ai", "mcp", "skill", "agent", "workflow", "architecture"]
 date: 2026-04-01T20:12:00
