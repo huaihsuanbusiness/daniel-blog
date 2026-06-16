@@ -1,16 +1,12 @@
 ---
 title: "PM User Research and Fieldwork 02 － Qualitative, Quantitative, and Mixed Methods: PMs Do Not Need a Side, They Need the Right Question"
-description: "Method article / concept calibration"
+description: "A practical guide to choosing qualitative, quantitative, or mixed methods based on the decision you need to make, not the method you prefer."
 categories: ["pm"]
 tags: []
 date: 2026-04-05T16:15:00
 series: "PM User Research and Fieldwork"
 seriesOrder: 2
 ---
-
-## Article type
-
-Method article / concept calibration
 
 ## The confusion this piece is trying to fix
 

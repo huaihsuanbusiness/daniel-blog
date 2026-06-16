@@ -1,16 +1,12 @@
 ---
 title: "PM User Research and Fieldwork 03 － Not Every Research Session Is an Interview: User Interviews, Usability Tests, Field Studies, and Diary Studies Serve Different Jobs"
-description: "Method piece / method-selection piece"
+description: "Interviews are only one research method. This article compares interviews, observation, diary studies, usability tests, and other approaches by the evidence they produce."
 categories: ["pm"]
 tags: []
 date: 2026-04-05T16:16:00
 series: "PM User Research and Fieldwork"
 seriesOrder: 3
 ---
-
-## Article type
-
-Method piece / method-selection piece
 
 ## The one thing this piece is trying to say
 

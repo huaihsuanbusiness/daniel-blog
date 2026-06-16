@@ -1,16 +1,12 @@
 ---
 title: "PM User Research and Fieldwork 01 － When the Dashboard Speaks but the User Does Not: Why PMs Need User Research to Close Product Blind Spots"
-description: "Concept calibration / series opener"
+description: "Dashboards show what happened, but not always why. This article explains when product managers need user research to recover the missing context behind the metrics."
 categories: ["pm"]
 tags: []
 date: 2026-04-05T16:14:00
 series: "PM User Research and Fieldwork"
 seriesOrder: 1
 ---
-
-## Article type
-
-Concept calibration / series opener
 
 ## The one thing this piece is trying to say
 

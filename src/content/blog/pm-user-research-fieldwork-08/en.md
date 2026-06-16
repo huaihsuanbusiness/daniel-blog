@@ -1,16 +1,12 @@
 ---
 title: "PM User Research and Fieldwork 09 － A Complaint Is Not Yet a Job: How PMs Confirm JTBD, Switching Moments, and Pain Intensity Without Jumping to Solutions"
-description: "Professional methods piece / Problem-definition guide"
+description: "A complaint is raw input, not yet a problem definition. This article shows how to distinguish symptoms, needs, jobs, constraints, and actionable opportunities."
 categories: ["pm"]
 tags: []
 date: 2026-04-05T16:21:00
 series: "PM User Research and Fieldwork"
 seriesOrder: 8
 ---
-
-## Article type
-
-Professional methods piece / Problem-definition guide
 
 ## The one thing this piece is trying to say
 
