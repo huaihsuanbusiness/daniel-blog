@@ -323,9 +323,9 @@ then splitting the execution posture is a smart move. The official docs explicit
 
 ---
 
-## The practical recommendation for Daniel’s setup
+## The practical recommendation for this setup
 
-If I compress your actual situation into one operational sentence, it would be this:
+If I compress this deployment pattern into one operational sentence, it is this.
 
 > **Use the Mac mini as the main gateway first. Stabilise Codex OAuth, Discord, a small skill set, `memory-core`, and localhost / tunnel access. Only after that should you explore a VPS, a Linux gateway, or remote-node patterns.**
 
