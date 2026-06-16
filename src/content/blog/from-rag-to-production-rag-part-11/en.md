@@ -169,6 +169,31 @@ The existence of a deferred list means you **know what you are not doing yet**. 
 
 ---
 
+## Enterprise-Grade Scope Matrix
+
+Because the series name says "Enterprise-Grade", the scope needs to be explicit. In this series, enterprise-grade does not mean "all enterprise hardening is complete." It means the RAG backbone has moved beyond a demo: retrieval is permission-aware, answers are grounded and citable, query modes are risk-based, evaluation and traces exist, and deployment constraints are visible.
+
+The matrix below is the boundary:
+
+| Area | Covered in this series | Positioned but not fully implemented | Out of scope for this series |
+|---|---|---|---|
+| Retrieval / context quality | Hybrid retrieval, reranking, parent expansion, context compression, citation assembly | Long-context Hybrid as a routed pattern | Domain-tuned embedding / reranker training |
+| Auth / tenant isolation | JWT + membership checks, tenant filter, Postgres RLS pattern, cross-tenant test checklist | Full enterprise IAM / SSO / SCIM mapping | Org-wide identity governance |
+| Evaluation / answer governance | Faithfulness check, citation check, RAGAS offline eval pattern, model/eval governance as a project discipline | Multi-judge eval, human audit sampling, prompt registry | Regulated model-risk management program |
+| Observability | Langfuse-style tracing, stage-level trace, latency / cost visibility | Production alerting, Prometheus / Grafana, OpenTelemetry rollout | Full NOC / on-call platform |
+| SLO / SLA / load testing | Latency and cost budgets by query mode; p95 discussed as engineering signal | Formal SLO/SLA targets, load test plan, traffic capacity model | Contractual SLA commitment |
+| Data protection | Metadata / ACL design, permission-aware retrieval, storage separation | PII classification, audit logs, retention policy, DLP review | Formal privacy compliance program |
+| Secrets / cryptography | Environment hygiene, HTTPS / Cloudflare Origin Certificate, private-key handling | KMS, secret rotation, certificate rotation calendar | Enterprise key-management policy |
+| Reliability / recovery | Docker deployment, health checks, graceful index-not-ready behavior | Backup restore drill, incident runbook, DR plan, multi-region failover | HA platform with tested RTO/RPO |
+| Supply chain / release | Git, Docker, deployment smoke tests | SBOM, dependency scanning, signed artifacts, release gates | Full secure SDLC certification |
+| Prompt / agent security | Bounded query modes, tool timeout, budget guards, final verifier | Prompt injection test set, tool allowlist policy, abuse monitoring | Red-team program for all agent surfaces |
+
+So the honest scope statement is:
+
+> This series covers the production RAG backbone and the engineering controls needed to make it inspectable, permission-aware, citable, evaluable, and deployable. It positions the surrounding enterprise hardening work, but it does not claim to finish every SRE, security, compliance, privacy, or governance requirement of a large enterprise platform.
+
+---
+
 ## Alignment with Part 10: These Are My Choices, Not General Advice
 
 Part 10's closing covered 4 architecture choices (Oracle VM / Qdrant Cloud / Cloudflare / Docker Compose). **Those 4 are "system layer" choices.** The 3 choices in this Part 11 are "**methodology layer**" choices.
