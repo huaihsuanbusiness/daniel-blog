@@ -1,6 +1,6 @@
 ---
 title: "打造AI Skill 系列 Part 3：從現有工具設計出 Skill Layer：以 Make 職缺流程為例"
-description: "打造AI Skill 系列 Part 3：從現有工具設計出 Skill Layer：以 Make 職缺流程為例"
+description: "以現有 Make 工作流為例，逐步抽出穩定的 skill contract、執行邊界與可重用能力層。"
 categories: ["ai"]
 tags: ["ai", "mcp", "skill", "agent", "workflow", "architecture"]
 date: 2026-04-01T20:13:00
