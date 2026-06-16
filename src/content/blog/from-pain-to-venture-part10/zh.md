@@ -64,7 +64,7 @@ seriesOrder: 10
 
 需求創造可以先拆成三種成本。
 
-![Demand Creation Costs](./resource/demand-creation-costs-zh.svg)
+![Demand Creation Costs](/demand-creation-costs-zh.svg)
 
 | 成本 | 意思 | 需要做什麼 |
 |---|---|---|
@@ -153,7 +153,7 @@ AIDA 是很老的行銷模型,但仍然有用,因為它提醒你:顧客不是看
 | Action | 如何讓顧客行動? |
 | Referral | 如何讓顧客推薦? |
 
-![AIDAR Demand Path](./resource/aidar-demand-path-zh.svg)
+![AIDAR Demand Path](/aidar-demand-path-zh.svg)
 
 獨立旅宿案例可以這樣看:
 
@@ -324,7 +324,7 @@ Demand creation 不是把顧客推下漏斗。
 
 要用行為漏斗判斷:
 
-![Channel Testing Plan](./resource/channel-testing-plan-zh.svg)
+![Channel Testing Plan](/channel-testing-plan-zh.svg)
 
 | 通路 | 先測什麼 | 好訊號 | 壞訊號 |
 |---|---|---|---|
@@ -420,7 +420,7 @@ Demand creation 不是把顧客推下漏斗。
 ---
 
 
-![參考圖](./resource/reference-images-zh.svg)
+![參考圖](/reference-images-zh.svg)
 ## 這一篇真正要留下來的東西
 
 讀到這裡,至少要留下三個成果:

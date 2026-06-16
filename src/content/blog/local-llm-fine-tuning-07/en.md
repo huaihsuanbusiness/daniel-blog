@@ -25,7 +25,7 @@ If I had to put the central point right at the top, it would be this:
 
 **training is not slow inference. Training is forward pass, loss, backward pass, gradients, optimiser state and parameter updates all competing inside the same space.**
 
-![Training cost and MPS pressure map](./resource/local-llm-finetuning-part-07-mps-cost-map.svg)
+![Training cost and MPS pressure map](/local-llm-finetuning-part-07-mps-cost-map.svg)
 
 ## Why training is so much heavier than inference
 

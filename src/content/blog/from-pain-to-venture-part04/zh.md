@@ -122,7 +122,7 @@ seriesOrder: 4
 
 > 他痛到哪一層了？
 
-![Suffering Triangle 痛苦指數三角形](./resource/suffering-triangle-zh.svg)
+![Suffering Triangle 痛苦指數三角形](/suffering-triangle-zh.svg)
 
 這五層之所以重要，不是因為它描述情緒，而是因為它描述行為。
 
@@ -165,7 +165,7 @@ seriesOrder: 4
 
 但真正要看的，是這個重大期許落差怎麼一步一步發生。
 
-![重大期許落差形成分析圖](./resource/gap-origin-analysis-map-zh.svg)
+![重大期許落差形成分析圖](/gap-origin-analysis-map-zh.svg)
 
 我會把它拆成四層：
 
@@ -297,4 +297,4 @@ seriesOrder: 4
 
 ---
 
-![參考圖](./resource/reference-images-zh.svg)
+![參考圖](/reference-images-zh.svg)

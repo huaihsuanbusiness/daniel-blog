@@ -36,7 +36,7 @@ I would say it more strongly than that:
 
 If the task does not need those things, you are often just adding operational overhead for style points.
 
-![Task fit map for OpenClaw](./resource/openclaw-getting-started-05-task-fit-map.svg)
+![Task fit map for OpenClaw](/openclaw-getting-started-05-task-fit-map.svg)
 
 ---
 

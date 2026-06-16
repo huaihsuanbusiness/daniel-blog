@@ -32,7 +32,7 @@ What it actually changes is:
 
 In other words, **transport is not the last mile. It is part of the protocol design.**
 
-![Transport is architecture, not just deployment plumbing](./resource/mcp-engineering-deep-dive-01-01-transport-is-architecture.svg)
+![Transport is architecture, not just deployment plumbing](/mcp-engineering-deep-dive-01-01-transport-is-architecture.svg)
 
 ## My conclusion first: if the server is meant for ChatGPT, API clients, or any cross-network host, transport is not an appendix
 
@@ -103,7 +103,7 @@ It should be:
 
 > **it survives a real client over a real transport through a real network edge**
 
-![From local demo to remote-ready MCP server](./resource/mcp-engineering-deep-dive-01-02-local-vs-remote.svg)
+![From local demo to remote-ready MCP server](/mcp-engineering-deep-dive-01-02-local-vs-remote.svg)
 
 ## Why remote deployment amplifies problems you could ignore locally
 
@@ -227,7 +227,7 @@ A reverse proxy gives you cleaner control over:
 So the proxy is not just “another layer”.
 It is how you separate the **protocol entrypoint** from the **application process**.
 
-![Transport path from client to edge to proxy to MCP app](./resource/mcp-engineering-deep-dive-01-03-end-to-end-path.svg)
+![Transport path from client to edge to proxy to MCP app](/mcp-engineering-deep-dive-01-03-end-to-end-path.svg)
 
 ## Why transport confusion often gets misdiagnosed as a model problem
 
@@ -308,4 +308,4 @@ They become:
 Transport keeps the server alive.
 Security decides whether it can stay alive **safely**.
 
-![Decision ladder for choosing stdio, Streamable HTTP, and remote deployment](./resource/mcp-engineering-deep-dive-01-04-transport-decision-ladder.svg)
+![Decision ladder for choosing stdio, Streamable HTTP, and remote deployment](/mcp-engineering-deep-dive-01-04-transport-decision-ladder.svg)

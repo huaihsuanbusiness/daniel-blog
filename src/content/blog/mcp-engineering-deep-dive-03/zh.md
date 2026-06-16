@@ -30,7 +30,7 @@ subtitle: "真正難維護的 MCP 伺服器，不是 tool 太少，而是 contra
 
 > **你的 tool contract 到底有多穩。**
 
-![Contract before code](./resource/mcp-engineering-deep-dive-03-01-contract-before-code.svg)
+![Contract before code](/mcp-engineering-deep-dive-03-01-contract-before-code.svg)
 
 ## 先講結論：在 MCP world，schema 不是文件附錄，而是行為邊界
 
@@ -66,7 +66,7 @@ MCP 規範把 TypeScript schema 視為 protocol 的 source of truth，JSON Schem
 如果 schema 太亂，模型就會用奇怪的方式補完。  
 如果 schema 太 chatty，host 端的穩定性就會下降。
 
-![Schema discipline reduces model guesswork](./resource/mcp-engineering-deep-dive-03-02-schema-discipline.svg)
+![Schema discipline reduces model guesswork](/mcp-engineering-deep-dive-03-02-schema-discipline.svg)
 
 ## 第二層：Schema discipline 不是為了好看，而是為了降低 runtime 猜測
 
@@ -125,7 +125,7 @@ versioning 就不再是「之後再說」的問題。
 
 MCP 本身的 protocol versioning 用日期字串來標示 backward incompatible changes，並維持一套清楚的版本語意。這件事對工具設計也很有啟發：不是每次調整都要暴力開新名字，但每一個 breaking change 都應該被明確管理。FastMCP 現在也已經支援 component versioning，讓同一份 codebase 可以同時服務不同版本的工具。這表示版本管理在 MCP 世界裡不是理論課，而是實際可運作的能力。  
 
-![Versioning map](./resource/mcp-engineering-deep-dive-03-03-versioning-map.svg)
+![Versioning map](/mcp-engineering-deep-dive-03-03-versioning-map.svg)
 
 ### 哪些變更通常是安全的 additive changes
 - 新增 optional field
@@ -191,7 +191,7 @@ helper 的細節，應該留在 helper 層。
 6. 這是 public contract，還是 internal helper contract？
 7. 這次 release 要不要更新 examples、golden prompts、references？
 
-![Contract review checklist](./resource/mcp-engineering-deep-dive-03-04-contract-review-checklist.svg)
+![Contract review checklist](/mcp-engineering-deep-dive-03-04-contract-review-checklist.svg)
 
 ## 一個最小但比較像樣的 FastMCP 工具形狀
 

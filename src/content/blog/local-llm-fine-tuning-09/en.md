@@ -28,7 +28,7 @@ The harder question is:
 
 **which versions deserve to survive as the mainline**
 
-![Lexi, mainline selection and final judgement map](./resource/local-llm-finetuning-part-09-mainline-map.svg)
+![Lexi, mainline selection and final judgement map](/local-llm-finetuning-part-09-mainline-map.svg)
 
 ## Why Lexi became a reference point
 

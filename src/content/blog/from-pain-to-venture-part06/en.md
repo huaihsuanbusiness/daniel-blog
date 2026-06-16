@@ -124,7 +124,7 @@ Maybe. Maybe not.
 
 The better question is: what essential challenge did those models solve? Does the same challenge exist here? Are the conditions similar? If not, what must be changed?
 
-![Solution Concept Generation map](./resource/solution-concept-generation-map-en.svg)
+![Solution Concept Generation map](/solution-concept-generation-map-en.svg)
 
 A useful sequence looks like this:
 
@@ -336,4 +336,4 @@ It is not yet something you can test.
 
 ---
 
-![Reference Images](./resource/reference-images-en.svg)
+![Reference Images](/reference-images-en.svg)

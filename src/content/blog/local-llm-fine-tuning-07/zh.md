@@ -25,7 +25,7 @@ seriesOrder: 7
 
 **訓練不是慢版推理。訓練是在同一個空間裡，同時背著 forward、loss、backward、梯度、optimizer states 和權重更新。**
 
-![訓練成本與 MPS 壓力圖](./resource/local-llm-finetuning-part-07-mps-cost-map.svg)
+![訓練成本與 MPS 壓力圖](/local-llm-finetuning-part-07-mps-cost-map.svg)
 
 ## 為什麼訓練比推理重這麼多
 

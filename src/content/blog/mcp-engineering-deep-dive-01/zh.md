@@ -31,7 +31,7 @@ subtitle: "如果你把 transport 當成最後一哩，MCP 專案通常會在最
 
 也就是說，**transport 不是最後一哩，它是一部分的協定設計。**
 
-![Transport is architecture, not just deployment plumbing](./resource/mcp-engineering-deep-dive-01-01-transport-is-architecture.svg)
+![Transport is architecture, not just deployment plumbing](/mcp-engineering-deep-dive-01-01-transport-is-architecture.svg)
 
 ## 先講結論：如果你的 server 最後要給 ChatGPT、API client、或跨網路 host 用，就不要把 transport 想成附錄
 
@@ -97,7 +97,7 @@ FastMCP 目前對 SSE 的定位已經很清楚：保留給 backward compatibilit
 
 > **it survives a real client over a real transport through a real network edge**
 
-![From local demo to remote-ready MCP server](./resource/mcp-engineering-deep-dive-01-02-local-vs-remote.svg)
+![From local demo to remote-ready MCP server](/mcp-engineering-deep-dive-01-02-local-vs-remote.svg)
 
 ## 為什麼 remote deployment 會把原本看不見的問題放大
 
@@ -221,7 +221,7 @@ https://mcp.example.com/mcp
 
 也就是說，reverse proxy 不是單純多一層，它是在幫你把「協定入口」和「app process」分離。
 
-![Transport path from client to edge to proxy to MCP app](./resource/mcp-engineering-deep-dive-01-03-end-to-end-path.svg)
+![Transport path from client to edge to proxy to MCP app](/mcp-engineering-deep-dive-01-03-end-to-end-path.svg)
 
 ## 為什麼有些人 transport 沒想清楚，最後會把技能問題誤判成模型問題
 
@@ -306,4 +306,4 @@ Transport 之後，下一個最自然的題目就是 security / auth / public se
 也就是說，transport 讓 server 活下來。
 security 才決定它能不能**安全地**活下來。
 
-![Decision ladder for choosing stdio, Streamable HTTP, and remote deployment](./resource/mcp-engineering-deep-dive-01-04-transport-decision-ladder.svg)
+![Decision ladder for choosing stdio, Streamable HTTP, and remote deployment](/mcp-engineering-deep-dive-01-04-transport-decision-ladder.svg)

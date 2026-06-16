@@ -32,7 +32,7 @@ It lives in all of these at once:
 
 In other words, **security is not a patch. It is the boundary design of a public MCP server.**
 
-![Security starts at the tool surface](./resource/mcp-engineering-deep-dive-02-01-security-is-surface-area.svg)
+![Security starts at the tool surface](/mcp-engineering-deep-dive-02-01-security-is-surface-area.svg)
 
 ## Start with the conclusion: for a public MCP server, “ship first, harden later” is the wrong rhythm
 
@@ -73,7 +73,7 @@ If a capability is any of the following, I usually hesitate to expose it publicl
 A public tool list is not a feature checklist.  
 It is closer to the minimum capability surface you are willing to let a model discover, reason about, and attempt to call.
 
-![Authentication and authorization are different jobs](./resource/mcp-engineering-deep-dive-02-02-auth-vs-authorization.svg)
+![Authentication and authorization are different jobs](/mcp-engineering-deep-dive-02-02-auth-vs-authorization.svg)
 
 ## Layer two: authentication and authorization are different jobs
 
@@ -160,7 +160,7 @@ This covers:
 - whether payloads include unnecessary sensitive fields
 - whether responses are too verbose for public-facing use
 
-![Public server hardening checklist](./resource/mcp-engineering-deep-dive-02-03-public-server-hardening.svg)
+![Public server hardening checklist](/mcp-engineering-deep-dive-02-03-public-server-hardening.svg)
 
 ## Prompt injection is closer to execution than many teams assume
 
@@ -202,7 +202,7 @@ Because it accepts a simple fact:
 
 > **Once an MCP server is public, it is no longer just a Python app. It is an execution boundary shaped by models, hosts, proxies, and users at the same time.**
 
-![A practical security decision ladder](./resource/mcp-engineering-deep-dive-02-04-security-decision-ladder.svg)
+![A practical security decision ladder](/mcp-engineering-deep-dive-02-04-security-decision-ladder.svg)
 
 ## A minimal but healthier FastMCP direction
 

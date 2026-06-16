@@ -29,7 +29,7 @@ That is why I split this write-up into two parts.
 
 If you are new to the series, start here. All the attractive capabilities in the second half depend on something more basic: **whether the system can first work out what the current message is actually referring to.**
 
-![Part 1 overview: from LINE message to a trustworthy job queue](./resource/make-context-aware-job-agent-part1-01-overview.svg)
+![Part 1 overview: from LINE message to a trustworthy job queue](/make-context-aware-job-agent-part1-01-overview.svg)
 
 ## To be precise, this is not a fully autonomous agent
 
@@ -118,9 +118,9 @@ That led me to a working rule I trust quite a lot:
 
 The model is not banished. It is simply more valuable later, when the job becomes one of judgement, synthesis, and explanation rather than reference resolution.
 
-![Intake, continuation, and clarification](./resource/make-context-aware-job-agent-part1-02-intake-context.svg)
+![Intake, continuation, and clarification](/make-context-aware-job-agent-part1-02-intake-context.svg)
 
-![line-intake](./resource/line-intake.png)
+![line-intake](/line-intake.png)
 
 ## `agent_tasks` is not just a queue
 
@@ -186,9 +186,9 @@ In Part 1, JA-11 mainly sends tasks into two lanes that I unpack in this post:
 
 There is also a heavier **Vector / RAG Lane**, but that belongs to Part 2.
 
-![Router and execution lanes](./resource/make-context-aware-job-agent-part1-03-router-lanes.svg)
+![Router and execution lanes](/make-context-aware-job-agent-part1-03-router-lanes.svg)
 
-![router](./resource/router.png)
+![router](/router.png)
 
 ## The sheet-query lane solves a very specific problem
 
@@ -234,9 +234,9 @@ I split that lane into a set of article-friendly components:
 
 That is why I do not think of this lane as “just the scraper”. It is already a **front-end screening layer**. It pushes obvious noise away before the more expensive judgement in Part 2 ever starts.
 
-![Recent-job scraping lane](./resource/make-context-aware-job-agent-part1-04-job-scraping.svg)
+![Recent-job scraping lane](/make-context-aware-job-agent-part1-04-job-scraping.svg)
 
-![job-scraping](./resource/job-scraping.png)
+![job-scraping](/job-scraping.png)
 
 ## An important counterexample: not every job workflow needs this much structure
 

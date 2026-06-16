@@ -16,7 +16,7 @@ So this piece is for that stage. It is for the version of you, and frankly the v
 I am not trying to produce another glossary. I want to put these terms back where they actually belong in a system. Once you do that, both other people’s writing and your own architecture diagrams start to make far more sense.
 
 <figure>
-  <img src="./resource/ai-skill-series-part1-01-five-layer-model.svg" alt="A practical five-layer model for AI skills, showing host client, runtime orchestrator, skill layer, tool layer, and infrastructure transport" />
+  <img src="/ai-skill-series-part1-01-five-layer-model.svg" alt="A practical five-layer model for AI skills, showing host client, runtime orchestrator, skill layer, tool layer, and infrastructure transport" />
   <figcaption>Once these five layers are separated, discussions about skill-first design and MCP become much easier to follow.</figcaption>
 </figure>
 

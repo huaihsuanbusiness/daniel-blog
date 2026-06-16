@@ -24,7 +24,7 @@ This series is not an anti-Make argument, and it is not an attempt to turn MCP i
 
 If you have ever built a bot, an automation-heavy system, or a workflow stack that is slowly pretending to be an agent, this piece is for you.
 
-![Responsibility shift from workflow brain to MCP contract surface](./resource/build-your-own-mcp-server-part-1-01-responsibility-shift.svg)
+![Responsibility shift from workflow brain to MCP contract surface](/build-your-own-mcp-server-part-1-01-responsibility-shift.svg)
 
 ## First things first: MCP is not just a shinier API wrapper
 
@@ -106,7 +106,7 @@ This is now one of my working heuristics:
 
 By contrast, if a task is simply stable business logic, such as fetching recent jobs, querying a shortlist, or producing an interview brief, it often belongs quite happily in the execution layer.
 
-![Host, client, server, and backend responsibilities](./resource/build-your-own-mcp-server-part-1-02-host-client-server.svg)
+![Host, client, server, and backend responsibilities](/build-your-own-mcp-server-part-1-02-host-client-server.svg)
 
 ## This is also why I did not stop at “Make with an MCP front door”
 
@@ -186,7 +186,7 @@ Actual runtime selection is still influenced very heavily by:
 
 That is exactly why I plan to give that topic its own article in Series B.
 
-![Where MCP actually helps in a workflow-heavy stack](./resource/build-your-own-mcp-server-part-1-03-where-mcp-helps.svg)
+![Where MCP actually helps in a workflow-heavy stack](/build-your-own-mcp-server-part-1-03-where-mcp-helps.svg)
 
 ## When you probably do *not* need to self-host an MCP server
 
@@ -270,4 +270,4 @@ If Part 1 is about what MCP actually changes, Part 2 will move into the operatio
 
 That is where the bricks and mortar begin.
 
-![Migration ladder from workflow-first to contract-oriented MCP](./resource/build-your-own-mcp-server-part-1-04-migration-ladder.svg)
+![Migration ladder from workflow-first to contract-oriented MCP](/build-your-own-mcp-server-part-1-04-migration-ladder.svg)

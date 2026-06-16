@@ -17,7 +17,7 @@ featured: false
 我要做的不是再丟一份抽象定義大全，而是把這幾個最常被混在一起的詞，拆回它們真正該待的位置。拆清楚之後，你不只比較容易看懂別人的文章，也比較不會在自己的系統裡，把該分層的東西又焊回一起。
 
 <figure>
-  <img src="./resource/ai-skill-series-part1-01-five-layer-model.svg" alt="A practical five-layer model for AI skills, showing host client, runtime orchestrator, skill layer, tool layer, and infrastructure transport" />
+  <img src="/ai-skill-series-part1-01-five-layer-model.svg" alt="A practical five-layer model for AI skills, showing host client, runtime orchestrator, skill layer, tool layer, and infrastructure transport" />
   <figcaption>先把五層分清楚，再談 skill-first、MCP、tool exposure，後面的討論才不會一直打結。</figcaption>
 </figure>
 

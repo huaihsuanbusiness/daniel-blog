@@ -14,7 +14,7 @@ seriesOrder: 2
 
 這篇想做的，不是把名詞重新排版，而是把記憶的責任邊界切開。因為如果你連記憶長在哪裡都還沒分清楚，後面很容易把所有問題翻譯成「我要不要再訓一層」。而很多時候，真正該改的根本不是參數。
 
-![Memory types for local LLM systems](./resource/model-memory-map.svg)
+![Memory types for local LLM systems](/model-memory-map.svg)
 
 ## 先承認一件事：AI 不是沒有記憶，只是記憶不只一種
 

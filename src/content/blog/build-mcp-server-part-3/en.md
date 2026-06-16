@@ -32,7 +32,7 @@ What I want instead is a practical answer to a more grounded question:
 
 > **If your goal is to expose a public, governable, evolvable MCP server to ChatGPT, which route is least likely to turn into an operating headache six months from now?**
 
-![Framework map for FastMCP, MCP Framework, xmcp, and Spring AI MCP Server](./resource/build-your-own-mcp-server-part-3-01-framework-map.svg)
+![Framework map for FastMCP, MCP Framework, xmcp, and Spring AI MCP Server](/build-your-own-mcp-server-part-3-01-framework-map.svg)
 
 ## My short answer first
 
@@ -105,7 +105,7 @@ But there is always a trade-off.
 | Best fit team | Python / AI tooling | TS backend teams | TS full-stack / platform teams | Java / enterprise teams |
 | My shorthand | pragmatic engineering route | framework route | modern DX route | platform route |
 
-![Decision matrix for choosing an MCP framework](./resource/build-your-own-mcp-server-part-3-02-decision-matrix.svg)
+![Decision matrix for choosing an MCP framework](/build-your-own-mcp-server-part-3-02-decision-matrix.svg)
 
 ## What each route actually feels like
 
@@ -373,7 +373,7 @@ Not because it is the coolest framework, but because it most closely matches the
 
 > **a thin, governable, production-minded MCP layer that does not force me into a full application platform too early.**
 
-![Four framework routes and their deployment gravity](./resource/build-your-own-mcp-server-part-3-03-deployment-gravity.svg)
+![Four framework routes and their deployment gravity](/build-your-own-mcp-server-part-3-03-deployment-gravity.svg)
 
 ## A practical selection guide you can borrow
 
@@ -434,4 +434,4 @@ In the next article, I will move one layer higher and tackle the part that is ea
 
 > **what skills are, and how to design a skill layer that does not drift away from runtime reality.**
 
-![Selection checklist for choosing an MCP framework](./resource/build-your-own-mcp-server-part-3-04-selection-checklist.svg)
+![Selection checklist for choosing an MCP framework](/build-your-own-mcp-server-part-3-04-selection-checklist.svg)

@@ -32,7 +32,7 @@ Once your server is used by multiple clients, hosts, or teams, what usually dete
 
 > **How stable is the tool contract?**
 
-![Contract before code](./resource/mcp-engineering-deep-dive-03-01-contract-before-code.svg)
+![Contract before code](/mcp-engineering-deep-dive-03-01-contract-before-code.svg)
 
 ## Start with the conclusion: in MCP, schema is not documentation garnish, it is part of the execution boundary
 
@@ -68,7 +68,7 @@ If the schema is loose, the model has to guess.
 If the schema is noisy, the model will fill in gaps in odd ways.  
 If the schema is chatty, the host-side system becomes less stable.
 
-![Schema discipline reduces model guesswork](./resource/mcp-engineering-deep-dive-03-02-schema-discipline.svg)
+![Schema discipline reduces model guesswork](/mcp-engineering-deep-dive-03-02-schema-discipline.svg)
 
 ## Layer two: schema discipline is not aesthetic, it is runtime risk reduction
 
@@ -125,7 +125,7 @@ versioning stops being a future concern and becomes a very present engineering p
 
 MCP itself uses date-based protocol versions to mark backward incompatible changes. That is instructive for tool design too. Not every change deserves a new tool name, but every breaking change deserves an explicit plan. FastMCP now supports component versioning, which means one codebase can serve multiple tool versions side by side.
 
-![Versioning map](./resource/mcp-engineering-deep-dive-03-03-versioning-map.svg)
+![Versioning map](/mcp-engineering-deep-dive-03-03-versioning-map.svg)
 
 ### Changes that are usually safe and additive
 - adding optional fields
@@ -191,7 +191,7 @@ Whenever I add or change a tool, these are the questions I prefer to ask first:
 6. Is this a public contract or a helper contract?
 7. Do the examples, references, and golden prompts need to change too?
 
-![Contract review checklist](./resource/mcp-engineering-deep-dive-03-04-contract-review-checklist.svg)
+![Contract review checklist](/mcp-engineering-deep-dive-03-04-contract-review-checklist.svg)
 
 ## A small but healthier FastMCP shape
 

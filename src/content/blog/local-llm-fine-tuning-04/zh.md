@@ -28,7 +28,7 @@ seriesOrder: 4
 
 **SFT 回答的是你打算怎麼教。LoRA 回答的是你打算怎麼改。full fine-tune 回答的是你打算改多深。**
 
-![SFT、LoRA、partial FT 與 full fine-tune 的關係圖](./resource/local-llm-finetuning-part-04-training-landscape.svg)
+![SFT、LoRA、partial FT 與 full fine-tune 的關係圖](/local-llm-finetuning-part-04-training-landscape.svg)
 
 ## 先把三條問題拆開
 

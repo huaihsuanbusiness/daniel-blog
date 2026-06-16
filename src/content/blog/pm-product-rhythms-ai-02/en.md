@@ -88,6 +88,6 @@ AI is making a lot of work cheaper. That part is real.
 
 It hasn’t made product judgement cheaper. It has mostly pushed down the price of work that probably should not have been that expensive in the first place. What becomes more valuable, not less, is framing, slicing, verification and trade-off judgement.
 
-![PM value shift in the age of AI](./resource/agile-ai-pm-01-pm-value-shift.svg)
+![PM value shift in the age of AI](/agile-ai-pm-01-pm-value-shift.svg)
 
-![A small-bets loop for product work](./resource/agile-ai-pm-02-small-bets-loop.svg)
+![A small-bets loop for product work](/agile-ai-pm-02-small-bets-loop.svg)

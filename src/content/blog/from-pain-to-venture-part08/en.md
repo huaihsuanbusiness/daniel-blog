@@ -171,7 +171,7 @@ A business model has to consider the whole chain.
 
 Strategyzer describes the Business Model Canvas as a strategic management and entrepreneurial tool used to describe, design, challenge, invent, and pivot a business model. That is a good way to treat it: not as a pretty poster, but as nine building blocks that expose the logic of a business.
 
-![Business Model Canvas Validation](./resource/business-model-canvas-validation-en.svg)
+![Business Model Canvas Validation](/business-model-canvas-validation-en.svg)
 
 <img src="/images/from-pain-to-venture-part08/business-model-canvas-validation-reference.png" alt="Business Model Canvas validation reference" loading="lazy" decoding="async" style="max-width:100%;height:auto;display:block;margin:1.25rem 0;" />
 
@@ -281,7 +281,7 @@ Ask:
 - Is pricing subscription, usage-based, commission, setup fee, success fee, or hybrid?
 - Is the payer the same person as the beneficiary?
 
-![Pricing and Unit Economics Map](./resource/pricing-unit-economics-map-en.svg)
+![Pricing and Unit Economics Map](/pricing-unit-economics-map-en.svg)
 
 For independent hotels, possible models include:
 
@@ -356,7 +356,7 @@ It is cost structure, execution risk, partner risk, and adoption risk.
 ---
 
 
-![Reference Images](./resource/reference-images-en.svg)
+![Reference Images](/reference-images-en.svg)
 ## What this part should leave behind
 
 By the end, three outputs should be clear:

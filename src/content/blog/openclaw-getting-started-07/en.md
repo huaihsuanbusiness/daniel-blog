@@ -22,7 +22,7 @@ This is the setup I would recommend as a first serious starting point for that h
 
 It is not the only sensible choice, but it is a very practical one.
 
-![Ollama install and Llama 3.1 8B setup flow](./resource/mac-mini-m4-ollama-llama31-01-setup-flow.svg)
+![Ollama install and Llama 3.1 8B setup flow](/mac-mini-m4-ollama-llama31-01-setup-flow.svg)
 
 ## The judgement call that matters
 
@@ -226,7 +226,7 @@ If you later want to change that, look at the `OLLAMA_MODELS` environment variab
 
 ## The mistakes people hit most quickly
 
-![Common bottlenecks when running a local LLM on a 16GB Mac mini](./resource/mac-mini-m4-ollama-llama31-02-bottlenecks.svg)
+![Common bottlenecks when running a local LLM on a 16GB Mac mini](/mac-mini-m4-ollama-llama31-02-bottlenecks.svg)
 
 ### Mistake 1: turning the context window up too early
 

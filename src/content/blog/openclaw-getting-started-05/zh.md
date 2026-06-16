@@ -35,7 +35,7 @@ featured: false
 
 如果一個任務不需要這幾樣，你很可能是在替自己多扛一層維運複雜度。
 
-![哪些任務該交給 OpenClaw 的決策圖](./resource/openclaw-getting-started-05-task-fit-map.svg)
+![哪些任務該交給 OpenClaw 的決策圖](/openclaw-getting-started-05-task-fit-map.svg)
 
 ---
 

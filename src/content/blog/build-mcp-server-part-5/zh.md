@@ -27,7 +27,7 @@ featured: false
 
 > **下次你也遇到時，應該先看哪一層。**
 
-![Layered failure map for Oracle VM + FastMCP operations](./resource/build-your-own-mcp-server-part-5-01-failure-map.svg)
+![Layered failure map for Oracle VM + FastMCP operations](/build-your-own-mcp-server-part-5-01-failure-map.svg)
 
 ## 先講我現在的總結：不要用「功能視角」排錯，要用「層級視角」排錯
 
@@ -152,7 +152,7 @@ curl -vk https://<DOMAIN>/mcp
 如果 `ss` 根本看不到 443 在 listen，就先別怪 Cloudflare。
 如果 VM 內部有 443，但外部還是 refused，下一步先看 Oracle 的 ingress rule，不要先看 Python。
 
-![From public IP to live HTTPS: where 443 actually breaks](./resource/build-your-own-mcp-server-part-5-02-https-breakpoints.svg)
+![From public IP to live HTTPS: where 443 actually breaks](/build-your-own-mcp-server-part-5-02-https-breakpoints.svg)
 
 ## 坑 3：本機 8000 是活的，但外面世界根本不知道
 
@@ -323,7 +323,7 @@ sed -n '1,220p' /opt/job-mcp/app/mcp_server/app/server.py
 
 > **你一直在 debug 現在這版的程式，但 live service 根本不是現在這版。**
 
-![From local repo to live process: where drift creeps in](./resource/build-your-own-mcp-server-part-5-03-drift-map.svg)
+![From local repo to live process: where drift creeps in](/build-your-own-mcp-server-part-5-03-drift-map.svg)
 
 ## 坑 8：`.env` 可以看，但不要用最危險的方式看
 
@@ -441,4 +441,4 @@ sed -n '1,260p' /opt/job-mcp/app/mcp_server/app/tool_definitions.py
 
 當你不再把入口交給 PaaS 或現成平台，得到的是更多控制力，但也順便得到更多需要自己負責的真相。
 
-![Operations checklist from SSH to transport to live tools](./resource/build-your-own-mcp-server-part-5-04-ops-checklist.svg)
+![Operations checklist from SSH to transport to live tools](/build-your-own-mcp-server-part-5-04-ops-checklist.svg)

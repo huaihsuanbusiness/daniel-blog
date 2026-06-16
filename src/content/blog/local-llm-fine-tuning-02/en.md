@@ -14,7 +14,7 @@ At the time, my mental model was very flat. Either something was written into th
 
 So this piece is not really about terminology management. It is about responsibility boundaries. Because if you do not know where memory is supposed to live, you will end up translating every problem into “should I fine-tune another layer?” Quite often, that is the wrong translation.
 
-![Memory types for local LLM systems](./resource/model-memory-map.svg)
+![Memory types for local LLM systems](/model-memory-map.svg)
 
 ## AI does not lack memory. It has too many kinds of it.
 

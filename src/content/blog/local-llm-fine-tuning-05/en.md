@@ -28,7 +28,7 @@ The real point is this:
 So DPO is not just a fashionable data format.
 It is a different optimisation route.
 
-![Comparison of SFT, RLHF and DPO](./resource/local-llm-finetuning-part-05-dpo-rebuilt-map.svg)
+![Comparison of SFT, RLHF and DPO](/local-llm-finetuning-part-05-dpo-rebuilt-map.svg)
 
 ---
 

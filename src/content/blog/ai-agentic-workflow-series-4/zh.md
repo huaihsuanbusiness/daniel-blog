@@ -32,7 +32,7 @@ featured: false
 
 > **把 scenario 暴露成 tools，不代表你完成了 MCP 化。真正的遷移，是把系統從流程導向，改造成契約導向。**
 
-![V2 refactor overview: from Make-first hybrid to MCP execution engine](./resource/make-mcp-refactor-01-overview.svg)
+![V2 refactor overview: from Make-first hybrid to MCP execution engine](/make-mcp-refactor-01-overview.svg)
 
 ## 這篇文章到底要解什麼問題
 
@@ -166,7 +166,7 @@ v2 我沒有把整套系統重寫成另一種框架。
 > **Make 不再負責假裝自己是 planner。**
 > **它只負責把每一段能力做成一把 contract 清楚的工具。**
 
-![Contract-first architecture: client reasoning above, bounded tools below](./resource/make-mcp-refactor-02-contracts.svg)
+![Contract-first architecture: client reasoning above, bounded tools below](/make-mcp-refactor-02-contracts.svg)
 
 ## 這次重構後，我留下來的工具地圖
 
@@ -362,7 +362,7 @@ v2 我沒有把整套系統重寫成另一種框架。
 
 這些拆法都會讓後面的 client 更穩定。
 
-![Public tools, helper dependency, and the deep-output path](./resource/make-mcp-refactor-03-tools.svg)
+![Public tools, helper dependency, and the deep-output path](/make-mcp-refactor-03-tools.svg)
 
 ## 這次最值得記下來的 8 個踩坑
 
@@ -449,7 +449,7 @@ ChatGPT 負責對人說話、追問、整合與判斷。
 
 真的上線後，這些才是每天會咬你的東西。
 
-![Migration playbook and the pitfalls that matter](./resource/make-mcp-refactor-04-playbook.svg)
+![Migration playbook and the pitfalls that matter](/make-mcp-refactor-04-playbook.svg)
 
 ## 我最後最想留下來的一句話
 

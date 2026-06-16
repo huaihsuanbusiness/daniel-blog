@@ -68,6 +68,6 @@ AI does not really tell you to have fewer meetings.
 
 It forces you to design better ones.
 
-![Keep, shrink, or drop Agile rituals after AI](./resource/agile-ai-rituals-01-keep-shrink-kill.svg)
+![Keep, shrink, or drop Agile rituals after AI](/agile-ai-rituals-01-keep-shrink-kill.svg)
 
-![Refinement before and after AI-assisted drafting](./resource/agile-ai-rituals-02-refinement-before-after.svg)
+![Refinement before and after AI-assisted drafting](/agile-ai-rituals-02-refinement-before-after.svg)

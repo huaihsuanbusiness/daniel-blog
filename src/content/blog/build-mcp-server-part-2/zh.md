@@ -37,7 +37,7 @@ ChatGPT
 
 這篇會把這條路完整拆開。
 
-![Deployment overview for a public Oracle VM MCP endpoint](./resource/build-your-own-mcp-server-part-2-01-deployment-overview.svg)
+![Deployment overview for a public Oracle VM MCP endpoint](/build-your-own-mcp-server-part-2-01-deployment-overview.svg)
 
 ## 先講結論：如果你只是想驗證概念，先不要上 Oracle VM
 
@@ -143,7 +143,7 @@ ssh -i /path/to/private-key ubuntu@<PUBLIC_IP>
 如果你連 SSH 都還沒通，不要急著去懷疑 FastMCP。  
 十之八九是 VM 網路層還沒真的通。
 
-![OCI network checks before you blame FastMCP](./resource/build-your-own-mcp-server-part-2-02-oci-network-checks.svg)
+![OCI network checks before you blame FastMCP](/build-your-own-mcp-server-part-2-02-oci-network-checks.svg)
 
 ## 第 2 階段：先讓 FastMCP 在內部 port 活著
 
@@ -362,7 +362,7 @@ sudo systemctl reload nginx
 但也要記得：  
 如果你把 SSL mode 拉到 `Full` 或 `Full (strict)`，origin 端就真的要能處理 443 HTTPS。否則你很容易看到 525 之類的 handshake 錯誤。
 
-![nginx, Cloudflare, and FastMCP request path](./resource/build-your-own-mcp-server-part-2-03-nginx-fastmcp-path.svg)
+![nginx, Cloudflare, and FastMCP request path](/build-your-own-mcp-server-part-2-03-nginx-fastmcp-path.svg)
 
 ## 接進 ChatGPT 之前，先做 smoke tests
 
@@ -474,4 +474,4 @@ FastMCP 當然重要。
 - 你是在做 demo server，還是在做會長大的 public server
 - 你到底要的是「快做完」，還是「之後不會痛」
 
-![A practical rollout checklist for a public MCP server](./resource/build-your-own-mcp-server-part-2-04-rollout-checklist.svg)
+![A practical rollout checklist for a public MCP server](/build-your-own-mcp-server-part-2-04-rollout-checklist.svg)

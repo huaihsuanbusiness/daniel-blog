@@ -25,7 +25,7 @@ featured: false
 > 你通常需要一層 skill-first gateway 或 thin skill server，先做 task boundary 與 tool exposure 的控制。
 
 <figure>
-  <img src="./resource/ai-skill-series-part2-01-skill-first-gateway.svg" alt="Direct-tool access versus skill-first gateway, contrasting raw tool exposure with a gateway that controls skill selection and tool exposure" />
+  <img src="/ai-skill-series-part2-01-skill-first-gateway.svg" alt="Direct-tool access versus skill-first gateway, contrasting raw tool exposure with a gateway that controls skill selection and tool exposure" />
   <figcaption>差別不只是架構圖比較漂亮，而是 policy、風險與任務語義到底放在哪一層。</figcaption>
 </figure>
 

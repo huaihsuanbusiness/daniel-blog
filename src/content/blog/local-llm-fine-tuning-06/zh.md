@@ -20,7 +20,7 @@ seriesOrder: 6
 
 **把模型、資料、tokenizer、訓練方法、參數範圍和節奏全部綁在一起的實驗設計書。**
 
-![訓練腳本與版本分岔圖](./resource/local-llm-finetuning-part-06-script-map.svg)
+![訓練腳本與版本分岔圖](/local-llm-finetuning-part-06-script-map.svg)
 
 ## 訓練腳本到底在做什麼
 

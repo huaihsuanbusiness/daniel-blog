@@ -86,6 +86,6 @@ AI 把很多工作變便宜，這是真的。
 
 但它沒有把產品判斷變便宜。它只是把那些原本就不該那麼貴的事情，先打下來了。真正往上漲價的，反而是 framing、切片、驗證和 trade-off judgment。
 
-![PM value shift in the age of AI](./resource/agile-ai-pm-01-pm-value-shift.svg)
+![PM value shift in the age of AI](/agile-ai-pm-01-pm-value-shift.svg)
 
-![A small-bets loop for product work](./resource/agile-ai-pm-02-small-bets-loop.svg)
+![A small-bets loop for product work](/agile-ai-pm-02-small-bets-loop.svg)

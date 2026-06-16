@@ -47,9 +47,9 @@ A vector DB remains a strong tool for semantic search, but it should not be the 
 
 ---
 
-## 2. A full production RAG request
+## 2. A production RAG capability map, shown through one request
 
-The fastest way to show what naive RAG is missing is to walk one or two production pipelines end to end.
+The fastest way to show what naive RAG is missing is to walk one or two realistic requests against a production capability map. This is not saying every request must execute every station. It is showing the capabilities the system needs available when query risk, source complexity, or debugging needs call for them.
 
 **Scenario A: Investor pitch deck design check**
 
@@ -57,7 +57,7 @@ Suppose I am working on my own investor pitch deck, and the question is:
 
 > "Will the first 30 seconds of this deck make an investor — the kind who, according to DocSend's 2024 study, only spends an average of 2 minutes 42 seconds on a deck — actually stop and keep reading? What do comparable decks usually do in the first 30 seconds?"
 
-For this question to reach an answer, the system has to walk through 14 stations:
+For this higher-risk, multi-source question, the relevant capability map looks like this:
 
 ```text
 1.  Query enters the system
@@ -166,8 +166,8 @@ Chunking and embedding are still the foundation of RAG in 2026 — they are not 
 
 **For this project, the biggest quality ceiling came from the retrieval-engineering capabilities in the middle.**
 
-This 14-station pipeline is not just for RAG internals. Pitch deck design checks, customer switching-cost analysis, interview-method validation, workflow tool selection — all of these scenarios run on the same retrieval-engineering logic. The difference is only how routing and context assembly are designed.
+This 14-station map is not just for RAG internals, and it is not a mandatory runtime checklist. Pitch deck design checks, customer switching-cost analysis, interview-method validation, workflow tool selection — all of these scenarios draw from the same retrieval-engineering capabilities. The difference is which subset the router selects and how context assembly is designed for the risk of the query.
 
-The next piece (Part 03) turns this 14-station capability map into a pipeline diagram and walks through what each station does, how to implement it, and which tools to consider.
+The next piece (Part 03) turns this 14-station capability map into a system diagram and walks through what each station solves, when it is required, and which tools to consider.
 
 If you want to see these capabilities in action, start with the interactive demo in Part 01 — it exposes the request path, mode, trace, and checks that later articles unpack.

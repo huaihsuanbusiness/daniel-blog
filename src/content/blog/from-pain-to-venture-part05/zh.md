@@ -122,7 +122,7 @@ Rogers 的早期採用者，可能因為喜歡新東西而行動。
 
 創業驗證要的是第二種。第一種會誤導你：讓你追逐熱情，而不是真正的痛。
 
-![Reference Images](./resource/reference-images-zh.svg)
+![Reference Images](/reference-images-zh.svg)
 
 ## Suffering Triangle：痛苦走到哪一層了？
 
@@ -229,7 +229,7 @@ B2B 題目最容易犯的錯，是把「使用者」當成「客戶」。
 
 一個任務要不要往下做，至少要看四件事：它的價值是否夠大、技術是否可行、故事是否有共鳴、經濟上是否撐得起來。
 
-![Task Measurement 四個判斷面向](./resource/task-measurement-map-zh.svg)
+![Task Measurement 四個判斷面向](/task-measurement-map-zh.svg)
 
 | 面向 | 要問的問題 |
 |---|---|
@@ -296,4 +296,4 @@ B2B 題目最容易犯的錯，是把「使用者」當成「客戶」。
 
 ---
 
-![參考圖](./resource/reference-images-zh.svg)
+![參考圖](/reference-images-zh.svg)

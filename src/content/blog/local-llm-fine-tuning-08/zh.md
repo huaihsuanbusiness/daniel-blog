@@ -29,7 +29,7 @@ seriesOrder: 8
 
 而要把這些東西帶回本地使用，特別是帶回 Ollama，通常還要經過另一條完全不同的工程線。
 
-![adapter、merge、quantization 與 Ollama 路徑圖](./resource/local-llm-finetuning-part-08-deployment-path.svg)
+![adapter、merge、quantization 與 Ollama 路徑圖](/local-llm-finetuning-part-08-deployment-path.svg)
 
 ## adapter 為什麼可以不 merge
 

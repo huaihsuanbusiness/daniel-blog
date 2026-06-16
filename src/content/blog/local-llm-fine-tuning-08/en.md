@@ -28,7 +28,7 @@ What training often gives you is not a finished product, but an intermediate art
 
 Turning those things back into something genuinely usable on a local machine, especially through Ollama, usually requires a different engineering path altogether.
 
-![Adapter, merge, quantisation and Ollama path](./resource/local-llm-finetuning-part-08-deployment-path.svg)
+![Adapter, merge, quantisation and Ollama path](/local-llm-finetuning-part-08-deployment-path.svg)
 
 ## Why adapters do not have to be merged
 

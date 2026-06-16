@@ -123,7 +123,7 @@ A stage-4 actor moves because the old way has already become unsustainable.
 For venture validation, you want the second type.  
 The first type can mislead you into chasing enthusiasm instead of real pain.
 
-![Reference Images](./resource/reference-images-en.svg)
+![Reference Images](/reference-images-en.svg)
 
 ## The Suffering Triangle: how far has the pain progressed?
 
@@ -228,7 +228,7 @@ Once you have found people in pain, do not rush.
 
 A task is worth pursuing only if it matters, can be executed, carries meaning, and has some economic support.
 
-![Task Measurement map](./resource/task-measurement-map-en.svg)
+![Task Measurement map](/task-measurement-map-en.svg)
 
 I would assess it through four lenses:
 
@@ -299,4 +299,4 @@ It is the group already in enough pain to help you uncover the truth.
 
 ---
 
-![Reference Images](./resource/reference-images-en.svg)
+![Reference Images](/reference-images-en.svg)

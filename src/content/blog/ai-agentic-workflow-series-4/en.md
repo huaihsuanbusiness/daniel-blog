@@ -32,7 +32,7 @@ If I had to compress the migration into a single line, it would be this:
 
 > **Exposing scenarios as tools does not mean you have finished an MCP migration. The real migration is moving from flow-driven design to contract-driven design.**
 
-![V2 refactor overview: from Make-first hybrid to MCP execution engine](./resource/make-mcp-refactor-01-overview.svg)
+![V2 refactor overview: from Make-first hybrid to MCP execution engine](/make-mcp-refactor-01-overview.svg)
 
 ## What problem this article is actually solving
 
@@ -162,7 +162,7 @@ The most important change is this:
 > **Make is no longer pretending to be the planner.**  
 > **It is only responsible for turning each execution capability into a tool with a stable contract.**
 
-![Contract-first architecture: client reasoning above, bounded tools below](./resource/make-mcp-refactor-02-contracts.svg)
+![Contract-first architecture: client reasoning above, bounded tools below](/make-mcp-refactor-02-contracts.svg)
 
 ## The tool map I ended up keeping in v2
 
@@ -377,7 +377,7 @@ What is worth learning from this tool is not that it does many things. It is tha
 
 That separation is what makes the output much easier for the client to trust and reuse.
 
-![Public tools, helper dependency, and the deep-output path](./resource/make-mcp-refactor-03-tools.svg)
+![Public tools, helper dependency, and the deep-output path](/make-mcp-refactor-03-tools.svg)
 
 ## The eight migration pitfalls that are worth writing down
 
@@ -473,7 +473,7 @@ Let ChatGPT speak, ask, integrate, and decide.
 
 Response size, traceability, retries, and stable logging feel unglamorous. In practice, they are the things that will bite you every week.
 
-![Migration playbook and the pitfalls that matter](./resource/make-mcp-refactor-04-playbook.svg)
+![Migration playbook and the pitfalls that matter](/make-mcp-refactor-04-playbook.svg)
 
 ## The one line I most want to keep from this migration
 

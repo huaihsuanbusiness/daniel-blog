@@ -19,7 +19,7 @@ These are not just polished policy brochures cheering on the tech sector. They r
 
 My working view now is this: the next thing to watch in Singapore is not simply that there will be more AI companies. It is that the market is shifting from basic digitalisation toward AI adoption that is trustworthy, scalable and cross-border by design. That sounds like a semantic upgrade. It is not. It changes how products need to be built, how enterprises buy, and how start-ups should think about their wedge.
 
-![Singapore policy stack](./resource/singapore-policy-stack.svg)
+![Singapore policy stack](/singapore-policy-stack.svg)
 
 
 ## This is not just more tech. It is deeper market design.

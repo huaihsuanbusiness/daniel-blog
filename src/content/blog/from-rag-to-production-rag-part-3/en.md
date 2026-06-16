@@ -1,6 +1,6 @@
 ---
-title: "From RAG to Enterprise-Grade RAG Part 03 | The 14-Stop Journey of a RAG Request: From Document In to Answer Out"
-description: "Naive RAG usually covers only a small subset of the capabilities a production pipeline needs. This post turns 14 stations into a structural map across ingestion, query planning, retrieval, context assembly, verification, and tracing, then shows where Multimodal / Document RAG, Structured / SQL RAG, Long-context Hybrid, and Agentic RAG attach."
+title: "From RAG to Enterprise-Grade RAG Part 03 | The 14-Station Capability Map: From Document In to Answer Out"
+description: "Naive RAG usually covers only a small subset of the production capability map. This post reframes 14 stations as a structural map across ingestion, query planning, retrieval, context assembly, verification, and tracing, then shows where Multimodal / Document RAG, Structured / SQL RAG, Long-context Hybrid, and Agentic RAG attach."
 categories: ["ai"]
 tags: ["ai", "rag", "production-rag", "llamaindex", "retrieval", "pipeline"]
 date: 2026-06-10T12:30:00
@@ -12,7 +12,7 @@ seriesOrder: 3
 
 Part 02 ended with a 14-station table, but that table was the query side only — it only showed how the answer comes out. The four stations covering how documents enter the system, how metadata gets attached, and how the index gets built were never unfolded in Part 02.
 
-This piece lays out the end-to-end request path. From the moment a PDF enters the system to the moment the answer goes back to the user, the map contains 14 stations.
+This piece lays out the end-to-end capability map. From the moment a PDF enters the system to the moment an answer goes back to the user, the system may draw from 14 stations — but a single request usually activates only the subset its risk and intent require.
 
 ![The 14-station journey of Production RAG](/images/from-rag-to-production-rag-part-3/part-03-14-station-journey.png)
 
@@ -47,7 +47,7 @@ The same map also tells you where specialized patterns belong, instead of treati
 | Long-context Hybrid | Stations 8, 9, 10 | It retrieves first, then packs smarter; it does not stuff everything into context |
 | Agentic RAG | Stations 5, 6, 12, 14 | It is a query-time workflow for planning, tool routing, evaluation, retry, and tracing |
 
-Walked in order below.
+Walked in order below as a map of capabilities, not as a rule that every query must execute every station.
 
 
 > **Version note:** this article uses pipeline diagrams and API-shaped examples to explain architecture. Package names, SDK calls, and managed-service defaults can change; pin versions in your own project and verify current docs before copying an implementation detail directly.
@@ -194,15 +194,15 @@ Eval is running a regression against a test set before going live. A 50–100 qu
 
 ![Minimum viable and high-ROI RAG stations](/images/from-rag-to-production-rag-part-3/part-03-minimum-vs-high-roi-stations.png)
 
-## 5. Minimum viable: the three stations you have to ship
+## 5. Minimum viable: the three capabilities I would ship first
 
-If resources are tight, ship these three first:
+If resources are tight, ship these three first for any system that answers from private or business-critical documents:
 
 - **Station 6 — Hybrid retrieval** (dense + BM25 + metadata filter): without it, you are stuck on vector top-k, and off-topic and mis-cited answers will pile up.
 - **Station 10 — Citation assembly**: without it, you cannot verify where the answer came from, which is a non-starter in the enterprise.
 - **Station 12 — Faithfulness check**: without it, you have given the LLM free rein, and the answer may look right while having no basis in the source.
 
-After these three, the system is still rough around the edges, but it is no longer a "toy RAG".
+After these three, the system is still rough around the edges, but it has the minimum guardrails for higher-risk document QA. Low-risk FAQ can still take a smaller fast path; the point is to have the capability available when the query requires it.
 
 ## 6. The high-return upgrades worth adding later
 
@@ -212,10 +212,10 @@ Once you have resources, add these three:
 - **Station 8 — Parent-doc expansion**: cuts down on out-of-context quoting dramatically.
 - **Station 14 — Tracing and eval**: gives you data to look at when you debug and optimise.
 
-Add these three and the system is close to production-grade. The other stations (parser upgrade, context compression, agentic query planning) are for later.
+Add these three and the system becomes much easier to improve safely. The other stations (parser upgrade, context compression, agentic query planning) are risk-based additions rather than mandatory work for every request.
 
 ---
 
-A production RAG request is not a single line of execution — it is a coordinated pipeline. From the document coming in to the answer going out, each of the 14 stations solves a specific problem. Naive RAG usually exposes only a small part of that pipeline; the other stations are where reliability, governance, and debuggability enter.
+Production RAG is not a single line of execution and not every request runs the full map. The 14 stations are a capability inventory: each station solves a specific problem, and the router decides which subset a given query deserves. Naive RAG usually exposes only a small part of the map; the other stations are where reliability, governance, and debuggability enter when risk rises.
 
-The interactive demo in Part 01 runs exactly this 14-station production pipeline — you can query the RAG system directly in the article and watch the trace flow. Part 04 will break down how the 14 stations are split across LlamaIndex, LangGraph and n8n — which of these three tools owns which lines, and which scene calls for which one.
+The interactive demo in Part 01 exposes this routing idea directly: you can query the RAG system, change mode, and watch which path the trace takes. Part 04 will break down how these capabilities map across LlamaIndex, LangGraph and n8n — which tool owns which line, and which scene calls for which one.

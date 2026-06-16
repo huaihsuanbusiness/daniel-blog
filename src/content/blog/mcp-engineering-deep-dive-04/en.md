@@ -30,7 +30,7 @@ What I expected was:
 What actually happened looked much closer to an ingestion path.
 That was the moment I stopped treating skills, tool metadata, live inventory, and runtime tool selection as a single thing.
 
-![Skill assets are not the same thing as runtime selection](./resource/mcp-engineering-deep-dive-04-01-skill-vs-runtime.svg)
+![Skill assets are not the same thing as runtime selection](/mcp-engineering-deep-dive-04-01-skill-vs-runtime.svg)
 
 ## The short version: a skill is an asset layer, not an automatic routing gate
 
@@ -85,7 +85,7 @@ This is the final behaviour:
 - which schema seemed to fit the intent best
 - whether server instructions actually helped
 
-![The four layers that shape runtime selection](./resource/mcp-engineering-deep-dive-04-02-four-layers.svg)
+![The four layers that shape runtime selection](/mcp-engineering-deep-dive-04-02-four-layers.svg)
 
 Once you separate those layers, a lot of “why is the model being stupid?” complaints turn into more useful engineering questions:
 
@@ -198,7 +198,7 @@ A helper like `resolve_job_reference` can be critical without belonging on the p
 #### Move 3: change the manifest, docstring, schema, and examples together
 If you only update one layer, the system still behaves like an instrument with one string out of tune.
 
-![The fix is boundary redesign, not just prompt tweaking](./resource/mcp-engineering-deep-dive-04-03-boundary-fix.svg)
+![The fix is boundary redesign, not just prompt tweaking](/mcp-engineering-deep-dive-04-03-boundary-fix.svg)
 
 ## A more practical development loop
 
@@ -273,7 +273,7 @@ Before I re-test routing after changing skills or server metadata, I run this li
 - was the client session refreshed?
 - do `list_tools()` and `list_skills()` show the inventory I think I shipped?
 
-![A practical testing loop for skills and runtime selection](./resource/mcp-engineering-deep-dive-04-04-testing-loop.svg)
+![A practical testing loop for skills and runtime selection](/mcp-engineering-deep-dive-04-04-testing-loop.svg)
 
 ## The final sentence
 

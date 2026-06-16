@@ -29,7 +29,7 @@ Because the only useful pitfall post is the one that teaches the next person:
 
 > **When the same thing breaks again, which layer should you inspect first?**
 
-![Layered failure map for Oracle VM + FastMCP operations](./resource/build-your-own-mcp-server-part-5-01-failure-map.svg)
+![Layered failure map for Oracle VM + FastMCP operations](/build-your-own-mcp-server-part-5-01-failure-map.svg)
 
 ## My current conclusion: debug by layers, not by features
 
@@ -154,7 +154,7 @@ curl -vk https://<DOMAIN>/mcp
 If nothing is listening on 443, do not blame Cloudflare yet.
 If 443 is listening internally but the outside world still gets refused, check Oracle ingress rules before you check Python.
 
-![From public IP to live HTTPS: where 443 actually breaks](./resource/build-your-own-mcp-server-part-5-02-https-breakpoints.svg)
+![From public IP to live HTTPS: where 443 actually breaks](/build-your-own-mcp-server-part-5-02-https-breakpoints.svg)
 
 ## Pitfall 3: localhost on port 8000 is alive, but the outside world still has no idea
 
@@ -325,7 +325,7 @@ These commands are not glamorous. They are how you avoid one of the most expensi
 
 > **You are debugging the code you think is running, not the code that is actually running.**
 
-![From local repo to live process: where drift creeps in](./resource/build-your-own-mcp-server-part-5-03-drift-map.svg)
+![From local repo to live process: where drift creeps in](/build-your-own-mcp-server-part-5-03-drift-map.svg)
 
 ## Pitfall 8: you can inspect `.env` without using the most dangerous method
 
@@ -443,4 +443,4 @@ Or you can read it as the adult version of the trade-off:
 
 when you stop delegating the entrypoint to a PaaS or a managed platform, you gain control, but you also inherit more truth.
 
-![Operations checklist from SSH to transport to live tools](./resource/build-your-own-mcp-server-part-5-04-ops-checklist.svg)
+![Operations checklist from SSH to transport to live tools](/build-your-own-mcp-server-part-5-04-ops-checklist.svg)

@@ -128,7 +128,7 @@ It asks:
 
 > How far has the pain progressed?
 
-![Suffering Triangle](./resource/suffering-triangle-en.svg)
+![Suffering Triangle](/suffering-triangle-en.svg)
 
 The five levels matter because they describe behaviour, not emotion.
 
@@ -171,7 +171,7 @@ For example: independent hotels struggle with direct booking.
 
 But the real work is to understand how that expectation gap forms over time.
 
-![Gap origin analysis map](./resource/gap-origin-analysis-map-en.svg)
+![Gap origin analysis map](/gap-origin-analysis-map-en.svg)
 
 I would break it into four layers:
 
@@ -305,4 +305,4 @@ That is where opportunity is more likely to form.
 
 ---
 
-![Reference Images](./resource/reference-images-en.svg)
+![Reference Images](/reference-images-en.svg)

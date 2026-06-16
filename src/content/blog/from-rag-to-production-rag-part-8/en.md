@@ -56,6 +56,8 @@ The five modes from the end of Part 07 are the starting point for this post, **n
 
 A caveat on this table: **these numbers are from my own system's measurements and a rough read of common industry benchmarks** ([thedataguy.pro's RAG cost writeup](https://thedataguy.pro/writing/2025/07/the-economics-of-rag-cost-optimization-for-production-systems/) / [Tetrate's RAG architecture patterns](https://tetrate.io/learn/ai/rag-architecture-patterns)). They're not vendor SLAs and not platform guarantees. The same query run on Cohere / OpenAI / MiniMax / a self-hosted LLM can come back 2–5x different in latency and cost. The gap from USD 0.001 to USD 0.10 in the table is the gap from running one query in two different modes — that's an architecture decision, not a model decision, **and switching to a cheaper model won't close it**.
 
+This is also how Part 02 and Part 03's 14 stations should be read: each mode activates a subset of the capability map. `fast` intentionally skips most verification and context-expansion stations; `safe` turns on the stations needed for grounded document QA; `deep_eval` adds the expensive evaluation stations for debugging and regression. The map defines available capabilities; the router decides the runtime path.
+
 The on/off settings for each mode's faithfulness and citation, and the strength of the retrieval pipeline, **aren't picked by gut feel — they map to the failure cost of the query**:
 
 - **fast** maps to "wrong answer isn't fatal" queries — a VPN-reset answer gone wrong means the user asks again. So we drop every check and buy back 1s of latency.

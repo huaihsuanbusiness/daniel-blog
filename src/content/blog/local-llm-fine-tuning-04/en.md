@@ -27,7 +27,7 @@ A cleaner way to hold it is this:
 
 **SFT answers how you teach. LoRA answers how you change parameters. Full fine-tuning answers how deep you are willing to cut.**
 
-![Relationship map of SFT, LoRA, partial FT and full fine-tuning](./resource/local-llm-finetuning-part-04-training-landscape.svg)
+![Relationship map of SFT, LoRA, partial FT and full fine-tuning](/local-llm-finetuning-part-04-training-landscape.svg)
 
 ## Three different questions, not one
 

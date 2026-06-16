@@ -78,7 +78,7 @@ seriesOrder: 2
 
 而是逼你先不要太快武斷。
 
-![Design Thinking stages diagram](./resource/design-thinking-stages-zh.svg)
+![Design Thinking stages diagram](/design-thinking-stages-zh.svg)
 
 
 ### Empathize：不是蒐集心情，是理解情境
@@ -165,7 +165,7 @@ Design Council 的 Double Diamond 常見四段是：
 
 它最有力的地方，不是四個英文字本身。
 
-![Double Diamond 參考圖](./resource/double-diamond-figure-01.png)
+![Double Diamond 參考圖](/double-diamond-figure-01.png)
 
 
 而是它把整件事切成兩個菱形：
@@ -213,7 +213,7 @@ Double Diamond 是比較乾淨的流程地圖。
 
 這才是正常。
 
-![CPS Validation and Four D Loop](./resource/cps-validation-4d-loop-zh.svg)
+![CPS Validation and Four D Loop](/cps-validation-4d-loop-zh.svg)
 
 ---
 
@@ -253,7 +253,7 @@ Products & Services、Pain Relievers、Gain Creators，也都填滿了。
 
 這個工具真正要做的是：把顧客那一側的任務、痛苦、期待，對到你這一側的產品、減痛、創造收益。
 
-![Value Proposition Canvas 參考圖](./resource/value-proposition-canvas-figure-03.png)
+![Value Proposition Canvas 參考圖](/value-proposition-canvas-figure-03.png)
 
 
 ### Customer Profile

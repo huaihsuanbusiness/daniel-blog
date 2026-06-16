@@ -20,7 +20,7 @@ That is why this series had to become two parts.
 
 If you have not read Part 1 yet, start there first. Everything in this article assumes that the workflow already knows the `task_type`, the `target_job_id`, the `route_type`, and whether clarification is still pending.
 
-![Part 2 overview: from shortlist to decision-quality output](./resource/make-context-aware-job-agent-part2-01-overview.svg)
+![Part 2 overview: from shortlist to decision-quality output](/make-context-aware-job-agent-part2-01-overview.svg)
 
 ## The workload Part 2 is actually trying to solve
 
@@ -114,9 +114,9 @@ Fifthly, the writeback is batched rather than noisy.
 
 Instead of updating the sheet row by row as soon as each role is scored, the lane stages the results in a datastore first, aggregates them, and then writes them back to `jobs_raw` in one go. That makes the whole lane feel like a proper batch operation rather than a spreadsheet tap-dance.
 
-![Fast scoring lane: cheap enough to run in bulk, strict enough to be useful](./resource/make-context-aware-job-agent-part2-02-fast-scoring.svg)
+![Fast scoring lane: cheap enough to run in bulk, strict enough to be useful](/make-context-aware-job-agent-part2-02-fast-scoring.svg)
 
-![bulk-score](./resource/bulk-score.png)
+![bulk-score](/bulk-score.png)
 
 ### Why I only describe the scorer at the principle level
 
@@ -160,9 +160,9 @@ What matters here is not just that there is a vector database in the loop. What 
 
 That is what makes RAG genuinely useful here. In the original RAG formulation, Lewis et al. argued for explicit retrieval precisely because parametric memory on its own is limited, difficult to update, and weak at grounded provenance. The point is not to stuff more text into the prompt. The point is to retrieve the right external evidence at the right moment.
 
-![RAG deep analysis lane: resolve, retrieve, research, then judge](./resource/make-context-aware-job-agent-part2-03-rag-analysis.svg)
+![RAG deep analysis lane: resolve, retrieve, research, then judge](/make-context-aware-job-agent-part2-03-rag-analysis.svg)
 
-![RAG-analysis](./resource/RAG-analysis.png)
+![RAG-analysis](/RAG-analysis.png)
 
 ### Step three: separate company research from final judgement
 
@@ -241,7 +241,7 @@ in a conversational workflow, a lot of failures are not system failures at all. 
 
 When the error layer communicates that cleanly, the tool feels dramatically more trustworthy.
 
-![Guardrails: repair what drifts, clarify what is blocked](./resource/make-context-aware-job-agent-part2-04-guardrails.svg)
+![Guardrails: repair what drifts, clarify what is blocked](/make-context-aware-job-agent-part2-04-guardrails.svg)
 
 ## One counterexample that matters: not every interesting role deserves RAG
 

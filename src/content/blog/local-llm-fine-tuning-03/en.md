@@ -14,7 +14,7 @@ It felt like arriving at a construction site only to realise I had not even pick
 
 This piece is about drawing those boundaries properly. Because once everything that feels “model-related” is treated as the same class of tool, an astonishing amount of time gets wasted in the wrong places.
 
-![Toolchain map for local LLM fine-tuning](./resource/local-llm-toolchain-map.svg)
+![Toolchain map for local LLM fine-tuning](/local-llm-toolchain-map.svg)
 
 ## Start with the most boring and most necessary thing: an isolated environment
 

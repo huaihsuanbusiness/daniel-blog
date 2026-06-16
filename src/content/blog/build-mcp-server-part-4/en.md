@@ -42,7 +42,7 @@ Not because it looked cleaner in a diagram, but because I finally understood thi
 
 > **Having skills in a repository is not the same thing as having runtime tool selection governed by those skills.**
 
-![Where skills sit relative to MCP primitives and runtime tools](./resource/build-your-own-mcp-server-part-4-01-skills-vs-primitives.svg)
+![Where skills sit relative to MCP primitives and runtime tools](/build-your-own-mcp-server-part-4-01-skills-vs-primitives.svg)
 
 ## The most important sentence first: skills are not MCP primitives
 
@@ -93,7 +93,7 @@ So in my design:
 Those are three separate layers.  
 If you blend them together, you very quickly lose control of the system.
 
-![Skill package anatomy and the three-layer architecture](./resource/build-your-own-mcp-server-part-4-02-skill-package-anatomy.svg)
+![Skill package anatomy and the three-layer architecture](/build-your-own-mcp-server-part-4-02-skill-package-anatomy.svg)
 
 ## This is the repository shape I ended up liking
 
@@ -285,7 +285,7 @@ while `job_ingestion` returned to its real job:
 - insert them
 - optionally trigger scoring in the refresh path, but no longer pretend to be a score-only route
 
-![Runtime selection is shaped by more than the skill files](./resource/build-your-own-mcp-server-part-4-03-runtime-selection-layers.svg)
+![Runtime selection is shaped by more than the skill files](/build-your-own-mcp-server-part-4-03-runtime-selection-layers.svg)
 
 ## Having skills in the repo does not mean runtime is actually using them
 
@@ -378,4 +378,4 @@ When that layer is done well, your MCP server stops looking like a raw tool list
 
 In the next article, I will return to the muddy operational side and write about the deployment and maintenance pitfalls that were actually worth recording on Oracle VM and FastMCP.
 
-![Skill development loop from manifest to live routing checks](./resource/build-your-own-mcp-server-part-4-04-skill-dev-loop.svg)
+![Skill development loop from manifest to live routing checks](/build-your-own-mcp-server-part-4-04-skill-dev-loop.svg)

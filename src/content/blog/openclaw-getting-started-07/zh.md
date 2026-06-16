@@ -22,7 +22,7 @@ featured: false
 
 這不是唯一答案，但它是一個很穩的起點。
 
-![Ollama 安裝與 Llama 3.1 8B 下載流程圖](./resource/mac-mini-m4-ollama-llama31-01-setup-flow.svg)
+![Ollama 安裝與 Llama 3.1 8B 下載流程圖](/mac-mini-m4-ollama-llama31-01-setup-flow.svg)
 
 ## 先講我的判斷
 
@@ -244,7 +244,7 @@ cat ~/.ollama/logs/server.log
 
 ## 跑起來之後，最容易踩的坑
 
-![Mac mini 本地模型常見瓶頸圖](./resource/mac-mini-m4-ollama-llama31-02-bottlenecks.svg)
+![Mac mini 本地模型常見瓶頸圖](/mac-mini-m4-ollama-llama31-02-bottlenecks.svg)
 
 ### 坑 1：一開始就把 context 拉很大
 

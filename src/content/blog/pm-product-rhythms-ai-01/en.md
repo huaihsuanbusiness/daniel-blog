@@ -73,4 +73,4 @@ It’s some of the ways we deliver.
 
 And those habits were old before AI arrived. AI just made speed cheaper, which means the practices that only ever existed to prop up an older cost structure are now much easier to spot.
 
-![What changes and what stays after AI](./resource/agile-ai-01-what-changes-vs-what-stays.svg)
+![What changes and what stays after AI](/agile-ai-01-what-changes-vs-what-stays.svg)

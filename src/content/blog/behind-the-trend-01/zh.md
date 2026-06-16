@@ -17,7 +17,7 @@ seriesOrder: 01
 
 我現在的判斷是，新加坡下一輪值得關注的，不只是 AI 公司變多，而是整個市場正在從「數位化」往「可信、可擴張、可跨境的 AI 化」移動。這個差別不只是字面上的升級。它會直接改變產品怎麼設計、企業怎麼採購、以及新創該怎麼找自己的切口。
 
-![Singapore policy stack](./resource/singapore-policy-stack.svg)
+![Singapore policy stack](/singapore-policy-stack.svg)
 
 
 ## 不是多一點科技，而是更深一層的基礎設計

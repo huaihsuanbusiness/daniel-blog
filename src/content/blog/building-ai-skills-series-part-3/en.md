@@ -35,7 +35,7 @@ The healthier third path is this:
 That is what this article is about.
 
 <figure>
-  <img src="./resource/ai-skill-series-part3-01-from-tools-to-skills.svg" alt="Mapping existing Make execution tools into a higher-level skill layer, showing tool-to-skill relationships" />
+  <img src="/ai-skill-series-part3-01-from-tools-to-skills.svg" alt="Mapping existing Make execution tools into a higher-level skill layer, showing tool-to-skill relationships" />
   <figcaption>The real move is not renaming tools. It is lifting task methodology above the execution layer.</figcaption>
 </figure>
 

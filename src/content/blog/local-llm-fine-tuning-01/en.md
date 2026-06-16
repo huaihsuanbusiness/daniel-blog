@@ -14,7 +14,7 @@ If the answer was too wordy, I thought about LoRA. If the tone was not quite clo
 
 So this piece is not really about commands yet. It is about the map. Because once the floors blur together, every later decision becomes harder than it needs to be. You may only want a cleaner tone, and somehow end up applying for gated access on Hugging Face. You may only want shorter answers, and end up nudging a fairly capable instruct model into something odd.
 
-![Layer map of a local LLM](./resource/local-llm-layer-map.svg)
+![Layer map of a local LLM](/local-llm-layer-map.svg)
 
 ## Start with the film set, not the benchmark table
 

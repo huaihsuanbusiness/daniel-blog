@@ -36,7 +36,7 @@ featured: false
 這篇就用我現在這套 Make-based job system 來示範，怎麼從現有工具長出一層比較像樣的 skill layer。
 
 <figure>
-  <img src="./resource/ai-skill-series-part3-01-from-tools-to-skills.svg" alt="Mapping existing Make execution tools into a higher-level skill layer, showing tool-to-skill relationships" />
+  <img src="/ai-skill-series-part3-01-from-tools-to-skills.svg" alt="Mapping existing Make execution tools into a higher-level skill layer, showing tool-to-skill relationships" />
   <figcaption>真正的重點不是把工具改名，而是把任務方法從 execution layer 往上抽一層。</figcaption>
 </figure>
 

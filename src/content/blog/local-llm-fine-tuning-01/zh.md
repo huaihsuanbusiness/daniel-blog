@@ -14,7 +14,7 @@ seriesOrder: 1
 
 這篇想做的，不是先教你打哪個指令，而是先把地圖攤開。因為只要樓層一混，後面每一步都會特別累。你可能只是想調一下說話口氣，最後卻跑進 Hugging Face 申請權限；你可能只是想讓模型少一點廢話，最後卻把一顆本來很穩的 instruct 模型訓得怪怪的。
 
-![Layer map of a local LLM](./resource/local-llm-layer-map.svg)
+![Layer map of a local LLM](/local-llm-layer-map.svg)
 
 ## 先把整件事想成一個拍片現場
 

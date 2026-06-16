@@ -28,7 +28,7 @@ seriesOrder: 9
 
 **哪些版本值得留下來當主力。**
 
-![Lexi、主力版本與最後判準圖](./resource/local-llm-finetuning-part-09-mainline-map.svg)
+![Lexi、主力版本與最後判準圖](/local-llm-finetuning-part-09-mainline-map.svg)
 
 ## 為什麼 Lexi 會變成一個參照物
 

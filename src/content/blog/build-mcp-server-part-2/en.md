@@ -37,7 +37,7 @@ ChatGPT
 
 That is the path I will unpack in this article.
 
-![Deployment overview for a public Oracle VM MCP endpoint](./resource/build-your-own-mcp-server-part-2-01-deployment-overview.svg)
+![Deployment overview for a public Oracle VM MCP endpoint](/build-your-own-mcp-server-part-2-01-deployment-overview.svg)
 
 ## First, an unglamorous truth: if you are only validating the idea, Oracle VM may be overkill
 
@@ -144,7 +144,7 @@ ssh -i /path/to/private-key ubuntu@<PUBLIC_IP>
 
 If SSH is not working yet, do not start suspecting FastMCP. The odds are very high that your VM networking is not truly open.
 
-![OCI network checks before you blame FastMCP](./resource/build-your-own-mcp-server-part-2-02-oci-network-checks.svg)
+![OCI network checks before you blame FastMCP](/build-your-own-mcp-server-part-2-02-oci-network-checks.svg)
 
 ## Stage 2: make FastMCP live on an internal port first
 
@@ -358,7 +358,7 @@ Why this is useful:
 
 That said, there is an important operational catch: once you move to `Full` or `Full (strict)`, your origin really does need to serve HTTPS correctly on port 443. Otherwise you are inviting 525-style handshake failures.
 
-![nginx, Cloudflare, and FastMCP request path](./resource/build-your-own-mcp-server-part-2-03-nginx-fastmcp-path.svg)
+![nginx, Cloudflare, and FastMCP request path](/build-your-own-mcp-server-part-2-03-nginx-fastmcp-path.svg)
 
 ## Do smoke tests before you open ChatGPT
 
@@ -467,4 +467,4 @@ That is what Part 3 will cover. I will compare frameworks through the lens that 
 - whether you are building a quick demo or a server meant to grow
 - and whether you are optimising for “fast to finish” or “less painful later”
 
-![A practical rollout checklist for a public MCP server](./resource/build-your-own-mcp-server-part-2-04-rollout-checklist.svg)
+![A practical rollout checklist for a public MCP server](/build-your-own-mcp-server-part-2-04-rollout-checklist.svg)

@@ -31,7 +31,7 @@ subtitle: "v2 解決的是把 Make-first workflow 整理成比較像 execution e
 
 這就是 v3 的起點。
 
-![Why v3 moved from Make MCP server to a self-hosted gateway](./resource/make-job-agent-v3-01-v2-v3-shift.svg)
+![Why v3 moved from Make MCP server to a self-hosted gateway](/make-job-agent-v3-01-v2-v3-shift.svg)
 
 ## 先講結論：我換掉的不是 Make，而是 Make 前面的 public contract layer
 
@@ -113,7 +113,7 @@ v3 其中一個最重要的設計選擇，就是把這些東西版本化成 plai
 
 它們不適合被藏在一條條 Make scenario 裡，否則你每次改 skill 邊界，都像在 workflow builder 裡拿鑷子修文字與意圖。
 
-![The v3 architecture: ChatGPT, FastMCP gateway, GitHub skills, and Make execution tools](./resource/make-job-agent-v3-02-v3-architecture.svg)
+![The v3 architecture: ChatGPT, FastMCP gateway, GitHub skills, and Make execution tools](/make-job-agent-v3-02-v3-architecture.svg)
 
 ## v3 的最終分層
 
@@ -209,7 +209,7 @@ v3 public tools 幾乎都把這些欄位拉成第一等公民：
 
 因為它是很重要的**內部能力**，但不是一顆適合公開給使用者意圖層的 skill。
 
-![The v3 contract envelope and internal helper policy](./resource/make-job-agent-v3-03-contract-envelope.svg)
+![The v3 contract envelope and internal helper policy](/make-job-agent-v3-03-contract-envelope.svg)
 
 ## 這也是我為什麼最後不想停在 Make MCP server
 
@@ -279,7 +279,7 @@ Make MCP server 的優點，其實也正是它對我這個案例的限制。
 
 也就是說，v3 不是否定 v2，而是把 v2 的 contract thinking 真正推到底。
 
-![The migration lessons from v2 to v3](./resource/make-job-agent-v3-04-migration-lessons.svg)
+![The migration lessons from v2 to v3](/make-job-agent-v3-04-migration-lessons.svg)
 
 ## 我會留給自己的幾條遷移準則
 

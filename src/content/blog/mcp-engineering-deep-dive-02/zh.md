@@ -33,7 +33,7 @@ subtitle: "如果你的 MCP server 會對外、會寫資料、會碰到真實使
 
 也就是說，**security 不是 patch，它是 public MCP server 的產品邊界。**
 
-![Security starts at the tool surface](./resource/mcp-engineering-deep-dive-02-01-security-is-surface-area.svg)
+![Security starts at the tool surface](/mcp-engineering-deep-dive-02-01-security-is-surface-area.svg)
 
 ## 先講結論：如果你的 MCP server 是 public server，就不要用「先通再補」的節奏來想安全
 
@@ -72,7 +72,7 @@ MCP 規範也提醒，client 不應把 tool annotations 當成可信真理，因
 公開 tool list 不是 feature checklist。  
 它比較像是：**你願意讓模型看到、理解、並嘗試調用的最小能力面。**
 
-![Authentication and authorization are different jobs](./resource/mcp-engineering-deep-dive-02-02-auth-vs-authorization.svg)
+![Authentication and authorization are different jobs](/mcp-engineering-deep-dive-02-02-auth-vs-authorization.svg)
 
 ## 第二層：Authentication 和 authorization 是兩份工作，不要混成一團
 
@@ -159,7 +159,7 @@ FastMCP 3.x 已經把 authorization 拆得很清楚：你可以做 server-wide p
 - 是否回傳多餘敏感欄位
 - 是否過度 verbose，讓模型拿到它不該知道的東西
 
-![Public server hardening checklist](./resource/mcp-engineering-deep-dive-02-03-public-server-hardening.svg)
+![Public server hardening checklist](/mcp-engineering-deep-dive-02-03-public-server-hardening.svg)
 
 ## Prompt injection 對 public MCP server 的風險，比很多人想得更靠近 execution
 
@@ -202,7 +202,7 @@ MCP 官方 security guidance 也特別點出這類風險。
 
 > **MCP server 一旦公開，它就不是單純的 Python app，而是一個會被模型、host、proxy、與使用者共同影響的執行邊界。**
 
-![A practical security decision ladder](./resource/mcp-engineering-deep-dive-02-04-security-decision-ladder.svg)
+![A practical security decision ladder](/mcp-engineering-deep-dive-02-04-security-decision-ladder.svg)
 
 ## 一個最小但比較健康的 FastMCP 方向
 

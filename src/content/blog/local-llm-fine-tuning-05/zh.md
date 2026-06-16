@@ -28,7 +28,7 @@ seriesOrder: 5
 也就是說，它不是比較潮的資料格式。
 它是一條訓練目標和推導方式都不一樣的路。
 
-![SFT、RLHF 與 DPO 的對照圖](./resource/local-llm-finetuning-part-05-dpo-rebuilt-map.svg)
+![SFT、RLHF 與 DPO 的對照圖](/local-llm-finetuning-part-05-dpo-rebuilt-map.svg)
 
 ---
 

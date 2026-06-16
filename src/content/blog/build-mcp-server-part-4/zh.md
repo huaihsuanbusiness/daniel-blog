@@ -42,7 +42,7 @@ featured: false
 
 > **repo 裡有 skill，和 runtime 真正拿 skill 當 routing gate，不是同一件事。**
 
-![Where skills sit relative to MCP primitives and runtime tools](./resource/build-your-own-mcp-server-part-4-01-skills-vs-primitives.svg)
+![Where skills sit relative to MCP primitives and runtime tools](/build-your-own-mcp-server-part-4-01-skills-vs-primitives.svg)
 
 ## 先講最重要的一句：skills 不是 MCP 規格裡的 primitive
 
@@ -93,7 +93,7 @@ skills 不是這三個之一。
 
 這三層一定要分開看，不然你很快就會把所有東西攪成一鍋。
 
-![Skill package anatomy and the three-layer architecture](./resource/build-your-own-mcp-server-part-4-02-skill-package-anatomy.svg)
+![Skill package anatomy and the three-layer architecture](/build-your-own-mcp-server-part-4-02-skill-package-anatomy.svg)
 
 ## 我最後把 repo 長成這個樣子
 
@@ -283,7 +283,7 @@ You are handling score-only maintenance tasks for jobs already stored in the sys
 - insert
 - 視情況做 scoring，但不再冒充 score-only 路徑
 
-![Runtime selection is shaped by more than the skill files](./resource/build-your-own-mcp-server-part-4-03-runtime-selection-layers.svg)
+![Runtime selection is shaped by more than the skill files](/build-your-own-mcp-server-part-4-03-runtime-selection-layers.svg)
 
 ## repo 裡有 skill，不代表 runtime 真的在用 skill
 
@@ -378,4 +378,4 @@ skill 寫完之後，我一定會回頭檢查：
 
 下一篇我會回到比較泥濘的地方，寫 Oracle VM 與 FastMCP 在真正部署與維運時那些值得記錄的坑。
 
-![Skill development loop from manifest to live routing checks](./resource/build-your-own-mcp-server-part-4-04-skill-dev-loop.svg)
+![Skill development loop from manifest to live routing checks](/build-your-own-mcp-server-part-4-04-skill-dev-loop.svg)

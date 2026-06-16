@@ -78,7 +78,7 @@ The value of Design Thinking is not that it makes you more creative.
 
 It slows down premature certainty.
 
-![Design Thinking stages diagram](./resource/design-thinking-stages-en.svg)
+![Design Thinking stages diagram](/design-thinking-stages-en.svg)
 
 
 ### Empathise: not collecting emotions, but understanding situations.
@@ -165,7 +165,7 @@ The Design Council version is commonly described as:
 
 Its power is not in the four words.
 
-![Double Diamond reference figure](./resource/double-diamond-figure-01.png)
+![Double Diamond reference figure](/double-diamond-figure-01.png)
 
 
 It is in the two diamonds:
@@ -215,7 +215,7 @@ That is not failure.
 
 That is the work.
 
-![CPS Validation and Four D Loop](./resource/cps-validation-4d-loop-en.svg)
+![CPS Validation and Four D Loop](/cps-validation-4d-loop-en.svg)
 
 ---
 
@@ -254,7 +254,7 @@ But a full canvas is not the same as fit.
 
 The tool matters because it forces the customer side and the offer side to meet.
 
-![Value Proposition Canvas reference figure](./resource/value-proposition-canvas-figure-03.png)
+![Value Proposition Canvas reference figure](/value-proposition-canvas-figure-03.png)
 
 
 ### Customer Profile

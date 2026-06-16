@@ -86,6 +86,6 @@ But I would not make the opposite mistake either. Removing Scrum does not automa
 What really needs redesigning is not the ceremony checklist.  
 It is the team’s arrangement around speed, judgement, validation and responsibility.
 
-![A Scrum-lite operating model for AI-era product teams](./resource/scrum-lite-01-operating-model.svg)
+![A Scrum-lite operating model for AI-era product teams](/scrum-lite-01-operating-model.svg)
 
-![A weekly rhythm for Scrum-lite teams](./resource/scrum-lite-02-weekly-rhythm.svg)
+![A weekly rhythm for Scrum-lite teams](/scrum-lite-02-weekly-rhythm.svg)

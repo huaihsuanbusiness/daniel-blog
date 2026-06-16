@@ -31,7 +31,7 @@ Not because Make was weak, but because my next problem was no longer “how do I
 
 That is where v3 starts.
 
-![Why v3 moved from Make MCP server to a self-hosted gateway](./resource/make-job-agent-v3-01-v2-v3-shift.svg)
+![Why v3 moved from Make MCP server to a self-hosted gateway](/make-job-agent-v3-01-v2-v3-shift.svg)
 
 ## The short version: I did not remove Make. I replaced the public contract layer in front of it
 
@@ -113,7 +113,7 @@ Those assets fit naturally in GitHub.
 
 They are much less comfortable when buried inside workflow nodes, where every change to a skill boundary turns into delicate surgery inside the visual builder.
 
-![The v3 architecture: ChatGPT, FastMCP gateway, GitHub skills, and Make execution tools](./resource/make-job-agent-v3-02-v3-architecture.svg)
+![The v3 architecture: ChatGPT, FastMCP gateway, GitHub skills, and Make execution tools](/make-job-agent-v3-02-v3-architecture.svg)
 
 ## The final v3 layering
 
@@ -207,7 +207,7 @@ That envelope gives both the gateway and the host a much cleaner basis for:
 
 It is exactly the kind of capability that should remain an internal helper: vital to the system, but not part of the public semantic surface shown to the model.
 
-![The v3 contract envelope and internal helper policy](./resource/make-job-agent-v3-03-contract-envelope.svg)
+![The v3 contract envelope and internal helper policy](/make-job-agent-v3-03-contract-envelope.svg)
 
 ## This is why I did not want to stop at the Make MCP server
 
@@ -276,7 +276,7 @@ I think of it like this:
 
 So v3 does not invalidate v2. It pushes the contract-thinking from v2 all the way to the front of the system.
 
-![The migration lessons from v2 to v3](./resource/make-job-agent-v3-04-migration-lessons.svg)
+![The migration lessons from v2 to v3](/make-job-agent-v3-04-migration-lessons.svg)
 
 ## The migration rules I would keep for myself
 

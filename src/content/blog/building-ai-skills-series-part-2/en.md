@@ -25,7 +25,7 @@ So this article is not saying direct tool access is always wrong. It is making a
 > A skill-first gateway or thin skill server is often the healthier middle layer.
 
 <figure>
-  <img src="./resource/ai-skill-series-part2-01-skill-first-gateway.svg" alt="Direct-tool access versus skill-first gateway, contrasting raw tool exposure with a gateway that controls skill selection and tool exposure" />
+  <img src="/ai-skill-series-part2-01-skill-first-gateway.svg" alt="Direct-tool access versus skill-first gateway, contrasting raw tool exposure with a gateway that controls skill selection and tool exposure" />
   <figcaption>This is not merely an aesthetic difference. It changes where policy, risk, and task meaning actually live.</figcaption>
 </figure>
 

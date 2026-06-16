@@ -14,7 +14,7 @@ seriesOrder: 3
 
 這篇想做的，就是把這條工具鏈切乾淨。因為如果你沒先弄懂誰在做什麼，後面很容易把所有東西都當成「模型相關工具」，然後在錯的地方浪費力氣。
 
-![Toolchain map for local LLM fine-tuning](./resource/local-llm-toolchain-map.svg)
+![Toolchain map for local LLM fine-tuning](/local-llm-toolchain-map.svg)
 
 ## 先講最無聊、也最該先做的事：隔離環境
 

@@ -20,7 +20,7 @@ featured: false
 
 如果你還沒看 Part 1，建議先從那篇開始。因為這篇所有分析、評分與生成，都建立在前一篇已經把 `task_type`、`target_job_id`、`route_type` 與澄清狀態處理乾淨的前提上。
 
-![Part 2 overview: from shortlist to decision-quality output](./resource/make-context-aware-job-agent-part2-01-overview.svg)
+![Part 2 overview: from shortlist to decision-quality output](/make-context-aware-job-agent-part2-01-overview.svg)
 
 ## Part 2 真正想解的 workload
 
@@ -114,9 +114,9 @@ JA-26 不輸出一篇 essay，只輸出四個欄位：`score`、`is_relevant`、
 
 這條 lane 會先把 per-job scoring result 暫存在 datastore，等整批都處理完再聚合起來，最後一次性寫回 `jobs_raw`。這讓資料表更新比較乾淨，也比較像真正的批次處理，而不是一路邊跑邊把表格敲得叮噹響。
 
-![Fast scoring lane: cheap enough to run in bulk, strict enough to be useful](./resource/make-context-aware-job-agent-part2-02-fast-scoring.svg)
+![Fast scoring lane: cheap enough to run in bulk, strict enough to be useful](/make-context-aware-job-agent-part2-02-fast-scoring.svg)
 
-![bulk-score](./resource/bulk-score.png)
+![bulk-score](/bulk-score.png)
 
 ### 為什麼我只講到原則層，不把快篩包裝成真理機器
 
@@ -160,9 +160,9 @@ JA-31 到 JA-34 是這條 lane 最像 RAG 的地方。
 
 這就是 RAG 真正有價值的地方。Lewis 等人在提出 RAG 時，強調的也不是「把更多上下文塞給模型」，而是透過顯式 retrieval 去補足 parametric memory 的限制，讓生成過程建立在更可更新、也更可追溯的外部記憶上。
 
-![RAG deep analysis lane: resolve, retrieve, research, then judge](./resource/make-context-aware-job-agent-part2-03-rag-analysis.svg)
+![RAG deep analysis lane: resolve, retrieve, research, then judge](/make-context-aware-job-agent-part2-03-rag-analysis.svg)
 
-![RAG-analysis](./resource/RAG-analysis.png)
+![RAG-analysis](/RAG-analysis.png)
 
 ### 第三段，把 company research 和 final judgment 拆成兩步
 
@@ -243,7 +243,7 @@ JA-40 做的不是把例外訊息原封不動丟回 LINE，而是把 `blocked_re
 
 在這種聊天式 workflow 裡，很多失敗其實不是 system failure，而是**state still needs one more user turn**。錯誤層如果能把這件事講清楚，整個工具的手感會差非常多。
 
-![Guardrails: repair what drifts, clarify what is blocked](./resource/make-context-aware-job-agent-part2-04-guardrails.svg)
+![Guardrails: repair what drifts, clarify what is blocked](/make-context-aware-job-agent-part2-04-guardrails.svg)
 
 ## 一個反例：不是每一份看起來有趣的職缺都值得進 RAG
 

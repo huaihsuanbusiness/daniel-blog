@@ -35,7 +35,7 @@ So the argument in this article is simple:
 You want OpenClaw to become a system you can observe, correct, and predict.  
 Until that happens, every extra capability only increases your blast radius.
 
-![OpenClaw first-week capability ramp](./resource/openclaw-getting-started-04-first-week-ramp.svg)
+![OpenClaw first-week capability ramp](/openclaw-getting-started-04-first-week-ramp.svg)
 
 ---
 

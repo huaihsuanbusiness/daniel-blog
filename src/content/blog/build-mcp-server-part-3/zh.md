@@ -32,7 +32,7 @@ subtitle: "FastMCP、MCP Framework、xmcp、Spring AI MCP Server 四條路線，
 
 > **如果你的目標是把 ChatGPT 接上一個可公開、可治理、可演進的 MCP server，哪一條路最不容易把自己走進維運泥沼？**
 
-![Framework map for FastMCP, MCP Framework, xmcp, and Spring AI MCP Server](./resource/build-your-own-mcp-server-part-3-01-framework-map.svg)
+![Framework map for FastMCP, MCP Framework, xmcp, and Spring AI MCP Server](/build-your-own-mcp-server-part-3-01-framework-map.svg)
 
 ## 先講我的結論
 
@@ -98,7 +98,7 @@ subtitle: "FastMCP、MCP Framework、xmcp、Spring AI MCP Server 四條路線，
 | 適合的團隊 | Python / AI tooling | TS backend 團隊 | TS full-stack / platform 團隊 | Java / enterprise 團隊 |
 | 我的感受 | 最像「工程務實派」 | 最像「框架派」 | 最像「現代 DX 派」 | 最像「企業平台派」 |
 
-![Decision matrix for choosing an MCP framework](./resource/build-your-own-mcp-server-part-3-02-decision-matrix.svg)
+![Decision matrix for choosing an MCP framework](/build-your-own-mcp-server-part-3-02-decision-matrix.svg)
 
 ## 四條路各自長什麼樣
 
@@ -361,7 +361,7 @@ public class JobTools {
 
 > **一個薄、清楚、足夠 production-minded，但不會逼我先搭完整 app platform 的 MCP server framework。**
 
-![Four framework routes and their deployment gravity](./resource/build-your-own-mcp-server-part-3-03-deployment-gravity.svg)
+![Four framework routes and their deployment gravity](/build-your-own-mcp-server-part-3-03-deployment-gravity.svg)
 
 ## 我的選型判準，給你直接拿去用
 
@@ -426,4 +426,4 @@ public class JobTools {
 
 因為真正讓系統變得比較「像人話」、比較可治理的，很多時候不是 framework 本身，而是你怎麼把能力邊界整理成 skill layer。
 
-![Selection checklist for choosing an MCP framework](./resource/build-your-own-mcp-server-part-3-04-selection-checklist.svg)
+![Selection checklist for choosing an MCP framework](/build-your-own-mcp-server-part-3-04-selection-checklist.svg)

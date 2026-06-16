@@ -20,7 +20,7 @@ It is much closer to this:
 
 **an experiment design document that binds together the model, the data, the tokenizer, the training method, the trainable scope and the training rhythm**
 
-![Training script branching map](./resource/local-llm-finetuning-part-06-script-map.svg)
+![Training script branching map](/local-llm-finetuning-part-06-script-map.svg)
 
 ## What a training script is actually doing
 

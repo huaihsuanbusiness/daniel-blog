@@ -50,7 +50,7 @@ featured: false
 這個順序不是理論上的漂亮排序，而是我現在會真的拿來帶人的順序。  
 因為 OpenClaw 的很多問題，不是裝不起來，而是你太快進入一個自己還不會治理的狀態。
 
-![OpenClaw 第一週能力開啟順序圖](./resource/openclaw-getting-started-04-first-week-ramp.svg)
+![OpenClaw 第一週能力開啟順序圖](/openclaw-getting-started-04-first-week-ramp.svg)
 
 ---
 
