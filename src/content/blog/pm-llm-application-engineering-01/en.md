@@ -38,7 +38,7 @@ That is the natural starting point.
 - tighten the format
 - tell the model to say “I don’t know” when it does not know
 
-All of that is sensible, and often useful. The role / task / constraints / output format / examples pattern in your notes is a genuinely practical way to get early tasks under control. For classification, extraction, or summarisation, it is already much better than tossing vague instructions at a model and hoping for the best.
+All of that is sensible, and often useful. This pattern makes the instruction hierarchy explicit and easier to validate. For classification, extraction, or summarisation, it is already much better than tossing vague instructions at a model and hoping for the best.
 
 But once I started wiring these systems into real workflows, the boundary became obvious. Some problems are prompt problems. Others simply are not.
 
@@ -104,7 +104,7 @@ You are, in effect, turning a prompt into an **output contract**.
 
 That shift is bigger than it sounds. Once the output needs to flow into CRM, ticketing, reporting, BI, or any other downstream system, free-form text becomes charming and dangerous in roughly equal measure.
 
-Your note that “fixed JSON is the first ticket to enterprise adoption” is, frankly, dead right. The reason is not that it sounds more engineering-heavy. The reason is that it turns model output from “something resembling an answer” into “a verifiable data object”.
+Fixed JSON alone is not a sufficient production contract; the output still needs a schema, validation, and retry handling. The reason is not that it sounds more engineering-heavy. The reason is that it turns model output from “something resembling an answer” into “a verifiable data object”.
 
 This is also why OpenAI broke Structured Outputs out into a distinct capability. JSON mode and schema-constrained output are not the same thing. One gives you output that looks a bit more like JSON. The other gives you a real contract.
 
@@ -131,7 +131,7 @@ Now the problem is no longer “is the prompt clear enough?” The problem becom
 - who actually executes the tool
 - what happens if the call fails
 
-This is why your notes distinguish tool spec, tool_call, and tool_result. That is not pedantry. It is the point at which the responsibilities become clean enough to reason about: **the model decides and fills arguments; deterministic tools do the actual work.** Calling all of this “prompt engineering” undersells it. You are now orchestrating an application.
+This is why the design distinguishes tool spec, tool_call, and tool_result. That is not pedantry. It is the point at which the responsibilities become clean enough to reason about: **the model decides and fills arguments; deterministic tools do the actual work.** Calling all of this “prompt engineering” undersells it. You are now orchestrating an application.
 
 ### Layer 4: the grounding layer
 
