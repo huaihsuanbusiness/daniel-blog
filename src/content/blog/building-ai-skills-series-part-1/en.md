@@ -332,6 +332,6 @@ Once that clicks, the rest of the conversation around skill-first design, FastMC
 
 The official docs and tutorial references I used are collected in:
 
-`./resource/references.md`
+
 
 ---
