@@ -1,16 +1,12 @@
 ---
 title: "PM User Research and Fieldwork 06 － An Interview Guide Is Not a List of Questions: How PMs Design Non-Leading Prompts That Surface Real Evidence"
-description: "Method piece / Interview craft guide"
+description: "An interview guide is a decision tool, not a list of questions. This article shows how to structure prompts, probes, and follow-ups without leading participants."
 categories: ["pm"]
 tags: []
 date: 2026-04-05T16:18:00
 series: "PM User Research and Fieldwork"
 seriesOrder: 5
 ---
-
-## Article type
-
-Method piece / Interview craft guide
 
 ## The one thing this piece is trying to say
 

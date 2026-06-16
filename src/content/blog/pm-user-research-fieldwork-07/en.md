@@ -1,16 +1,12 @@
 ---
 title: "PM User Research and Fieldwork 08 － From Transcript to Insight: How PMs Use Thematic Analysis and Affinity Mapping Instead of Cherry-Picking Quotes"
-description: "Analysis methods piece / Research synthesis guide"
+description: "A practical synthesis workflow for turning transcripts and field notes into evidence, patterns, insights, and decisions without skipping the reasoning chain."
 categories: ["pm"]
 tags: []
 date: 2026-04-05T16:20:00
 series: "PM User Research and Fieldwork"
 seriesOrder: 7
 ---
-
-## Article type
-
-Analysis methods piece / Research synthesis guide
 
 ## The one thing this piece is trying to say
 

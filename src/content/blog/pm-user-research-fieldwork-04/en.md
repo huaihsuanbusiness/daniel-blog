@@ -1,16 +1,12 @@
 ---
 title: "PM User Research and Fieldwork 05 － Outreach, Screeners, Incentives, and Consent: Turn Research Recruitment into a Repeatable System"
-description: "Practical method piece / Research ops primer"
+description: "A practical guide to outreach, screeners, incentives, and consent so research recruitment is ethical, efficient, and aligned with the study goal."
 categories: ["pm"]
 tags: []
 date: 2026-04-05T16:17:00
 series: "PM User Research and Fieldwork"
 seriesOrder: 4
 ---
-
-## Article type
-
-Practical method piece / Research ops primer
 
 ## The one thing this piece is trying to say
 

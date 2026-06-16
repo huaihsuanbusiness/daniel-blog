@@ -1,16 +1,12 @@
 ---
 title: "PM User Research and Fieldwork 07 － Interviews and Fieldwork Are Not Casual Conversations: How PMs Facilitate, Observe, Take Notes, and Avoid Distorting the Session"
-description: "Practical methods piece / Session facilitation guide"
+description: "Good interviews and fieldwork require disciplined facilitation. This article covers rapport, neutrality, probing, observation, and session control."
 categories: ["pm"]
 tags: []
 date: 2026-04-05T16:19:00
 series: "PM User Research and Fieldwork"
 seriesOrder: 6
 ---
-
-## Article type
-
-Practical methods piece / Session facilitation guide
 
 ## The one thing this piece is trying to say
 
