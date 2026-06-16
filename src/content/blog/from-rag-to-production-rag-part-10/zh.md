@@ -291,8 +291,26 @@ Cloudflare  → HTTPS → Oracle VM（驗 Cloudflare Origin Certificate）
 
 **可預防的思路：**
 
-- 設完後從外部 `curl -v https://api.yourdomain.com/health`，驗憑證鏈完整且被信任
-- 在 VM 內用 `curl -v https://localhost/health`（直接對 VM 用 origin cert 測），驗 Nginx 正確讀 PEM/KEY
+- 從外部跑 `curl -v https://api.yourdomain.com/health`，這驗的是使用者看到的路徑：Cloudflare edge certificate 是否對你的 domain 有效，不是在驗 VM 上的 Origin Certificate。
+- 不要用 `curl -v https://localhost/health` 驗 Cloudflare Origin Certificate。`localhost` 不符合 certificate SAN，而且一般 OS trust store 不會信任 Cloudflare 私有的 Origin CA。
+- 如果要直接驗 Cloudflare → origin 這一段，要用真實 hostname 當 SNI / Host header 連到 VM origin IP，並明確信任 Cloudflare Origin CA：
+
+  ```bash
+  curl -v --resolve api.yourdomain.com:443:<origin-ip> \
+    --cacert cloudflare-origin-ca.pem \
+    https://api.yourdomain.com/health
+  ```
+
+  或用 OpenSSL 檢查 Nginx 實際送出的 certificate：
+
+  ```bash
+  openssl s_client \
+    -connect <origin-ip>:443 \
+    -servername api.yourdomain.com \
+    -CAfile cloudflare-origin-ca.pem
+  ```
+
+核心心智模型：外部使用者驗到的是 Cloudflare edge certificate；Cloudflare 在 Full (strict) 模式下連回 VM 時，才會驗 Origin Certificate。
 
 ---
 

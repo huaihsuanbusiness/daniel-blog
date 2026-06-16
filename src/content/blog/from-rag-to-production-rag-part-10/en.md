@@ -291,8 +291,26 @@ Cloudflare  → HTTPS → Oracle VM (validates Cloudflare Origin Certificate)
 
 **Prevention framework:**
 
-- After setup, test from outside with `curl -v https://api.yourdomain.com/health`—verify the certificate chain is complete and trusted
-- On VM, test `curl -v https://localhost/health` (using the origin cert directly against the VM)—verify Nginx correctly reads the PEM/KEY files
+- Test the public path from outside with `curl -v https://api.yourdomain.com/health`. This verifies the certificate the user sees: Cloudflare's edge certificate for your domain, not the Origin Certificate installed on the VM.
+- Do not use `curl -v https://localhost/health` to validate a Cloudflare Origin Certificate. `localhost` does not match the certificate SAN, and normal OS trust stores do not trust Cloudflare's private Origin CA.
+- To test the origin leg directly, connect to the VM's origin IP with the real hostname as SNI and Host header, and trust Cloudflare's Origin CA explicitly:
+
+  ```bash
+  curl -v --resolve api.yourdomain.com:443:<origin-ip> \
+    --cacert cloudflare-origin-ca.pem \
+    https://api.yourdomain.com/health
+  ```
+
+  Or inspect the presented certificate with OpenSSL:
+
+  ```bash
+  openssl s_client \
+    -connect <origin-ip>:443 \
+    -servername api.yourdomain.com \
+    -CAfile cloudflare-origin-ca.pem
+  ```
+
+The mental model: external users validate Cloudflare's edge certificate; Cloudflare validates the Origin Certificate when it connects to your VM in Full (strict) mode.
 
 ---
 

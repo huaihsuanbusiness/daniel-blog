@@ -344,25 +344,58 @@ async def list_documents(req: Request):
     return await db.query("SELECT * FROM documents")
 ```
 
-為什麼錯：app 層 filter 依賴工程師每次都記得寫、少寫一個就全庫 leak；多一層 Postgres RLS（Row Level Security）作 defense in depth、**就算 app 程式碼忘了 filter、DB 層會擋**。
+為什麼錯：app 層 filter 依賴工程師每次都記得寫、少寫一個就全庫 leak；多一層 Postgres RLS（Row Level Security）作 defense in depth 是對的，但 tenant context 不能從 client-controlled header 直接拿，也不能用字串拼接 `SET`。tenant 必須來自已驗證的 JWT + membership，而且要綁在單一 transaction 裡，避免 connection pool 把上一個 request 的 tenant 狀態漏到下一個 request。
 
 ```sql
 -- ✅ Postgres RLS：DB 層強制 filter
 ALTER TABLE documents ENABLE ROW LEVEL SECURITY;
+ALTER TABLE documents FORCE ROW LEVEL SECURITY;
 
 CREATE POLICY tenant_isolation ON documents
-  USING (tenant_id = current_setting('app.tenant_id')::text);
+  USING (
+    tenant_id = current_setting('app.tenant_id', true)
+    AND EXISTS (
+      SELECT 1
+      FROM tenant_memberships tm
+      WHERE tm.user_id = current_setting('app.user_id', true)
+        AND tm.tenant_id = documents.tenant_id
+    )
+  );
 ```
 
 ```python
-# ✅ app 設定 tenant_id context、Postgres 自動 filter
+# ✅ tenant context 來自 JWT + membership，並且只在 transaction 內有效
 @app.get("/documents")
-async def list_documents(req: Request):
-    tenant_id = req.headers.get("X-Tenant-Id")
-    await db.execute(f"SET app.tenant_id = '{tenant_id}'")
-    # 就算這裡忘了加 WHERE tenant_id = ...，RLS 還是會擋
-    return await db.query("SELECT * FROM documents")
+async def list_documents(
+    req: Request,
+    auth: AuthContext = Depends(verify_jwt),
+):
+    requested_tenant = req.query_params.get("tenant_id")
+    membership = await db.fetchrow(
+        """
+        SELECT tenant_id
+        FROM tenant_memberships
+        WHERE user_id = $1 AND tenant_id = $2
+        """,
+        auth.user_id,
+        requested_tenant,
+    )
+    if not membership:
+        raise HTTPException(403, "No tenant access")
+
+    async with db.transaction():
+        # set_config(..., true) 是 transaction-local。
+        # 這樣可以避免 SQL injection，也避免 pooled connection 洩漏上一個 tenant。
+        await db.execute("SELECT set_config('app.user_id', $1::text, true)", auth.user_id)
+        await db.execute("SELECT set_config('app.tenant_id', $1::text, true)", membership["tenant_id"])
+        # 就算這裡忘了加 WHERE tenant_id = ...，RLS 還是會擋
+        return await db.fetch("SELECT * FROM documents")
 ```
+
+兩個 production 細節要特別記：
+
+- 一般 API 流量要用受限 app role。table owner 和帶 `BYPASSRLS` 的 role 可能繞過 policy；`FORCE ROW LEVEL SECURITY` 可以讓 table owner 也套 policy，但 superuser / `BYPASSRLS` role 仍然不該進 request path。
+- 加 cross-tenant integration test：user A 在 `company-a` 只能列出 `company-a` 文件；同一個 JWT 改查 `tenant_id=company-b` 必須回 403；request 結束後重用同一條 pooled connection，在沒有重新設定 transaction-local context 前不能看到任何 tenant 資料。
 
 ![ACL 多層防護圖](/images/from-rag-to-production-rag-part-9/part-09-acl-defense-in-depth.png)
 

@@ -344,25 +344,58 @@ async def list_documents(req: Request):
     return await db.query("SELECT * FROM documents")
 ```
 
-Why it's wrong: app-layer filter relies on engineers remembering to write it every time; forget one and the full library leaks. Add another layer of Postgres RLS (Row Level Security) as defense in depth — **even if app code forgets to filter, the DB layer blocks it**.
+Why it's wrong: app-layer filter relies on engineers remembering to write it every time; forget one and the full library leaks. Add Postgres RLS (Row Level Security) as defense in depth, but do it carefully: the tenant context must come from verified identity and membership, not from a client-controlled header, and it must be scoped to one transaction so pooled database connections cannot leak a previous tenant into the next request.
 
 ```sql
 -- ✅ Postgres RLS: enforced filter at the DB layer
 ALTER TABLE documents ENABLE ROW LEVEL SECURITY;
+ALTER TABLE documents FORCE ROW LEVEL SECURITY;
 
 CREATE POLICY tenant_isolation ON documents
-  USING (tenant_id = current_setting('app.tenant_id')::text);
+  USING (
+    tenant_id = current_setting('app.tenant_id', true)
+    AND EXISTS (
+      SELECT 1
+      FROM tenant_memberships tm
+      WHERE tm.user_id = current_setting('app.user_id', true)
+        AND tm.tenant_id = documents.tenant_id
+    )
+  );
 ```
 
 ```python
-# ✅ App sets tenant_id context, Postgres filters automatically
+# ✅ Tenant context comes from JWT + membership and is transaction-local.
 @app.get("/documents")
-async def list_documents(req: Request):
-    tenant_id = req.headers.get("X-Tenant-Id")
-    await db.execute(f"SET app.tenant_id = '{tenant_id}'")
-    # even if the WHERE tenant_id = ... is forgotten here, RLS still blocks
-    return await db.query("SELECT * FROM documents")
+async def list_documents(
+    req: Request,
+    auth: AuthContext = Depends(verify_jwt),
+):
+    requested_tenant = req.query_params.get("tenant_id")
+    membership = await db.fetchrow(
+        """
+        SELECT tenant_id
+        FROM tenant_memberships
+        WHERE user_id = $1 AND tenant_id = $2
+        """,
+        auth.user_id,
+        requested_tenant,
+    )
+    if not membership:
+        raise HTTPException(403, "No tenant access")
+
+    async with db.transaction():
+        # set_config(..., true) is LOCAL to this transaction.
+        # It avoids SQL injection and prevents tenant leakage across pooled connections.
+        await db.execute("SELECT set_config('app.user_id', $1::text, true)", auth.user_id)
+        await db.execute("SELECT set_config('app.tenant_id', $1::text, true)", membership["tenant_id"])
+        # even if the WHERE tenant_id = ... is forgotten here, RLS still blocks
+        return await db.fetch("SELECT * FROM documents")
 ```
+
+Two operational details matter:
+
+- Use a restricted application role for normal traffic. Table owners and roles with `BYPASSRLS` can bypass policies; `FORCE ROW LEVEL SECURITY` keeps the table owner honest, but superusers and `BYPASSRLS` roles still need to stay out of the request path.
+- Add a cross-tenant integration test: user A in `company-a` can list only `company-a` documents; the same JWT with `tenant_id=company-b` returns 403; a reused pooled connection after the request cannot see either tenant without setting a fresh transaction-local context.
 
 ![ACL defense in depth](/images/from-rag-to-production-rag-part-9/part-09-acl-defense-in-depth.png)
 
