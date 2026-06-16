@@ -181,8 +181,6 @@ This time I did not keep the old scenario IDs, nor did I use raw Make module num
 | V2-07 | Generate Job Output Tool | public tool | Performs deep analysis, cover-letter generation, or interview-brief generation after resolution succeeds. |
 | V2-08 | Tool Run Logger | internal pattern | Records standardised run metadata, outputs, and errors. |
 
-The full naming map is in `./resource/component-index.md`.
-
 ## Phase 1: do not start with toolisation. Start with the contract.
 
 The most important first step in this migration was not renaming scenarios.  
@@ -497,5 +495,3 @@ That is the moment the system starts to feel less like a growing flowchart maze 
 
 ## Notes
 
-- Official references, specs, and engineering documents are listed in `./resource/references.md`.
-- The full naming table is in `./resource/component-index.md`.
