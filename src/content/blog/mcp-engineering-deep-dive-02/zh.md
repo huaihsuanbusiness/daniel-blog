@@ -1,6 +1,6 @@
 ---
 title: "MCP 工程深化 02：Security / auth / public server hardening 不是補丁，而是產品邊界"
-description: "Part 02 of the MCP Engineering Deep Dive series."
+description: "從認證、授權、網路暴露、祕密管理與攻擊面出發，整理公開 MCP Server 上線前必須完成的安全強化。"
 categories: ["ai"]
 tags: ["ai", "mcp", "agent", "workflow", "automation", "architecture"]
 date: 2026-03-31T20:11:00
