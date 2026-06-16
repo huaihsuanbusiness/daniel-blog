@@ -435,5 +435,3 @@ Mature invisible infrastructure does not merely feel smooth. It preserves contro
 
 ---
 
-References are in `resource/references.md`.  
-Image notes are in `resource/image-asset-plan.md`.
