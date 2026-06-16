@@ -1,6 +1,6 @@
 ---
 title: "OpenClaw 快速上手 05｜哪些事適合交給 OpenClaw，哪些事其實不該交給它"
-description: "一篇偏觀點也偏方法的判準文。用 Daniel 的近第一人稱工作路線，拆清楚 OpenClaw 的甜蜜點、代價、反例，以及哪些事情其實用 Codex CLI 或普通聊天工具更划算。"
+description: "一套判斷哪些工作適合交給 OpenClaw、哪些工作應保留人工控制的實用框架，並以我的真實工作流程為例。"
 categories: ["openclaw"]
 tags: ["openclaw", "agent", "gateway", "self-hosted", "tools", "memory"]
 date: 2026-04-02T14:44:00
