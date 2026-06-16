@@ -298,5 +298,3 @@ Web3 can be invisible. Control cannot.
 
 ---
 
-References are in `resource/references.md`.  
-Image specifications are in `resource/image-asset-plan.md`.
