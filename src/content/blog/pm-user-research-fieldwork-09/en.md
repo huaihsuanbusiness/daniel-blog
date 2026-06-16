@@ -1,16 +1,12 @@
 ---
 title: "PM User Research and Fieldwork 04 － Five Participants Is Not a Recruitment Strategy: How PMs Find the Right Users, Screen Them Properly, and Avoid the Wrong Ones"
-description: "A great many research rounds do not fail at the discussion guide. They fail earlier."
+description: "Recruiting five participants is not a strategy. This article explains how research goals, segment variation, risk, and saturation should shape participant selection."
 categories: ["pm"]
 tags: []
 date: 2026-04-05T16:22:00
 series: "PM User Research and Fieldwork"
 seriesOrder: 9
 ---
-
-## Article type
-
-Professional method piece
 
 ## The one thing this piece is trying to say
 
