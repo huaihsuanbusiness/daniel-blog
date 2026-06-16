@@ -1,6 +1,6 @@
 ---
 title: "自主建造 MCP Server — Part 4：skills 是什麼，以及 skills 架構怎麼設計"
-description: "Part 4 of the MCP Server build series."
+description: "說明 skill 在 MCP 架構中的角色、責任邊界與組合方式，以及它和底層 tool 的差異。"
 categories: ["ai"]
 tags: ["ai", "mcp", "agent", "workflow", "automation", "architecture"]
 date: 2026-03-31T19:26:00
