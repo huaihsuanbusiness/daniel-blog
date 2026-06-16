@@ -1,21 +1,12 @@
 ---
 title: "PM 用戶研究與田野訪查 05 － Outreach、Screener、Incentive、Consent：把研究招募做成可重複流程，而不是每次臨時約人"
-description: "- 不知道該去哪裡找人
-- 發了一封邀請信就開始等奇蹟
-- screener 問得像在提示正確答案
-- 招到人後排程很亂，no-show 一多就整輪崩掉
-- incentive 拖很久才發，下一次更難找人
-- consent 和資料處理沒有講清楚，後面才補救"
+description: "整理 outreach、screener、incentive 與 consent 的實務做法，讓招募流程符合研究目標、效率與倫理要求。"
 categories: ["pm"]
 tags: []
 date: 2026-04-05T16:17:00
 series: "PM 用戶研究與田野訪查"
 seriesOrder: 4
 ---
-
-## 文章類型
-
-操作方法文 / Research Ops 入門
 
 ## 這篇想先講的一句話
 

@@ -1,16 +1,12 @@
 ---
 title: "PM 用戶研究與田野訪查 03 － 不是所有研究都叫訪談：User Interview、Usability Test、Field Study、Diary Study 到底差在哪"
-description: "很多 PM 不是沒有做研究，而是把太多不同方法都叫成「訪談」。"
+description: "訪談只是研究方法之一。這篇依照能取得的證據，比較訪談、觀察、日誌研究、易用性測試等方法。"
 categories: ["pm"]
 tags: []
 date: 2026-04-05T16:16:00
 series: "PM 用戶研究與田野訪查"
 seriesOrder: 3
 ---
-
-## 文章類型
-
-方法文 / 選型文
 
 ## 這篇想先講的一句話
 
