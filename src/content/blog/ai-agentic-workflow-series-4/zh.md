@@ -1,6 +1,6 @@
 ---
 title: "把 Make-first workflow 重構成 MCP execution engine：從工具化到契約化的實戰遷移"
-description: "如何把 Make-first job agent 迁移成干净的 MCP execution engine，从流程驱动设计走向契约驱动架构。"
+description: "說明如何把 Make-first job agent 遷移為乾淨的 MCP execution engine，從流程驅動設計轉向契約驅動架構。"
 categories: ["ai"]
 tags: ["ai", "make", "mcp", "agent", "workflow", "automation", "architecture"]
 date: 2026-03-31T17:45:00
@@ -184,8 +184,6 @@ v2 我沒有把整套系統重寫成另一種框架。
 | V2-06 | Resolve Job Reference Helper | helper tool | 將 job id / company + title resolve 成唯一 job。 |
 | V2-07 | Generate Job Output Tool | public tool | 在 resolve 成功後做深度分析、產出 cover letter 或 interview brief。 |
 | V2-08 | Tool Run Logger | internal pattern | 用統一欄位記錄每次 tool run 的輸入、摘要、錯誤與 meta。 |
-
-完整命名表我放在 `./resource/component-index.md`。
 
 ## Phase 1：不是先工具化，而是先把 contract 定下來
 
@@ -473,5 +471,3 @@ ChatGPT 負責對人說話、追問、整合與判斷。
 
 ## Notes
 
-- 本文引用的官方文件、規格與工程文章，整理在 `./resource/references.md`。
-- 完整工具命名表整理在 `./resource/component-index.md`。
