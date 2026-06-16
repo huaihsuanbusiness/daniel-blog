@@ -7,7 +7,7 @@ date: 2026-04-02T14:41:00
 featured: false
 ---
 
-> Audience: readers who are comfortable with the terminal and want OpenClaw running properly on macOS / Mac mini.  
+> Audience: readers who are comfortable with the terminal and want OpenClaw running properly on macOS / Mac mini.
 > The goal here is not to unlock everything. The goal is to build a **recoverable, verifiable, maintainable** first install.
 
 ---
@@ -44,7 +44,7 @@ Discord, skills, memory, and remote access come later in Part 2.
 
 ## Why this article uses Mac mini as the mainline, not Oracle VM, Docker, or a VPS
 
-Let’s settle this early.
+Let's settle this early.
 
 ### Why Mac mini is a strong first host
 For individual builders, the Mac mini path has several advantages:
@@ -54,7 +54,7 @@ For individual builders, the Mac mini path has several advantages:
 - you do not have to solve remote auth, SSH tunnels, tailnets, container mounts, and service-manager differences on day one
 
 ### Why Oracle VM is not the main teaching path
-Daniel’s Oracle VM experiment is valuable precisely because it shows the difference between “works” and “fits”.
+This Oracle VM experiment is valuable precisely because it shows the difference between "works" and "fits".
 
 A 1GB RAM VM can get you far enough to prove that:
 - the CLI can run
@@ -100,7 +100,7 @@ Best when:
 
 For this series, the practical stance is:
 
-> **Understand Path A, but think like Path B.**  
+> **Understand Path A, but think like Path B.**
 > In other words, know what the official installer does, while still checking your Node and PATH state deliberately.
 
 ---
@@ -126,14 +126,14 @@ The mainline here is **Codex OAuth**, meaning:
 - you are not using the OpenAI API key route for this install
 
 ### 4. Do not install the whole stack as root
-Community reports already show how easy it is to create pain with global npm prefixes and wrong ownership on a clean macOS install.  
+Community reports already show how easy it is to create pain with global npm prefixes and wrong ownership on a clean macOS install.
 For a personal machine, using your normal user account is the sane starting point.
 
 ---
 
 ## Step 1: check your Node path
 
-OpenClaw’s official install docs and Node docs currently say:
+OpenClaw's official install docs and Node docs currently say:
 
 - Node 24 is recommended
 - Node 22 LTS remains supported
@@ -245,14 +245,14 @@ openclaw models auth login --provider openai-codex
 ```
 
 ### What to expect from OAuth
-Normally the browser opens and you complete the ChatGPT sign-in and approval flow.  
-Think of this as “granting subscription-backed model access”, not as manually pasting a secret token into config.
+Normally the browser opens and you complete the ChatGPT sign-in and approval flow.
+Think of this as "granting subscription-backed model access", not as manually pasting a secret token into config.
 
 ---
 
 ## Step 4: verify that LaunchAgent really took over
 
-The real success condition on macOS is not “I once launched OpenClaw”. It is “launchd now owns the service lifecycle”.
+The real success condition on macOS is not "I once launched OpenClaw". It is "launchd now owns the service lifecycle".
 
 Official docs currently state that:
 - macOS uses a per-user LaunchAgent
@@ -282,7 +282,7 @@ openclaw gateway start
 
 ## Step 5: verify the Gateway, dashboard, and token path
 
-Now you are proving the whole local control path, not just “the install seemed to work”.
+Now you are proving the whole local control path, not just "the install seemed to work".
 
 ### Basic checks
 ```bash
@@ -307,7 +307,7 @@ openclaw config get gateway.auth.token
 Then paste it into the Control UI settings.
 
 ### Do not casually disable localhost token auth
-OpenClaw now enforces token auth on loopback by default.  
+OpenClaw now enforces token auth on loopback by default.
 That is not pointless ceremony. It prevents arbitrary local processes from calling your gateway.
 
 If you do not have a token yet:
@@ -317,12 +317,12 @@ openclaw doctor --generate-gateway-token
 ```
 
 ### One operational rule
-Do not treat the token as harmless just because the gateway is local.  
+Do not treat the token as harmless just because the gateway is local.
 Do not leave it in chat logs, screenshots, or long-lived URLs if you can avoid it.
 
 ---
 
-## What counts as “done” for the first install
+## What counts as "done" for the first install
 
 You do not need Discord, browser automation, or a big skills stack to call this successful.
 
@@ -352,16 +352,16 @@ echo $PATH
 ```
 
 ## 2. Wrong Node version after installation
-Again, usually PATH.  
+Again, usually PATH.
 Fix Node visibility before reinstalling OpenClaw.
 
 ## 3. macOS permissions or xattr behaviour makes the gateway look dead
-Community reports have already documented macOS cases where the gateway is effectively blocked and the user needs to inspect Privacy & Security behaviour.  
+Community reports have already documented macOS cases where the gateway is effectively blocked and the user needs to inspect Privacy & Security behaviour.
 If the CLI is installed but the gateway will not come up, do not look only at OpenClaw logs. Check the OS security layer too.
 
 ## 4. `openclaw gateway restart` and the service vanishes
-There is a GitHub report describing a macOS path where restart can leave the service missing, after which `openclaw gateway install` plus `start` is needed to recover.  
-If you see “service not installed”, try:
+There is a GitHub report describing a macOS path where restart can leave the service missing, after which `openclaw gateway install` plus `start` is needed to recover.
+If you see "service not installed", try:
 
 ```bash
 openclaw gateway install
@@ -369,18 +369,18 @@ openclaw gateway start
 ```
 
 ## 5. Docker on macOS hangs after onboarding output
-Community reports also show Docker-on-Mac flows that appear to finish onboarding but do not leave a properly running container.  
+Community reports also show Docker-on-Mac flows that appear to finish onboarding but do not leave a properly running container.
 This is exactly why Docker is not my first-install recommendation.
 
 ## 6. Do not expose the gateway to the LAN or the internet on day one
-Keep it on localhost first.  
+Keep it on localhost first.
 Remote access comes later, with SSH tunnels or Tailscale Serve.
 
 ---
 
-## Daniel’s Oracle VM example: why it stays as a counterexample, not the mainline
+## Daniel's Oracle VM example: why it stays as a counterexample, not the mainline
 
-Your Oracle VM work is useful because it surfaces real operational friction:
+This Oracle VM work is useful because it surfaces real operational friction:
 
 - manual swap
 - Node and npm global path cleanup
@@ -398,7 +398,7 @@ For most technically comfortable personal users, getting the Mac mini baseline s
 
 ## What Part 2 will cover
 
-Part 2 is where we move from “alive” to “actually useful”:
+Part 2 is where we move from "alive" to "actually useful":
 
 - Discord pairing and access control
 - skills installation and governance
