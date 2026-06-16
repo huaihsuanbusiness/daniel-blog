@@ -330,8 +330,4 @@ Once that clicks, the rest of the conversation around skill-first design, FastMC
 
 ## Further reading
 
-The official docs and tutorial references I used are collected in:
-
-
-
 ---
