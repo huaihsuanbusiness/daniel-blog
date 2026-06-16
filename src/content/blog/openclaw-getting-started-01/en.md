@@ -146,7 +146,7 @@ Use this when you:
 
 Both OpenAI’s Codex docs and OpenClaw’s provider docs separate these paths clearly.
 
-For this series, the mainline is **Codex OAuth**, because that matches Daniel’s real setup and is a very common path for individual builders. But two rules matter:
+For this series, the mainline is **Codex OAuth**, because it matches my real setup and is a very common path for individual builders. But two rules matter:
 
 1. **An OAuth session is not an API key.**  
 2. Switching between `openai/*` and `openai-codex/*` is not just a naming detail. It changes the provider mode and auth path.
