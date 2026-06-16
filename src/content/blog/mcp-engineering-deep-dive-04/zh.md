@@ -1,6 +1,6 @@
 ---
 title: "MCP 工程深化 04：skills 與 runtime selection 不是一回事"
-description: "Part 04 of the MCP Engineering Deep Dive series."
+description: "釐清 skill design 與 runtime selection 的不同責任，避免把能力定義、執行環境與模型選擇綁死在一起。"
 categories: ["ai"]
 tags: ["ai", "mcp", "agent", "workflow", "automation", "architecture"]
 date: 2026-03-31T23:51:00
