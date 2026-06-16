@@ -99,26 +99,44 @@ def get_hybrid_store(client: QdrantClient, name: str) -> QdrantVectorStore:
 
 Dense 強的地方 BM25 弱，BM25 強的地方 Dense 弱。**production 不是二選一**。早期 RAG 系統只跑 dense search，後來出事，**9 成都是 dense search 沒撈到該撈的精確字串條款**。
 
-**中文 + BM25 的獨特坑**：很多 BM25 預設是英文斷詞，中文要另外處理。LlamaIndex 的 Qdrant hybrid integration 用 `Qdrant/bm25` model 透過 FastEmbed 跑，但中文斷詞品質不穩。實務上**要驗證** sparse vector 真的有非零值：
+**中文 + BM25 的獨特坑**：很多 BM25 預設偏英文斷詞，中文要另外驗證。LlamaIndex 的 Qdrant hybrid integration 用 `Qdrant/bm25` model 透過 FastEmbed 跑。下面第一段只驗證「FastEmbed 對中英混合 query 有產生非空 sparse vector」，它**不能證明 Jieba 有被 `Qdrant/bm25` 使用**。
+
+```python
+from fastembed import SparseTextEmbedding
+
+# Qdrant/FastEmbed sparse-vector sanity check。
+# 這段只驗證 sparse output 存在，沒有設定 custom tokenizer。
+sparse_model = SparseTextEmbedding(model_name="Qdrant/bm25")
+
+query = "early termination 違約金"
+sparse_vec = list(sparse_model.embed([query]))[0]
+non_zero = len(sparse_vec.values)
+assert non_zero > 0, f"Qdrant/bm25 產生空 sparse vector: {non_zero}"
+```
+
+如果你要測的是「中文斷詞本身」，要用 tokenizer 真的有被傳進 index 的 local BM25 檢查：
 
 ```python
 import jieba
-from fastembed import SparseTextEmbedding
-
-# 中文斷詞 + 驗證 BM25 sparse vector
-sparse_model = SparseTextEmbedding(model_name="Qdrant/bm25")
+from rank_bm25 import BM25Okapi
 
 def chinese_tokenize(text: str) -> list[str]:
-    return [t for t in jieba.cut(text) if len(t.strip()) > 1]
+    return [t for t in jieba.cut(text) if t.strip()]
 
-# 驗證 sparse vector 真的命中
-query = "early termination 違約金"
-sparse_vec = list(sparse_model.embed([query]))[0]
-non_zero = sum(1 for v in sparse_vec.values if v > 0)
-assert non_zero >= 3, f"BM25 中文斷詞失敗: {non_zero} 個非零值（期望 ≥3）"
+documents = [
+    "提前終止需要 60 天書面通知，違約金為 6 個月訂閱費。",
+    "付款條款為每月結算，發票到期日為 30 天。",
+    "合作範圍包含資料串接與系統維運。",
+]
+tokenized_docs = [chinese_tokenize(doc) for doc in documents]
+bm25 = BM25Okapi(tokenized_docs)
+
+query_tokens = chinese_tokenize("提前終止 違約金")
+scores = bm25.get_scores(query_tokens)
+assert scores.argmax() == 0
 ```
 
-**別看到「hybrid」就以為中文也吃**——沒跑過這個驗證就上 production，會出現「hybrid 也搜不到中文精確詞」的災難。
+**別看到「hybrid」就以為中文也吃**。要分開驗證兩件事：第一，Qdrant/FastEmbed sparse vector 是否有正常輸出；第二，你實際採用的中文斷詞策略是否真的進到 BM25 index 裡。
 
 ### 強化 2：Reranking（粗找 → 精排）
 

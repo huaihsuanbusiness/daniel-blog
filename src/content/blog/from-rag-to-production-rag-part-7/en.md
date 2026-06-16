@@ -97,7 +97,7 @@ class ClaimCitation(BaseModel):
     support_score: float
 ```
 
-A real query actually looks like this (faithfulness catches the fabricated 60-day claim):
+A real query can look like this when faithfulness catches one unsupported claim. In this example, one claim is supported, one claim is not, so the score is 1 / 2 = 0.5:
 
 ```json
 {
@@ -105,15 +105,42 @@ A real query actually looks like this (faithfulness catches the fabricated 60-da
     "score": 0.5,
     "passed": false,
     "claims": [
-      {"claim": "early termination penalty is 6 months subscription fee", "supported": true, "supporting_sources": ["[2]"], "reason": "Section 3.3 states it explicitly"},
-      {"claim": "early termination needs 60 days written notice", "supported": true, "supporting_sources": ["[2]"], "reason": "Section 3.3 states 60 days written notice explicitly"}
+      {
+        "claim": "early termination penalty is 6 months subscription fee",
+        "supported": true,
+        "supporting_sources": ["[2]"],
+        "reason": "Section 3.3 states it explicitly"
+      },
+      {
+        "claim": "early termination needs 30 days written notice",
+        "supported": false,
+        "supporting_sources": [],
+        "reason": "The retrieved context says 60 days written notice, not 30 days"
+      }
     ],
-    "warnings": []
+    "warnings": ["unsupported_claim: early termination needs 30 days written notice"]
   },
   "citation_check": {
-    "score": 0.92,
-    "passed": true,
-    "claim_citations": [{"claim": "penalty 6 months subscription fee", "cited_markers": ["[2]"], "supported_markers": ["[2]"], "missing_citation": false, "support_score": 1.0}]
+    "score": 0.5,
+    "passed": false,
+    "claim_citations": [
+      {
+        "claim": "penalty 6 months subscription fee",
+        "cited_markers": ["[2]"],
+        "supported_markers": ["[2]"],
+        "unsupported_markers": [],
+        "missing_citation": false,
+        "support_score": 1.0
+      },
+      {
+        "claim": "30 days written notice",
+        "cited_markers": ["[2]"],
+        "supported_markers": [],
+        "unsupported_markers": ["[2]"],
+        "missing_citation": false,
+        "support_score": 0.0
+      }
+    ]
   },
   "observability": {
     "langfuse": {"enabled": true, "sent": true, "provider": "langfuse"}
@@ -292,8 +319,11 @@ In other words, Agentic RAG observability is not "log more stuff." It turns ever
 
 ## RAGAS / LLM judge should not run synchronously in the user path
 
+> **RAGAS API version note:** the code below uses the older `evaluate(Dataset.from_list(...), metrics=[...])` style. RAGAS' [current quickstart documentation](https://docs.ragas.io/en/stable/getstarted/evals/) shows newer dataset objects such as `SingleTurnSample` and `EvaluationDataset`, and also exposes a `Dataset` abstraction for saved evaluation datasets. Treat this snippet as a version-pinned example, not a universal copy-paste target. Pin `ragas` in your project and update the runner when you upgrade.
+
 ```python
 # scripts/run_offline_eval.py
+# Tested shape: ragas 0.x / legacy evaluate(...) style.
 from datasets import Dataset
 from ragas import evaluate
 from ragas.metrics import Faithfulness, ContextPrecision, AnswerRelevancy

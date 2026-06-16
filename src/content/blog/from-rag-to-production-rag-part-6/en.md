@@ -99,26 +99,44 @@ def get_hybrid_store(client: QdrantClient, name: str) -> QdrantVectorStore:
 
 Dense is strong where BM25 is weak, and BM25 is strong where dense is weak. **Production retrieval is rarely either/or.** In this project, many dense-only failures came from missing exact-string clauses that should have been retrieved.
 
-**The Chinese + BM25 trap.** A lot of BM25 setups default to English tokenisation; Chinese needs extra handling. The LlamaIndex Qdrant hybrid integration uses the `Qdrant/bm25` model through FastEmbed, but the Chinese tokenisation is uneven. In practice, **verify** that the sparse vector is actually non-zero:
+**The Chinese + BM25 trap.** A lot of BM25 setups default to English tokenisation, and Chinese needs explicit verification. The LlamaIndex Qdrant hybrid integration uses the `Qdrant/bm25` model through FastEmbed. The first check below only verifies that FastEmbed produces a non-empty sparse vector for the mixed Chinese / English query. It does **not** prove that Jieba is being used inside `Qdrant/bm25`.
+
+```python
+from fastembed import SparseTextEmbedding
+
+# Qdrant/FastEmbed sparse-vector sanity check.
+# This verifies sparse output exists; it does not configure a custom tokenizer.
+sparse_model = SparseTextEmbedding(model_name="Qdrant/bm25")
+
+query = "early termination 違約金"
+sparse_vec = list(sparse_model.embed([query]))[0]
+non_zero = len(sparse_vec.values)
+assert non_zero > 0, f"Qdrant/bm25 produced an empty sparse vector: {non_zero}"
+```
+
+If you want to test Chinese tokenisation itself, use a local BM25 check where the tokenizer is actually passed into the index:
 
 ```python
 import jieba
-from fastembed import SparseTextEmbedding
-
-# Chinese tokenisation + BM25 sparse vector verification
-sparse_model = SparseTextEmbedding(model_name="Qdrant/bm25")
+from rank_bm25 import BM25Okapi
 
 def chinese_tokenize(text: str) -> list[str]:
-    return [t for t in jieba.cut(text) if len(t.strip()) > 1]
+    return [t for t in jieba.cut(text) if t.strip()]
 
-# verify the sparse vector is actually hitting terms
-query = "early termination 違約金"
-sparse_vec = list(sparse_model.embed([query]))[0]
-non_zero = sum(1 for v in sparse_vec.values if v > 0)
-assert non_zero >= 3, f"BM25 Chinese tokenisation failed: {non_zero} non-zero (expected ≥3)"
+documents = [
+    "提前終止需要 60 天書面通知，違約金為 6 個月訂閱費。",
+    "付款條款為每月結算，發票到期日為 30 天。",
+    "合作範圍包含資料串接與系統維運。",
+]
+tokenized_docs = [chinese_tokenize(doc) for doc in documents]
+bm25 = BM25Okapi(tokenized_docs)
+
+query_tokens = chinese_tokenize("提前終止 違約金")
+scores = bm25.get_scores(query_tokens)
+assert scores.argmax() == 0
 ```
 
-**Do not assume "hybrid" automatically solves Chinese retrieval.** Verify sparse vector behaviour early, or Chinese exact-term retrieval can still fail in production.
+**Do not assume "hybrid" automatically solves Chinese retrieval.** Verify sparse-vector output and, separately, verify the Chinese tokenisation strategy you actually use. The first test checks Qdrant/FastEmbed sparse behaviour; the second test checks Jieba tokenisation in a local BM25 index.
 
 ### Upgrade 2: reranking (coarse-to-fine)
 
