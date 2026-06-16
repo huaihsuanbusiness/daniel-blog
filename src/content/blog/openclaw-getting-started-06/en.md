@@ -1,6 +1,6 @@
 ---
 title: "OpenClaw Getting Started 06 | How to Choose Models: OpenAI, Claude, Gemini, Grok, MiniMax, z.ai, and local models"
-description: "A practical model-selection guide for OpenClaw beginners, covering API providers, subscription-based routes, cost feel, quota risk, agent suitability, and Daniel's real-world setup."
+description: "A practical model-selection guide covering cost, latency, reasoning, tool use, and my real OpenClaw setup."
 categories: ["openclaw"]
 tags: ["openclaw", "models", "llm", "providers", "agent", "gateway"]
 date: 2026-04-02T22:31:00
@@ -97,7 +97,7 @@ That is exactly why I ended up with a **multi-model setup**, not a single “bes
 ## A table that is actually useful
 
 > To be clear, this is not a benchmark scoreboard.  
-> It is a practical comparison built from Daniel’s real OpenClaw usage, mixed with official pricing, plan rules, provider support status, and the provider landscape as of February to April 2026.
+> It is a practical comparison built from my real OpenClaw usage, mixed with official pricing, plan rules, provider support status, and the provider landscape as of February to April 2026.
 
 | Provider / route | How it connects to OpenClaw | Cost feel | Smartness | Speed feel | Agent fit | Guardrails | What I would use it for |
 |---|---|---:|---|---|---|---|---|
