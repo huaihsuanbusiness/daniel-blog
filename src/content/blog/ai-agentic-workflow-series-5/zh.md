@@ -1,6 +1,6 @@
 ---
 title: "AI代理工作流系列 5 — 為什麼我最後連 Make MCP server 也換掉，改成自己架 gateway server"
-description: "AI Agentic Workflow Series 5: migrating from Make MCP Server to a self-hosted FastMCP skill gateway."
+description: "說明我為什麼把 Make MCP Server 換成自架 FastMCP skill gateway，以及遷移時如何處理契約、權限、部署與維運邊界。"
 categories: ["ai"]
 tags: ["ai", "mcp", "agent", "workflow", "automation", "architecture"]
 date: 2026-04-01T00:14:00
