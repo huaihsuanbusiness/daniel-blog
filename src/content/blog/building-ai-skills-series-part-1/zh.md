@@ -1,6 +1,6 @@
 ---
 title: "打造AI Skill 系列 Part 1：Skill、Tool、MCP、Runtime、Orchestrator 到底差在哪？"
-description: "打造AI Skill 系列 Part 1：Skill、Tool、MCP、Runtime、Orchestrator 到底差在哪？"
+description: "釐清 Skill、Tool、MCP、Runtime 與 Orchestrator 的責任邊界，避免把不同層級的能力混成同一個概念。"
 categories: ["ai"]
 tags: ["ai", "mcp", "skill", "agent", "workflow", "architecture"]
 date: 2026-04-01T20:11:00
