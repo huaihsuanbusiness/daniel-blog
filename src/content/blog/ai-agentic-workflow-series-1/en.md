@@ -9,7 +9,7 @@ featured: false
 
 Updated: 2026-03-30
 
-![How I choose between LangGraph, n8n, and Make](./resource/langgraph-n8n-make-hero.png)
+![How I choose between LangGraph, n8n, and Make](/langgraph-n8n-make-hero.png)
 
 If you have been looking at agentic workflow tools lately, you have probably already hit comparison fatigue.
 
@@ -34,7 +34,7 @@ But this is not a team-colours piece, and it is not a final technical evaluation
 
 ## How I am comparing them: separating fact from preference
 
-This time I did not rely only on the nine source files Daniel had collected. I also went back through official docs, pricing pages, and a few relevant Make Community discussions. In this draft, I am deliberately separating **fact** from **view**.
+The comparison below is not based on a single source. I also went back through official docs, pricing pages, and a few relevant Make Community discussions. Throughout this article, I separate documented facts from my own judgment.
 
 ### Here is what I am treating as factual ground
 
@@ -52,7 +52,7 @@ This time I did not rely only on the nine source files Daniel had collected. I a
 - how much engineering complexity I am willing to absorb in exchange for more control
 - whether I care more, right now, about lower-friction delivery or a higher-ceiling runtime abstraction
 
-So the more accurate claim is this: **this is Daniel's choice under Daniel's current task shape, not the one true answer for every team.**
+This is my choice for the current task shape, not a universal ranking.
 
 ---
 
