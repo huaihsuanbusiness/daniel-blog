@@ -40,6 +40,9 @@ That is also the attitude I want to establish for this entire series:
 > **Production RAG is not just a system that answers questions.**
 > **It is a system whose path, constraints, and reasoning surface can be inspected.**
 
+
+> **Runtime version note:** the interactive workbench reflects this project's implementation at the time the series was written. UI controls, trace labels, model names, and hosted runtime limits may change; treat the workbench as a live demonstration of the architecture, not a frozen API contract.
+
 ## Before we judge the answer, we should look at the path
 
 If you think of RAG as “retrieve some documents, send them to a model, and return the answer”, you will hit a limit very quickly.

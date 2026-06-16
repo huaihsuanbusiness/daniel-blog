@@ -16,6 +16,9 @@ It began as a 30-line `app.py` printing answers in a local terminal. It took thr
 
 What this piece walks through: those three weeks — when to stop at the minimum version, when to push forward, which abstractions to leave for later.
 
+
+> **Tested API-shape note:** the snippets in this article show the implementation shape used by this project, not a permanent SDK contract. Pin your Python packages, keep a minimal smoke test for each snippet, and re-check LlamaIndex / Qdrant / FastAPI / evaluation-framework docs when upgrading.
+
 ---
 
 ## 1. The three things to do first

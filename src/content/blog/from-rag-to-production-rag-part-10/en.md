@@ -39,6 +39,9 @@ Once the 10 pits are drawn as a map, the article becomes easier to read: this is
 
 One note up front: 2 of these 10 pits (Pit 4, Pit 5) come from my real L34 patch series. The "4-2" / "4-3" / "L27394-L27576" references are my dev-note section numbers and line ranges—you don't need to look them up; they're just provenance markers. The important part: **a poorly written Compose healthcheck can drag down the entire stack**, and no article warned me about this before I hit it myself.
 
+
+> **Version note:** deployment commands age faster than architecture. Treat Docker, Cloudflare, Qdrant Cloud, and hosting examples here as tested operational patterns; before copying a command into production, check the current provider docs and run it in a staging environment first.
+
 ---
 
 ## First Line: Environment Layer

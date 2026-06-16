@@ -30,6 +30,9 @@ seriesOrder: 11
 
 寫在前面：這 3 件事不是「我的成功經驗」，是「做完才看出來的結構」。如果你現在正在做一個 RAG 專案，希望這 3 件事能幫你少走一段。
 
+
+> **Landscape 版本提醒**：本文描述的是 2026 RAG landscape 的座標系，不是永久分類法。工具名與 API 會變；比較穩的是 retrieval、routing、context assembly、evaluation、observability、operations 之間的能力邊界。
+
 ---
 
 ## 觀點 1：11 個 flag 收成 5 種 mode

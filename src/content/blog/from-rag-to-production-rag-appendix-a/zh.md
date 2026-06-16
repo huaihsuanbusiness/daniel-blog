@@ -31,6 +31,8 @@ seriesOrder: 12
 
 ## 使用方式：先看工程步驟，再看工具名
 
+> **工具表版本化提醒**：這份 Appendix 是 capability index，不是 lockfile。凡是版本敏感工具，例如 LlamaIndex、LangChain、Qdrant、RAGAS、DeepEval、Langfuse、OpenAI models、Cloudflare、Docker、託管 vector DB，都應該在專案內維護一份 compatibility note：tested package/service version、current API shape、deprecated method names、migration link，以及證明該列仍可用的 smoke test。
+
 讀這份表時，我建議每一列都用同一個順序問：
 
 1. 這一步到底在解什麼問題？

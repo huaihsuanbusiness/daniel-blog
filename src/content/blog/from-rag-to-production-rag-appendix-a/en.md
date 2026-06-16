@@ -31,6 +31,8 @@ If the first 11 posts are the journey from naive RAG to a production backbone, t
 
 ## How to use this appendix: problem first, tool second
 
+> **Versioning note for this table:** use this appendix as a capability index, not a lockfile. For version-sensitive tools — LlamaIndex, LangChain, Qdrant, RAGAS, DeepEval, Langfuse, OpenAI models, Cloudflare, Docker, and hosted vector databases — keep a project-local compatibility note with: tested package/service version, current API shape, deprecated method names, migration link, and the smoke test that proves the row still works.
+
 For each row, use the same order of questions:
 
 1. What problem does this step solve?

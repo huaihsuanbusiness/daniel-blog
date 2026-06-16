@@ -37,6 +37,9 @@ The combination of those four answers is which mode this query should take.
 
 ![Query Mode Router: how the five modes are selected](/images/from-rag-to-production-rag-part-8/part-08-query-mode-router.png)
 
+
+> **Tested API-shape note:** the snippets in this article show the implementation shape used by this project, not a permanent SDK contract. Pin your Python packages, keep a minimal smoke test for each snippet, and re-check LlamaIndex / Qdrant / FastAPI / evaluation-framework docs when upgrading.
+
 ---
 
 ## Five modes, four capabilities, mapped

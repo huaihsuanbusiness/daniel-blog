@@ -26,6 +26,9 @@ Put differently: a dense vector captures "semantic similarity", not "the ability
 
 **This is the ceiling of pure vector search: it finds "related" documents, but not necessarily the "right" passage.**
 
+
+> **Tested API-shape note:** the snippets in this article show the implementation shape used by this project, not a permanent SDK contract. Pin your Python packages, keep a minimal smoke test for each snippet, and re-check LlamaIndex / Qdrant / FastAPI / evaluation-framework docs when upgrading.
+
 ---
 
 ## "Found it" and "answered it well" are two different things

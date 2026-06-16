@@ -22,6 +22,9 @@ In practice, all three still belong in the foundation of production RAG. **What 
 
 What this piece wants to make clear: what chunking, embedding and the vector DB actually do in a production setting, and what layers have to be stacked on top of them before a system can stand up to real queries.
 
+
+> **Version note:** this article uses pipeline diagrams and API-shaped examples to explain architecture. Package names, SDK calls, and managed-service defaults can change; pin versions in your own project and verify current docs before copying an implementation detail directly.
+
 ---
 
 ## 1. What the three technologies actually do

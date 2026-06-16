@@ -26,6 +26,9 @@ Vector search 找到了**對的文件**——`mou_2025_003.pdf` 在 top 3。但 
 
 **這就是純 vector search 的極限：找到「相關」的文件，但不一定找到「對」的段落。**
 
+
+> **Tested API shape 提醒**：本文程式片段示範的是這個專案採用的實作形狀，不是永久不變的 SDK contract。請 pin Python 套件版本，替每段關鍵 snippet 保留最小 smoke test，升級 LlamaIndex / Qdrant / FastAPI / eval framework 前先對照官方文件。
+
 ---
 
 ## 找得到跟答得好是兩件不同的事

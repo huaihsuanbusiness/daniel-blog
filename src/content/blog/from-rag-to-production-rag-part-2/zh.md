@@ -22,6 +22,9 @@ seriesOrder: 2
 
 這篇要拆清楚的是：chunking / embedding / vector DB 在 production 環境裡實際扮演什麼角色，以及它們上面要疊哪些層，系統才能撐起真實查詢。
 
+
+> **版本提醒**：本文用 pipeline 圖與 API-shaped examples 來說明架構。套件名稱、SDK 呼叫方式、雲服務預設值都可能改版；自己的專案要 pin 版本，直接複製實作細節前請先對照最新官方文件。
+
 ---
 
 ## 一、3 個技術的實際角色

@@ -14,6 +14,9 @@ Before I picked LlamaIndex, I had a serious look at LangGraph and n8n. This is a
 
 The three tools solve different problems — they are not in a "which one replaces which" contest. The useful question is which job the project actually needs done.
 
+
+> **Version note:** this article uses pipeline diagrams and API-shaped examples to explain architecture. Package names, SDK calls, and managed-service defaults can change; pin versions in your own project and verify current docs before copying an implementation detail directly.
+
 ---
 
 ## 1. Where each tool actually sits

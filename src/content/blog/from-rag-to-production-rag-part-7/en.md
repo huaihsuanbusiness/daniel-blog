@@ -40,6 +40,9 @@ The order matters: **quality control is not just validating the final answer; it
 
 Once these six layers connect, RAG moves from "sounds reasonable" to "measurable, debuggable, and gateable before release."
 
+
+> **Tested API-shape note:** the snippets in this article show the implementation shape used by this project, not a permanent SDK contract. Pin your Python packages, keep a minimal smoke test for each snippet, and re-check LlamaIndex / Qdrant / FastAPI / evaluation-framework docs when upgrading.
+
 ---
 
 ## Build order: custom first, LLM second; schema first, framework second

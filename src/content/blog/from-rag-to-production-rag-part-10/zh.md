@@ -39,6 +39,9 @@ Part 09 走完了文件端的 7 站——parsing、raw storage、Postgres metada
 
 寫在前面：10 個坑裡有 2 個（坑 4、坑 5）來自 L34 那輪我反覆套 patch 的真實記錄。「4-2」「4-3」是我開發筆記的章節編號，「L27394-L27576」是行號——這是個人 case，讀者不用真的去查。**重要的是結果**：Compose healthcheck 寫得不好，會把整個 stack 拖死。
 
+
+> **版本提醒**：部署指令比架構觀念老化得更快。本文的 Docker、Cloudflare、Qdrant Cloud、hosting 範例請視為 tested operational patterns；複製到 production 前，先查最新官方文件並在 staging 跑過。
+
 ---
 
 ## 第一層：環境層

@@ -37,6 +37,9 @@ seriesOrder: 8
 
 ![Query Mode Router：5 種 mode 怎麼決定](/images/from-rag-to-production-rag-part-8/part-08-query-mode-router.png)
 
+
+> **Tested API shape 提醒**：本文程式片段示範的是這個專案採用的實作形狀，不是永久不變的 SDK contract。請 pin Python 套件版本，替每段關鍵 snippet 保留最小 smoke test，升級 LlamaIndex / Qdrant / FastAPI / eval framework 前先對照官方文件。
+
 ---
 
 ## 5 種 mode 跟 4 個能力的對應

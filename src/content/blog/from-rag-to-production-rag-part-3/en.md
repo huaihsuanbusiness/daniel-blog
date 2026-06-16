@@ -49,6 +49,9 @@ The same map also tells you where specialized patterns belong, instead of treati
 
 Walked in order below.
 
+
+> **Version note:** this article uses pipeline diagrams and API-shaped examples to explain architecture. Package names, SDK calls, and managed-service defaults can change; pin versions in your own project and verify current docs before copying an implementation detail directly.
+
 ---
 
 ## 1. The build side: how documents come in

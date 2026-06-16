@@ -16,6 +16,9 @@ seriesOrder: 5
 
 這篇寫的是那 3 個禮拜怎麼走過來的：什麼時候該停在最小版、什麼時候該往前推、哪些抽象晚一點再碰。
 
+
+> **Tested API shape 提醒**：本文程式片段示範的是這個專案採用的實作形狀，不是永久不變的 SDK contract。請 pin Python 套件版本，替每段關鍵 snippet 保留最小 smoke test，升級 LlamaIndex / Qdrant / FastAPI / eval framework 前先對照官方文件。
+
 ---
 
 ## 一、從 0 開始，我會先做這 3 件事

@@ -30,6 +30,9 @@ But this post needs to do one more thing: bring the original Part 12 landscape i
 
 A note up front: these 3 things are not a success story. They are the structure that became visible after implementation. If you are building a RAG project right now, these observations may help you avoid some rework.
 
+
+> **Landscape version note:** this post describes the 2026 RAG landscape as a coordinate system, not a permanent taxonomy. Tool names and APIs will move; the stable part is the capability boundary between retrieval, routing, context assembly, evaluation, observability, and operations.
+
 ---
 
 ## Observation 1: 11 Flags → 5 Modes

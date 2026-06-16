@@ -36,6 +36,9 @@ seriesOrder: 1
 > **Production RAG 不是一個只會回答問題的系統。**
 > **Production RAG 是一個你能看懂它怎麼回答、為什麼這樣回答、以及它在哪裡被約束住的系統。**
 
+
+> **Runtime 版本提醒**：這個互動實驗台反映的是本系列撰寫時的專案實作。UI 控制項、trace label、model 名稱、hosted runtime limit 都可能更新；請把它當成架構行為的 live demo，不要當成固定不變的 API contract。
+
 ## 先不要急著看答案，先看它走過的路
 
 如果你只把 RAG 看成「把文件丟給模型，再把答案吐回來」，你會很快遇到一個問題：

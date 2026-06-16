@@ -20,6 +20,9 @@ But in production, it can't stay hidden. User A, user B, user C are all using th
 
 No matter how well Part 08 designed the four capabilities and the five query modes, **query-side routing can't fix what the document side never designed.** This post, Part 09, walks through the seven stations a document actually travels after upload, why the Vector DB cannot be the source of truth, and why ACL in production is not a single filter.
 
+
+> **Tested API-shape note:** the snippets in this article show the implementation shape used by this project, not a permanent SDK contract. Pin your Python packages, keep a minimal smoke test for each snippet, and re-check LlamaIndex / Qdrant / FastAPI / evaluation-framework docs when upgrading.
+
 ---
 
 ## The seven-station document-side journey (high level)
@@ -308,6 +311,8 @@ User A in company-a tenant asks "Q3 contract termination clause"
 ```
 
 **Fix**: every Qdrant query carries a tenant filter. The Qdrant 1.x Python client builds `query_filter` from `models.Filter` + `models.FieldCondition` + `models.MatchValue`:
+
+> **Qdrant API drift note:** older examples often show `client.search(...)`. Newer Qdrant Python-client examples may use `query_points(...)` and slightly different request objects. Keep the invariant — every retrieval call must carry the tenant filter — and adapt the method name / request wrapper to the Qdrant client version you pin.
 
 ```python
 # ✅ Mandatory tenant filter (Qdrant 1.x python client)
