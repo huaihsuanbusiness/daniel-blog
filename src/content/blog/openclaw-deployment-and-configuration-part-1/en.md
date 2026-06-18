@@ -1,8 +1,8 @@
 ---
 title: "OpenClaw Deployment and Configuration Part1"
 description: "Why I usually recommend starting OpenClaw on macOS or a Mac mini before reaching for a VPS or a tiny Linux VM."
-categories: ["openclaw"]
-tags: ["openclaw", "deployment", "configuration", "gateway", "ops", "self-hosted"]
+categories: ["ai-agents"]
+tags: ["ai-agents", "deployment", "configuration", "gateway", "ops", "self-hosted"]
 date: 2026-04-03T20:04:00
 featured: false
 ---

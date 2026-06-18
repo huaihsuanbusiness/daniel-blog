@@ -1,8 +1,8 @@
 ---
 title: "OpenClaw Getting Started 06 | How to Choose Models: OpenAI, Claude, Gemini, Grok, MiniMax, z.ai, and local models"
 description: "A practical model-selection guide covering cost, latency, reasoning, tool use, and my real OpenClaw setup."
-categories: ["openclaw"]
-tags: ["openclaw", "models", "llm", "providers", "agent", "gateway"]
+categories: ["ai-agents"]
+tags: ["ai-agents", "models", "llm", "providers", "agent", "gateway"]
 date: 2026-04-02T22:31:00
 featured: false
 ---

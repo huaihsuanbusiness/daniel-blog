@@ -1,8 +1,8 @@
 ---
 title: "OpenClaw 快速上手 01｜OpenClaw 是什麼？先分清它是自架 Agent Gateway，不是聊天 UI 的加強版"
 description: "給會用 Terminal 的技術型讀者。一篇先把 OpenClaw 的 Gateway、Agent、Channel、Tools、Skills、Memory、部署路線與適用邊界切清楚的導讀文。"
-categories: ["openclaw"]
-tags: ["openclaw", "agent", "gateway", "self-hosted", "tools", "memory"]
+categories: ["ai-agents"]
+tags: ["ai-agents", "agent", "gateway", "self-hosted", "tools", "memory"]
 date: 2026-04-02T14:40:00
 featured: false
 ---

@@ -1,8 +1,8 @@
 ---
 title: "OpenClaw 快速上手 02｜在 macOS / Mac mini 做出可恢復的第一輪安裝"
 description: "給會用 Terminal 的技術型讀者。從 Node、安裝、Codex OAuth、LaunchAgent 到 dashboard 驗證，建立一套 boring but recoverable 的 OpenClaw 本機安裝流程。"
-categories: ["openclaw"]
-tags: ["openclaw", "agent", "gateway", "self-hosted", "tools", "memory"]
+categories: ["ai-agents"]
+tags: ["ai-agents", "agent", "gateway", "self-hosted", "tools", "memory"]
 date: 2026-04-02T14:41:00
 featured: false
 ---

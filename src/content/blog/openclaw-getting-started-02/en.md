@@ -1,8 +1,8 @@
 ---
 title: "OpenClaw Getting Started 02 | A Recoverable First Install on macOS / Mac mini"
 description: "A practical macOS install guide for technically comfortable readers who want a boring, recoverable OpenClaw baseline before adding channels, skills, or remote access."
-categories: ["openclaw"]
-tags: ["openclaw", "agent", "gateway", "self-hosted", "tools", "memory"]
+categories: ["ai-agents"]
+tags: ["ai-agents", "agent", "gateway", "self-hosted", "tools", "memory"]
 date: 2026-04-02T14:41:00
 featured: false
 ---

@@ -1,8 +1,8 @@
 ---
 title: "OpenClaw 部署與配置 Part4"
 description: "OpenClaw 壞掉時，怎麼先把問題分到正確的故障線，而不是一開始就猜錯方向。"
-categories: ["openclaw"]
-tags: ["openclaw", "deployment", "configuration", "gateway", "ops", "self-hosted"]
+categories: ["ai-agents"]
+tags: ["ai-agents", "deployment", "configuration", "gateway", "ops", "self-hosted"]
 date: 2026-04-03T20:07:00
 featured: false
 ---

@@ -2,7 +2,7 @@
 title: "Welcome to danielcanfly"
 description: "A brief introduction to this blog and what you can expect to find here — the intersection of Web3, AI, business, and travel."
 categories: ["murmurs"]
-tags: ["intro", "web3", "ai", "business", "travel", "openclaw"]
+tags: ["intro", "web3", "ai", "business", "travel", "ai-agents"]
 date: 2026-03-27T21:07:00
 featured: true
 ---

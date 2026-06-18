@@ -1,8 +1,8 @@
 ---
 title: "OpenClaw Getting Started 05 | What OpenClaw Should Actually Do for You, and What It Should Not"
 description: "A practical framework for deciding which tasks OpenClaw should handle, based on my real workflow."
-categories: ["openclaw"]
-tags: ["openclaw", "agent", "gateway", "self-hosted", "tools", "memory"]
+categories: ["ai-agents"]
+tags: ["ai-agents", "agent", "gateway", "self-hosted", "tools", "memory"]
 date: 2026-04-02T14:44:00
 featured: false
 ---

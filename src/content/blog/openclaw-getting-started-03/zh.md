@@ -1,8 +1,8 @@
 ---
 title: "OpenClaw 快速上手 03｜Discord、Skills、Memory、遠端連線與安全基線"
 description: "給已完成 base install 的技術型讀者。把 OpenClaw 接上 Discord、Skills、Memory 與遠端連線，同時把 access control、sandbox、exec approvals、skills 供應鏈風險一起講清楚。"
-categories: ["openclaw"]
-tags: ["openclaw", "agent", "gateway", "self-hosted", "tools", "memory"]
+categories: ["ai-agents"]
+tags: ["ai-agents", "agent", "gateway", "self-hosted", "tools", "memory"]
 date: 2026-04-02T14:42:00
 featured: false
 ---

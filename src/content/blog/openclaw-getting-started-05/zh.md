@@ -1,8 +1,8 @@
 ---
 title: "OpenClaw 快速上手 05｜哪些事適合交給 OpenClaw，哪些事其實不該交給它"
 description: "一套判斷哪些工作適合交給 OpenClaw、哪些工作應保留人工控制的實用框架，並以我的真實工作流程為例。"
-categories: ["openclaw"]
-tags: ["openclaw", "agent", "gateway", "self-hosted", "tools", "memory"]
+categories: ["ai-agents"]
+tags: ["ai-agents", "agent", "gateway", "self-hosted", "tools", "memory"]
 date: 2026-04-02T14:44:00
 featured: false
 ---

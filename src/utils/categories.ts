@@ -2,7 +2,7 @@ export type BlogLang = 'en' | 'zh';
 
 export type CategoryId =
   | 'ai'
-  | 'openclaw'
+  | 'ai-agents'
   | 'pm'
   | 'startup'
   | 'business'
@@ -12,7 +12,7 @@ export type CategoryId =
 
 export const CATEGORY_ORDER: CategoryId[] = [
   'ai',
-  'openclaw',
+  'ai-agents',
   'pm',
   'startup',
   'business',
@@ -23,7 +23,7 @@ export const CATEGORY_ORDER: CategoryId[] = [
 
 export const CATEGORY_LABELS: Record<CategoryId, Record<BlogLang, string>> = {
   ai: { en: 'AI', zh: 'AI' },
-  openclaw: { en: 'OpenClaw', zh: '龍蝦養殖' },
+  'ai-agents': { en: 'AI Agents', zh: 'AI代理' },
   pm: { en: 'PM', zh: '產品' },
   startup: { en: 'Startup', zh: '創業' },
   business: { en: 'Business', zh: '商業' },
@@ -34,7 +34,7 @@ export const CATEGORY_LABELS: Record<CategoryId, Record<BlogLang, string>> = {
 
 export const CATEGORY_ICONS: Record<CategoryId, string> = {
   ai: '◈',
-  openclaw: '⬡',
+  'ai-agents': '⬡',
   pm: '▣',
   startup: '△',
   business: '◆',
@@ -45,7 +45,7 @@ export const CATEGORY_ICONS: Record<CategoryId, string> = {
 
 const CATEGORY_ALIASES: Record<string, CategoryId> = {
   ai: 'ai',
-  openclaw: 'openclaw',
+  'ai-agents': 'ai-agents',
   business: 'business',
   web3: 'web3',
   travel: 'travel',

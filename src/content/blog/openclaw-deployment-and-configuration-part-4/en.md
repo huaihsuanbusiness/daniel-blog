@@ -1,8 +1,8 @@
 ---
 title: "OpenClaw Deployment and Configuration Part4"
 description: "When OpenClaw breaks, how to sort the failure into the correct fault line before you waste hours guessing."
-categories: ["openclaw"]
-tags: ["openclaw", "deployment", "configuration", "gateway", "ops", "self-hosted"]
+categories: ["ai-agents"]
+tags: ["ai-agents", "deployment", "configuration", "gateway", "ops", "self-hosted"]
 date: 2026-04-03T20:07:00
 featured: false
 ---

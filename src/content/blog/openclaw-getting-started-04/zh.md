@@ -1,8 +1,8 @@
 ---
 title: "OpenClaw 快速上手 04｜OpenClaw 新手第一週怎麼用：從 CLI、Dashboard、Memory、Browser 到 Discord 的正確開啟順序"
 description: "給已完成安裝的技術型讀者。這篇不是功能總表，而是以我的實際部署路線，帶你把 OpenClaw 在第一週從「會動」推進到「真的開始上工」。"
-categories: ["openclaw"]
-tags: ["openclaw", "agent", "gateway", "self-hosted", "tools", "memory"]
+categories: ["ai-agents"]
+tags: ["ai-agents", "agent", "gateway", "self-hosted", "tools", "memory"]
 date: 2026-04-02T14:43:00
 featured: false
 ---

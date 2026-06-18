@@ -1,8 +1,8 @@
 ---
 title: "OpenClaw 快速上手 06｜模型怎麼選？從 OpenAI、Claude、Gemini、Grok、MiniMax、z.ai 到本地模型的實戰選型"
 description: "從成本、延遲、推理能力、工具調用與 agent 適配性比較模型，並結合我的實際 OpenClaw 配置說明選擇方式。"
-categories: ["openclaw"]
-tags: ["openclaw", "models", "llm", "providers", "agent", "gateway"]
+categories: ["ai-agents"]
+tags: ["ai-agents", "models", "llm", "providers", "agent", "gateway"]
 date: 2026-04-02T22:31:00
 featured: false
 ---

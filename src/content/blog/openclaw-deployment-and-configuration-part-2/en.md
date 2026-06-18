@@ -1,8 +1,8 @@
 ---
 title: "OpenClaw Deployment and Configuration Part2"
 description: "After installation, which settings are worth touching first, and which ones should wait."
-categories: ["openclaw"]
-tags: ["openclaw", "deployment", "configuration", "gateway", "ops", "self-hosted"]
+categories: ["ai-agents"]
+tags: ["ai-agents", "deployment", "configuration", "gateway", "ops", "self-hosted"]
 date: 2026-04-03T20:05:00
 featured: false
 ---

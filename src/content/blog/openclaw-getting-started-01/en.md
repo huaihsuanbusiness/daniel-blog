@@ -1,8 +1,8 @@
 ---
 title: "OpenClaw Getting Started 01 | What OpenClaw Actually Is: A Self-Hosted Agent Gateway, Not a Stronger Chat UI"
 description: "A technical introduction for readers who are comfortable with the terminal and want a correct mental model of OpenClaw before installing it."
-categories: ["openclaw"]
-tags: ["openclaw", "agent", "gateway", "self-hosted", "tools", "memory"]
+categories: ["ai-agents"]
+tags: ["ai-agents", "agent", "gateway", "self-hosted", "tools", "memory"]
 date: 2026-04-02T14:40:00
 featured: false
 ---

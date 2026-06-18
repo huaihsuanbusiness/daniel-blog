@@ -1,8 +1,8 @@
 ---
 title: "OpenClaw Deployment and Configuration Part3"
 description: "How to handle permissions, updates, backups, and migration without gradually wrecking a working OpenClaw host."
-categories: ["openclaw"]
-tags: ["openclaw", "deployment", "configuration", "gateway", "ops", "self-hosted"]
+categories: ["ai-agents"]
+tags: ["ai-agents", "deployment", "configuration", "gateway", "ops", "self-hosted"]
 date: 2026-04-03T20:06:00
 featured: false
 ---

@@ -15,8 +15,8 @@ const slugifySeriesKey = (value: string) =>
     .replace(/^-+|-+$/g, '');
 
 const SERIES: Array<{ slug: RegExp; key: string; order: number; labelZh: string; labelEn: string }> = [
-  { slug: /^openclaw-getting-started-\d+$/, key: 'openclaw-getting-started', order: 1, labelZh: '1. OpenClaw 快速上手', labelEn: '1. OpenClaw Getting Started' },
-  { slug: /^openclaw-deployment-and-configuration-part-\d+$/, key: 'openclaw-deployment-and-configuration', order: 2, labelZh: '2. OpenClaw 部署與配置', labelEn: '2. OpenClaw Deployment and Configuration' },
+  { slug: /^openclaw-getting-started-\d+$/, key: 'ai-agents-getting-started', order: 1, labelZh: '1. AI代理 快速上手', labelEn: '1. AI Agents Getting Started' },
+  { slug: /^openclaw-deployment-and-configuration-part-\d+$/, key: 'ai-agents-deployment-and-configuration', order: 2, labelZh: '2. AI代理 部署與配置', labelEn: '2. AI Agents Deployment and Configuration' },
   { slug: /^ai-agentic-workflow-series-\d+$/, key: 'ai-agentic-workflow', order: 1, labelZh: '1. AI 代理工作流', labelEn: '1. AI Agentic Workflow' },
   { slug: /^building-ai-skills-series-part-\d+$/, key: 'building-ai-skills', order: 2, labelZh: '2. 打造 AI Skill', labelEn: '2. Building AI Skills' },
   { slug: /^build-mcp-server-part-\d+$/, key: 'build-mcp-server', order: 3, labelZh: '3. 自主建造 MCP Server', labelEn: '3. Build Your Own MCP Server' },

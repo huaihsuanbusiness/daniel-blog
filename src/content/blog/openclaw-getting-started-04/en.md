@@ -1,8 +1,8 @@
 ---
 title: "OpenClaw Getting Started 04 | How to Use OpenClaw in Your First Week: The Right Order for CLI, Dashboard, Memory, Browser, and Discord"
 description: "A practical first-week operating guide based on my macOS and Codex OAuth setup."
-categories: ["openclaw"]
-tags: ["openclaw", "agent", "gateway", "self-hosted", "tools", "memory"]
+categories: ["ai-agents"]
+tags: ["ai-agents", "agent", "gateway", "self-hosted", "tools", "memory"]
 date: 2026-04-02T14:43:00
 featured: false
 ---
