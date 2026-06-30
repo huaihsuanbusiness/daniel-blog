@@ -29,4 +29,12 @@ export default defineConfig({
     remarkPlugins: [remarkMath],
     rehypePlugins: [rehypeKatex],
   },
+  redirects: {
+    '/blog/agent-design-patterns-atlas-part-1': '/blog/the-atlas-of-agent-design-patterns-part-1',
+    '/blog/agent-design-patterns-atlas-part-1/': '/blog/the-atlas-of-agent-design-patterns-part-1',
+    '/zh/blog/agent-design-patterns-atlas-part-1': '/zh/blog/the-atlas-of-agent-design-patterns-part-1',
+    '/zh/blog/agent-design-patterns-atlas-part-1/': '/zh/blog/the-atlas-of-agent-design-patterns-part-1',
+    '/en/blog/agent-design-patterns-atlas-part-1': '/en/blog/the-atlas-of-agent-design-patterns-part-1',
+    '/en/blog/agent-design-patterns-atlas-part-1/': '/en/blog/the-atlas-of-agent-design-patterns-part-1',
+  },
 });

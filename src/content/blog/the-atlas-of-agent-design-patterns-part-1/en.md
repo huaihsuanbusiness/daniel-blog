@@ -1,5 +1,5 @@
 ---
-title: "Agent Design Patterns Atlas Part 1 ｜ Beyond ReAct — A Six-Dimensional Map of LLM Agent Architectures"
+title: "The Atlas of Agent Design Patterns Part 1 | Beyond ReAct — A Six-Dimensional Map of LLM Agent Architectures"
 description: "Map the common LLM agent design patterns into six dimensions: execution path, decision and planning, reasoning and search, verification and recovery, agent organisation, state and memory. After reading, you do not need to memorise every name like ReAct, Plan-and-Execute, ToT or Reflexion — you need to know how to ask, when you meet a new framework, which layer it actually changes."
 categories: ["ai"]
 tags: ["ai", "agent", "design-patterns", "architecture", "llm"]
@@ -85,7 +85,7 @@ Only after the axes are separated do comparisons become meaningful.
 
 ---
 
-![Figure 1-1｜Six Dimensions of Agent Architecture](/images/agent-design-patterns-atlas-part-1/01-six-dimensions-overview.png)
+![Figure 1-1｜Six Dimensions of Agent Architecture](/images/the-atlas-of-agent-design-patterns-part-1/01-six-dimensions-overview.png)
 
 > **Figure 1-1｜Six Dimensions of Agent Architecture**
 > A complete agent system can combine patterns from all six dimensions simultaneously. These are not mutually exclusive choices — they are design layers that work together.
@@ -256,7 +256,7 @@ This difference shapes retry, recovery and orchestration directly.
 
 ---
 
-![Figure 1-2｜Direct, Pipeline, Router, State Machine, and DAG](/images/agent-design-patterns-atlas-part-1/02-execution-structures.png)
+![Figure 1-2｜Direct, Pipeline, Router, State Machine, and DAG](/images/the-atlas-of-agent-design-patterns-part-1/02-execution-structures.png)
 
 > **Figure 1-2｜Direct, Pipeline, Router, State Machine, and DAG**
 > Five common execution skeletons side by side. Direct is a single input–output pass. Pipeline is a fixed sequence. Router dispatches by query type. State Machine transitions by explicit state. DAG parallelises independent work before merging results.
@@ -403,7 +403,7 @@ Read it as:
 
 ---
 
-![Figure 1-3｜Planner, ReAct Executor, Verifier, and Replanner](/images/agent-design-patterns-atlas-part-1/03-planner-react-executor.png)
+![Figure 1-3｜Planner, ReAct Executor, Verifier, and Replanner](/images/the-atlas-of-agent-design-patterns-part-1/03-planner-react-executor.png)
 
 > **Figure 1-3｜Planner, ReAct Executor, Verifier, and Replanner**
 > The Planner produces a high-level plan. The Executor runs ReAct inside each sub-task. The Verifier checks whether the result passes. On failure, the Replanner modifies the remaining plan and feeds it back to the Planner.
@@ -496,7 +496,7 @@ The cost is direct: more model calls, more tool runs, more state management, and
 
 ---
 
-![Figure 1-4｜Line, Tree, and Graph Search Structures](/images/agent-design-patterns-atlas-part-1/04-search-structures.png)
+![Figure 1-4｜Line, Tree, and Graph Search Structures](/images/the-atlas-of-agent-design-patterns-part-1/04-search-structures.png)
 
 > **Figure 1-4｜Line, Tree, and Graph Search Structures**
 > Line follows one path. Tree allows branching, pruning and backtracking. Graph allows branches to merge again and reuse intermediate results.
@@ -630,7 +630,7 @@ This already crosses into the memory dimension. The correction affects future ru
 
 ---
 
-![Figure 1-5｜Six Common Verification and Recovery Patterns](/images/agent-design-patterns-atlas-part-1/05-verification-paths.png)
+![Figure 1-5｜Six Common Verification and Recovery Patterns](/images/the-atlas-of-agent-design-patterns-part-1/05-verification-paths.png)
 
 > **Figure 1-5｜Six Common Verification and Recovery Patterns**
 > Retry, Fallback, Critic, Verifier, Generate-and-Test, and Reflexion. Critic and Verifier mainly detect and judge problems; they do not execute recovery directly.
@@ -754,7 +754,7 @@ The biggest risk in multi-agent systems is rarely that a single worker is not cl
 
 ---
 
-![Figure 1-6｜Five Common Agent Organisation Patterns](/images/agent-design-patterns-atlas-part-1/06-organisation-patterns.png)
+![Figure 1-6｜Five Common Agent Organisation Patterns](/images/the-atlas-of-agent-design-patterns-part-1/06-organisation-patterns.png)
 
 > **Figure 1-6｜Five Common Agent Organisation Patterns**
 > Single Agent, Supervisor–Worker, Debate, Blackboard and Swarm are five common organisational patterns. They are not a maturity ladder.
@@ -870,7 +870,7 @@ Without the following governance, memory easily becomes an unindexed warehouse:
 
 ---
 
-![Figure 1-7｜Context, State, Memory, and RAG](/images/agent-design-patterns-atlas-part-1/07-context-state-memory-rag.png)
+![Figure 1-7｜Context, State, Memory, and RAG](/images/the-atlas-of-agent-design-patterns-part-1/07-context-state-memory-rag.png)
 
 > **Figure 1-7｜Context, State, Memory, and RAG**
 > Context is what the model currently sees. State is the workflow's current progress. Memory preserves information across steps or sessions. RAG retrieves content from an external knowledge base.
@@ -996,7 +996,7 @@ So it should not be placed between Adaptive Agent and Long-running Autonomous Ag
 
 ---
 
-![Figure 1-8｜Agent Autonomy and System Control](/images/agent-design-patterns-atlas-part-1/08-autonomy-controllability-spectrum.png)
+![Figure 1-8｜Agent Autonomy and System Control](/images/the-atlas-of-agent-design-patterns-part-1/08-autonomy-controllability-spectrum.png)
 
 > **Figure 1-8｜Agent Autonomy and System Control**
 > A two-dimensional matrix: X axis is Agent Autonomy, Y axis is System Control and Predictability. Multi-Agent is an organisational choice; it can exist at multiple autonomy levels and does not belong on this matrix.
@@ -1115,3 +1115,15 @@ The next article starts with the first dimension:
 > **How does an agent's task actually move?**
 
 We will compare Direct, Pipeline, Router, State Machine, DAG, Event-driven and Human-in-the-loop in full, and explain when the task does not need an agent at all.
+
+## Series guide
+
+> Series: **The Atlas of Agent Design Patterns**（Agent 設計模式圖鑑）
+
+| Part | Status | Title |
+|---|---|---|
+| **Part 1** | Current page ✅ | A six-dimensional map of LLM agent architectures |
+| Part 2 | Drafting | (To be added when Part 2 ships) |
+| Subsequent parts | Planning | (to be defined) |
+
+One part is currently published. This table only marks positions already planned or shipped; the full in-series navigation, total count and current-position indicator are generated by the page template from actual publishing state (source of truth: `seriesMeta.ts`).
