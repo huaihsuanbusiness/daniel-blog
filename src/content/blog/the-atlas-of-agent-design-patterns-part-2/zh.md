@@ -1241,17 +1241,3 @@ Terminal State
 > Agent 如何決定下一步？
 
 Part 3 會完整比較 ReAct、Plan-and-Execute、Adaptive Planning、Hierarchical Planning 和 HTN，並解釋為什麼成熟系統通常讓 Planner 管全局、ReAct 處理現場，再由 Verifier 決定是否重新規劃。
-
-
-## 系列導覽
-
-> 系列：**Agent 設計模式圖鑑**（The Atlas of Agent Design Patterns）
-
-| 篇 | 狀態 | 標題 |
-|---|---|---|
-| **Part 1** | 已發布 | 六個維度看懂 Agent 架構 |
-| **Part 2** | 目前頁 ✅ | 執行路徑全解：Direct、Pipeline、Router、State Machine 與 DAG |
-| Part 3 | 撰稿中 | （待 Part 3 上線後補上） |
-| 後續 Part | 規劃中 | （待定） |
-
-目前已發布 2 篇。本表只標示當前已發布或已預告的位置，完整系列導覽、總篇數與「目前在第幾篇」指示由頁面模板依據實際發布狀態自動生成（資料來源：`seriesMeta.ts`）。
