@@ -1225,7 +1225,8 @@ Part 2 將完整比較 Direct、Pipeline、Router、State Machine、DAG、Event-
 | 篇 | 狀態 | 標題 |
 |---|---|---|
 | **Part 1** | 目前頁 ✅ | 六個維度看懂 Agent 架構 |
-| Part 2 | 撰稿中 | （待 Part 2 上線後補上） |
+| **Part 2** | 已發布 | [執行路徑全解：Direct、Pipeline、Router、State Machine 與 DAG](/zh/blog/the-atlas-of-agent-design-patterns-part-2/) |
+| Part 3 | 撰稿中 | （待 Part 3 上線後補上） |
 | 後續 Part | 規劃中 | （待定） |
 
-目前已發布 1 篇。本表只標示當前已預告或已發布的位置，完整系列導覽、總篇數與「目前在第幾篇」指示由頁面模板依據實際發布狀態自動生成（資料來源：`seriesMeta.ts`）。
+目前已發布 2 篇。本表只標示當前已發布或已預告的位置，完整系列導覽、總篇數與「目前在第幾篇」指示由頁面模板依據實際發布狀態自動生成（資料來源：`seriesMeta.ts`）。
