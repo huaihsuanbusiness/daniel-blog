@@ -1,5 +1,5 @@
 ---
-title: "The Atlas of Agent Design Patterns Part 1 | Beyond ReAct — A Six-Dimensional Map of LLM Agent Architectures"
+title: "The Atlas of Agent Design Patterns Part 1 ｜ Beyond ReAct — A Six-Dimensional Map of LLM Agent Architectures"
 description: "Map the common LLM agent design patterns into six dimensions: execution path, decision and planning, reasoning and search, verification and recovery, agent organisation, state and memory. After reading, you do not need to memorise every name like ReAct, Plan-and-Execute, ToT or Reflexion — you need to know how to ask, when you meet a new framework, which layer it actually changes."
 categories: ["ai"]
 tags: ["ai", "agent", "design-patterns", "architecture", "llm"]
