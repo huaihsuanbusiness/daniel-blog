@@ -36,6 +36,7 @@ const SERIES: Array<{ slug: RegExp; key: string; order: number; labelZh: string;
   { slug: /^invisible-web3-\d+$/, key: 'invisible-web3', order: 11, labelZh: '11. x402：看不見的 Web3', labelEn: '11. x402: Invisible Web3' },
   { slug: /^from-pain-to-venture-part\d+$/, key: 'from-pain-to-venture', order: 12, labelZh: '12. 從痛點到事業', labelEn: '12. From Pain to Venture' },
   { slug: /^from-rag-to-production-rag-part-\d+$/, key: 'from-rag-to-production-rag', order: 13, labelZh: '13. 從 RAG 到企業級 RAG', labelEn: '13. From RAG to Enterprise-Grade RAG' },
+  { slug: /^agent-design-patterns-atlas-part-\d+$/, key: 'agent-design-patterns-atlas', order: 14, labelZh: '14. Agent 設計模式圖鑑', labelEn: '14. The Atlas of Agent Design Patterns' },
 ];
 
 export function getSeriesMeta(slug: string, lang: BlogLang, series?: string | null): SeriesMeta | null {

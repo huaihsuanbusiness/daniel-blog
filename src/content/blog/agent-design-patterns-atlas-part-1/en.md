@@ -5,7 +5,7 @@ categories: ["ai"]
 tags: ["ai", "agent", "design-patterns", "architecture", "llm"]
 date: 2026-06-30T01:56:00
 featured: false
-series: "Agent 設計模式圖鑑"
+series: "The Atlas of Agent Design Patterns"
 seriesOrder: 1
 ---
 
@@ -92,7 +92,7 @@ Only after the axes are separated do comparisons become meaningful.
 
 ---
 
-# The six dimensions
+## The six dimensions
 
 This article uses the following six dimensions to organise the common agent patterns.
 
@@ -124,7 +124,7 @@ This description says more about the architecture than "this is a ReAct agent".
 
 ---
 
-# Dimension 1 — How does the task move?
+## Dimension 1 — How does the task move?
 
 The first dimension is **execution path** — the skeleton of the whole flow.
 
@@ -132,7 +132,7 @@ It does not care how the model thinks. It asks:
 
 > Which nodes does the task pass through? Under what conditions does the path switch? Where does a failure return to?
 
-## Direct
+### Direct
 
 The simplest form:
 
@@ -156,7 +156,7 @@ Many problems do not need an agent at all.
 
 If the input–output pair has no tools, state, branching or multi-step persistence, calling the model directly is usually faster, cheaper and easier to test.
 
-## Pipeline
+### Pipeline
 
 A pipeline splits the task into fixed steps:
 
@@ -183,7 +183,7 @@ Production RAG often uses this skeleton for practical reasons:
 
 The trade-off is also clear. A request usually walks through every preset node, even when some steps are unnecessary for the current query.
 
-## Router
+### Router
 
 A router first decides which path a query should take:
 
@@ -207,7 +207,7 @@ A router can dispatch on:
 
 Its value is usually not "answering better". It is preventing every query from spinning up the heaviest complete workflow.
 
-## State Machine
+### State Machine
 
 A state machine records explicitly which state the system is currently in:
 
@@ -236,7 +236,7 @@ ReAct decides *what the next action should be*. A state machine decides *which a
 
 One handles the local judgement; the other sets the traffic rules.
 
-## DAG
+### DAG
 
 A DAG is a directed acyclic graph.
 
@@ -263,13 +263,13 @@ This difference shapes retry, recovery and orchestration directly.
 
 ---
 
-# Dimension 2 — How is the next step decided?
+## Dimension 2 — How is the next step decided?
 
 The second dimension is **decision and planning**.
 
 This is the layer where ReAct and Plan-and-Execute actually live.
 
-## ReAct
+### ReAct
 
 ReAct can be reduced to a loop:
 
@@ -307,7 +307,7 @@ ReAct's problem is usually not a lack of flexibility; it is too much of it.
 
 Without a maximum step count, tool allowlist, budget limit and stop condition, the agent can search again and again, reread the same pages, or keep switching tactics without making progress.
 
-## Plan-and-Execute
+### Plan-and-Execute
 
 Plan-and-Execute builds the full or high-level plan first:
 
@@ -339,7 +339,7 @@ The agent confirms which sub-problems exist before doing anything, so the first 
 
 The risk sits in the initial plan. If the premise is wrong, the rest can be executed cleanly and still go the wrong direction.
 
-## Adaptive Planning
+### Adaptive Planning
 
 Adaptive Planning adds re-planning on top of Plan-and-Execute:
 
@@ -376,7 +376,7 @@ updated:
 
 The point is not "try once more". The remaining plan has actually changed.
 
-## The most common hybrid architecture
+### The most common hybrid architecture
 
 In practice, choosing only ReAct or only Plan-and-Execute is rare.
 
@@ -410,7 +410,7 @@ Read it as:
 
 ---
 
-# Dimension 3 — How are multiple solutions explored?
+## Dimension 3 — How are multiple solutions explored?
 
 Some tasks only need one reasonable path. Others present a large space of candidate solutions.
 
@@ -418,7 +418,7 @@ The third dimension asks:
 
 > Does the agent walk one path to the end, or explore several paths simultaneously?
 
-## Single-path reasoning
+### Single-path reasoning
 
 Produce one main line of reasoning.
 
@@ -426,7 +426,7 @@ Fast and cheap. It fits most everyday tasks.
 
 The weakness is that an early wrong judgement tends to drag the rest of the output off course.
 
-## Self-consistency
+### Self-consistency
 
 Generate several independent answers to the same question, then pick the most consistent result.
 
@@ -439,7 +439,7 @@ It fits:
 
 Majority agreement only reduces accidental noise. It does not guarantee factual correctness. If every candidate reads the same wrong source, voting does not turn the error into the truth.
 
-## Generate-and-Rank
+### Generate-and-Rank
 
 Generate several candidates first, then use a ranker or scoring rule to pick the best:
 
@@ -460,7 +460,7 @@ It fits:
 - code options
 - any question that admits several acceptable answers
 
-## Tree of Thoughts
+### Tree of Thoughts
 
 Tree of Thoughts allows the reasoning line to branch:
 
@@ -474,13 +474,13 @@ Tree of Thoughts allows the reasoning line to branch:
 
 The system can evaluate branches, prune the weaker ones, and return to an earlier node to try a different direction.
 
-## Graph of Thoughts
+### Graph of Thoughts
 
 Graph of Thoughts allows different branches to merge again.
 
 This is useful for multi-source research: different paths can find complementary data, and the system needs to integrate the intermediate results rather than keeping only the best single branch.
 
-## LATS / Tree Search
+### LATS / Tree Search
 
 These methods treat the agent's actions as a search space and iterate:
 
@@ -503,13 +503,13 @@ The cost is direct: more model calls, more tool runs, more state management, and
 
 ---
 
-# Dimension 4 — How are mistakes recovered from?
+## Dimension 4 — How are mistakes recovered from?
 
 Being able to take many actions does not mean the agent knows whether its result is right.
 
 The fourth dimension covers verification, failure recovery, and how to keep the same mistake from happening twice.
 
-## Retry
+### Retry
 
 Retry fits transient errors:
 
@@ -528,7 +528,7 @@ Therefore, Retry should have:
 - a timeout
 - an escalation path
 
-## Fallback
+### Fallback
 
 A fallback switches to a backup path:
 
@@ -542,7 +542,7 @@ success?
 
 The goal is usually availability. The fallback path does not guarantee the same quality as the primary path.
 
-## Critic
+### Critic
 
 A critic points out problems:
 
@@ -554,7 +554,7 @@ A critic points out problems:
 
 A critic is closer to a review note. It provides qualitative feedback but may not produce a strict pass/fail judgement.
 
-## Verifier
+### Verifier
 
 A verifier checks output against rules, schema, evidence or policy:
 
@@ -569,7 +569,7 @@ The difference between critic and verifier can be simplified:
 - Critic: *where could this be improved?*
 - Verifier: *does this meet the threshold?*
 
-## Generate-and-Test
+### Generate-and-Test
 
 Generate-and-Test is not about generating several candidates and picking the winner.
 
@@ -600,7 +600,7 @@ It fits:
 
 What matters is not the model saying "this looks right", but whether the result passes the test in a real environment.
 
-## Reflexion
+### Reflexion
 
 Reflexion persists failure experience for future runs:
 
@@ -637,11 +637,11 @@ This already crosses into the memory dimension. The correction affects future ru
 
 ---
 
-# Dimension 5 — Who does the work?
+## Dimension 5 — Who does the work?
 
 A single agent can carry the whole task, or the work can be split across several roles.
 
-## Single Agent
+### Single Agent
 
 One agent is responsible for:
 
@@ -655,7 +655,7 @@ This is the simplest, cheapest form, and the easiest to debug.
 
 Many tasks do not need multiple agents. Once state, tool boundaries, verification and stop conditions are designed clearly, a single agent is often enough.
 
-## Role-based Single Agent
+### Role-based Single Agent
 
 The same model switches roles across stages:
 
@@ -669,7 +669,7 @@ Critic
 
 It looks like several roles, but the underlying system can still be one model, one context window and one execution loop.
 
-## Supervisor–Worker
+### Supervisor–Worker
 
 The supervisor is responsible for:
 
@@ -699,7 +699,7 @@ The important rule:
 
 The supervisor — or an explicit aggregator — must own the integration.
 
-## Debate
+### Debate
 
 Several agents propose different positions, and a moderator or judge evaluates them:
 
@@ -722,7 +722,7 @@ It fits:
 
 A majority vote does not replace external verification.
 
-## Blackboard
+### Blackboard
 
 Several agents share a working area:
 
@@ -737,7 +737,7 @@ shared blackboard
 
 Agents do not need to pass the full conversation between each other. They read and write to shared state.
 
-## Swarm
+### Swarm
 
 A swarm lets many lightweight agents self-coordinate with little central control.
 
@@ -761,13 +761,13 @@ The biggest risk in multi-agent systems is rarely that a single worker is not cl
 
 ---
 
-# Dimension 6 — What does the agent remember?
+## Dimension 6 — What does the agent remember?
 
 The final dimension is memory.
 
 Memory, context, state and RAG are often mixed up. They hold different content and serve different purposes.
 
-## Working Memory
+### Working Memory
 
 Holds the data the current task is using:
 
@@ -779,7 +779,7 @@ Holds the data the current task is using:
 
 It usually lives only as long as the current task or session.
 
-## Short-term State
+### Short-term State
 
 Holds the workflow's progress:
 
@@ -791,7 +791,7 @@ Holds the workflow's progress:
 
 Context stresses what the model currently sees. State stresses where the system currently is.
 
-## Episodic Memory
+### Episodic Memory
 
 Holds events from past runs:
 
@@ -802,7 +802,7 @@ after switching to the public API we got the data successfully.
 
 It behaves like accumulated task experience.
 
-## Semantic Memory
+### Semantic Memory
 
 Holds relatively stable facts and knowledge:
 
@@ -814,7 +814,7 @@ Holds relatively stable facts and knowledge:
 
 This kind of data needs source, version, update timestamp and trust level.
 
-## Procedural Memory
+### Procedural Memory
 
 Holds the rules for doing things:
 
@@ -832,7 +832,7 @@ cannot find the full body
 
 Procedural memory decides how the agent should act, not just which facts it knows.
 
-## User Memory
+### User Memory
 
 Holds user preferences and long-term constraints:
 
@@ -844,7 +844,7 @@ Holds user preferences and long-term constraints:
 
 This kind of memory needs much more careful handling for privacy, update and deletion.
 
-## Shared Memory
+### Shared Memory
 
 Lets several agents share:
 
@@ -877,11 +877,11 @@ Without the following governance, memory easily becomes an unindexed warehouse:
 
 ---
 
-# Workflow, Agent and Agentic Workflow — what is the difference?
+## Workflow, Agent and Agentic Workflow — what is the difference?
 
 These three terms do not share a single agreed boundary across all teams. This article uses a working engineering definition.
 
-## Workflow
+### Workflow
 
 A workflow's main flow is decided in advance by the developer:
 
@@ -891,7 +891,7 @@ A → B → C → D
 
 The model can take part in some nodes, but cannot freely change the main flow.
 
-## Agent
+### Agent
 
 An agent can choose the next action on its own, based on goal, state, tool results and environment feedback:
 
@@ -907,7 +907,7 @@ Observe again
 
 Autonomy is higher. Budget, permission and stop conditions become more important.
 
-## Agentic Workflow
+### Agentic Workflow
 
 Agentic Workflow sits between the two.
 
@@ -940,7 +940,7 @@ Autonomy should be placed at nodes where the decision rule is hard to write in a
 
 ---
 
-# Agent autonomy and system control are two different axes
+## Agent autonomy and system control are two different axes
 
 Common systems line up along the autonomy axis:
 
@@ -982,7 +982,7 @@ Agentic Workflow usually sits in the most practical balance zone:
 - it is easy to add budget limits, verifiers and human approval gates
 - it is easier to debug than a fully autonomous agent
 
-## Multi-Agent should not be placed on this ladder
+### Multi-Agent should not be placed on this ladder
 
 Multi-Agent describes an organisational choice, not a fixed autonomy level.
 
@@ -1003,7 +1003,7 @@ So it should not be placed between Adaptive Agent and Long-running Autonomous Ag
 
 ---
 
-# How should a complete agent be described?
+## How should a complete agent be described?
 
 Take a production RAG system as an example. Saying "we use ReAct" is still not enough.
 
@@ -1034,7 +1034,7 @@ This is the kind of description that can actually be debated in an architecture 
 
 ---
 
-# The six-dimension cheat sheet
+## The six-dimension cheat sheet
 
 | Dimension | Representative patterns | Solves | Common risks |
 | --- | --- | --- | --- |
@@ -1047,7 +1047,7 @@ This is the kind of description that can actually be debated in an architecture 
 
 ---
 
-# Six questions to ask about a new agent name
+## Six questions to ask about a new agent name
 
 New names appear regularly in the agent space.
 
@@ -1083,7 +1083,7 @@ Six questions in, and the architecture usually emerges on its own.
 
 ---
 
-# Conclusion
+## Conclusion
 
 ReAct and Plan-and-Execute are both important patterns, but they only cover one of the six dimensions: how the next step is decided.
 
@@ -1115,35 +1115,3 @@ The next article starts with the first dimension:
 > **How does an agent's task actually move?**
 
 We will compare Direct, Pipeline, Router, State Machine, DAG, Event-driven and Human-in-the-loop in full, and explain when the task does not need an agent at all.
-
----
-
-# Agent Design Patterns Atlas — series index
-
-| Part | Topic |
-| ---: | --- |
-| 1 | Beyond ReAct: a six-dimensional map of LLM agent architectures |
-| 2 | Execution paths in full: Direct, Pipeline, Router, State Machine and DAG |
-| 3 | ReAct, Plan-and-Execute and Adaptive Planning |
-| 4 | From a single path to searching the full solution space: CoT, ToT, GoT and LATS |
-| 5 | Verification and self-correction in agents |
-| 6 | Multi-agent architecture in full |
-| 7 | Agent memory in full |
-| 8 | Production agent architecture in practice |
-| 9 | How to choose an agent architecture |
-| Bonus | Implementing the patterns with modern agent frameworks |
-
----
-
-# Figure index
-
-| Figure | Title | File |
-| --- | --- | --- |
-| Figure 1-1 | Six Dimensions of Agent Architecture | `01-six-dimensions-overview.png` |
-| Figure 1-2 | Direct, Pipeline, Router, State Machine, and DAG | `02-execution-structures.png` |
-| Figure 1-3 | Planner, ReAct Executor, Verifier, and Replanner | `03-planner-react-executor.png` |
-| Figure 1-4 | Line, Tree, and Graph Search Structures | `04-search-structures.png` |
-| Figure 1-5 | Six Common Verification and Recovery Patterns | `05-verification-paths.png` |
-| Figure 1-6 | Five Common Agent Organisation Patterns | `06-organisation-patterns.png` |
-| Figure 1-7 | Context, State, Memory, and RAG | `07-context-state-memory-rag.png` |
-| Figure 1-8 | Agent Autonomy and System Control | `08-autonomy-controllability-spectrum.png` |
