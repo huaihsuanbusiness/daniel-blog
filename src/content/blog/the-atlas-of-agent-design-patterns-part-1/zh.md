@@ -1,1219 +1,478 @@
 ---
 title: "Agent 設計模式圖鑑 Part 1｜LLM Agent 不只有 ReAct：用六個維度看懂 Agent 架構"
-description: "把常見的 LLM Agent 設計模式整理到六個維度：執行路徑、決策與規劃、推理與探索、驗證與修正、Agent 組織、狀態與記憶。讀完之後，你不需要背下所有 ReAct、Plan-and-Execute、ToT、Reflexion 之類的名稱，而是可以先判斷一個新框架改動了哪一層。"
-categories: ["ai"]
-tags: ["ai", "agent", "design-patterns", "architecture", "llm"]
-date: 2026-06-30T01:56:00
-featured: false
+description: "用六個實務設計維度分析 LLM Agent：執行路徑、決策與規劃、推理與探索、驗證與修正、Agent 組織，以及狀態與記憶。"
+date: 2026-07-01T22:36:00
+lang: zh
+categories: ["AI"]
 series: "Agent 設計模式圖鑑"
 seriesOrder: 1
 ---
 
-談到 LLM Agent，很多人的第一個問題是：
+談到 LLM Agent，很多人第一個問題是：
 
-> Agent 應該使用 ReAct，還是 Plan-and-Execute？
+> 應該使用 ReAct，還是 Plan-and-Execute？
 
-這個問題本身沒有錯，但範圍太窄。
+這個問題合理，但它只比較了 Agent 系統的一個部分：**下一步行動如何決定**。
 
-因為在一套完整的 Agent 系統裡：
+一套真正可上線的 Agent，可能在工具執行節點內使用 ReAct，由狀態機控制整體流程，再由驗證器判斷結果是否通過；同時以記憶保存進度，並由監督者協調多個專業工作者。這些機制不是在搶同一份工作，而是位於不同的架構層。
 
-- ReAct 可能只負責根據工具結果決定下一步
-- State Machine 負責控制整體流程
-- Verifier 負責驗收結果
-- Memory 負責保存狀態與經驗
-- Supervisor 負責把工作分配給多個 Worker
+如果把所有 Agent 名詞塞進同一張比較表，再問哪一個最好，答案通常看似完整，實際上無法落地。架構討論的第一步，不是挑選模式，而是先分清楚每個模式回答了什麼問題。
 
-它們解決的是不同層次的問題。
+本文使用六個實務設計視角：
 
-如果把這些名詞全部放進同一張比較表，再要求選出「最好的一種」，很容易得到一個看似完整、實際上無法落地的答案。
+1. **執行路徑**：任務如何從開始走到結束
+2. **決策與規劃**：下一步行動如何選擇
+3. **推理與探索**：多個候選方案如何搜尋
+4. **驗證與修正**：錯誤如何被發現、隔離與處理
+5. **Agent 組織**：責任如何分配
+6. **狀態與記憶**：哪些資訊要保存、由誰持有、保存多久
 
-這也是 Agent 架構最常見的理解障礙：
+這六個維度是一套偏向工程實作、產品判斷與正式環境審查的**工作模型**，不是唯一或公認的學術分類法。
 
-> 名詞很多，但分類軸沒有先釐清。
+## 同一套系統可以同時包含多種模式
 
-這篇文章會先建立一張地圖，把常見 Agent 設計模式拆成六個維度：
-
-1. 執行路徑
-2. 決策與規劃
-3. 推理與探索
-4. 驗證與修正
-5. Agent 組織
-6. 狀態與記憶
-
-讀完這篇後，你不需要背下所有名詞。
-
-更重要的是，當你再次看到一個新的 Agent Framework、論文、產品或架構名稱時，可以先判斷：
-
-> 它究竟改變了 Agent 系統的哪一層？
-
----
-
-## 一套 Agent，為什麼會同時出現這麼多名詞？
-
-先看一個簡化的研究型 Agent：
+先看一個研究型 Agent：
 
 ```text
 使用者提出問題
- ↓
-Router 判斷問題類型
- ↓
-Planner 拆解研究任務
- ↓
-Research Worker 搜尋與讀取資料
- ↓
-Verifier 檢查來源與結論
- ↓
-資料不足時重新規劃
- ↓
-Writer 整理答案
+ -> Router 判斷問題類型
+ -> Planner 拆解研究任務
+ -> Research Worker 搜尋與閱讀來源
+ -> Verifier 檢查證據與結論
+ -> 證據不足時由 Replanner 修改剩餘計畫
+ -> Writer 整理最終回答
 ```
 
-這套系統可以同時包含：
+同一套系統可能同時使用：
 
 - **Router**：選擇任務路徑
-- **Plan-and-Execute**：先拆解任務，再逐步執行
-- **ReAct**：Worker 根據工具回傳結果決定下一步
-- **State Machine**：控制任務目前位於哪個階段
-- **Verifier**：檢查來源、格式或答案品質
-- **Supervisor–Worker**：分配多個角色的工作
-- **Working Memory**：保存目前已找到的資料與進度
-- **Bounded Retry**：限制失敗後最多重試幾次
+- **Plan-and-Execute**：先建立高層計畫
+- **ReAct**：讓工作者依照最新觀察結果選擇工具與行動
+- **State Machine**：限制允許的狀態轉移
+- **Verifier**：依照證據、資料格式或政策驗收結果
+- **Supervisor-Worker**：協調不同專業角色
+- **Working Memory**：保存目前發現與進度
+- **Bounded Retry**：限制同一失敗最多重試幾次
 
-這些模式彼此沒有衝突。
+因此，問 Router 和 ReAct 哪個比較好，就像問變速箱和導航系統哪個比較好。兩者處理的是不同問題。
 
-它們更像一台車上的不同系統：
+![Figure 1-1 — Six Dimensions of Agent Architecture](/images/the-atlas-of-agent-design-patterns-part-1/01-six-dimensions-overview.png)
 
-| 車輛問題 | 對應概念 |
-|---|---|
-| 車身如何分類 | SUV、轎車、旅行車 |
-| 使用哪種動力 | 汽油、電動、油電 |
-| 如何換檔 | 手排、自排 |
-| 如何傳遞動力 | 前驅、後驅、四驅 |
-| 如何輔助駕駛 | ACC、車道置中、自動停車 |
+> **Figure 1-1｜Six Dimensions of Agent Architecture**  
+> 用一張圖把六個維度放在一起：執行路徑、決策與規劃、推理與探索、驗證與修正、Agent 組織、狀態與記憶。
 
-如果有人問「SUV 和油電哪個比較好」，很難直接回答。
+## 六維架構地圖
 
-因為兩者根本不在同一個分類維度。
-
-Agent 架構也一樣。
-
-- ReAct 描述的是決策節奏
-- State Machine 描述的是流程控制
-- Multi-Agent 描述的是工作如何分配
-- Memory 描述的是資訊如何保存
-
-先把維度拆開，後面的比較才有意義。
-
----
-
-![Figure 1-1｜Six Dimensions of Agent Architecture](/images/the-atlas-of-agent-design-patterns-part-1/01-six-dimensions-overview.png)
-
-> **Figure 1-1｜Six Dimensions of Agent Architecture**
-> 一套完整 Agent 系統可以同時組合六個架構維度。這些不是互斥選項，而是可以一起使用的設計層。
-
----
-
-## Agent 架構的六個維度
-
-本文採用以下六個維度整理常見 Agent 模式。
-
-這不是唯一可能的學術分類，而是一套偏向工程設計、產品判斷與系統選型的工作模型。
-
-| 維度 | 它回答的問題 | 常見模式 |
+| 維度 | 它回答的問題 | 代表模式 |
 |---|---|---|
 | 執行路徑 | 任務從開始到結束怎麼走？ | Direct、Pipeline、Router、State Machine、DAG |
-| 決策與規劃 | Agent 如何決定下一步？ | ReAct、Plan-and-Execute、Adaptive Planning、HTN |
-| 推理與探索 | 面對多種解法時如何搜尋？ | Self-consistency、Tree of Thoughts、Graph of Thoughts、LATS |
-| 驗證與修正 | 如何知道做錯？錯了怎麼辦？ | Retry、Fallback、Critic、Verifier、Generate-and-Test、Reflexion |
-| Agent 組織 | 一個 Agent 做完，還是多個角色合作？ | Single Agent、Supervisor–Worker、Debate、Blackboard、Swarm |
-| 狀態與記憶 | Agent 記得什麼？保存多久？ | Working、Episodic、Semantic、Procedural、Shared Memory |
+| 決策與規劃 | 下一步行動如何決定？ | ReAct、Plan-and-Execute、Adaptive Planning |
+| 推理與探索 | 多個候選方案如何搜尋？ | Single-path、Self-consistency、Generate-and-Rank、Tree of Thoughts、Graph of Thoughts、LATS |
+| 驗證與修正 | 如何發現錯誤、控制影響並恢復？ | Retry、Fallback、Critic、Verifier、Generate-and-Test、Reflexion |
+| Agent 組織 | 工作由誰負責、如何整合？ | Single Agent、Supervisor-Worker、Debate、Blackboard、Swarm |
+| 狀態與記憶 | 哪些資訊要保存、由誰持有、保存多久？ | Working State、Episodic、Semantic、Procedural、User、Shared Memory |
 
-一套系統可以在每個維度各自選擇一種或多種模式。
-
-例如：
+每個維度都可以選擇一種或多種機制。例如：
 
 ```text
-執行路徑：State Machine
-決策方式：Plan-and-Execute + ReAct
-探索方式：Single-path
-修正方式：Verifier + Bounded Retry
-組織方式：Single Agent
-記憶方式：Working Memory + Procedural Memory
+執行路徑 State Machine
+決策方式 Plan-and-Execute + Bounded ReAct
+探索方式 預設 Single-path；必要時 Generate-and-Rank
+驗證方式 Deterministic Check + Citation Verifier + Bounded Retry
+組織方式 Single Agent + Specialist Tools
+狀態與記憶 Working State + Governed Procedural Memory
+治理機制 Budget Guard + Tool Allowlist + Timeout + Approval Gate
 ```
 
-這段描述，比「這是一個 ReAct Agent」提供了更多真正有用的架構資訊。
+這段描述，比「我們做了一個 ReAct Agent」提供了更多可實作、可驗收的資訊。
 
----
+## 維度一：任務如何在系統中流動？
 
-## 維度一：任務怎麼走？
+執行路徑是整套系統的控制骨架。它關心的是：
 
-第一個維度是 **Execution Path**，也就是任務的流程骨架。
-
-它關心的不是模型怎麼思考，而是：
-
-> 任務會經過哪些節點？什麼條件下切換路徑？失敗後回到哪裡？
+> 任務可以經過哪些節點？順序是什麼？什麼條件會切換路徑？失敗後要去哪裡？
 
 ### Direct
 
-最簡單的形式：
+Direct 是單次輸入到輸出：
 
 ```text
-Input
- ↓
-LLM
- ↓
-Output
+Input -> Model -> Output
 ```
 
-適合：
-
-- 翻譯
-- 改寫
-- 簡單摘要
-- 格式轉換
-- 一次性分類
-
-很多問題根本不需要 Agent。
-
-如果輸入和輸出之間沒有工具、狀態、分支或持久化的多步驟流程，直接呼叫模型通常更快、更便宜，也更容易測試。
+翻譯、改寫、擷取、簡單分類等一次性轉換，通常不需要 Agent。若任務沒有實質工具使用、持久狀態、分支或多步恢復，直接呼叫模型通常更便宜、更快，也更容易測試。
 
 ### Pipeline
 
-Pipeline 會把任務拆成固定步驟：
+Pipeline 使用預先定義的固定順序：
 
 ```text
-Rewrite
- ↓
-Retrieve
- ↓
-Rerank
- ↓
-Generate
- ↓
-Verify
+Rewrite -> Retrieve -> Rerank -> Generate -> Verify
 ```
 
-每個步驟責任清楚，適合流程相對穩定的工作。
-
-Production RAG 經常採用這種骨架，原因很實際：
-
-- 容易記錄每一階段的輸入與輸出
-- 容易定位失敗位置
-- 可以分別評估 Retrieval、Reranking 和 Generation
-- 成本與延遲相對容易預估
-
-Pipeline 的限制也很明確。
-
-每個 Request 通常會經過預先設定的節點，即使某些步驟對當前問題沒有必要。
+它適合正式環境，因為每個步驟都有清楚輸入與輸出，可以分別量測延遲、成本、品質與失敗率。缺點是僵硬：即使某個請求不需要其中一個步驟，也可能照樣走完整條流程。
 
 ### Router
 
-Router 會先判斷問題該走哪條路：
+Router 先選擇要走哪一條路：
 
 ```text
- ┌→ Direct Answer
-使用者問題 → Router ├→ RAG Search
- ├→ SQL
- ├→ Calculator
- └→ Agent Workflow
+User Request -> Router -> Direct Answer
+ -> RAG Search
+ -> SQL
+ -> Calculator
+ -> Agent Workflow
 ```
 
-Router 可以依照以下條件分流：
-
-- 問題類型
-- 使用者權限
-- 所需工具
-- 成本預算
-- 風險等級
-- 延遲要求
-- Query Profile
-
-它的價值通常不在於「更會回答」，而是避免每個問題都啟動最昂貴的完整流程。
+路由判斷可以根據意圖、權限、風險、所需工具、預算、延遲要求或資料敏感度進行。Router 的價值通常不是「讓模型更聰明」，而是避免每一個簡單問題都啟動最昂貴的完整流程。
 
 ### State Machine
 
-State Machine 會明確記錄系統目前位於哪個狀態：
+State Machine 明確記錄目前狀態與允許的狀態轉移：
 
 ```text
-START
- ↓
-RETRIEVE
- ↓
-資料足夠？
- ├─ 是 → ANSWER
- └─ 否 → REWRITE QUERY
- ↓
- RETRIEVE
+START -> RETRIEVE -> ENOUGH_EVIDENCE?
+ yes -> ANSWER -> END
+ no -> REWRITE_QUERY -> RETRIEVE
 ```
 
-它特別適合需要以下能力的系統：
+它適合需要斷點恢復、人工審批、有限重試、失敗路由與明確停止條件的系統。
 
-- 重試上限
-- 任務中斷後恢復
-- 人工審批
-- 失敗分流
-- 長任務進度保存
-- 明確停止條件
-
-ReAct 可以決定「下一個動作是什麼」。
-
-State Machine 則負責限制：
-
-> 哪些狀態允許哪些動作。
-
-一個負責現場判斷，一個負責交通規則。
+ReAct 可以決定目前最適合的局部行動；State Machine 則決定目前狀態允許哪些行動。前者提供現場判斷，後者負責交通規則。
 
 ### DAG
 
-DAG 是 Directed Acyclic Graph，也就是有向無環圖。
-
-它適合把互不依賴的工作平行執行：
+DAG 是沒有循環的有向圖。互相獨立的分支可以平行執行，最後再整合：
 
 ```text
- ┌→ Research A ─┐
-問題 → Decompose ├→ Research B ─┼→ Synthesis
- └→ Research C ─┘
+Problem -> Decompose -> Research A --\
+ -> Research B ----> Synthesis
+ -> Research C --/
 ```
 
-Deep Research、批次資料分析和多來源比較，都可能使用 DAG。
-
-DAG 可以平行，但原則上不包含循環。
-
-State Machine 則可以讓流程回到先前狀態。
-
-這兩者的差別會直接影響重試、恢復與任務編排方式。
-
----
+DAG 適合批次分析、多來源研究與可平行拆解的任務。由於 DAG 按定義不能形成循環，若流程需要反覆修正，通常要在外層使用 State Machine，或重新啟動一次新的圖執行。
 
 ![Figure 1-2 — Direct, Pipeline, Router, State Machine, and DAG](/images/the-atlas-of-agent-design-patterns-part-1/02-execution-structures.png)
 
-> **Figure 1-2｜Direct, Pipeline, Router, State Machine, and DAG**
-> 五種常見執行骨架的結構比較：Direct 是單次輸入輸出，Pipeline 是固定順序，Router 負責分流，State Machine 根據狀態轉移，DAG 則把可拆分工作平行執行後再合併。
-
----
+> **Figure 1-2｜Direct, Pipeline, Router, State Machine, and DAG**  
+> Direct、Pipeline、Router、State Machine 與 DAG 五種執行路徑模式，從單次呼叫到可平行子任務依複雜度遞增。
 
 ## 維度二：下一步怎麼決定？
 
-第二個維度是 **Decision and Planning**。
-
-這一層才是 ReAct 和 Plan-and-Execute 所在的位置。
+ReAct、Plan-and-Execute 與 Adaptive Planning 都位於決策與規劃這一層。
 
 ### ReAct
 
-ReAct 的基本節奏可以簡化成：
+ReAct 讓推理、行動與觀察交錯進行：
 
 ```text
-Reason
- ↓
-Act
- ↓
-Observe
- ↓
-Reason Again
+Reason -> Act -> Observe -> Reason Again
 ```
 
-例如，一個搜尋 Agent 可能：
+搜尋工作者可能先查一個來源，發現資料過期後改寫查詢，再切換到官方文件。下一步取決於最新的觀察結果。
 
-1. 搜尋第一組關鍵字
-2. 發現結果不夠精確
-3. 改寫查詢
-4. 開啟其中一個來源
-5. 發現資料過期
-6. 改找官方文件
-7. 整理結果
+ReAct 適合網頁研究、除錯、瀏覽器操作與 API 探索等工具結果難以預測的任務。它在正式環境中的主要風險不是彈性不足，而是彈性沒有邊界。可靠實作需要最大步數、工具白名單、成本與時間預算、循環偵測，以及清楚的完成條件。
 
-下一步取決於前一步的 Observation。
-
-這類模式適合：
-
-- 網頁搜尋
-- Debug
-- Browser 操作
-- API 探索
-- 工具結果不可預期的任務
-
-ReAct 的問題通常不是缺乏彈性，而是彈性太高。
-
-如果沒有最大步數、工具白名單、預算限制與停止條件，Agent 可能：
-
-- 反覆搜尋
-- 重複讀取同一份資料
-- 一直換方法
-- 看起來很忙，實際進度沒有增加
+原始的 [ReAct 方法](https://arxiv.org/abs/2210.03629)讓推理軌跡與任務行動交錯進行，並沒有規定特定的工作流程邊界。正式系統常把 ReAct 限制在某個工作流程節點內，讓局部工具使用保有彈性，同時維持整體流程可控。這是工程選擇，不是 ReAct 定義的一部分。
 
 ### Plan-and-Execute
 
-Plan-and-Execute 會先建立完整或高層計畫：
+Plan-and-Execute 先建立完整或高層計畫，再執行步驟：
 
 ```text
-目標
- ↓
-建立計畫
- ↓
-執行步驟 1
- ↓
-執行步驟 2
- ↓
-執行步驟 3
- ↓
-整合結果
+Goal -> Build Plan -> Execute Steps -> Integrate Result
 ```
 
-它適合：
-
-- 長篇研究
-- 多階段報告
-- 專案規劃
-- 有明確交付物的任務
-- 容易漏項的分析工作
-
-它的優勢是全局性。
-
-Agent 在開始前先確認有哪些子問題需要處理，比較不容易因第一個搜尋結果就偏離整體目標。
-
-風險則在初始計畫。
-
-如果前提錯了，後續步驟可能執行得非常完整，方向仍然不對。
+它適合長篇研究、多階段報告與容易漏項的分析任務。優點是有全局視野；風險是初始前提一旦錯誤，後續步驟可能執行得很完整，卻仍然走向錯誤方向。
 
 ### Adaptive Planning
 
-Adaptive Planning 在 Plan-and-Execute 上加入重新規劃：
+Adaptive Planning 會根據新證據修改尚未完成的步驟：
 
 ```text
-建立計畫
- ↓
-執行一步
- ↓
-檢查結果
- ↓
-是否需要修改計畫？
- ├─ 否 → 繼續
- └─ 是 → 更新剩餘步驟
+Build Plan -> Execute One Step -> Check Result
+ -> Keep Plan
+ -> Revise Remaining Steps
 ```
 
-例如：
+這和 Retry 不同。Retry 是在大致相同的計畫下重跑某個行動；重新規劃則改變接下來要做什麼。
 
-```text
-原計畫：
-1. 從職缺頁取得完整 JD
-2. 分析技能要求
-3. 進行匹配評分
-```
+### 常見的正式環境混合架構
 
-第一步失敗後，系統可以改成：
-
-```text
-更新後：
-1. 嘗試公司 Career Page
-2. 嘗試公開 Job API
-3. 仍無完整正文則標記 Pending
-4. 不根據職稱推測內容
-```
-
-這裡的關鍵不是「再試一次」，而是剩餘計畫已經改變。
-
-### 最常見的混合架構
-
-實務上很少需要把 ReAct 和 Plan-and-Execute 二選一。
-
-更常見的結構是：
+實務上常見的組合是：
 
 ```text
 Planner 建立高層計畫
- ↓
-Executor 執行某個子任務
- ↓
-子任務內使用 ReAct
- ↓
-Verifier 檢查結果
- ↓
-必要時重新規劃
+ -> Executor 在子任務內使用 Bounded ReAct
+ -> Verifier 驗收完整度與品質
+ -> 必要時由 Replanner 修改剩餘計畫
+ -> State Machine 控制狀態轉移與上限
 ```
 
-可以把它理解成：
+![Figure 1-3 — Planner, ReAct Executor, Verifier, and Replanner](/images/the-atlas-of-agent-design-patterns-part-1/03-planner-react-executor.png)
 
-- Planner 管全局
-- ReAct 處理現場
-- Verifier 負責驗收
-- State Machine 限制流程
+> **Figure 1-3｜Planner, ReAct Executor, Verifier, and Replanner**  
+> Planner 建立高層計畫；Bounded ReAct 在子任務內執行；Verifier 驗收；Replanner 修改剩餘計畫。
 
----
+## 維度三：候選方案怎麼探索？
 
-![Figure 1-3｜Planner, ReAct Executor, Verifier, and Replanner](/images/the-atlas-of-agent-design-patterns-part-1/03-planner-react-executor.png)
-
-> **Figure 1-3｜Planner, ReAct Executor, Verifier, and Replanner**
-> Planner 產生高層計畫，Executor 在子任務內使用 ReAct，Verifier 負責檢查結果，失敗時再由 Replanner 修改剩餘計畫。
-
----
-
-## 維度三：多種解法怎麼探索？
-
-有些任務只需要一條合理路徑。
-
-另一些任務則存在大量候選方案。
-
-第三個維度關心的是：
-
-> Agent 要沿著一條路走到底，還是同時探索多條路？
+決策模式處理下一步行動；搜尋模式則決定系統只走一條候選路線，還是同時探索多條路。
 
 ### Single-path Reasoning
 
-只產生一條主要解題路徑。
-
-優點是快、便宜，適合大多數日常任務。
-
-缺點是早期判斷一旦偏掉，後續內容通常也會跟著偏移。
+系統只產生一條主要路徑。優點是快、成本低，適合多數日常任務；缺點是前段一旦判斷錯誤，後續結果容易一起偏移。
 
 ### Self-consistency
 
-對同一個問題產生多次獨立結果，再選擇較一致的答案。
-
-它適合：
-
-- 有明確答案的推理題
-- 分類
-- 固定評分
-- 可以投票的任務
-
-多數一致只能降低偶發誤差，無法保證事實正確。
-
-如果所有候選都使用相同的錯誤資訊，投票不會把錯誤變成真相。
+原始的 [Self-consistency 方法](https://arxiv.org/abs/2203.11171)會抽樣多條不同的推理路徑，再選擇最一致的答案。它能降低部分解碼變異，但「多數一致」本身不是證據；多個候選方案仍可能共享同一個錯誤前提。
 
 ### Generate-and-Rank
 
-先產生多個候選，再由 Ranker 或評估規則排序：
+系統先產生多個候選方案，再依照明確條件評分：
 
 ```text
-問題
- ↓
-產生方案 A、B、C
- ↓
-根據成本、風險、品質評分
- ↓
-選擇最佳候選
+Generate A, B, C -> Score Cost, Risk, Quality -> Select or Combine
 ```
 
-它適合：
-
-- 架構選型
-- 文案
-- 程式方案
-- 多個都可能合理的答案
+排序器本身就是架構的一部分。若評分規則模糊，或只偏好文風而無法判斷正確性，多生成幾個候選方案，只會得到一堆被自信排序的錯誤答案。
 
 ### Tree of Thoughts
 
-Tree of Thoughts 允許思路分叉：
-
-```text
- 起點
- ┌────┼────┐
- 路徑 A 路徑 B 路徑 C
- │ │
- A1/A2 B1/B2
-```
-
-系統可以：
-
-- 評估分支
-- 淘汰候選
-- 保留較有希望的路線
-- 回到先前節點探索其他方向
+[Tree of Thoughts](https://arxiv.org/abs/2305.10601) 把中間解題狀態表示成分支。系統可以展開較有希望的節點、評估分支、淘汰較弱路線，並回到前面的狀態探索其他方向。它最適合「在完整答案完成前，就能評估部分結果」的任務。
 
 ### Graph of Thoughts
 
-Graph of Thoughts 允許不同分支重新合併。
+[Graph of Thoughts](https://arxiv.org/abs/2308.09687) 不只是「樹狀搜尋最後把分支合併」。不同思考單元可以有多個前置依賴，也能被轉換、聚合與重用，形成比樹更一般化的圖結構。較實用的理解方式是：中間結果可以重新組合與重用，但不同 GoT 系統不一定具有相同拓撲。
 
-這對多來源研究特別有用。
+### LATS 與行動搜尋
 
-不同研究路徑可能找到互補資料，最後需要把中間結果整合，而不是只保留其中一條路。
+[Language Agent Tree Search（LATS）](https://arxiv.org/abs/2310.04406)結合樹狀搜尋、語言模型行動、價值估計、自我反思與外部回饋。更廣義地說，行動搜尋會提出候選行動、執行或模擬、評估結果、保留較好的分支，再繼續探索。它最適合結果可以可靠評分的環境，例如程式測試、遊戲、具有明確成功條件的瀏覽器任務，以及其他可驗證的結構化任務。
 
-### LATS / Tree Search
+搜尋不是免費午餐。它會增加模型呼叫、工具執行、狀態量、延遲，以及對評估器品質的依賴。
 
-這類方法會把 Agent 行動視為搜尋空間，反覆：
+![Figure 1-4 — Line, Tree, and Graph Search Structures](/images/the-atlas-of-agent-design-patterns-part-1/04-search-structures.png)
 
-- 提出候選行動
-- 執行或模擬
-- 評估結果
-- 保留較好的分支
-- 回溯並繼續探索
+> **Figure 1-4｜Line, Tree, and Graph Search Structures**  
+> 從單一路徑、Self-consistency、Generate-and-Rank 走到 Tree of Thoughts、Graph of Thoughts 與 LATS 的多路搜尋結構。
 
-它適合能夠客觀判斷成功與否的環境，例如：
+## 維度四：錯誤如何被發現與處理？
 
-- 程式測試
-- Browser 操作
-- 遊戲
-- 可驗證的結構化任務
-
-代價也很直接：
-
-- 更多模型呼叫
-- 更多工具執行
-- 更多狀態管理
-- 更高評估成本
-
----
-
-![Figure 1-4｜Line, Tree, and Graph Search Structures](/images/the-atlas-of-agent-design-patterns-part-1/04-search-structures.png)
-
-> **Figure 1-4｜Line, Tree, and Graph Search Structures**
-> Line 只保留一條路，Tree 允許分支、剪枝與回溯，Graph 則能讓不同路徑重新合併並重用中間結果。
-
----
-
-## 維度四：做錯後怎麼修？
-
-Agent 能採取很多行動，不代表它知道結果是否正確。
-
-第四個維度處理的是：
-
-> 驗證、失敗恢復，以及如何避免同樣的錯誤反覆出現。
+能採取很多行動，不代表系統知道自己是否做對。行動能力與驗證能力必須分開設計。
 
 ### Retry
 
-Retry 適合暫時性錯誤：
-
-- API Timeout
-- 網路中斷
-- Rate Limit
-- 暫時無法取得頁面
-- 模型輸出格式偶發錯誤
-
-如果根本原因沒有改變，原樣重試往往只會把同一個錯誤再跑一次。
-
-因此，Retry 應該有：
-
-- Backoff
-- Retry Limit
-- Timeout
-- Escalation
+Retry 適合逾時、速率限制、暫時性網路錯誤或偶發格式失敗。它需要退避策略、硬性上限、逾時限制與升級處理路徑。若根本原因沒有改變，原樣重跑通常只會複製同一個失敗。
 
 ### Fallback
 
-Fallback 會切換備援方案：
-
-```text
-Primary Action
- ↓
-Success?
- ├─ Yes → Continue
- └─ No → Fallback Option → Continue
-```
-
-它的目標通常是提高可用性，不一定保證備援路徑和主路徑具有完全相同的品質。
+Fallback 會更換方法或資源，例如備用模型、替代 API、快取結果或降級模式。它提高可用性，但備援路徑不一定提供相同品質與保證。
 
 ### Critic
 
-Critic 負責指出問題，例如：
-
-- 論證缺口
-- 格式錯誤
-- 遺漏需求
-- 潛在風險
-- 結論與證據不一致
-
-Critic 比較像審稿者。
-
-它提供質化回饋，但不一定能做出嚴格的 Pass / Fail 判定。
+Critic 提供質化回饋，例如遺漏需求、論證薄弱、缺少證據或存在風險。它適合支援修訂，但不一定能產生可自動執行的通過／不通過結果。
 
 ### Verifier
 
-Verifier 依照規則、Schema、證據或政策檢查輸出。
+Verifier 依照明確契約檢查結果，例如資料格式、測試、證據、政策、權限或數值不變量。好的 Verifier 必須有可觀測條件與清楚的判定邊界。
 
-例如：
+可以簡化成：
 
-- JSON 是否符合 Schema
-- SQL 是否唯讀
-- Citation 是否對應 Claim
-- 必要欄位是否存在
-- 是否違反權限規則
-- 是否通過合規要求
-
-Critic 和 Verifier 的差別可以簡化成：
-
-- Critic：哪裡可以改進？
-- Verifier：是否達到門檻？
+- **Critic：** 哪裡需要改進？
+- **Verifier：** 是否達到驗收門檻？
 
 ### Generate-and-Test
 
-Generate-and-Test 不是一次生成多個候選再選冠軍。
-
-它的典型流程是：
+Generate-and-Test 會把輸出放進外部或可重現的測試環境：
 
 ```text
-Generate
- ↓
-Run Test
- ↓
-Pass?
- ├─ Yes → Accept
- └─ No → Inspect Failure
- ↓
- Revise
- ↓
- Run Test Again
+Generate -> Run Test -> Pass?
+ yes -> Accept
+ no -> Inspect Failure -> Revise -> Test Again
 ```
 
-它適合：
-
-- Code Generation
-- SQL Validation
-- Data Transformation
-- Executable Workflow
-- API Request
-- Build 與 Deployment
-
-真正重要的不是模型說「看起來沒問題」，而是結果是否在真實環境中通過檢驗。
+它特別適合程式碼、SQL、資料轉換、API 呼叫、建置與部署。模型說「看起來正確」，不等於測試真的通過。
 
 ### Reflexion
 
-Reflexion 會把失敗經驗保存給未來任務使用：
+原始的 [Reflexion 方法](https://arxiv.org/abs/2303.11366)使用文字化回饋與情節記憶緩衝區，讓後續嘗試能利用前次失敗經驗。正式系統可以進一步驗證經驗、保留來源資訊、對規則做版本控制、讓過期規則失效，並只把可靠經驗提升為程序性記憶。
 
-```text
-Attempt
- ↓
-Failure
- ↓
-Reflect
- ↓
-Update Strategy / Memory
- ↓
-Future Attempt
-```
+這些治理能力屬於正式環境的延伸，不應被誤認為原始研究方法本身。把每次自我反省直接永久寫入記憶很危險，錯誤經驗可能污染未來所有執行。
 
-例如：
+![Figure 1-5 — Verification and Recovery Patterns](/images/the-atlas-of-agent-design-patterns-part-1/05-verification-paths.png)
 
-```text
-失敗紀錄：
-只根據職稱進行評分，沒有取得完整 JD。
+> **Figure 1-5｜Verification and Recovery Patterns**  
+> 從 Retry、Fallback、Critic 到 Verifier 與 Generate-and-Test 的驗證與恢復模式，各有不同的成本與責任邊界。
 
-程序規則：
-缺少完整正文時標記 Pending，不根據職稱推測。
-```
+## 維度五：責任如何分配？
 
-這已經跨入 Memory 維度。
-
-因為修正不只影響當前答案，也會改變未來的行為。
-
----
-
-![Figure 1-5｜Six Common Verification and Recovery Patterns](/images/the-atlas-of-agent-design-patterns-part-1/05-verification-paths.png)
-
-> **Figure 1-5｜Six Common Verification and Recovery Patterns**
-> 六種代表性的驗證與復原模式：Retry、Fallback、Critic、Verifier、Generate-and-Test、Reflexion。這張圖不是「六種錯誤處理路徑」，因為 Critic 和 Verifier 主要負責發現與判定問題，不一定直接執行恢復。
-
----
-
-## 維度五：工作由誰完成？
-
-一套 Agent 可以由單一 Agent 完成，也可以拆成多個角色。
+Agent 組織方式定義責任、溝通與整合方式。Agent 數量增加，不會自動提高答案品質。
 
 ### Single Agent
 
-同一個 Agent 負責：
+一個 Agent 同時負責規劃、工具使用、執行、檢查與回答。它成本低，也容易除錯。許多任務只要有清楚的狀態、工具邊界、驗證器與停止條件，Single Agent 就已經足夠。
 
-- 規劃
-- 使用工具
-- 執行
-- 檢查
-- 回答
+### Supervisor-Worker
 
-這是最簡單、成本最低，也最容易 Debug 的形式。
-
-很多任務根本不需要 Multi-Agent。
-
-只要：
-
-- 狀態清楚
-- 工具邊界明確
-- 驗證機制可靠
-- 停止條件合理
-
-Single Agent 就可能已經足夠。
-
-### Role-based Single Agent
-
-同一個模型在不同階段切換角色：
-
-```text
-Planner
- ↓
-Writer
- ↓
-Critic
-```
-
-它看起來像多個角色，但底層仍可能是同一個模型、同一份 Context、同一個執行程序。
-
-### Supervisor–Worker
-
-Supervisor 負責：
-
-- 拆解任務
-- 分派 Worker
-- 追蹤進度
-- 收集結果
-- 聚合輸出
-
-Worker 則負責特定子任務。
-
-```text
- Supervisor
- ┌──────┼──────┐
- Research Coding Reviewer
- \ | /
- Return Results
- ↓
- Supervisor Aggregates
- ↓
- Response
-```
-
-重要的是：
-
-> Worker 不應該直接跳過 Supervisor，把各自結果送到最終 Response。
-
-Supervisor 或明確的 Aggregator 必須負責整合。
+Supervvisor 負責拆解、分派、追蹤與整合；Worker 負責特定子任務。Worker 應把結構化結果交回 Supervisor 或專門的彙整者。若 Worker 各自把內容直接寫進最終答案，矛盾、重複與缺漏會很難控制。
 
 ### Debate
 
-多個 Agent 提出不同立場，再由 Moderator 或 Judge 比較：
-
-```text
-Agent A
-Agent B
-Agent N
- ↓
-Moderator / Judge
- ↓
-Final Answer
-```
-
-它適合：
-
-- 找盲點
-- 比較競爭觀點
-- 高風險決策
-- 模糊問題
-
-但多數決不能取代外部驗證。
+真正的 Debate 會讓多個 Agent 在一輪或多輪中回應彼此的主張，再由 Moderator、Judge 或彙整步驟處理分歧。若只是各自提出獨立方案，再交給 Judge 選擇，更準確的名稱是 **Panel-and-Judge**。兩種形式都可能暴露盲點，但內部一致不等於外部驗證；Judge 也可能共享相同偏誤，或缺少辨別「說得有說服力」與「真的正確」所需的證據。
 
 ### Blackboard
 
-多個 Agent 共用一個工作區：
-
-```text
-Shared Blackboard
-├── 已知事實
-├── 待辦事項
-├── 中間結果
-├── 風險
-└── 候選答案
-```
-
-不同 Agent 不需要互相傳遞完整對話，只要讀寫共享狀態。
+多個 Agent 透過結構化共享狀態交換資訊，而不是傳遞完整對話。這能降低上下文重複，也支援非同步工作；但需要資料格式、寫入權限、來源追蹤與衝突處理。
 
 ### Swarm
 
-Swarm 讓多個輕量 Agent 自主協作，中央控制較少。
+Swarm 透過同儕互動或局部協調運作，而不是依賴固定的中央 Supervisor。它在動態或分散式環境可能有效，但也帶來重複工作、循環交接、責任不清與停止條件薄弱等風險。若系統始終由固定中央節點指揮，更適合稱為 Supervisor-led，而不是 Swarm。
 
-這類架構很靈活，但也更難處理：
+Multi-Agent 是組織選擇，不是成熟度等級。Single Agent 可以高度自主；Multi-Agent 工作流程也可以被嚴格控制。
 
-- 重複工作
-- 無限交接
-- 責任歸屬
-- 成本控制
-- 結果衝突
-- 停止條件
+![Figure 1-6 — Agent Organisation Patterns](/images/the-atlas-of-agent-design-patterns-part-1/06-organisation-patterns.png)
 
-多 Agent 最大的風險，通常不是某個 Worker 不夠聰明，而是：
+> **Figure 1-6｜Agent Organisation Patterns**  
+> Single Agent、Supervisor-Worker、Debate、Blackboard 與 Swarm 等組織方式的責任與整合邊界。
 
-> 每個 Worker 都做了一點工作，最後沒有人對完整交付負責。
+## 維度六：哪些資訊會被保留？
 
----
+Context、State、Memory 與 RAG 有關聯，但不能混為一談。
 
-![Figure 1-6｜Five Common Agent Organisation Patterns](/images/the-atlas-of-agent-design-patterns-part-1/06-organisation-patterns.png)
+### Context（上下文）
 
-> **Figure 1-6｜Five Common Agent Organisation Patterns**
-> Single Agent、Supervisor–Worker、Debate、Blackboard 和 Swarm 是不同的組織模式，不是從低階到高階的成熟度光譜，也不是嚴格的自主度排序。
+Context 是模型此刻可以看到的內容，包括指令、對話、取回片段、工具結果，以及目前上下文視窗內的工作資料。
 
----
+### Workflow State（工作流程狀態）
 
-## 維度六：Agent 記得什麼？
+State 記錄系統走到哪裡：目前節點、已完成步驟、重試次數、待審批項目、工作者狀態與下一個轉移。Context 強調模型看得到什麼；State 強調流程現在位於哪裡。
 
-最後一個維度是 Memory。
+### Working Memory（工作記憶）
 
-Memory、Context、State 和 RAG 經常被混在一起，但它們保存的內容與用途不同。
+Working Memory 支援目前任務，包括中間發現、當前子目標、暫時摘要與尚未解決的問題。它可以存放在模型 Context 之外，只有需要時才選擇性注入。
 
-### Working Memory
+### 依內容類型區分的長期記憶
 
-保存當前任務正在使用的資料，例如：
+- **Episodic Memory（情節記憶）**：過去執行的事件與結果
+- **Semantic Memory（語意記憶）**：相對穩定的事實與概念
+- **Procedural Memory（程序性記憶）**：經過驗證的任務執行規則
 
-- 使用者問題
-- 已讀文件
-- 工具結果
-- 中間結論
-- 尚未完成的步驟
+這三者是「記憶內容」的分類，不應和所有權或部署範圍混在同一層。
 
-它通常只在當前任務或短時間內有效。
+### 依範圍與所有權區分的記憶
 
-### Short-term State
+- **User Memory（使用者記憶）**：使用者偏好與持久限制
+- **Shared Memory（共享記憶）**：多個 Agent 或程序可以存取的資訊
+- **Organisation Memory（組織記憶）**：在更大範圍共享、受到治理的知識與程序
 
-保存工作流進度：
+範圍決定誰可以讀寫，也會改變隱私、存取控制、刪除與衝突處理的要求。
 
-- 目前位於哪個 State
-- 哪些步驟已完成
-- 已重試幾次
-- 哪些 Worker 尚未返回
-- 下一個節點是什麼
+### RAG
 
-Context 側重：
+[Retrieval-Augmented Generation（RAG）](https://arxiv.org/abs/2005.11401)會按需求從外部知識庫取回資訊，並讓生成過程以取回資料為條件。在 Agent 系統中，原始來源仍位於 Agent Memory 之外，應保留自己的來源資訊、權限與更新週期。RAG 可以提供上下文，但取回的文件不會自動變成 Agent 的持久記憶。
 
-> 模型目前看得到什麼。
+任何持久記憶都需要治理：來源、時間、版本、可信度、權限、衝突處理、更新規則，以及遺忘或刪除機制。
 
-State 側重：
+![Figure 1-7 — Context, State, Memory, and RAG](/images/the-atlas-of-agent-design-patterns-part-1/07-context-state-memory-rag.png)
 
-> 系統目前走到哪裡。
+> **Figure 1-7｜Context, State, Memory, and RAG**  
+> Context、State、Memory 與 RAG 各自負責不同範圍；長期記憶還要依內容類型與所有權再分層。
 
-### Episodic Memory
+## Workflow、Agentic Workflow 與 Autonomous Agent 的差異
 
-保存過去發生的事件：
+業界對這些名詞沒有唯一邊界，以下使用偏工程實務的定義。
 
-```text
-上次讀取某網站時，主要頁面需要 JavaScript。
-改用公開 API 後成功取得資料。
-```
-
-它比較接近任務經驗。
-
-### Semantic Memory
-
-保存較穩定的事實與知識：
-
-- 公司資料
-- 產品規格
-- 領域知識
-- 使用者長期設定
-- 系統定義
-
-這類資料通常需要：
-
-- 來源
-- 版本
-- 更新時間
-- 信任等級
-
-### Procedural Memory
-
-保存做事規則：
-
-```text
-H 欄已有完整 JD
-→ 直接使用 H 欄內容
-
-H 欄空白
-→ 讀取 E 欄 URL
-
-找不到完整正文
-→ 標記 Pending
-→ 不根據職稱猜分
-```
-
-Procedural Memory 決定 Agent 應該怎麼做，而不只是知道哪些事實。
-
-### User Memory
-
-保存使用者偏好與長期限制，例如：
-
-- 回答語言
-- 文件格式
-- 測試要求
-- 交付方式
-- 固定工作規則
-
-這類記憶需要更謹慎的：
-
-- 隱私控制
-- 更新機制
-- 刪除能力
-- 權限管理
-
-### Shared Memory
-
-讓多個 Agent 共用：
-
-- 任務進度
-- 中間產物
-- 已驗證事實
-- 待處理問題
-- 工具結果
-
-Shared Memory 可以降低重複工作，也可能把一個 Agent 的錯誤傳給整個系統。
-
-Memory 並不是越多越好。
-
-如果缺少以下治理，記憶很容易變成一間沒有索引的倉庫：
-
-- 來源
-- 時間
-- 版本
-- 信任等級
-- 更新條件
-- 衝突處理
-- 遺忘機制
-
----
-
-![Figure 1-7｜Context, State, Memory, and RAG](/images/the-atlas-of-agent-design-patterns-part-1/07-context-state-memory-rag.png)
-
-> **Figure 1-7｜Context, State, Memory, and RAG**
-> Context 是模型當下可見資訊，State 是工作流目前進度，Memory 保存跨步驟或跨任務資訊，RAG 則從外部知識來源檢索內容。
-
----
-
-## Workflow、Agent 和 Agentic Workflow 有什麼差別？
-
-這三個詞沒有一套所有團隊都完全同意的邊界。
-
-以下是一套偏向工程實務的工作定義。
-
-### Workflow
-
-Workflow 的主要流程由開發者事先決定：
-
-```text
-A → B → C → D
-```
-
-模型可以參與某些節點，但不能自由改變主要流程。
-
-### Agent
-
-Agent 可以根據：
-
-- 目標
-- 狀態
-- 工具結果
-- 環境回饋
-
-自主選擇下一步行動：
-
-```text
-Observe
- ↓
-Decide
- ↓
-Act
- ↓
-Observe Again
-```
-
-自主性較高，同時也更需要：
-
-- 預算
-- 權限
-- 停止條件
-- 審計
-- 驗證
-
-### Agentic Workflow
-
-Agentic Workflow 位於兩者之間。
-
-整體流程仍由 Workflow 控制，但某些節點允許 Agent 自主決策。
-
-例如：
-
-```text
-固定流程：
-Router → Research → Verify → Answer
-
-Research 節點內：
-Agent 自主搜尋、改寫 Query、選擇來源
-```
-
-這通常是 Production 系統更常採用的折衷。
-
-| 項目 | Workflow | Agentic Workflow | Autonomous Agent |
+| 特性 | Workflow | Agentic Workflow | Autonomous Agent |
 |---|---|---|---|
-| 主要流程 | 預先定義 | 大致固定 | 動態決定 |
-| 局部自主決策 | 少 | 有 | 很多 |
-| 可控性 | 高 | 高～中 | 中～低 |
-| 成本可預測性 | 高 | 中～高 | 低 |
+| 主流程 | 預先定義 | 大致受控 | 動態決定 |
+| 局部自主性 | 低 | 選擇性開放 | 高 |
+| 可預測性 | 高 | 中到高 | 較低 |
 | Debug 難度 | 低 | 中 | 高 |
-| 適合 Production | 很高 | 很高 | 視任務而定 |
+| 成本可預測性 | 高 | 中 | 較低 |
+| 常見正式環境適用度 | 很高 | 經常是最佳折衷 | 任務確實需要時再用 |
 
-把所有工作都改造成完全自主 Agent，通常不會自動提升品質。
+Agentic Workflow 保留受控的主流程，只在特定節點開放自主決策。例如整體固定為 `Route -> Research -> Verify -> Answer`，但 Research 節點可以自行選擇查詢與工具。
 
-自主性應該放在：
+這種「局部自主、整體可控」通常是正式環境中很實用的折衷。自主性應放在規則確實難以事先寫死，而且輸出仍可以被驗證的位置。
 
-> 事先很難寫死，但結果仍然能被驗證的節點。
+## Agent 自主性與系統控制是不同問題
 
-而不是平均灑在整條流程上。
+更高自主性可以增加適應能力，但通常會降低可預測性。它不是從 Direct 一路升級到 Autonomous Agent 的成熟度階梯。
 
----
+自主性與系統控制應被視為兩條獨立軸，而不是編號式成熟度階梯。實際位置取決於具體實作：規則式 Router 可以非常可控；擁有廣泛工具權限的學習式 Router 可能較難預測。Plan-and-Execute 也可以被嚴格限制，或被做成接近自主系統。
 
-## Agent 自主度和系統控制是兩條不同軸線
+![Figure 1-8 — Agent Autonomy and System Control](/images/the-atlas-of-agent-design-patterns-part-1/08-autonomy-controllability-spectrum.png)
 
-常見系統可以沿著自主度提高：
+> **Figure 1-8｜Agent Autonomy and System Control**  
+> 自主度與可控性是兩條獨立軸；Agentic Workflow 通常落在兩者之間的實用折衷區。
 
-- Direct
-- Fixed Pipeline
-- Router
-- Agentic Workflow
-- Plan-and-Execute
-- Adaptive Agent
-- Long-running Autonomous Agent
+## 一套完整 Agent 架構應該怎麼描述？
 
-但它們不應該被畫成一條單純的成熟度階梯。
+不要只說「我們使用 ReAct」，而要把實際選擇說清楚：
 
-原因是：
-
-> 自主度越高，通常越靈活，但系統控制與可預測性往往下降。
-
-因此，更準確的方式是使用二維矩陣：
-
-- X 軸：Agent Autonomy
-- Y 軸：System Control and Predictability
-
-其中：
-
-| 模式 | 自主度 | 控制與可預測性 |
-|---|---|---|
-| Direct | 很低 | 很高 |
-| Fixed Pipeline | 低 | 很高 |
-| Router | 低～中 | 高 |
-| Agentic Workflow | 中 | 中～高 |
-| Plan-and-Execute | 中～高 | 中 |
-| Adaptive Agent | 高 | 中～低 |
-| Long-running Autonomous Agent | 很高 | 低 |
-
-Agentic Workflow 通常位於較實用的平衡區：
-
-- 保留必要彈性
-- 仍有清楚流程
-- 容易加入 Budget、Verifier 和 Human Approval
-- 比完全自主 Agent 更容易 Debug
-
-### Multi-Agent 不應該放在這條階梯上
-
-Multi-Agent 描述的是組織方式，而不是固定自主度。
-
-一套 Multi-Agent 系統可以：
-
-- 高度腳本化
-- 中度 Agentic
-- 高度自主
-
-所以它不應該被放在 Adaptive Agent 和 Long-running Autonomous Agent 之間，當成「更高一級」的自主模式。
-
----
-
-![Figure 1-8｜Agent Autonomy and System Control](/images/the-atlas-of-agent-design-patterns-part-1/08-autonomy-controllability-spectrum.png)
-
-> **Figure 1-8｜Agent Autonomy and System Control**
-> 二維矩陣同時呈現 Agent Autonomy 與 System Control and Predictability。Multi-Agent 是組織選擇，可以存在於多種自主度，不是固定的一個成熟度階段。
-
----
-
-## 如何完整描述一套 Agent？
-
-以一個 Production RAG 為例，只說「我們使用 ReAct」仍然不夠。
-
-可以改成：
-
-| 維度 | 架構選擇 |
+| 設計面向 | 選擇範例 |
 |---|---|
 | 執行路徑 | Router + Stateful Workflow |
-| 決策與規劃 | 簡單 Query 使用固定流程，複雜 Query 使用 Plan-and-Execute |
-| 工具執行 | Retrieval 節點內使用有限制的 ReAct |
-| 推理與探索 | Multi-query Retrieval + Generate-and-Rank |
-| 驗證與修正 | Citation Verifier + Faithfulness Check + Bounded Retry |
-| Agent 組織 | Single Agent，必要時呼叫專用工具 |
-| 狀態與記憶 | Working State + Procedural Memory |
-| 治理 | Budget Guard + Tool Allowlist + Timeout |
+| 規劃方式 | 簡單請求使用固定流程；複雜請求使用 Plan-and-Execute |
+| 工具執行 | 只在選定節點內使用 Bounded ReAct |
+| 候選探索 | 需要時使用 Multi-query Retrieval + Generate-and-Rank |
+| 驗證方式 | Deterministic Schema Check、Citation Check、Bounded Retry |
+| 組織方式 | 預設 Single Agent；只有拆解確實需要時才增加 Supervisor |
+| 狀態與記憶 | Durable Workflow State + Governed Procedural Memory |
+| 治理機制 | Tool Allowlist、Budget Guard、Timeout、Approval Gate、Audit Trail |
 
-這段描述已經可以回答：
+這樣在架構審查時，才能討論真正重要的問題：
 
-- 哪些流程固定
-- 哪些節點允許自主決策
-- 做錯後如何發現
-- 最多重試幾次
-- Agent 可以使用哪些工具
-- 狀態保存在哪裡
-- 成本如何受控
+- 哪些路徑是固定的？
+- 哪些節點可以由模型選擇行動？
+- 通過驗收需要什麼證據？
+- Retry 與 Replan 的上限是多少？
+- 允許存取哪些工具與資料？
+- State 保存在哪裡？
+- 如何限制成本、延遲與風險？
 
-這才是一套可以進行架構討論的描述。
+## 評估新 Agent Pattern 的六個問題
 
----
+看到新的論文、框架或產品名稱時，可以先問：
 
-## 六個維度的完整速查表
+1. 它是否改變任務的執行路徑？
+2. 它是否改變下一步行動的選擇方式？
+3. 它是否會探索多個候選方案或執行軌跡？
+4. 它如何驗證結果並從失敗恢復？
+5. 它是否引入新的責任分配或協作模式？
+6. 它會保存哪些狀態、知識或經驗？
 
-| 維度 | 代表模式 | 適合解決 | 常見風險 |
-|---|---|---|---|
-| 執行路徑 | Pipeline、Router、State Machine、DAG | 控制任務整體流程 | 流程僵硬、分支爆炸、狀態混亂 |
-| 決策與規劃 | ReAct、Plan-and-Execute、Adaptive Planning | 決定下一步行動 | 繞圈、計畫過時、無限重新規劃 |
-| 推理與探索 | Self-consistency、ToT、GoT、LATS | 搜尋多種候選解法 | 成本高、評分器不可靠 |
-| 驗證與修正 | Retry、Verifier、Generate-and-Test、Reflexion | 發現錯誤並恢復 | 假綠燈、重複失敗、記憶污染 |
-| Agent 組織 | Single、Supervisor、Debate、Blackboard、Swarm | 分工與協作 | 重工、交接損失、責任不清 |
-| 狀態與記憶 | Working、Episodic、Semantic、Procedural | 保存進度、知識與經驗 | 過期、衝突、檢索錯誤、隱私問題 |
+再補上四個跨維度的正式環境問題：
 
----
+- 預算與停止條件是什麼？
+- 哪些行為可觀測、可測試？
+- 權限與人工審批在哪裡執行？
+- 元件意見衝突時，誰對最終結果負責？
 
-## 看到新的 Agent 名詞時，先問六個問題
+若一個新名稱無法回答其中任何問題，它可能只是重新包裝，而不是新的架構方法。
 
-Agent 領域經常出現新名詞。
+## 結論
 
-有些是新的研究方法，有些是既有模式的重新組合，也有些只是產品包裝。
+ReAct 很重要，但它不是完整 Agent 架構。它主要描述推理、行動與觀察交錯進行的方式。完整系統仍必須定義流程、探索策略、驗證、責任、資訊邊界與營運控制。
 
-不需要先背名稱，可以先問：
-
-1. **它改變了任務的執行路徑嗎？**
-2. **它改變了下一步的決策方式嗎？**
-3. **它是否同時探索多個候選解法？**
-4. **它如何驗證與修正錯誤？**
-5. **它增加了新的 Agent 角色或協作方式嗎？**
-6. **它保存了哪些狀態、知識或失敗經驗？**
-
-如果六個問題都答不出來，那個新名詞可能還不足以構成一套清楚的架構方法。
-
-如果能回答，就可以把它放回既有地圖裡比較，而不是再建立一座孤立的名詞島。
-
----
-
-## 本篇結論
-
-ReAct 和 Plan-and-Execute 都很重要，但它們只處理 Agent 架構中的一個維度：
-
-> 下一步如何決定。
-
-一套完整 Agent 還需要處理：
-
-- 任務怎麼流動
-- 多種方案怎麼探索
-- 錯誤怎麼被發現
-- 失敗後怎麼恢復
-- 一個或多個 Agent 如何分工
-- 狀態、知識和經驗怎麼保存
-
-因此，選擇 Agent 架構時，不必先問：
-
-> 哪一種模式最好？
-
-先把任務放進六個維度，逐層回答：
+六個維度提供了一張可重複使用的地圖：
 
 ```text
-流程怎麼走？
+任務怎麼走？
 下一步怎麼決定？
-候選解法怎麼搜尋？
-結果怎麼驗證？
-工作由誰完成？
-狀態與經驗怎麼保存？
+多個候選怎麼探索？
+結果怎麼驗證，失敗怎麼恢復？
+工作由誰負責？
+哪些資訊被保留，由誰控制？
 ```
 
-這六個問題回答完，架構通常已經浮出輪廓。
+回答完這些問題後，Agent 名稱會變得更容易比較，也更不容易被誤用。
 
-下一篇會先深入第一個維度：
+## 主要參考資料
 
-> Agent 的任務到底怎麼走？
-
-Part 2 將完整比較 Direct、Pipeline、Router、State Machine、DAG、Event-driven 與 Human-in-the-loop，並說明哪些情況根本不需要 Agent。
+- [Yao 等人，*ReAct: Synergizing Reasoning and Acting in Language Models*](https://arxiv.org/abs/2210.03629)
+- [Wang 等人，*Self-Consistency Improves Chain of Thought Reasoning in Language Models*](https://arxiv.org/abs/2203.11171)
+- [Yao 等人，*Tree of Thoughts: Deliberate Problem Solving with Large Language Models*](https://arxiv.org/abs/2305.10601)
+- [Besta 等人，*Graph of Thoughts: Solving Elaborate Problems with Large Language Models*](https://arxiv.org/abs/2308.09687)
+- [Zhou 等人，*Language Agent Tree Search Unifies Reasoning, Acting, and Planning in Language Models*](https://arxiv.org/abs/2310.04406)
+- [Shinn 等人，*Reflexion: Language Agents with Verbal Reinforcement Learning*](https://arxiv.org/abs/2303.11366)
+- [Lewis 等人，*Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks*](https://arxiv.org/abs/2005.11401)
