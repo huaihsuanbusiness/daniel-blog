@@ -1,6 +1,6 @@
 ---
-title: "The Atlas of Agent Design Patterns Part 5 ｜ Agent Verification and Recovery: Retry, Critic, Verifier, Reflexion and Generate-and-Test"
-description: "A complete comparison of Retry, Parameterized Retry, Fallback, Self-Refine, Critic, Verifier, Generate-and-Test, Replanning, Reflexion and Human Review, and how to build a Production recovery mechanism that does not loop forever."
+title: "The Atlas of Agent Design Patterns Part 5 | Verification, Recovery, and Self-Correction"
+description: "A production-focused guide to retry, parameter repair, fallback, Self-Refine, critics, verifiers, Generate-and-Test, replanning, Reflexion, human approval, idempotency, and bounded recovery."
 date: 2026-06-30T20:18:00
 lang: en
 categories: ["AI"]
@@ -8,1666 +8,1290 @@ series: "The Atlas of Agent Design Patterns"
 seriesOrder: 5
 ---
 
-Imagine a Coding Agent gets the task:
+# The Atlas of Agent Design Patterns Part 5 | Verification, Recovery, and Self-Correction
 
-> Fix the integration test on the login API.
+Imagine a coding agent receives this task:
 
-It changes the code, then replies:
+> Fix the failing integration test for the login API.
 
-> Fix complete. I double-checked it. It should be working now.
+It changes the code and reports:
 
-That sentence sounds confident.
+> Fixed. I checked it again, and it should work now.
 
-But it may not have actually:
+That sentence is not evidence.
 
-- run the test
-- checked the Build
-- verified the other login flows
-- confirmed that the failing test was not deleted
-- checked whether unrelated files were modified
-- compared the original requirement to see whether the task was really done
+The agent may not have:
 
-It only re-read the code it had just generated, and then offered another subjective judgement.
+- run the failing test
+- run the related test suite
+- checked the build
+- verified that the test was not weakened or deleted
+- inspected unrelated file changes
+- compared the result with the original acceptance criteria
 
-This is one of the most dangerous false-green-lights in an Agent system:
+It may have only reread its own output and produced a second subjective judgement.
 
-> **Mistaking "the model says it has checked" for actual verification.**
+This is one of the most dangerous false-green signals in an agent system:
 
-An Agent being able to generate an answer does not mean it knows whether the answer is correct.
+> A model saying that it verified an output is not the same as the system producing verifiable evidence.
 
-An Agent being able to point at a problem does not mean it can reliably judge whether the problem has been solved.
+Generation, diagnosis, acceptance, recovery, and learning are different responsibilities.
 
-When a task fails, the system still has to decide:
+When a task fails, the system must decide:
 
-- is this a transient error, so Retry?
-- is the parameter wrong, so Parameterized Retry?
-- is the main method unavailable, so Fallback?
-- is the output quality too low, so Self-Refine?
-- does it need a Critic to suggest changes?
-- does a Verifier have to make a Pass / Fail decision?
-- should the system actually run a test?
-- is the answer wrong, or is the whole route wrong?
-- should the failure experience be written into Memory?
-- which high-risk nodes have to be handed to a human?
+- Is the failure transient?
+- Is the action safe to repeat?
+- Can the current step be repaired?
+- Should the implementation change?
+- Is the remaining plan invalid?
+- Is human authorisation required?
+- Should the system stop?
+- Is the failure useful enough to inform a future attempt?
 
-This article handles the fourth architectural dimension:
+This article develops a production model for answering those questions without creating an infinite repair loop.
 
-> **How does an Agent detect errors, choose the right repair path, and stop reliably inside a bounded cost?**
+## Five separate responsibilities
 
----
+A reliable recovery architecture separates five concerns.
 
-## Why "thinking again" is not verification
+### Detection
 
-The weakest self-check loop usually looks like:
+What observable signal indicates that something is wrong?
 
-```text
-Generate Answer
-  ↓
-Think Again
-  ↓
-Looks Good
-  ↓
-Accept
-```
+Examples include:
 
-The problem is that the second judgement still uses:
+- schema failure
+- non-zero exit code
+- failed test
+- missing citation
+- stale data
+- policy rejection
+- unresolved requirement
+- user rejection
 
-- the same model
-- the same Context
-- the same set of wrong premises
-- the same missing external information
-- the same vague definition of success
+### Diagnosis
 
-If the first error came from wrong data, the model thinking again is just rearranging sentences on top of wrong data.
+What caused the failure, and what scope does it affect?
 
-If the first error came from a wrong understanding of the request, the second pass may just state the misunderstanding more completely.
+Examples include:
 
-If the code was never executed the first time, reading it a second time still does not prove it works.
+- transient infrastructure fault
+- invalid parameter
+- weak output
+- wrong data source
+- incorrect plan
+- insufficient permission
+- unsupported task
 
-So the reliability of verification mostly depends on:
+### Acceptance
 
-1. **whether the acceptance standard is explicit**
-2. **whether the verification signal is independent**
-3. **whether it can reach the real environment**
-4. **whether it can supply reproducible evidence**
-5. **whether it can refuse, instead of always saying Pass**
+Does the result satisfy an explicit contract?
 
-## From subjective check to external evidence
+Acceptance belongs to a verifier, rule engine, test system, policy gate, or authorised human, not to the generator that produced the result.
 
-You can roughly split common verification methods into a few layers:
+### Recovery
 
-```text
-Re-read the output
-  ↓
-Self-Refine
-  ↓
-Critic Review
-  ↓
-Rule / Schema Verifier
-  ↓
-External Test or Execution
-  ↓
-Human Review for judgement and irreversible risk
-```
+What is the smallest justified change?
 
-This is not an absolute ranking.
+- retry
+- change parameters
+- use a fallback
+- repair the artefact
+- replan
+- escalate
+- stop
 
-For example:
+### Learning
 
-- JSON Schema is usually more reliable than a human eyeballing the format
-- a Unit Test is usually more reliable than an LLM comment on whether the code works
-- Human Review can be more valuable for business risk and ambiguous context
-- humans can also be fatigued, mistake-prone, or blindly approving
+Should a verified failure analysis influence future attempts?
 
-The real question is not:
+This may involve a short-lived reflection, episodic memory, or a separately governed long-term lesson.
 
-> Which verification method is the highest level?
+Keeping these responsibilities separate prevents one model from writing the test, grading its own work, changing the requirements, and awarding itself a certificate.
 
-It is:
+## Verification starts with an acceptance contract
 
-> **Does this failure have evidence that can be observed objectively?**
+A verifier cannot be reliable when “good enough” has never been defined.
 
-![Figure 5-1 — Verification Reliability Ladder](/images/the-atlas-of-agent-design-patterns-part-5/verification-reliability-ladder.png)
+A contract may include:
 
-> **Figure 5-1 ｜ Verification Reliability Ladder**  
-> From re-reading, Self-Refine, Critic, Verifier, all the way to External Test and Human Review, the verification signal gets more independent and more observable. But different tasks need different kinds of evidence.
+- required fields
+- output schema
+- factual-source requirements
+- policy constraints
+- expected side effects
+- executable tests
+- latency or cost limits
+- prohibited changes
+- terminal outcomes
+- human approval requirements
 
----
-
-## 1. Retry: do the same action once more
-
-Retry is the simplest form of recovery.
+For a coding task:
 
 ```text
-Action
-  ↓
-Failure
-  ↓
-Wait
-  ↓
-Retry Same Action
+Acceptance contract:
+- target test passes
+- related authentication tests pass
+- full relevant suite passes
+- lint passes
+- build succeeds
+- protected tests are unchanged
+- no unrelated files are modified
 ```
 
-It fits:
-
-- API Timeout
-- transient network errors
-- Rate Limit
-- short-lived service unavailability
-- occasional parsing errors
-- temporary resource locks
-
-Retry carries one important assumption:
-
-> **The same action, executed again a moment later, has a reasonable chance of succeeding.**
-
-For example:
+For a research task:
 
 ```text
-HTTP 503
-  ↓
-Wait 2 seconds
-  ↓
-Retry
+Acceptance contract:
+- every material claim has an approved source
+- each comparison field is completed or marked unavailable
+- publication date and product version are recorded
+- conflicting evidence is disclosed
+- unsupported estimates are not presented as facts
 ```
 
-If the error is transient service pressure, Retry may work.
+The verification method should match the claim being tested.
 
-But if the error is:
+| Question | Strong signal |
+|---|---|
+| Is the format valid? | Schema or parser |
+| Does the program behave correctly? | Test or execution |
+| Is the database action permitted? | Policy and permission check |
+| Is the factual claim supported? | Source and citation verification |
+| Is the output complete? | Contract-based verifier |
+| Is the business decision acceptable? | Authorised human judgement |
+| Is the action safe to repeat? | Idempotency and reconciliation |
+
+There is no universal verification ladder. A human is not automatically better than a schema for checking JSON, and a model critic is not better than a compiler for checking code.
+
+<!-- Figure 5-1 insertion point -->
+
+![Figure 5-1 — Match the Verification Signal to the Claim](/images/the-atlas-of-agent-design-patterns-part-5/verification-reliability-ladder.png)
+
+> **Figure 5-1｜Match the Verification Signal to the Claim**  
+> Different questions require different evidence. Structure, execution, semantics, and policy each belong to the right tool. No single ladder replaces every verification.
+
+## Self-review is useful, but it is not independent verification
+
+Self-review may catch:
+
+- missing sections
+- inconsistent terminology
+- awkward structure
+- obvious contradictions
+- formatting problems
+- violations of a supplied rubric
+
+It is weaker when the original error comes from:
+
+- missing knowledge
+- a shared false premise
+- an unavailable source
+- an unexecuted artefact
+- an incorrect environment model
+- an ambiguous acceptance standard
+
+The same model, context, and assumptions may reproduce the same mistake.
+
+Research on self-critique is mixed across tasks. Self-Refine shows that iterative self-feedback can improve outputs in several settings. Other work on planning finds that model-based self-verification can produce false positives and perform substantially worse than sound external verification.
+
+The production rule is:
+
+> Use self-review to improve a candidate; do not treat it as proof when stronger observable evidence exists.
+
+## Failure classification comes before recovery
+
+Sending every failure into the same retry loop is an architectural error.
+
+A useful taxonomy is:
+
+| Failure class | Typical signal |
+|---|---|
+| Transient | timeout, 429, 502, temporary lock |
+| Ambiguous side effect | response lost after a write request |
+| Invalid input | missing field, malformed request |
+| Parameter mismatch | query too broad, batch too large |
+| Method failure | primary API or model unavailable |
+| Artefact failure | test, build, parser, or execution failed |
+| Evidence failure | unsupported or stale claim |
+| Quality failure | incomplete, unclear, contradictory output |
+| Plan failure | invalid assumption, dependency, or goal interpretation |
+| Policy failure | action denied or approval required |
+| Unsupported | data, capability, or authority does not exist |
+
+Classification should record:
+
+- failure code
+- evidence
+- retryability
+- side-effect status
+- affected scope
+- recommended next action
+- confidence
+- terminal status if no recovery is justified
+
+## Retry: repeat only when the same action may succeed later
+
+Retry means:
 
 ```text
-HTTP 401
+same step
++ same method
++ same parameters
 ```
 
-Sending the same Token, the same Header, the same Endpoint ten more times will usually just get ten more 401s.
+It fits transient failures such as:
 
-## Retry must have an upper bound
+- temporary service unavailability
+- connection reset
+- rate limiting
+- short-lived lock
+- retryable server fault
 
-A Production Retry at least needs:
+A production retry policy needs:
 
-- Maximum Attempts
-- Timeout
-- Backoff
-- Jitter
-- Retryable Error List
-- Non-retryable Error List
-- Terminal Failure
-- Observability
+- retryable and non-retryable error classes
+- maximum attempts
+- timeout
+- exponential or bounded backoff
+- jitter
+- cancellation
+- trace and metrics
+- terminal outcome
 
-For example:
+Example:
 
 ```text
-Attempt 1
-  ↓ Fail: 503
-Wait 1s
+Attempt 1 -> 503
+Wait with jitter
 
-Attempt 2
-  ↓ Fail: 503
-Wait 2s
+Attempt 2 -> 503
+Wait longer
 
-Attempt 3
-  ↓ Fail: 503
-Stop and Fallback
+Attempt 3 -> 503
+Stop retrying
+Route to fallback or failure
 ```
 
-Do not write:
+### Retry is dangerous around side effects
 
-```text
-Try until success
-```
+Suppose a payment request times out. The payment may have succeeded even though the response was lost.
 
-That sentence is the common enemy of Tokens, API costs and on-call engineers.
+Repeating the request blindly may charge twice.
 
-## Which errors usually should not be retried?
+Safe options include:
 
+- use an idempotency key
+- query the operation status
+- reconcile by request identifier
+- use an at-most-once workflow step
+- require manual resolution when the outcome is unknowable
+
+Idempotency means repeated delivery of the same intended request does not create additional side effects. It is a system contract, not a prompt instruction.
+
+### Do not retry permanent failures
+
+Examples:
+
+- invalid credentials
+- policy denial
+- unsupported operation
+- missing required data
+- deterministic failure from unchanged input
 - permission denied
-- invalid schema
-- required field missing
-- target does not exist
-- user request is outside the supported scope
-- explicit policy rejection
-- an irreversible action already succeeded but its response was lost
-- a deterministic code error triggered by the same input
+- validation error
+- confirmed completed side effect with lost acknowledgement
 
-Retry must do Error Classification first.
+## Parameter repair: keep the step, change a justified input
 
----
+A parameter repair changes execution details while preserving the same objective and general method.
 
-## 2. Parameterized Retry: not the same call
-
-Parameterized Retry still tries to finish the same step, but it adjusts the execution parameters.
-
-For example:
+Examples:
 
 ```text
-Search Query A
-  ↓ No useful result
-Search Query B
+Search query too narrow
+ -> expand approved synonyms
+
+Batch too large
+ -> reduce batch size
+
+Parser input malformed
+ -> repair the input and rerun the same parser
 ```
 
-Or:
+This is sometimes called parameterised retry, but the important distinction is that it is not the same request.
+
+Every parameter change should record:
+
+- previous input
+- changed parameter
+- failure signal
+- hypothesis
+- expected improvement
+- result
+- tried combinations
+
+Randomly changing prompts, timeouts, and temperatures creates a parameter carousel, not a recovery policy.
+
+## Fallback: preserve the contract through another implementation
+
+Fallback changes the method, service, model, tool, or source while trying to satisfy the same step contract.
 
 ```text
-Parse with strict schema
-  ↓ Failed
-Parse with repaired input and explicit schema guidance
+Primary method
+ -> unavailable
+Fallback method
+ -> verify capability and result
 ```
 
-Common adjustments include:
+Examples:
 
-- rewriting the Query
-- adjusting the Timeout
-- narrowing the data range
-- reducing the Batch Size
-- switching the output format
-- adding required Context
-- modifying Tool Parameters
-- falling back to a more conservative model setting
+- official API to official documentation
+- primary model to approved backup model
+- live source to labelled cached data
+- automatic extraction to human review
+- unavailable tool to a deterministic alternative
 
-## Retry vs Parameterized Retry
+### A fallback is not automatically equivalent
 
-| Axis | Retry | Parameterized Retry |
-|---|---|---|
-| Goal | Same | Same |
-| Method | Same | Basically the same method |
-| Parameters | Unchanged | Adjusted |
-| Fits | Transient failure | Input or parameter was not ideal |
-| Main risk | Repeating the same error | Endlessly trying different parameters |
-
-Parameterized Retry is not random tweaking.
-
-The system should record:
-
-- which parameter was modified
-- the reason for the change
-- the previous failure signal
-- whether the result actually improved
-- which combinations have already been tried
-
-Otherwise the Agent can keep swapping skins between different wordings and form a Parameter Carousel.
-
----
-
-## 3. Fallback: switch to a backup path
-
-Fallback no longer insists on the original method.
-
-It switches to a different:
-
-- model
-- tool
-- API
-- data source
-- algorithm
-- execution mode
-- human handling path
-
-```text
-Primary Method
-  ↓
-Success?
-  ├─ Yes → Continue
-  └─ No → Fallback Method
-             ↓
-          Continue or Fail
-```
-
-For example:
-
-```text
-Primary:
-Official API
-
-Fallback 1:
-Official Web Page
-
-Fallback 2:
-Cached Data
-
-Fallback 3:
-Human Review
-```
-
-## Retry vs Fallback
-
-Retry is:
-
-> Knock on the same door again.
-
-Fallback is:
-
-> Use a different door. Maybe even a different building.
-
-## Fallback is not automatically equivalent
-
-The primary model and the backup model may differ on:
-
-- quality
-- Context Window
-- supported tools
-- safety policy
-- latency and cost
-
-The primary data source and the Cache may differ on:
+A backup may differ in:
 
 - freshness
-- field completeness
-- missing recent updates
+- capability
+- context limit
+- permissions
+- security controls
+- latency
+- price
+- output quality
+- supported fields
 
-So Fallback results should be tagged with:
+Fallback output should carry:
 
-- which backup path was used
-- whether quality was downgraded
+- fallback path
+- capability difference
 - data timestamp
 - missing fields
-- whether a follow-up lookup is needed
+- confidence
+- quality-degradation flag
+- follow-up requirement
 
-## Common Fallback anti-patterns
+The fallback must pass the same safety and acceptance checks. A backup path must never bypass the policy controls applied to the primary path.
 
-### Hiding the primary path's failure
+## Recovery scope: retry, repair, fallback, replan, or stop
 
-The system replying successfully does not mean the main service is healthy.
+These mechanisms change different scopes.
 
-### The backup path was never tested
+| Mechanism | What changes |
+|---|---|
+| Retry | Nothing except time |
+| Parameter repair | Inputs or execution parameters |
+| Fallback | Implementation of the current step |
+| Artefact repair | Current output or executable artefact |
+| Replan | Remaining steps, dependencies, or assumptions |
+| Stop | No justified path remains |
+| Escalate | Authority moves to another actor |
 
-It is never used in normal times, and the day it has to fire, it turns out the Fallback is broken too.
-
-### Weaker safety controls
-
-The primary path has full permission checks. The backup path silently bypasses policy.
-
-### Infinite Fallback Chain
-
-```text
-A → B → C → D → A
-```
-
-The result is a circular disaster sightseeing bus.
-
----
-
-## How do Retry, Fallback and Replanning actually differ?
-
-All three keep going after a failure, but the scope of change is different.
-
-## Retry
+A practical routing question is:
 
 ```text
-Same step
-+ Same method
-+ Same parameters
+Is the failure transient and safe to repeat?
+ -> Retry
+
+Can a justified parameter change satisfy the same step?
+ -> Parameter Repair
+
+Can an approved alternative satisfy the same contract?
+ -> Fallback
+
+Is the artefact wrong but the objective and route remain valid?
+ -> Repair
+
+Did a premise, dependency, or goal interpretation fail?
+ -> Replan
+
+Is required data, capability, or permission unavailable?
+ -> Stop, Partial, Pending, Unsupported, or Human Action
 ```
 
-## Parameterized Retry
+The routing is not a fixed escalation staircase. A policy failure should not pass through three retries before reaching approval. Missing data should not trigger an endless sequence of cosmetic revisions.
 
-```text
-Same step
-+ Same kind of method
-+ Adjusted parameters
-```
+<!-- Figure 5-4 insertion point -->
 
-## Fallback
+![Figure 5-4 — Failure Classification and Recovery Routing](/images/the-atlas-of-agent-design-patterns-part-5/retry-fallback-replan-routing.png)
 
-```text
-Same step
-+ A different method or service
-```
+> **Figure 5-4｜Failure Classification and Recovery Routing**  
+> Classify the failure before acting. Transient routes to retry, ambiguous side effects to idempotency checks, unavailable methods to fallback, invalid premises to replan, and unsupported tasks straight to stop. Each path has its own loop limit and terminal state.
 
-## Replanning
+## Self-Refine: improve the current output with iterative feedback
 
-```text
-Re-examine the goal and the remaining route
-+ Modify later steps or dependencies
-```
-
-For example, the task is to get the full job description.
-
-### Retry
-
-Request the same URL again.
-
-### Parameterized Retry
-
-Add Headers, extend Timeout, or switch to a different page parameter.
-
-### Fallback
-
-Switch to the company's Career Page or a public Job API.
-
-### Replanning
-
-After discovering that the full body cannot be retrieved, modify the remaining plan:
-
-```text
-Stop auto-scoring
-Mark Pending
-Ask the human to fill in the JD
-Do not infer from the title alone
-```
-
-![Figure 5-4 — Retry, Fallback, or Replan?](/images/the-atlas-of-agent-design-patterns-part-5/retry-fallback-replan-routing.png)
-
-> **Figure 5-4 ｜ Retry, Fallback, or Replan?**  
-> First judge whether the failure is transient, whether the parameters can be tuned, and whether an equivalent backup method exists. Only enter Replanning when a premise, a dependency, or the remaining route has failed.---
-
-## 4. Self-Refine: the model reviews and rewrites its own draft
-
-The basic flow of Self-Refine is:
+Self-Refine uses an iterative loop in which an LLM generates output, produces feedback on that output, and refines it. The original method can use the same model as generator, feedback provider, and refiner.
 
 ```text
 Generate
-  ↓
-Review Own Output
-  ↓
-Produce Feedback
-  ↓
-Revise
+ -> Produce feedback
+ -> Refine
+ -> Repeat within a limit
 ```
 
-It helps improve:
+### Good uses
 
-- wording
 - structure
-- completeness
-- formatting
 - clarity
-- missing items
+- style
+- completeness against a rubric
+- formatting
+- explicit contradictions
+- missing requested sections
 
-For example, a first draft of a product comparison is missing the risk section.
+### Limits
 
-Self-Refine can point out:
+Self-Refine cannot guarantee that:
 
-```text
-The comparison includes features and pricing,
-but does not discuss deployment risk.
-```
+- a fact is true
+- code runs
+- a source exists
+- a policy permits the action
+- an environment state changed
+- a plan is feasible
 
-Then it adds the missing content.
+It may also:
 
-## Strengths of Self-Refine
+- remove correct details
+- introduce new claims
+- drift from the user request
+- produce increasingly confident wording around an unresolved issue
 
-- simple to implement
-- does not always need a separate model
-- good for text quality improvement
-- can use an explicit Rubric
-- better than skipping review entirely
+### Production contract
 
-## Limits of Self-Refine
-
-### The same blind spot can keep surviving
-
-If the model does not know a fact, it will not suddenly know it just because it reflected on itself.
-
-### Easy to mistake rewriting for repair
-
-The sentences get prettier, but the core error is still there.
-
-### Easy to produce a false sense of fix
-
-The model says:
-
-> All issues have been fixed.
-
-But it does not provide any verifiable evidence of the change.
-
-### It can keep making things worse
-
-Multiple rounds of Self-Refine can:
-
-- delete correct details
-- add unnecessary content
-- shift the original requirement
-- make uncertain information sound more certain
-
-## What should Production Self-Refine look like?
-
-Do not use:
+The feedback should be structured:
 
 ```text
-Please improve the answer.
+Issues found
+Evidence for each issue
+Required change
+Protected content that must not change
+Unresolved issues
+Revised output
 ```
 
-Provide an explicit Rubric:
+Set:
 
-```text
-Check only:
-1. Missing required sections
-2. Unsupported factual claims
-3. Output schema
-4. Contradictions
-5. Word limit
-```
+- review scope
+- rubric
+- maximum rounds
+- no-improvement rule
+- protected verified content
+- verifier after revision
 
-And require:
+Self-Refine is an editing and candidate-improvement method. It is not an external fact checker.
 
-```text
-Issues Found
-Proposed Changes
-Revised Output
-Unresolved Issues
-```
+## Critic: diagnose and propose a repair direction
 
-Self-Refine is a copy-editor's tool, not an external fact verifier.
-
----
-
-## 5. Critic: point at where the problem is
-
-A Critic's job is not to issue the final Pass / Fail. It is to provide directional diagnosis.
+A critic examines a candidate and produces actionable diagnosis.
 
 ```text
 Generator
-  ↓
-Draft
-  ↓
-Critic
-  ↓
-Feedback
-  ↓
-Generator Revises
+ -> Candidate
+ -> Critic
+ -> Findings
+ -> Generator repairs
 ```
 
-A Critic can check:
-
-- reasoning gaps
-- missing evidence
-- overlooked requirements
-- semantic contradictions
-- risk
-- maintainability
-- reader comprehension friction
-- alternative options
-
-## Self-Refine vs Critic
-
-Self-Refine usually happens inside the same execution unit:
-
-```text
-Generate → Review Self → Revise
-```
-
-A Critic is an explicitly separated role or step:
-
-```text
-Generator → Critic → Generator
-```
-
-The underlying model can be the same, but ideally at least:
-
-- a different Prompt
-- a different Context
-- an explicit Rubric
-- a different responsibility
-- an independent output format
-
-## What should a good Critic output?
+A strong critic output includes:
 
 ```text
 Issue:
-The recommendation is not supported by official sources.
-
-Evidence:
-The answer cites only third-party summaries.
+Recommendation lacks official evidence
 
 Severity:
 High
 
-Required Fix:
-Retrieve official documentation or mark the claim as unverified.
+Evidence:
+Only third-party summaries are cited
+
+Required repair:
+Retrieve an approved source or mark the claim unverified
+
+Scope:
+Claims 2 and 4 only
 ```
 
-Rather than:
+A critic does not necessarily issue the final acceptance decision.
+
+### Critic versus CRITIC
+
+“Critic” is a generic role. CRITIC is a specific research framework that uses external tools to evaluate aspects of an output and then revises the output using that tool feedback.
+
+Tool-interactive critique is stronger than unsupported introspection because the critique can use search, execution, or another observable signal.
+
+### Critic risks
+
+- wrong critique
+- style preference presented as an error
+- endless improvement requests
+- shared bias with the generator
+- non-actionable feedback
+- repair that damages verified content
+
+Controls include:
+
+- defined scope
+- explicit rubric
+- severity
+- evidence
+- required action
+- protected sections
+- review-round limit
+- separate verifier
+
+## Verifier: decide acceptance against a specification
+
+A verifier answers:
+
+> Does this candidate satisfy the acceptance contract?
 
 ```text
-The answer could be improved.
+Candidate
+ -> Checks
+ -> PASS / FAIL / REVIEW / INCONCLUSIVE
 ```
 
-The first form translates into an executable repair much more easily.
-
-## Main risks of a Critic
-
-### The Critic can also be wrong
-
-It can demand the removal of correct content, or treat style preference as an error.
-
-### Over-criticism
-
-Without a stopping threshold, the Critic can always find another point to improve.
-
-### The Critic shares the same bias as the Generator
-
-Both may silently agree to overlook the same problem.
-
-### The feedback is not actionable
-
-Plenty of comments, but no clear fix path.
-
-So a Critic needs:
-
-- Scope
-- Rubric
-- Severity
-- Evidence
-- Required Action
-- Maximum Review Rounds
-
----
-
-## 6. Verifier: Pass or Fail against a specification
-
-The biggest difference between a Verifier and a Critic is:
-
-> **A Critic provides diagnosis. A Verifier makes the acceptance call.**
-
-The typical flow is:
-
-```text
-Output
-  ↓
-Verifier
-  ↓
-Pass?
-  ├─ Yes → Accept
-  └─ No → Reject / Repair / Replan
-```
-
-A Verifier should rely on explicit criteria, for example:
-
-- JSON Schema
-- Required Fields
-- Unit Tests
-- SQL Read-only Policy
-- Citation Coverage
-- Source Match
-- Permission Rules
-- Completion Criteria
-- Business Constraints
-
-## A Verifier should not only reply "looks right"
-
-A good Verifier Output includes:
+A useful verifier report includes:
 
 ```text
 Status: FAIL
 
-Failed Checks:
-- Missing citation for Claim 3
-- Output exceeds 500 words
-- Required field "risk_level" is absent
+Failed checks:
+- Claim 3 has no approved source
+- Required field risk_level is missing
+- Target test failed
 
 Evidence:
-- Claim 3 has no source reference
-- Word count: 684
+- citation map contains no source for Claim 3
+- schema validator returned missing-property
+- test exit code was 1
 
-Next Action:
-Repair output without changing verified sections
+Next action:
+Repair only failed checks and preserve verified sections
 ```
 
-## Deterministic Verifier
+### Deterministic verifier
 
-Fits:
+Best for:
 
-- schema
-- format
+- schemas
 - fields
-- numeric values
+- syntax
+- calculations
 - permissions
-- compile
-- test
-- explicit rules
+- policy
+- compilation
+- tests
+- explicit invariants
 
-The strength is reproducibility.
+### Evidence verifier
 
-## Model-based Verifier
+Best for:
 
-Fits:
+- source authority
+- claim-to-citation support
+- version and date
+- missing evidence
+- conflicting sources
+
+### Model-based verifier
+
+Useful for:
 
 - semantic completeness
-- summary faithfulness
+- faithfulness
+- whether the question was answered
 - argument quality
-- whether the user's question is actually answered
-- style and readability
+- readability
 
-But it needs:
+It requires:
 
-- an explicit Rubric
-- calibration data
-- a consistent scoring format
-- False Positive / Negative monitoring
-- regular re-evaluation
+- explicit rubric
+- calibration set
+- stable output schema
+- false-pass and false-fail monitoring
+- abstention or `inconclusive`
+- periodic re-evaluation
 
-## Hybrid Verifier
+A model verifier may be correlated with the generator, particularly when both share the same context and assumptions.
 
-A reasonable order is usually:
+### Hybrid verifier
 
-```text
-Schema and Rule Checks
-  ↓
-External Execution
-  ↓
-Evidence Verification
-  ↓
-Model-based Quality Review
-```
-
-Check the objective conditions first, then evaluate subjective quality.
-
-Do not let a piece of text cross a failing Unit Test because it was persuasive.---
-
-## How are the responsibilities of Generator, Critic and Verifier separated?
-
-These three roles often get conflated.
-
-## Generator
-
-Responsible for:
-
-- producing candidate output
-- revising based on Feedback
-- never issuing its own certificate of completion
-
-## Critic
-
-Responsible for:
-
-- pointing at problems
-- stating severity
-- suggesting fix directions
-- not necessarily holding the final veto
-
-## Verifier
-
-Responsible for:
-
-- acceptance against completion conditions
-- giving a Pass / Fail decision
-- providing failure evidence
-- choosing Repair, Replan, Escalate or Stop
-
-![Figure 5-2 — Generator, Critic, and Verifier](/images/the-atlas-of-agent-design-patterns-part-5/generator-critic-verifier.png)
-
-> **Figure 5-2 ｜ Generator, Critic, and Verifier**  
-> The Generator produces and revises content. The Critic diagnoses problems and provides Feedback. The Verifier issues a Pass / Fail decision based on the specification and evidence. Separating these three responsibilities is the only way to avoid a model setting its own test, grading its own work, and awarding itself a full mark.
-
----
-
-## 7. Generate-and-Test: only the real execution counts
-
-The core of Generate-and-Test is not "generate a few more candidates and pick one".
-
-That is Generate-and-Rank.
-
-The Generate-and-Test flow is:
+A sensible order is:
 
 ```text
-Generate Artifact
-  ↓
-Execute Test
-  ↓
-Pass?
-  ├─ Yes → Accept
-  └─ No → Inspect Failure
-             ↓
-          Revise Artifact
-             ↓
-          Execute Test Again
+Hard rules and schema
+ -> executable tests
+ -> evidence verification
+ -> model-based quality judgement
+ -> authorised human decision where necessary
 ```
 
-It fits any executable, observable artefact:
+Objective failures should not be overruled by persuasive prose.
+
+<!-- Figure 5-2 insertion point -->
+
+![Figure 5-2 — Generator, Critic, Verifier, and Recovery Controller](/images/the-atlas-of-agent-design-patterns-part-5/generator-critic-verifier.png)
+
+> **Figure 5-2｜Generator, Critic, Verifier, and Recovery Controller**  
+> Production, diagnosis, acceptance, and repair routing are four different responsibilities. Mixing them into one prompt invites a model to set its own test, mark its own work, and award itself a perfect score.
+
+## Generator, critic, verifier, and recovery controller
+
+These roles should not collapse into one undifferentiated prompt.
+
+### Generator
+
+- produces or repairs the candidate
+- follows the current step contract
+- does not certify its own completion
+
+### Critic
+
+- diagnoses defects
+- supplies severity and evidence
+- proposes a repair direction
+- does not automatically control acceptance
+
+### Verifier
+
+- runs the acceptance checks
+- returns pass, fail, review, or inconclusive
+- preserves failure evidence
+- does not silently rewrite the contract
+
+### Recovery controller
+
+- classifies the failure
+- selects retry, repair, fallback, replan, escalation, or stop
+- enforces budgets and loop limits
+- records the repair history
+
+Separation may use different models, tools, prompts, contexts, or services. The essential property is separate responsibility and observable hand-offs.
+
+## Generate-and-Test: execute the artefact and use the result
+
+Generate-and-Test applies when the candidate is executable or produces observable effects.
+
+```text
+Generate artefact
+ -> run in a controlled environment
+ -> collect structured result
+ -> pass?
+ yes -> run broader acceptance suite
+ no -> repair within bounds
+```
+
+Examples:
 
 - code
 - SQL
-- API Request
-- Shell Command
-- Data Transformation
-- Workflow Definition
-- Constraint Solution
-- Browser Action Sequence
+- API request
+- shell command
+- data transformation
+- workflow definition
+- constraint solution
+- browser action sequence
 
-## A Coding Agent example
-
-Task:
-
-> Fix the API returning 401.
-
-Round one:
+### Coding example
 
 ```text
-Generate Patch
-  ↓
-Run Target Test
-  ↓
-Fail: Expected 200, received 401
+Generate patch
+ -> run target test
+ -> fail: token audience mismatch
+ -> repair configuration
+ -> rerun target test
+ -> pass
 ```
 
-Agent reads the failure signal:
+A target test passing is not the final certificate.
+
+Continue with:
 
 ```text
-Token audience does not match the API configuration.
+related tests
+ -> full relevant suite
+ -> static analysis
+ -> lint
+ -> build
+ -> security checks
+ -> change-scope review
 ```
 
-Round two:
+### Protect the acceptance mechanism
 
-```text
-Revise Authentication Configuration
-  ↓
-Run Target Test
-  ↓
-Pass
+An agent may game a weak test by:
+
+- deleting the failing test
+- skipping the test
+- changing the expected value
+- special-casing one fixture
+- breaking unrelated behaviour
+- bypassing the policy gate
+
+Controls include:
+
+- protected test files
+- immutable acceptance criteria
+- test-change review
+- broader regression suite
+- diff inspection
+- independent test runner
+- clean environment
+- protected branch or sandbox
+- verifier acceptance
+
+### Structure the failure signal
+
+Instead of returning an entire terminal transcript:
+
+```json
+{
+ "command": "pytest tests/auth",
+ "exit_code": 1,
+ "passed": 18,
+ "failed": 2,
+ "failure_signatures": [
+ "token audience mismatch",
+ "expired fixture"
+ ],
+ "files_changed": [
+ "src/auth/config.py"
+ ]
+}
 ```
 
-But it is not yet time to declare success.
+Structured signals make repair more targeted and make repeated failure easier to detect.
 
-It still needs:
+<!-- Figure 5-3 insertion point -->
 
-```text
-Run Authentication Test Suite
-  ↓
-Run Full Test Suite
-  ↓
-Run Lint
-  ↓
-Run Build
-  ↓
-Check Unrelated Changes
-```
+![Figure 5-3 — Production Generate-and-Test Loop](/images/the-atlas-of-agent-design-patterns-part-5/generate-and-test-coding-loop.png)
 
-## The tests themselves may be flawed
+> **Figure 5-3｜Production Generate-and-Test Loop**  
+> A generator produces a candidate, a critic supplies diagnosis, repair rewrites the candidate, and a verifier checks it against the acceptance contract. Each round must leave observable evidence. The loop exits on PASS, max attempts reached, budget exhausted, or controller-initiated stop.
 
-Generate-and-Test is not magic.
+## Replanning: change the remaining route when the route is wrong
 
-If the tests are too weak, the Agent can:
+Repair is appropriate when the current artefact is wrong but the objective and overall route remain valid.
 
-- pass a wrong implementation
-- fix only one case
-- break other functionality
-- delete or skip tests
-- modify the Expected Result so the error seems to disappear
-
-So you have to defend against Reward Hacking:
-
-- tests cannot be deleted by the Agent at will
-- critical tests should be protected
-- the full relevant test suite must be run
-- check whether test files were modified
-- add static analysis and Build
-- compare the change scope
-- require external Verifier acceptance when needed
-
-## Test Results must be structured
-
-```text
-Command:
-pytest tests/auth
-
-Exit Code:
-1
-
-Passed:
-18
-
-Failed:
-2
-
-Failure Signatures:
-- token audience mismatch
-- expired fixture
-
-Files Changed:
-- src/auth/config.py
-```
-
-That is far easier for the Agent to repair reliably than dumping the whole Terminal Log back into Context.
-
-![Figure 5-3 — Generate-and-Test Coding Loop](/images/the-atlas-of-agent-design-patterns-part-5/generate-and-test-coding-loop.png)
-
-> **Figure 5-3 ｜ Generate-and-Test Coding Loop**  
-> The Agent generates a Patch in a Sandbox, runs the target test, reads the structured failure signal, revises, and re-tests. After it passes, it still needs to run the full test suite, Lint, Build and a change-scope review.
-
----
-
-## 8. Replanning: the wrong thing may not be the answer, but the whole route
-
-Sometimes fixing the current output is pointless.
-
-Because the actual error is:
-
-- understanding of the problem
-- initial assumption
-- data source
-- task decomposition
-- step dependencies
-- execution order
-- success criteria
-
-For example, a Research Agent's original plan is:
-
-```text
-1. Search news
-2. Compile product prices
-3. Make a recommendation
-```
-
-During execution it discovers:
-
-- the news articles quote outdated prices
-- the official pricing page differs by region
-- the user actually wants the enterprise plan
-- the original research route cannot answer the question
-
-At this point, only Self-Refining the final article still does cosmetic work on top of the wrong data.
-
-Replanning should rewrite the remaining plan:
-
-```text
-1. Keep the confirmed product list
-2. Switch to official regional pricing
-3. Add enterprise plan restrictions
-4. Mark unverifiable prices
-5. Produce the recommendation again
-```
-
-## When should you Replan?
+Replanning is appropriate when:
 
 - a critical assumption failed
-- required data is not available
 - the goal was misunderstood
-- multiple steps fail in a row
-- the Verifier finds a structural gap
+- the selected data source cannot answer the question
 - dependencies changed
-- the budget cannot finish the original plan
-- the user updated the requirement
+- several downstream steps became invalid
+- the acceptance contract changed with authorisation
+- the remaining budget cannot execute the plan
+- repeated local repair exposed a structural problem
 
-## Replanning is not a universal Retry
+A replan should:
 
-If the data really does not exist, Replan also should not keep switching methods forever.
+- preserve valid completed work
+- identify invalidated steps
+- record the trigger
+- produce a plan diff
+- update dependencies
+- respect the replan limit
+- pass plan validation
 
-Reasonable results may be:
+Replanning must not become a universal escape hatch. When the data does not exist, a legitimate result may be:
 
-- Unavailable
-- Pending
-- Unsupported
-- Partial Result
-- Human Action Required
+- unavailable
+- partial
+- pending
+- unsupported
+- requires human action
 
----
+## Reflexion: use verbal feedback across attempts
 
-## 9. Reflexion: turn a failure into future experience
+Reflexion is a specific framework in which an agent reflects verbally on task feedback and stores reflective text in an episodic memory buffer to improve subsequent trials, without updating model weights.
 
-Reflexion does not only fix the current output. It turns the failure into experience that can be used in the future.
+A simplified original-style loop is:
 
 ```text
 Attempt
-  ↓
-Failure
-  ↓
-Analyze What Happened
-  ↓
-Extract Lesson
-  ↓
-Store in Memory
-  ↓
-Retrieve in Future Attempt
+ -> receive feedback
+ -> verbal reflection
+ -> store reflection in episodic buffer
+ -> use it in a later attempt
 ```
 
-For example:
+This is not the same as automatically creating a permanent organisational rule.
 
-```text
-Failure:
-Scored a job using only the title.
-
-Lesson:
-Never score a role without the full job description.
-
-Procedure:
-If the stored JD is empty, fetch the source URL.
-If the full text is still unavailable, mark Pending.
-```
-
-The next time it meets a similar task, the system first retrieves this Procedural Memory.
-
-## Reflexion vs Self-Refine
+### Reflexion versus Self-Refine
 
 Self-Refine:
 
-> Improve the current output.
+> Improve the current candidate.
 
 Reflexion:
 
-> Change how the system behaves when it sees a similar task in the future.
+> Use reflection from feedback to influence a subsequent trial.
 
-## What should Reflexion actually store?
+### Production memory promotion is an additional governance layer
 
-Fit for storage:
+A production system may choose to convert repeated, verified experience into a durable lesson. That is an extension beyond the basic episodic reflection loop.
 
-- the failure situation
-- the root cause
-- the effective fix
-- the conditions of applicability
-- the conditions of non-applicability
-- source and time
+A lesson candidate should include:
+
+- situation
+- observed failure
+- evidence
+- root-cause hypothesis
+- successful repair
+- applicability conditions
+- non-applicability conditions
 - confidence
-- verification result
+- source and time
+- validation status
 
-It should not just store:
+Before promotion to long-term memory:
 
-```text
-Be more careful next time.
-```
+- verify the failure analysis
+- check whether the lesson generalises
+- scope it narrowly
+- resolve conflicts
+- assign owner and expiry
+- require approval for high-impact procedures
 
-The operational value of that sentence is roughly that of a sticky note on the side of the monitor.
-
-## Main risks of Reflexion
-
-### Wrong lessons
-
-The Agent can derive a wrong rule from one accidental failure.
-
-### Over-generalisation
+Possible lifecycle:
 
 ```text
-The official API failed once
-→ never use the official API again
+Reflection candidate
+ -> evidence review
+ -> repeated or confirmed?
+ no -> keep short-lived or discard
+ yes -> approve scoped lesson
+ -> versioned long-term memory
+ -> revalidate on retrieval
 ```
 
-### Memory pollution
+This prevents one accidental failure from becoming a permanent rule.
 
-Unverified reflections get written into long-term memory and keep influencing tasks afterwards.
+<!-- Figure 5-5 insertion point -->
 
-### Outdated rules
+![Figure 5-5 — Reflexion and Governed Lesson Promotion](/images/the-atlas-of-agent-design-patterns-part-5/reflexion-memory-loop.png)
 
-The API, product and workflow have been updated, but the old lesson still gets retrieved.
+> **Figure 5-5｜Reflexion and Governed Lesson Promotion**  
+> Episodic reflection helps the next attempt; a long-term lesson must clear separate governance and validation before promotion. One failure does not automatically become a permanent rule.
 
-### Conflicting memories
+## Human review: authorisation and judgement, not a universal verifier
 
-Two tasks produce opposite rules.
+Some decisions should not be fully automatic:
 
-So Reflexion Memory needs:
-
-- Evidence
-- Scope
-- Confidence
-- Version
-- Created At
-- Expiry
-- Validation Status
-- Superseded By
-- Human Approval for high-impact procedures
-
-![Figure 5-5 — Reflexion Memory Loop](/images/the-atlas-of-agent-design-patterns-part-5/reflexion-memory-loop.png)
-
-> **Figure 5-5 ｜ Reflexion Memory Loop**  
-> A failure is analysed into a Lesson that carries situation, root cause, fix, and applicable scope. Only lessons that pass verification get written into Memory, and they are retrieved and re-verified when a similar task comes up.
-
----
-
-## 10. Human Review: the last line of defence for high-risk nodes
-
-Some operations should not run fully automatically, even when the model is very confident.
-
-For example:
-
-- sending external Email
-- executing payments
-- deleting data
-- changing Production
-- approving loans
-- publishing legal or medical advice
+- payment
+- destructive data change
+- production deployment
+- external publication
 - privilege escalation
-- large-scale customer outreach
-- accepting irreversible contracts
-- writing into high-value master data
+- legal or medical judgement
+- high-value contract
+- policy exception
 
-The value of Human Review is not only "humans may be smarter".
-
-What matters more is:
+Human review provides:
 
 - accountability
-- business judgement
 - risk acceptance
+- business context
 - exception handling
 - final authorisation
 
-## What does a human actually need to see?
+The reviewer needs:
 
-A screen with only `Approve` and `Reject` buttons is usually not enough.
+- proposed action
+- evidence
+- checks already passed
+- unresolved risks
+- impact
+- reversibility
+- diff or preview
+- alternatives
+- timeout behaviour
+- actor identity and permissions
 
-The approval screen should at least show:
+Human review can also fail through fatigue, blind approval, information overload, or stale workflow state.
 
-- what the Agent is about to do
-- why it is doing it that way
-- which sources it used
-- which checks have already passed
-- which risks still exist
-- the scope of the operation
-- whether it can be undone
-- a preview and diff
-- alternative options
-- what happens after the timeout
+A safe approval step needs:
 
-## Human Review can also fail
+- expiry
+- state persistence
+- revalidation before execution
+- separation of duties
+- no self-approval
+- audit trail
+- safe resume behaviour
 
-- blind approval
-- approval fatigue
-- information overload
-- missing important Context
-- wrong permission role
-- unable to track what changed
-- Agent state shifted during the wait
+Human review is a governed decision point, not a bin for every uncertainty.
 
-So human approval also needs:
+## Bounded recovery controller
 
-- Clear Decision Context
-- Expiry
-- Revalidation Before Execution
-- Approver Identity
-- Audit Log
-- Segregation of Duties
-- No Self-approval
-- Safe Resume State
+A recovery controller prevents the system from looping because “one more improvement” is always possible.
 
-Human Review is a safety control, not a bin for dumping every uncertainty onto people.---
+### Per-strategy limits
 
-## Full comparison of Self-Refine, Critic, Verifier and Reflexion
+Example policy:
 
-| Mode | Core task | Scope of impact | Issues Pass / Fail? | Depends on external evidence? | Affects future tasks? | Main risk |
-|---|---|---|---:|---:|---:|---|
-| Self-Refine | Find issues and rewrite own draft | Current output | Usually no | Usually no | No | Same blind spot, making things worse |
-| Critic | Diagnose problems and provide Feedback | Current output or plan | Usually no | Optional | No | Wrong critique, over-criticism |
-| Verifier | Acceptance against the specification | Current step or output | Yes | Should rely on it heavily | No | Incomplete rules, false positives / negatives |
-| Reflexion | Convert failure into experience | Future similar tasks | No | Should be verified first | Yes | Wrong memory, over-generalisation, expiry |
-
----
-
-## Reliability comparison of verification methods
-
-| Method | Independence | Reproducibility | Fits to check | Not suited to handle alone |
-|---|---:|---:|---|---|
-| Re-reading | Low | Low | Obvious omissions, wording | Facts, execution results |
-| Self-Refine | Low | Low to medium | Structure, format, completeness | Shared blind spots |
-| Critic | Medium | Medium | Quality, risk, argument gaps | Strict Pass / Fail |
-| Model Verifier | Medium | Medium | Semantic completeness, faithfulness | Precise execution results |
-| Rule / Schema Check | High | High | Format, fields, policy | Open-ended quality |
-| External Test | High | High | Programs, SQL, tool behaviour | Ambiguous business judgement |
-| Source Verification | High | Medium to high | Facts and Citations | Creative tasks without sources |
-| Human Review | Depends on the workflow | Medium | High risk, ambiguous judgement, authorisation | Mass-repeated objective checks |
-
-A reliable system usually uses more than one layer.
-
-For example, a Coding Agent:
-
-```text
-Static Validation
-  ↓
-Target Test
-  ↓
-Related Test Suite
-  ↓
-Full Test Suite
-  ↓
-Lint
-  ↓
-Build
-  ↓
-Change Review
-```
-
----
-
-## Failure types and repair strategy table
-
-| Failure type | Typical signal | Preferred strategy | Should not do |
-|---|---|---|---|
-| Transient infrastructure error | Timeout, 503, Rate Limit | Retry + Backoff | Immediate infinite Retry |
-| Bad parameters | Empty Query result, oversized Batch | Parameterized Retry | Random parameter changes without logging |
-| Primary service unavailable | API Down, Model Outage | Fallback | Pretend quality is identical |
-| Output format wrong | Schema Fail, missing fields | Repair / Self-Refine | Redo the entire research |
-| Content quality too low | Missing pieces, contradictions, weak arguments | Critic + Revise | Just ask "think again" |
-| Explicit specification not met | Policy, Rule, Required Field | Verifier → Reject / Repair | Let the Generator declare its own Pass |
-| Executable artefact failed | Test, Build, SQL Error | Generate-and-Test | Trust model eyeballing |
-| Critical assumption wrong | Invalid data source, misunderstood goal | Replanning | Keep editing the final text |
-| Repeated failure | Similar task fails repeatedly | Reflexion + Validated Memory | Store vague or unverified lessons |
-| High-risk or irreversible operation | Payment, Delete, Publish | Human Review | Auto-explore multiple real operation paths |
-| Unsupported or data does not exist | Unsupported, Unavailable | Stop / Pending / Partial | Infinite Replan |
-
----
-
-## How to build a recovery mechanism that does not loop forever?
-
-Once verification and repair modes are combined, it is easy to form loops:
-
-```text
-Generate
-  ↓
-Critic
-  ↓
-Revise
-  ↓
-Verifier
-  ↓
-Fail
-  ↓
-Revise Again
-```
-
-Without a boundary, the Agent can always fix it one more time.
-
-## 1. Classify the failure first
-
-Every failure must be categorised, for example:
-
-- Transient
-- Invalid Input
-- Quality Failure
-- Policy Failure
-- Tool Failure
-- Missing Data
-- Plan Failure
-- Unsupported
-- Human Decision Required
-
-Different failures should not all be sent back into the same Retry Loop.
-
-## 2. Set an upper bound for each kind of loop
-
-For example:
-
-| Loop | Upper bound |
+| Loop | Example maximum |
 |---|---:|
-| Network Retry | 3 |
-| Schema Repair | 2 |
-| Critic Revision | 2 |
-| Generate-and-Test | 4 |
+| Transient retry | 3 |
+| Parameter repair | 2 |
+| Output repair | 2 |
+| Critic revision | 2 |
+| Generate-and-Test repair | 4 |
 | Replanning | 2 |
-| Human Approval Reminder | 1 |
 
-## 3. Require observable progress each round
+These are examples, not universal defaults. The correct limits depend on cost, risk, and expected improvement.
 
-For example:
+### Observable progress
 
-- failing test count goes down
-- missing fields decrease
-- Citation Coverage improves
-- unresolved issues decrease
-- new effective sources are added
-- the Verifier score goes up
+A repair round should improve an objective signal:
 
-If two rounds show no progress:
+- fewer failing tests
+- fewer missing fields
+- higher evidence coverage
+- fewer unresolved issues
+- new valid source
+- improved verifier result
+- reduced policy violations
 
-```text
-No-improvement Limit Reached
-  ↓
-Fallback / Replan / Stop
-```
+If repeated rounds produce the same failure signature, the controller should stop or change strategy.
 
-## 4. Detect repeated actions and repeated errors
+### Duplicate detection
 
 Record:
 
-- Action Signature
-- Input Hash
-- Error Signature
-- Output Hash
-- Tool Parameters
-- Plan Version
+- action signature
+- input hash
+- output hash
+- error signature
+- tool parameters
+- plan version
+- environment version
 
-If the same input produces the same failure, it should not be dressed up as a new attempt.
+A paraphrased attempt with the same effective input and same failure is still a duplicate.
 
-## 5. Use an incremental escalation strategy
+### Global budget
 
-```text
-Retry
-  ↓
-Parameterized Retry
-  ↓
-Fallback
-  ↓
-Repair
-  ↓
-Replan
-  ↓
-Human Review or Stop
-```
+Limit:
 
-Not every failure should jump straight into the most expensive process.
+- model calls
+- tool calls
+- tokens
+- elapsed time
+- monetary cost
+- state transitions
+- human reminders
 
-## 6. Set a total Budget
-
-In addition to the upper bound on each loop, there must be whole-task limits:
-
-- Max Tokens
-- Max Tool Calls
-- Max Wall Time
-- Max Cost
-- Max Model Calls
-- Max State Transitions
-
-## 7. Define terminal states
+### Terminal outcomes
 
 At minimum:
 
-- Completed
-- Failed
-- Partial
-- Pending
-- Unsupported
-- Cancelled
-- Requires Human Action
+- completed
+- failed
+- partial
+- pending
+- unsupported
+- cancelled
+- requires human action
+- inconclusive
 
-"Not fully successful" does not mean the system has to keep trying.
-
-## 8. Persist the repair history
-
-Each round records:
-
-- Attempt Number
-- Failure Type
-- Evidence
-- Strategy Used
-- Changes Made
-- Result
-- Cost
-- Next Decision
-
-This prevents the Agent from forgetting what it has already tried.
-
----
+Stopping safely is a successful control decision, not an admission that the architecture failed.
 
 ## Production verification and recovery architecture
 
-A mature flow can look like this:
+A mature architecture may look like:
 
 ```text
-Generate Output
-  ↓
-Hard Validation
-  ├─ Fail → Repair
-  └─ Pass
-       ↓
-External Test / Evidence Check
-  ├─ Fail → Classify Failure
-  │          ├─ Transient → Retry
-  │          ├─ Parameter → Parameterized Retry
-  │          ├─ Method → Fallback
-  │          ├─ Output → Critic / Repair
-  │          ├─ Plan → Replan
-  │          ├─ Risk → Human Review
-  │          └─ Unsupported → Stop
-  └─ Pass
-       ↓
-Quality Verifier
-  ├─ Fail → Bounded Revision
-  └─ Pass → Accept
+Candidate
+ -> hard validation
+ -> external test or evidence check
+ -> verifier
+ -> pass -> accept
+ -> fail -> classify failure
+ -> review -> human decision
+ -> inconclusive -> gather evidence or stop
 ```
 
-If the failure has reusable value:
+Failure routing:
 
 ```text
-Verified Failure Analysis
-  ↓
-Create Scoped Lesson
-  ↓
-Approve Memory Write
-  ↓
-Reflexion Memory
+Transient -> safe retry
+Parameter -> parameter repair
+Method -> fallback
+Artefact -> bounded repair or Generate-and-Test
+Evidence -> retrieve approved evidence
+Plan -> replan
+Policy -> deny or request approval
+Unsupported -> terminal stop
 ```
 
-The points that matter here are:
+Cross-cutting controls:
 
-- verification comes before declaring success
-- the repair method is decided by the failure type
-- every Loop has an upper bound
-- long-term memory only stores verified lessons
-- unsupported tasks can be officially stopped
+- acceptance contract
+- idempotency
+- state persistence
+- repair history
+- duplicate detection
+- budget
+- immutable requirements
+- policy
+- audit trace
+- human approval
 
----
+Only after verified failure analysis should the system consider storing a reflection or promoting a durable lesson.
 
-## A complete example: how a Research Agent handles errors
+## Complete example: research with unsupported pricing
 
-Task:
+The task is:
 
-> Compare the enterprise pricing of three products.
+> Compare enterprise pricing for three products.
 
-## First run
+### First candidate
 
-The Agent finds three third-party review sites and produces a price table.
+The agent creates a table from third-party review sites.
 
-## Verifier check
+### Evidence verifier
 
 ```text
 Status: FAIL
 
-Reason:
-Two prices are not supported by official sources.
+Failed checks:
+- two prices lack official support
+- one price is from an outdated product version
 
-Failure Type:
+Failure class:
 Evidence Failure
 ```
 
-## Critic gives a fix direction
+### Critic
 
 ```text
+Required repair:
 Use official pricing pages, billing documentation,
 or official announcements.
-Mark unavailable values explicitly.
+Mark unavailable enterprise pricing explicitly.
 ```
 
-## Fallback
+### Fallback
 
-The official Pricing Page of one of them is unreachable.
+One official pricing page is unavailable.
 
-The system switches to:
+The system tries:
 
 ```text
-Official Documentation
-  ↓
-Official Product Announcement
+official documentation
+ -> official product announcement
+ -> labelled unavailable
 ```
 
-## Replanning
+The fallback result carries source date and missing-field status.
 
-Enterprise pricing still cannot be found.
+### Replan
 
-The remaining plan is rewritten:
+The product does not publish enterprise pricing.
+
+The remaining plan changes:
 
 ```text
-1. Preserve verified public prices
-2. Mark enterprise pricing as Contact Sales
-3. Compare available contract conditions
-4. Do not infer hidden prices
+preserve verified public pricing
+mark enterprise pricing as Contact Sales
+compare documented contract conditions
+do not infer a hidden price
 ```
 
-## Verifier checks again
+### Verifier
 
 ```text
 Official-source coverage: PASS
 Unsupported claims: 0
-Missing values explicitly marked: PASS
+Missing values labelled: PASS
+Version dates recorded: PASS
 ```
 
-## Reflexion
+### Reflection
 
-The experience is written as a bounded rule:
+A short-lived reflection records:
 
 ```text
-Context:
-Enterprise pricing research
-
-Lesson:
-Do not infer unpublished enterprise prices.
-
-Procedure:
-Use official pricing, documentation, or announcements.
-If unavailable, label Contact Sales or Unavailable.
-
-Validation:
-Approved by source verifier
+When enterprise pricing is undisclosed,
+do not infer a numerical price.
+Use official sources and label Contact Sales.
 ```
 
-This flow uses:
+Only after repeated validation and governance review should this become a durable organisational lesson.
 
-- Verifier
-- Critic
-- Fallback
-- Replanning
-- Reflexion
+## Choosing the correct mechanism
 
-But there is no blind Retry, and there is no "think again" pretending to be verification.
-
----
-
-## When should you use which pattern?
-
-| Situation | Suggested pattern |
+| Situation | Primary mechanism |
 |---|---|
-| Transient network or service error | Retry |
-| Same step can be improved by parameters | Parameterized Retry |
-| Primary method failed but a backup exists | Fallback |
-| Text structure or formatting needs improvement | Self-Refine |
-| Need to diagnose quality and problems | Critic |
-| Explicit specification or completion threshold exists | Verifier |
-| Artefact can actually be executed and tested | Generate-and-Test |
-| Initial assumption or remaining route has failed | Replanning |
-| Similar errors will repeat in future tasks | Reflexion |
-| High-risk, ambiguous or irreversible operation | Human Review |
-| Task unsupported or data does not exist | Stop / Pending / Partial |
-
----
+| Transient, safe-to-repeat failure | Retry |
+| Same step needs a justified parameter change | Parameter repair |
+| Primary implementation unavailable | Fallback |
+| Current text needs bounded revision | Self-Refine |
+| A candidate needs actionable diagnosis | Critic |
+| A specification needs an acceptance decision | Verifier |
+| Artefact can be executed in a controlled environment | Generate-and-Test |
+| Remaining route or premise is invalid | Replanning |
+| Feedback should influence a later trial | Reflexion |
+| High-impact action needs authorisation | Human review |
+| Data or capability does not exist | Stop, partial, pending, or unsupported |
 
 ## Common anti-patterns
 
-## Anti-pattern 1: Retry as the universal fix
+### Retry every error
 
-Retry any error three times.
+Permanent and policy failures do not become transient after three attempts.
 
-## Anti-pattern 2: the model generates, comments and signs off all by itself
+### Retry a write without idempotency
 
-The same bias runs through every stage.
+A lost response becomes a duplicate side effect.
 
-## Anti-pattern 3: Verifier without an explicit specification
+### Generator certifies its own work
 
-Just ask:
+The same component produces, judges, and accepts.
 
-> Check whether the answer is good.
+### Critic without scope
 
-## Anti-pattern 4: Critic can always find a problem
+Every revision creates another possible improvement.
 
-The repair loop has no acceptance threshold and no maximum round count.
+### Verifier without a contract
 
-## Anti-pattern 5: Generate-and-Test only runs one weak test
+“Check whether this looks correct” is not an acceptance test.
 
-The target test passes while other functionality is broken.
+### Model judgement overrides failed execution
 
-## Anti-pattern 6: the Agent can modify the acceptance criteria
+A persuasive explanation cannot convert a failing test into a pass.
 
-It deletes the Test or relaxes the Constraint after failure.
+### Weak tests are treated as ground truth
 
-## Anti-pattern 7: Replanning always overthrows the existing work
+The agent modifies the tests or exploits missing coverage.
 
-Already-completed, valid results get redone.
+### Replanning for a local defect
 
-## Anti-pattern 8: every failure gets written into Memory
+A one-line schema error causes the entire research plan to be rebuilt.
 
-An accidental error becomes a permanent rule.
+### Every reflection becomes permanent memory
 
-## Anti-pattern 9: Human Review without enough information
+One accident becomes a global rule.
 
-Humans can only blindly press Approve.
+### Human review without decision context
 
-## Anti-pattern 10: no formal failure state
+The approver receives two buttons and no evidence.
 
-The system always believes one more try will succeed.
+### No terminal failure
 
----
+The system assumes another round must exist.
 
-## Production checklist for verification and recovery
+## Production checklist
 
-## Verification
+### Verification
 
-- Are the Completion Criteria explicit?
-- Do you prioritise deterministic checks?
-- Do you actually run real tools or environment tests?
-- Can the Verifier output Fail?
-- Is failure evidence preserved?
-- Do you monitor False Positive / Negative?
+- Is the acceptance contract explicit?
+- Does the verifier support fail and inconclusive?
+- Are deterministic and environment checks used first?
+- Is evidence preserved?
+- Are false passes and false failures monitored?
+- Are requirements protected from modification?
 
-## Repair
+### Recovery
 
-- Do you classify Failure Type first?
-- Does Retry only handle Retryable Error?
-- Do you distinguish Retry, Fallback and Replan?
-- Does every kind of loop have an upper bound?
-- Is there No-improvement Detection?
-- Can the system output Partial, Pending or Unsupported?
+- Is the failure classified before action?
+- Is retry limited to retryable and safe operations?
+- Are idempotency and reconciliation defined?
+- Are retry, repair, fallback, and replan distinct?
+- Does every loop have a limit?
+- Is no-improvement detected?
+- Can the workflow stop with partial or unsupported status?
 
-## Reflexion
+### Reflexion and memory
 
-- Does the Lesson have an applicable scope?
-- Are the root cause and repair evidence preserved?
-- Is the lesson written only after verification?
-- Are version, time and expiry rules present?
-- Can wrong memories be revoked or overridden?
+- Is the reflection tied to observed feedback?
+- Is original episodic reflection separated from durable lesson promotion?
+- Are scope, evidence, confidence, version, and expiry recorded?
+- Can lessons be revoked or superseded?
+- Are high-impact lessons reviewed?
 
-## Human Review
+### Human review
 
-- Can the approver see the impact and evidence?
-- Does the operation stay paused until approved?
-- Is the state re-validated after approval?
-- Are there approval deadlines and Audit Log?
-- Is Self-approval avoided?
+- Can the reviewer inspect evidence and impact?
+- Is the workflow paused durably?
+- Is state revalidated before execution?
+- Are approver identity, expiry, and audit recorded?
+- Is self-approval prohibited where separation of duties matters?
 
----
+## Conclusion
 
-## Conclusion of this article
+An agent is not reliable because it is willing to think again.
 
-An Agent's reliability does not come from its willingness to think a few more times.
+Reliability comes from a system that can:
 
-It comes from a verification and recovery system that can:
+- define success
+- detect observable failure
+- diagnose the affected scope
+- choose the smallest justified recovery
+- protect side effects
+- verify the repaired result
+- stop when recovery is not justified
+- preserve only validated experience
 
-- detect errors
-- gather evidence
-- classify failures
-- pick the right repair method
-- cap the number of repair attempts
-- stop safely when the task cannot be completed
+The main mechanisms solve different problems:
 
-The patterns in this article solve different problems:
+- **Retry** repeats a safe, transient operation.
+- **Parameter repair** changes a justified input to the same step.
+- **Fallback** uses another implementation of the same contract.
+- **Self-Refine** improves the current candidate through feedback.
+- **Critic** diagnoses defects and proposes repair.
+- **Verifier** accepts or rejects against a specification.
+- **Generate-and-Test** executes an artefact and observes the result.
+- **Replanning** changes the remaining route.
+- **Reflexion** uses verbal feedback across attempts.
+- **Memory promotion** governs whether a verified lesson should persist.
+- **Human review** provides judgement and authorisation.
+- **Stop** is the correct result when evidence, capability, permission, or budget is exhausted.
 
-- **Retry**: same action handles transient failure
-- **Parameterized Retry**: adjust parameters and retry the same step
-- **Fallback**: switch to another method, tool or source
-- **Self-Refine**: improve the structure and quality of the current output
-- **Critic**: diagnose the problem and provide actionable Feedback
-- **Verifier**: Pass / Fail decision based on the specification and evidence
-- **Generate-and-Test**: execute and test in a real or isolated environment
-- **Replanning**: rewrite the remaining plan when the assumption or route fails
-- **Reflexion**: convert verified failures into future experience
-- **Human Review**: protect high-risk, ambiguous and irreversible operations
-
-A mature system rarely uses only one of these.
-
-The more common combination is:
+The production pattern is:
 
 ```text
-Generate
-  ↓
-Hard Validation
-  ↓
-External Test
-  ↓
-Verifier
-  ↓
-Retry / Fallback / Repair / Replan / Human Review
-  ↓
-Accept or Stop
+explicit contract
+ + observable evidence
+ + failure classification
+ + bounded recovery
+ + independent acceptance
+ + safe terminal states
 ```
 
-The thing worth keeping in mind is:
+Part 6 moves from verification to organisation:
 
-> **Verification is not asking the model "are you sure?". Verification is requiring the system to produce evidence that can be observed, reproduced and refused.**
+> Should one agent own the work, or should responsibility be divided among several specialised agents?
 
-The next article enters the fifth architectural dimension:
+## References
 
-> Should the work be done by a single Agent, or split across multiple Agents?
+- [Madaan et al., *Self-Refine: Iterative Refinement with Self-Feedback*](https://arxiv.org/abs/2303.17651)
+- [Gou et al., *CRITIC: Large Language Models Can Self-Correct with Tool-Interactive Critiquing*](https://arxiv.org/abs/2305.11738)
+- [Shinn et al., *Reflexion: Language Agents with Verbal Reinforcement Learning*](https://arxiv.org/abs/2303.11366)
+- [Valmeekam et al., *Can Large Language Models Really Improve by Self-critiquing Their Own Plans?*](https://arxiv.org/abs/2310.08118)
+- [AWS Builders' Library, *Timeouts, retries, and backoff with jitter*](https://aws.amazon.com/builders-library/timeouts-retries-and-backoff-with-jitter/)
+- [AWS Builders' Library, *Making retries safe with idempotent APIs*](https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-apis/)
+- [AWS Well-Architected Framework, *Make mutating operations idempotent*](https://docs.aws.amazon.com/wellarchitected/latest/framework/rel_prevent_interaction_failure_idempotent.html)
 
-Part 6 will fully compare Single Agent, Role-based Single Agent, Supervisor–Worker, Planner–Executor–Critic, Debate, Voting, Blackboard, Peer-to-Peer and Swarm.
+## Series
+
+| Part | Topic |
+|---:|---|
+| 1 | Beyond ReAct: A Six-Dimensional Map of LLM Agent Architectures |
+| 2 | Agent Execution Paths: Direct Calls, Pipelines, Routers, State Machines, and DAGs |
+| 3 | ReAct, Plan-and-Execute, Adaptive Planning, and HTN |
+| 4 | From Single-Path Reasoning to Trees, Graphs, MCTS, and LATS |
+| 5 | Verification, Recovery, and Self-Correction |
+| 6 | Multi-Agent Architectures |
+| 7 | Agent Memory |
+| 8 | Production Agent Architectures |
+| 9 | How to Choose an Agent Architecture |
+| 10 | Implementing Agent Patterns with Modern Frameworks |
