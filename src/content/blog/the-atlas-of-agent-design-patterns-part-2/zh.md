@@ -1,1243 +1,773 @@
 ---
 title: "Agent 設計模式圖鑑 Part 2｜Agent 執行路徑全解：Direct、Pipeline、Router、State Machine 與 DAG"
-description: "LLM Agent 執行路徑的第一個維度：Direct、Pipeline、Router、State Machine 與 DAG 五種執行骨架的設計選擇、限制、組合方式與 Production 反模式。"
-date: 2026-06-30T15:25:00
+description: "從 Direct、Pipeline、Router、State Machine、DAG，到事件驅動、人工審批與 Behavior Tree，完整拆解 Production Agent 的執行骨架、組合方式與失敗邊界。"
+date: 2026-07-01T23:02:00
 lang: zh
 categories: ["AI"]
 series: "Agent 設計模式圖鑑"
 seriesOrder: 2
 ---
 
+Part 1 提出了六個分析 Agent 架構的實務維度。這一篇深入第一個問題：
 
-上一篇，我們把常見的 Agent 設計模式拆成六個維度：
+> 一項任務要如何從起點走到明確的終點？
 
-1. 執行路徑
-2. 決策與規劃
-3. 推理與探索
-4. 驗證與修正
-5. Agent 組織
-6. 狀態與記憶
+表面上，這只是流程圖問題；到了正式環境，它同時也是可靠性問題。
 
-這一篇要進入第一個維度：
+執行路徑會決定：
 
-> 任務從開始到結束，究竟怎麼走？
-
-這看起來像一個流程圖問題，實際上卻決定了一套 Agent 系統是否能被理解、測試、恢復和控制。
-
-有些系統無論使用者問什麼，都執行同一套 Retrieval、Reranking、Planning 和 Verification；有些系統把每一步都交給模型自由決定，導致同一個問題每次走出不同路線；還有一些系統雖然有漂亮的流程圖，真正出錯時卻不知道該回到哪個節點。
-
-這些問題未必是模型不夠聰明。
-
-更常見的原因是：
-
-> 執行路徑根本沒有被設計清楚。
-
-Direct、Pipeline、Router、State Machine 和 DAG，是五種常見的執行骨架。
-
-它們不直接回答「模型怎麼推理」，而是決定：
-
-- 任務會經過哪些節點
-- 哪些步驟一定要執行
+- 哪些節點可以執行
+- 哪些節點一定要執行
 - 哪些路徑可以跳過
-- 什麼情況下可以分支
-- 哪些工作可以平行
-- 失敗後應該回到哪裡
-- 任務何時正式完成
-- 哪些狀態必須被保存
+- 狀態應保存在哪裡
+- 失敗後應往哪裡走
+- 哪些工作可以同時進行
+- 哪些節點必須等待人工審批
+- 什麼情況算完成、失敗、取消或仍在等待
 
----
+有些系統不論收到什麼問題，都啟動整套昂貴流程；有些系統把每個分支都交給模型，導致同一種請求每次走法不同；另一些系統有漂亮的流程圖，真正遇到工具逾時或審批沒有回覆時，卻不知道該如何恢復。
 
-## 執行路徑不是推理方式
+Direct、Pipeline、Router、State Machine 與 DAG，分別解決這張地圖中的不同問題。它們不是從初級到高級的階梯，也不是只能五選一。
 
-這是第二篇最重要的概念邊界。
+## 執行骨架不等於節點內的智慧
 
-以下兩組名詞不在同一個分類維度：
+執行骨架描述工作可以如何在整個系統中移動。
 
-| 執行路徑 | 節點內決策方式 |
-|---|---|
-| Direct | ReAct |
-| Pipeline | Planning |
-| Router | Tool Selection |
-| State Machine | Adaptive Planning |
-| DAG | Generate-and-Test |
+節點內的決策邏輯，則描述某一個節點如何選擇行動。
 
-執行路徑描述的是：
-
-> 系統有哪些節點，以及資料如何在節點之間流動。
-
-節點內決策描述的是：
-
-> Agent 在某一個節點裡，如何決定下一步行動。
-
-例如，一套系統可以使用 State Machine 控制整體流程：
+例如，外層可由 State Machine 控制，而研究節點內使用有界的 ReAct：
 
 ```text
 START
-  ↓
-PLAN
-  ↓
-RESEARCH
-  ↓
-VERIFY
-  ↓
-END
+ -> PLAN
+ -> RESEARCH
+ -> 有界 ReAct 選擇查詢與工具
+ -> VERIFY
+ -> COMPLETE
 ```
 
-但在 `RESEARCH` 狀態裡，Agent 可以使用 ReAct：
+固定 Pipeline 裡也可以放入規劃節點：
 
 ```text
-Observe
-  ↓
-Decide
-  ↓
-Act
-  ↓
-Observe Again
+Normalize
+ -> Plan
+ -> Plan-and-Execute 建立子任務
+ -> Retrieve
+ -> Generate
+ -> Validate
 ```
 
-同樣地，一條固定 Pipeline 裡也可以有一個 Planning 節點；Router 選中的某條路徑，也可能啟動另一套 State Machine。
+因此，只說「這是一個 ReAct Agent」，仍無法知道它的外層究竟是 Direct、Pipeline、State Machine，還是大型 Graph 裡的一個局部節點。
 
-所以，看到「這是一個 ReAct Agent」時，我們仍然不知道它的整體流程究竟是 Pipeline、State Machine，還是自由 Agent Loop。
-
-![Execution Skeletons vs Node-Level Decisions](/images/the-atlas-of-agent-design-patterns-part-2/execution-skeletons-vs-node-decisions.png)
+![Figure 2-1 — Execution Skeletons vs Node-Level Decisions](/images/the-atlas-of-agent-design-patterns-part-2/execution-skeletons-vs-node-decisions.png)
 
 > **Figure 2-1｜Execution Skeletons vs Node-Level Decisions**  
-> 上層比較 Pipeline、Router 和 State Machine；下層比較 ReAct、Planning 和 Tool Selection & Calling，說明外層骨架與節點內智慧並不衝突。
+> 外層骨架與節點內決策邏輯是分開的兩個層次，可以自由組合；Pipeline、Router、State Machine 是外層結構，Fixed Rules、Bounded ReAct 等是節點內決策。
 
----
+## 五種核心執行骨架
 
-## 一、Direct：有些問題根本不需要 Agent
+本文標題中的五種結構，分別回答不同問題：
 
-Direct 是最簡單的執行路徑：
+| 結構 | 主要問題 |
+|---|---|
+| Direct | 一個有明確邊界的操作能否直接完成任務？ |
+| Pipeline | 必要步驟是否可在執行前確定？ |
+| Router | 不同請求是否需要走不同路徑？ |
+| State Machine | 流程是否必須經過明確狀態與條件轉移？ |
+| DAG | 任務是否存在可分支、相依並在後方合併的有向依賴？ |
+
+另外有兩種常被混進同一張比較表的概念：
+
+- **Event-driven** 決定什麼事件觸發工作，以及事件如何在服務間傳遞。
+- **Human-in-the-loop** 在流程中插入暫停、檢視、修改或審批控制點。
+
+它們可以包住或出現在上述任何一種核心骨架之中。
+
+![Figure 2-2 — Five Execution Path Patterns at a Glance](/images/the-atlas-of-agent-design-patterns-part-2/five-patterns-comparison.png)
+
+> **Figure 2-2｜Five Execution Path Patterns at a Glance**  
+> Direct、Pipeline、Router、State Machine 與 DAG 五種結構回答不同問題；常見錯誤是把整套系統硬塞進單一名詞。
+
+## Direct：一次有界操作能完成，就不要硬造 Agent
+
+Direct 是最小的有效執行結構：
 
 ```text
-Input
-  ↓
-LLM
-  ↓
-Output
+Input -> Model or Function -> Output
 ```
 
-模型收到輸入後，直接產生輸出。
+它的關鍵不是「絕對不能用工具」。Direct 仍可包含確定性的前處理、輸入驗證、輸出整理，甚至一個事先確定的工具呼叫。它沒有的是：每取得一次 observation 後，再動態決定下一步的多步迴圈。
 
-沒有：
-
-- 多步驟工作流
-- 動態路由
-- 狀態保存
-- 工具循環
-- 多 Agent 協調
-
-## 適合 Direct 的任務
+### 適合情境
 
 - 翻譯
 - 改寫
 - 摘要
-- 格式轉換
-- 簡單分類
 - 固定欄位抽取
-- 根據已提供內容回答問題
-- 產生短文案
+- 分類
+- 格式轉換
+- 根據已提供資訊回答
+- 交給一個確定函式完成的計算
 
-例如：
+### Direct 的價值
 
-> 將以下內容改寫成正式商務語氣。
+它減少移動零件。延遲、成本與錯誤來源都比較容易理解。由於輸入與輸出契約較窄，也更容易建立穩定測試。
 
-如果完成任務所需的資訊已經全部出現在輸入裡，通常沒有必要再啟動 Planner、Retriever 或 Multi-Agent。
+Direct 仍可以有：
 
-## Direct 的優點
-
-### 快
-
-通常只需要一次主要模型呼叫。
-
-### 便宜
-
-沒有額外 Retrieval、工具執行或多輪驗證。
-
-### 容易測試
-
-輸入和輸出的關係簡單，較容易建立固定測試集。
-
-### 容易觀察
-
-出錯時，不需要在十幾個節點之間找問題。
-
-## Direct 的限制
-
-Direct 並不是「模型不能推理」，也不是「完全不能用工具」。
-
-真正的限制是：
-
-- 沒有自適應工具循環
-- 沒有持久化的多步驟流程
-- 無法自己找回缺少的外部資訊
-- 不適合需要長時間狀態的任務
-
-如果模型不知道某個外部事實，Direct 不會因為回答得更長就自動知道。
-
-## Direct 的常見反模式
-
-### 為了看起來像 Agent 而增加步驟
-
-原本一次呼叫可以完成的任務，被改造成：
-
-```text
-Planner
-  ↓
-Writer
-  ↓
-Critic
-  ↓
-Refiner
-```
-
-成本變成數倍，品質卻沒有穩定提升。
-
-### 對固定格式任務使用自由 Agent
-
-如果任務只是把資料轉成固定 JSON，應優先使用：
-
-- Schema
-- Validation
-- Deterministic Processing
-
-而不是讓 Agent 自由探索。
-
-## Production Notes
-
-Direct 仍然可以搭配：
-
-- Input Validation
-- Output Schema
+- 輸入驗證
+- 輸出 Schema
+- 內容或政策檢查
 - Timeout
-- Token Limit
-- Content Policy
-- Basic Verifier
-- Fallback Model
+- Token 上限
+- 備援模型
+- 確定性後處理
 
-Direct 的重點不是什麼都不管，而是不要為一扇普通的門建造整座機場。
+Direct 不是什麼都不管，而是不在沒有編排問題的地方製造編排問題。
 
----
+### 常見失敗
 
-## 二、Pipeline：固定順序的可控流程
+一個簡單轉換任務，被擴建成 Planner -> Writer -> Critic -> Refiner，只因團隊想讓產品看起來更「Agentic」。成本可能變成四倍，品質卻沒有穩定提升。
 
-Pipeline 將任務拆成固定步驟：
+第一個架構問題應該是：
+
+> 在資訊來源與工具都已確定的前提下，一次有界操作能不能完成？
+
+答案是可以時，Direct 通常是最強的基準線。
+
+## Pipeline：以預先確定的順序完成可預測工作
+
+Pipeline 把工作拆成事先知道的階段：
 
 ```text
-A → B → C → D
+Rewrite -> Retrieve -> Rerank -> Generate -> Verify
 ```
 
-以 RAG 為例：
+它的核心特徵是：主要順序由應用程式預先定義。各階段可以使用模型、規則、資料庫或工具，但系統不會在每次執行時自由重畫整條路。
 
-```text
-Query Rewrite
-  ↓
-Retrieve
-  ↓
-Rerank
-  ↓
-Generate
-  ↓
-Verify
-```
-
-每一個 Request 通常按照相同順序通過各個節點。
-
-## Pipeline 的核心特徵
-
-- 執行順序預先定義
-- 每個節點責任固定
-- 前一節點輸出成為下一節點輸入
-- 模型通常不能自由改變主要流程
-- 每個步驟可以分開測試
-
-## 適合 Pipeline 的任務
+### 適合情境
 
 - RAG
-- 文件處理
+- 文件解析與索引
 - ETL
-- 批次資料清理
-- 內容生成與格式化
-- 文件 Ingestion
-- 固定審核流程
-- 影像或音訊處理鏈
+- 固定審查與格式化流程
+- 影音處理
+- 分類後執行固定寫入
+- 契約穩定的批次處理
 
-例如，文件問答系統可以固定執行：
+### Pipeline 為什麼適合正式環境
 
-```text
-Normalize Query
-  ↓
-Retrieve Documents
-  ↓
-Rerank Chunks
-  ↓
-Generate Answer
-  ↓
-Attach Citations
-```
+每個階段都可以有明確契約：
 
-## Pipeline 的優點
-
-### 可預測
-
-每次會經過哪些節點很清楚。
-
-### 易於 Debug
-
-答案錯了，可以分別檢查：
-
-- Rewrite 是否改壞問題
-- Retrieval 是否召回正確內容
-- Reranker 是否排序錯誤
-- Generator 是否誤解來源
-- Citation 是否對應 Claim
-
-### 容易做離線評估
-
-| 節點 | 可評估指標 |
+| 階段 | 契約範例 |
 |---|---|
-| Retrieval | Recall、Hit Rate |
-| Reranking | NDCG、MRR |
-| Generation | Faithfulness、Completeness |
-| Citation | Citation Correctness |
-| End-to-end | Answer Accuracy |
+| Rewrite | 保留原始意圖，只輸出一個正規化查詢 |
+| Retrieve | 回傳具有來源與排名的候選資料 |
+| Rerank | 回傳穩定的前幾名與分數 |
+| Generate | 只能使用提供的證據 |
+| Verify | 回傳通過、失敗或需要人工檢查，並附理由 |
 
-### 成本較容易估算
+這讓延遲、成本、錯誤率與品質，都能在真正出問題的節點被量測。
 
-流程固定時，模型和工具呼叫次數通常有明確上限。
+### Pipeline 不一定完全沒有分支
 
-## Pipeline 的限制
+正式系統的 Pipeline 可能有可選階段、條件保護或有界重試。當條件移動、等待、暫停恢復與多種終止結果成為核心時，更適合稱為 Stateful Workflow 或 State Machine。
 
-### 所有問題可能走同一條路
+真正有用的界線，不是流程圖上是否出現一個分叉，而是控制邏輯究竟仍是「預先確定的處理序列」，還是已經由明確狀態與轉移來組織。
 
-即使問題很簡單，也可能經過完整 Rewrite、Retrieval、Reranking 和 Verification。
+### 常見失敗
 
-### 面對未知狀況較僵硬
+- 每個請求都跑完所有階段
+- 多個節點偷偷重寫同一份意圖
+- 每一站都使用最大模型
+- 節點契約只存在工程師腦中
+- 只保存最後答案，不保存中間結果
+- 節點失敗時沒有 typed error 或 fallback
 
-某個節點失敗時，如果沒有預先定義 Fallback，整條流程可能直接中止。
+Pipeline 值得信任的原因，不是畫了很多箭頭，而是每一站都能被觀測、替換與驗收。
 
-### 容易形成隱性耦合
+## Router：先選對路，再決定要花多少成本
 
-後續節點越來越依賴前面節點的特殊格式，修改其中一個節點就可能牽動整條鏈。
-
-## Pipeline 常見反模式
-
-### 所有節點都使用最昂貴的模型
-
-分類、抽取、改寫和驗證不一定都需要大型模型。
-
-### 節點責任重疊
-
-Rewrite、Planner 和 Retriever 同時改寫 Query，最後很難追蹤原始意圖在哪裡被改變。
-
-### 沒有節點級 Trace
-
-只保存最後答案，不保存中間輸入輸出。錯誤發生時，系統只剩下一團黑箱煙霧。
-
-## Production Notes
-
-成熟 Pipeline 通常需要：
-
-- 每個節點獨立 Schema
-- Trace ID
-- 節點級 Latency
-- 節點級 Token 與成本
-- 中間結果保存
-- Timeout
-- Error Type
-- Fallback Policy
-- 可跳過節點的條件
-
-Pipeline 本身不一定是 Agent，但它可以包含 Agentic 節點。
-
----
-
-## 三、Router：不要讓所有問題都走同一條路
-
-Router 會先判斷問題類型，再選擇執行路徑。
+Router 選擇一條或多條下游路徑：
 
 ```text
-                    ┌→ Direct
-                    ├→ RAG
-User Query → Router ├→ SQL
-                    ├→ Calculator
-                    └→ Agent Workflow
+Request
+ -> Router
+ -> Direct response
+ -> Document retrieval
+ -> SQL or analytics
+ -> Calculator
+ -> Bounded agent workflow
+ -> Clarification or unsupported
 ```
 
-Router 是 Production AI 系統裡最實用的元件之一。
+Router 不一定直接解答問題。它負責選擇正確的能力、資料真相來源、風險等級與成本範圍。
 
-它不一定直接回答問題，而是決定：
+### 路由訊號
 
-> 這個問題應該交給誰處理？
+Router 可以參考：
 
-![How a Router Sends Different Questions to Different Execution Paths](/images/the-atlas-of-agent-design-patterns-part-2/router-overview.png)
+- 任務類型
+- 正確的資料來源
+- 使用者權限
+- 資料敏感度
+- 延遲要求
+- 成本預算
+- 風險等級
+- 必要工具
+- 語言或 Tenant
+- 是否包含多個意圖
 
-> **Figure 2-2｜How a Router Sends Different Questions to Different Execution Paths**  
-> User Query 經過 Router 後，被分流至 Direct、RAG、SQL、Calculator 或 Agent Workflow，並受到 Policy、Cost、Risk 和 Permission 影響。
+### Router 的實作方式
 
-## Router 可以依什麼分流？
+#### 確定性 Router
 
-### 問題類型
-
-- 知識問答
-- 計算
-- 資料庫查詢
-- 寫作
-- 搜尋
-- 程式任務
-
-### 資料來源
-
-- 文件庫
-- SQL Database
-- Web
-- CRM
-- API
-- 使用者上傳檔案
-
-### 使用者權限
-
-- 一般使用者
-- 管理員
-- 財務人員
-- 內部員工
-- 外部客戶
-
-### 風險等級
-
-- 低風險，自動回答
-- 中風險，增加驗證
-- 高風險，要求人工批准
-
-### 成本與延遲
-
-- Fast Mode
-- Safe Mode
-- Deep Research
-- Agentic Mode
-
-## Router 的類型
-
-### Rule-based Router
-
-使用固定規則：
+以規則處理界線清楚的案例：
 
 ```text
-包含明確計算 → Calculator
-詢問訂單資料 → SQL
-詢問文件內容 → RAG
+允許的算式 -> Calculator
+已授權的帳戶查詢 -> SQL
+詢問已索引文件 -> RAG
 ```
 
-優點是便宜、穩定、可解釋。
+成本低、穩定，也容易解釋。
 
-缺點是規則多了以後，會像纏在抽屜後面的充電線。
+#### 模型分類 Router
 
-### Classifier Router
+由分類模型或 LLM 判斷路徑，適合自然語言變化太多，無法只靠少量規則處理的情況。但它會引入不確定性，也可能隨模型版本改變行為。
 
-使用分類模型或 LLM 判斷 Intent。
+#### Semantic Router
 
-適合自然語言變化較大的任務。
+比較 Query embedding 與路由說明或範例的相似度。語義邊界較自然時很好用，但分數接近時必須允許 abstain。
 
-### Hybrid Router
+#### Hybrid Router
 
-先用規則處理明確情況，再用模型判斷模糊案例。
+先執行硬性的安全、權限與資料規則；剩下模糊區域再交給模型；最後再套上信心門檻與 fallback。
 
-這通常比完全依賴模型更穩。
+這通常是比較實際的組合。
 
-### Semantic Router
+### Production Router 一定要有逃生門
 
-根據 Query Embedding 與路由描述的語義相似度選擇路徑。
+Router 不應被迫把所有輸入塞進某一條支援路徑。它應明確支援：
 
-它適合路由邊界偏語義化的情況，但仍然需要處理：
+- `unknown`
+- `ambiguous`
+- `unsupported`
+- `need_clarification`
+- `human_review`
 
-- 相似度接近
-- 找不到明確路徑
-- 多意圖問題
-- 權限限制
+此外還需要可由維運人員控制的 override。它必須有權限限制、留下 log，並在 trace 中可見。
 
-![Router Deep Dive: Criteria, Types, Risks, and Production Notes](/images/the-atlas-of-agent-design-patterns-part-2/router-deep-dive.png)
+### 多意圖不是單標籤分類
+
+例如：
+
+> 查出上個月訂單下降幅度，分析可能原因，再寫成 Email。
+
+它同時包含資料查詢、分析與寫作。Router 更可能先把它送進 decomposition workflow，而不是假裝一個 route label 可以描述整項任務。
+
+### 應保存的資訊
+
+- Router 輸入
+- 選擇的路徑
+- Routing policy 版本
+- 信心或判定依據
+- 被拒絕的候選路徑
+- Fallback
+- 權限與風險檢查
+- 人工 override
+
+![Figure 2-2A — Router Deep Dive: Criteria, Types, Risks, and Production Notes](/images/the-atlas-of-agent-design-patterns-part-2/router-deep-dive.png)
 
 > **Figure 2-2A｜Router Deep Dive: Criteria, Types, Risks, and Production Notes**  
-> 這張額外深度圖整理 Router 的判斷依據、四種實作方法、主要風險、Unknown 路徑和 Production 監控欄位。
+> Router 的判定依據、實作類型（確定性、模型、Semantic、Hybrid）、常見風險，以及 Production 必須保留的 log 與 override 機制。
 
-## Router 的優點
+## State Machine：把進度與合法轉移寫清楚
 
-- 簡單問題走快速路徑
-- 複雜問題才啟動昂貴流程
-- 不同資料和權限可以隔離
-- 各路徑可以使用不同模型
-- 可以建立成本與延遲分級
-- 降低不必要的 Agent 行動
-
-## Router 的主要風險
-
-### 路由錯誤
-
-一旦送錯路徑，後面的系統可能再強也救不回來。
-
-例如：
-
-- 應該查 SQL，卻送進 RAG
-- 應該直接回答，卻啟動 Deep Research
-- 應該人工審核，卻自動執行
-
-### 缺少 Unknown 路徑
-
-Router 不應該被迫在所有路徑中選一個。
-
-成熟 Router 應允許：
-
-- Unknown
-- Ambiguous
-- Unsupported
-- Need Clarification
-- Human Review
-
-### 多意圖問題
-
-例如：
-
-> 查上個月訂單數量，分析下降原因，再寫成 Email。
-
-這同時包含：
-
-- SQL
-- 分析
-- 寫作
-
-單一 Route Label 可能不夠，需要先 Decompose。
-
-## Production Notes
-
-Router 至少應記錄：
-
-- Router Input
-- Chosen Route
-- Confidence
-- Alternative Candidates
-- Routing Reason
-- Fallback Route
-- Latency
-- Cost
-- Final Outcome
-
----
-
-## 四、State Machine：把 Agent 限制在明確狀態裡
-
-State Machine 將系統拆成一組狀態，以及狀態之間允許的轉移。
+State Machine 由有限狀態集合，以及狀態之間允許的轉移構成：
 
 ```text
 START
-  ↓
-RETRIEVE
-  ↓
-Enough Data?
-  ├─ Yes → ANSWER → END
-  └─ No → REWRITE QUERY → RETRIEVE
+ -> RETRIEVE
+ -> VERIFY_EVIDENCE
+ -> 證據足夠 -> DRAFT
+ -> 證據不足且仍可重試 -> REWRITE_QUERY
+ -> 已達重試上限 -> FAILED
+ -> WAITING_FOR_APPROVAL
+ -> 通過 -> EXECUTE
+ -> 拒絕 -> CANCELLED
+ -> COMPLETED
 ```
 
-與 Pipeline 不同，State Machine 可以：
+它要回答：
 
-- 根據條件跳轉
-- 回到先前狀態
-- 執行有限重試
-- 進入 Pending
-- 等待外部事件
-- 停在人工審批
-- 從中斷位置恢復
+- 系統現在在哪裡
+- 哪些轉移合法
+- 哪個條件選擇哪一條路
+- 哪些資料必須持久化
+- 哪些狀態會終止本次執行
 
-![State Machine: Control, Recovery, Persistence, and Human Approval](/images/the-atlas-of-agent-design-patterns-part-2/state-machine.png)
+AWS Step Functions 等 Workflow Engine 會把 Task State 與 Flow State 明確分開，並提供 Choice、Wait、Map、Parallel 等控制結構；錯誤處理也會區分 Retry 與 Catch／Fallback。重點不在特定產品，而在架構原則：失敗與等待必須成為模型的一部分，不能只寫在快樂路徑旁邊的備註裡。
+
+### 核心元素
+
+#### State
+
+一個具名的執行階段，例如：
+
+- `PLANNING`
+- `RETRIEVING`
+- `VERIFYING`
+- `WAITING_FOR_APPROVAL`
+- `EXECUTING`
+- `COMPLETED`
+- `FAILED`
+- `CANCELLED`
+
+#### Transition
+
+State 之間允許的移動。
+
+#### Guard 或 Condition
+
+選擇 Transition 的條件：
+
+- 證據是否足夠
+- Retry count 是否仍低於上限
+- 使用者是否批准
+- 預算是否仍足夠
+- Policy check 是否通過
+- Tool error 是否可重試
+
+#### Terminal State
+
+結束本次 Run 的狀態。正式系統通常不只需要 `success` 與 `failure`，還可能需要 `cancelled`、`partial`、`expired` 或 `needs_manual_resolution`。
+
+### State Machine 的價值
+
+- 有界重試清楚可見
+- 暫停與恢復更自然
+- 進度可持久化
+- 審批狀態可被稽核
+- 非法轉移可以被拒絕
+- 可從 Checkpoint 恢復
+- 完成條件更清楚
+
+### State Machine 不會自動保證什麼
+
+畫出 State 不代表系統自動擁有 durable execution、exactly-once side effect 或故障恢復。這些能力仍取決於 Runtime、Persistence Layer、Task 設計與 Idempotency。
+
+部分引擎也支援平行 State。這不代表 State Machine 與 DAG 完全相同，也不代表相依關係複雜的平行工作不需要在某個 State 裡以 DAG 表達。
+
+### 常見失敗
+
+- 每個實作細節都變成一個 State
+- 多個 Guard 同時成立卻沒有優先順序
+- 沒有區分可重試與永久性錯誤
+- 沒有 Terminal State
+- State 只存在模型 Context
+- 審批恢復時重做了先前的 Side Effect
+- 人工拒絕與技術錯誤走同一條路
+
+![Figure 2-3 — State Machine: Control, Recovery, Persistence, and Human Approval](/images/the-atlas-of-agent-design-patterns-part-2/state-machine.png)
 
 > **Figure 2-3｜State Machine: Control, Recovery, Persistence, and Human Approval**  
-> 研究型 Agent 由 PLAN、RESEARCH、VERIFY、WRITE 等狀態構成，並加入 Retry Limit、FAILED、WAITING FOR APPROVAL 和 END。
+> State、Transition、Guard、Terminal State 四個核心元素；持久化、暫停恢復、有界 Retry、多種終止狀態與稽核都需要在設計時明確寫下來。
 
-## State Machine 的基本組成
+## DAG：用無環有向關係表達依賴
 
-### State
-
-系統目前位於哪個階段。
-
-例如：
-
-- START
-- PLANNING
-- RESEARCHING
-- VERIFYING
-- WAITING_FOR_APPROVAL
-- COMPLETED
-- FAILED
-
-### Transition
-
-系統如何從一個狀態移動到另一個狀態。
-
-例如：
+DAG 是 Directed Acyclic Graph，也就是由任務與有方向的依賴關係構成，而且圖中沒有環：
 
 ```text
-VERIFYING → COMPLETED
-VERIFYING → RETRYING
-VERIFYING → HUMAN_REVIEW
+ -> Research A -
+Problem -> Split -> Research B --> Synthesis -> Verify
+ -> Research C -
 ```
 
-### Condition
+它的核心是「依賴」，不是「平行」。當 Branch 互不依賴，而且執行引擎與資源限制允許時，才可以同時執行；有前置條件的節點仍必須等待。
 
-什麼條件觸發轉移。
+Apache Airflow 將 DAG 描述為：以 dependencies 與 relationships 組織的 Tasks，用來決定它們應如何執行。Graph 定義執行順序與依賴，Task 內部做什麼則是另一層問題。
 
-例如：
+### 適合情境
 
-- Citation Check Passed
-- Retry Count < 2
-- User Approved
-- Data Is Complete
-- Tool Call Failed
-- Budget Exceeded
-
-### Terminal State
-
-任務在哪些狀態正式結束。
-
-例如：
-
-- COMPLETED
-- FAILED
-- CANCELLED
-- PARTIAL
-- PENDING
-
-沒有明確 Terminal State，Agent 可能永遠覺得自己還能再試一次。
-
-## 適合 State Machine 的情境
-
-- Production Agent
-- Browser Agent
-- Coding Agent
-- 審批流程
-- 文件處理 Queue
-- 長時間任務
-- 中斷恢復
-- 有限重試
-- 具有明確成功與失敗條件的流程
-
-## State Machine 的優點
-
-### 流程可控
-
-Agent 不能任意從任何狀態跳到任何狀態。
-
-### 容易限制重試
-
-```text
-retry_count >= 2
-  ↓
-FAILED
-```
-
-### 容易保存進度
-
-狀態和轉移可以持久化到資料庫。
-
-### 適合 Human-in-the-loop
-
-```text
-READY_TO_SEND
-  ↓
-WAITING_FOR_APPROVAL
-  ↓
-APPROVED
-  ↓
-SENT
-```
-
-### 容易建立 Audit Log
-
-每次狀態變化都能留下：
-
-- 時間
-- 原因
-- 執行者
-- 工具結果
-- 成本
-- 失敗原因
-
-## State Machine 的限制
-
-### 狀態爆炸
-
-如果每個細節都變成 State，流程圖很快會像地鐵圖和神經突觸的混合體。
-
-### 條件衝突
-
-同一個狀態可能同時符合多個 Transition，必須定義優先順序。
-
-### 對高度未知任務可能過度僵硬
-
-當下一步幾乎無法事先列舉時，State Machine 應該包住局部 Agent，而不是取代局部 Agent。
-
-## State Machine 與 ReAct
-
-它們非常適合一起使用：
-
-```text
-State Machine：
-控制目前位於 RESEARCH 狀態
-
-ReAct：
-在 RESEARCH 狀態內決定搜尋、開頁面或改寫 Query
-```
-
-State Machine 提供邊界，ReAct 提供局部彈性。
-
----
-
-## 五、DAG：把可拆分工作平行執行
-
-DAG 是 Directed Acyclic Graph，也就是有向無環圖。
-
-它允許任務拆成多條分支，平行執行後再合併：
-
-```text
-                 ┌→ Research A ─┐
-Problem → Decompose
-                 ├→ Research B ─┼→ Synthesis
-                 ├→ Research C ─┤
-                 └→ Research N ─┘
-                                  ↓
-                               Verify
-                                  ↓
-                                Output
-```
-
-「無環」代表資料流不會沿著 DAG 本身回到先前節點。
-
-![DAG: Decompose, Run in Parallel, and Aggregate](/images/the-atlas-of-agent-design-patterns-part-2/dag.png)
-
-> **Figure 2-4｜DAG: Decompose, Run in Parallel, and Aggregate**  
-> Problem 經過 Decompose 後形成多個平行研究分支，所有必要分支完成後進入 Synthesis、Verify 和 Output。
-
-## 適合 DAG 的任務
-
-- Deep Research
-- 多來源資料搜集
+- 多來源研究
+- 獨立市場或競品分析
 - 批次文件處理
-- 多市場比較
-- 多個測試平行執行
-- 多模型獨立分析
-- MapReduce 類型工作
-- 大量互不依賴的子任務
+- 有共用前置工作的測試
+- MapReduce 類工作
+- 多路工具呼叫後合併
+- 資料與模型評估流程
 
-## DAG 的核心價值
+### DAG 不等於 Multi-Agent
 
-### 平行化
+同一個 Process 可以執行所有 DAG Node，同一個 Agent 也可以啟動多個工具。反過來，多個 Agent 也可能在 State Machine 裡依序交接。
 
-如果 Research A、B、C 互不依賴，就不必等一個做完才開始下一個。
+DAG 描述 Task Dependency；Multi-Agent 描述責任分工與溝通。
 
-### 清楚表達依賴
+### Acyclic 不代表不能 Retry
 
-Synthesis 必須等待必要分支完成。
+執行引擎可以重新嘗試同一個 Node，而不在 Graph Topology 中增加環。
 
-### 適合大型任務拆解
-
-Planner 可以先將任務拆成多個節點，再交由執行引擎安排併發和依賴。
-
-## DAG 的限制
-
-### 不適合直接表達循環
-
-如果需要：
+DAG 不擅長在單次 Run 裡直接表達的是語意循環，例如：
 
 ```text
-Verify Failed
-  ↓
-Return to Research
+Verify failed -> 回到 Research -> 重新建立 Branch -> 再次 Verify
 ```
 
-這就不是單純 DAG。
+這需要外層 State Machine、新的 DAG Run，或其他允許循環的控制結構。
 
-可以由外層 State Machine 重新建立一次 DAG Run。
+### 平行一定要有上限
 
-### 平行不一定更快
-
-如果所有 Worker 同時搶：
-
-- 同一個 API
-- 同一個 Database
-- 同一個模型配額
-- 同一個 Browser Session
-
-平行反而可能造成：
-
-- Rate Limit
-- Connection Exhaustion
-- Queue Congestion
-- Token 峰值
-- 成本瞬間放大
-
-### 合併結果可能很困難
-
-多個分支可能：
-
-- 內容重複
-- 結論衝突
-- 格式不同
-- 使用不同版本
-- 對同一概念使用不同名稱
-
-因此 Synthesis 通常需要：
-
-- 去重
-- 衝突處理
-- 來源排序
-- 格式統一
-- 完整性檢查
-
-## DAG 與 Multi-Agent
-
-DAG 不一定代表 Multi-Agent。
-
-一個程式也可以平行執行多個普通函式；同一個 Agent 也可以平行呼叫多個工具。
-
-反過來，多 Agent 也不一定使用 DAG。多個 Agent 可能依序交接，或在 State Machine 裡運作。
-
-DAG 描述的是依賴關係，不是 Agent 數量。
-
----
-
-## Pipeline、State Machine 和 DAG 有什麼差別？
-
-| 比較項目 | Pipeline | State Machine | DAG |
-|---|---|---|---|
-| 主要結構 | 線性步驟 | 狀態與條件轉移 | 有向依賴圖 |
-| 是否固定順序 | 通常是 | 不一定 | 依依賴關係 |
-| 條件分支 | 有限 | 很強 | 支援 |
-| 循環 | 通常沒有 | 支援 | 不支援 |
-| 重試 | 簡單 | 很適合 | 通常由外層控制 |
-| 平行 | 有限 | 可以 | 很適合 |
-| 中斷恢復 | 中 | 很適合 | 視執行引擎 |
-| 典型用途 | 固定流程 | 長任務與恢復 | 平行子任務 |
-| 常見風險 | 過度僵硬 | 狀態爆炸 | 聚合與依賴複雜 |
-
-可以用交通系統理解：
-
-- Pipeline 是固定站序的列車
-- Router 是轉運中心
-- State Machine 是帶交通號誌和迴轉規則的道路網
-- DAG 是多條支線同時運輸，最後在中央倉庫合併
-
-它們也可以組合：
-
-```text
-Router
-  ↓
-State Machine
-  ↓
-RESEARCH 狀態內執行 DAG
-  ↓
-VERIFY
-  ↓
-Pipeline 格式化輸出
-```
-
----
-
-## 六、Event-driven：不是有人提問才開始工作
-
-前面五種路徑大多從使用者輸入開始。
-
-Event-driven 系統則由事件觸發：
-
-```text
-New Email Arrives
-  ↓
-Classify
-  ↓
-Extract Attachment
-  ↓
-Store
-  ↓
-Notify
-```
-
-常見事件包括：
-
-- 收到 Email
-- GitHub 出現新 Issue
-- 有新檔案上傳
-- 資料庫欄位更新
-- Webhook 到達
-- 排程時間到了
-- 價格超過門檻
-- 外部服務回傳結果
-
-## Event-driven 的優點
-
-- 適合長期自動化
-- 不需要使用者手動啟動
-- 容易和企業系統整合
-- 適合 Queue 與 Worker
-- 可以把大型流程拆成非同步任務
-
-## Event-driven 的主要風險
-
-### 重複事件
-
-同一個 Webhook 可能被送達多次。
-
-因此需要：
-
-- Idempotency Key
-- Event ID
-- Deduplication
-- Processed State
-
-### 事件順序錯亂
-
-Event B 可能比 Event A 更早到達。
-
-系統不能只依賴接收順序。
-
-### Poison Message
-
-某個永遠處理失敗的事件可能不斷回到 Queue。
-
-需要：
-
-- Retry Limit
-- Dead-letter Queue
-- Error Classification
-- Manual Inspection
-
-### 無法還原完整路徑
-
-事件分散在多個服務後，沒有 Trace ID 就很難知道一個任務走過哪些系統。
-
----
-
-## 七、Human-in-the-loop：有些路徑必須停下來
-
-Human-in-the-loop 不是獨立推理方式，而是一種執行控制模式：
-
-```text
-Generate Draft
-  ↓
-Human Review
-  ↓
-Approved?
-  ├─ Yes → Send
-  └─ No → Revise
-```
-
-適合人工節點的情況：
-
-- 寄出 Email
-- 執行付款
-- 刪除資料
-- 發布公開內容
-- 修改 Production
-- 法律與醫療高風險判斷
-- 權限提升
-- 不可逆操作
-- 資料來源互相衝突
-- 模型信心不足
-
-## 人類要審什麼？
-
-不要只顯示一個 Approve 按鈕。
-
-應提供：
-
-- Agent 準備做什麼
-- 使用了哪些資料
-- 風險是什麼
-- 預期影響
-- 是否可撤銷
-- 可以修改哪些欄位
-
-## 審批後從哪裡繼續？
-
-State 必須保存。
-
-否則批准後重新跑完整流程，可能導致：
-
-- 重複寄信
-- 重複寫入
-- 重複付款
-- 重複建立任務
-
-Human-in-the-loop 不是智慧不足的補丁，而是風險邊界的一部分。
-
----
-
-## 八、Behavior Tree：用層級節點組織行為
-
-Behavior Tree 常見於遊戲、機器人和控制系統，也可以用來編排 Agent 行為。
-
-常見節點包括：
-
-### Sequence
-
-依序執行所有子節點，只要其中一個失敗，整個 Sequence 就失敗。
-
-### Selector
-
-依序嘗試子節點，只要其中一個成功，就停止。
-
-### Condition
-
-檢查條件是否成立。
-
-### Action
-
-執行實際動作。
-
-例如：
-
-```text
-Selector
-├── Condition: Cached Answer Available
-│   └── Return Cached Answer
-├── Sequence
-│   ├── Retrieve
-│   ├── Verify
-│   └── Generate
-└── Ask Human
-```
-
-Behavior Tree 比 State Machine 更強調可重用、層級化的行為模組。
-
----
-
-## 九、Programmatic Agent：先產生可執行物，再執行
-
-Programmatic Agent 不只產生自然語言答案，而是先建立可執行產物：
-
-- Python
-- SQL
-- Shell Command
-- API Request
-- DSL
-- Workflow Definition
-- Query Plan
-
-再由系統執行和驗證：
-
-```text
-User Request
-  ↓
-Generate Program
-  ↓
-Validate
-  ↓
-Execute
-  ↓
-Inspect Result
-```
-
-例如：
-
-> 計算每個月份的流失率。
-
-Agent 可以：
-
-1. 產生 SQL
-2. 檢查是否唯讀
-3. 執行 SQL
-4. 驗證結果
-5. 整理成表格
-
-這通常比讓模型直接猜一個數字可靠。
-
-但它也需要：
-
-- Sandbox
-- Permission Control
-- Resource Limits
-- SQL Read-only Policy
-- Command Allowlist
-- Execution Timeout
-- Secret Isolation
-
----
-
-## 五種核心執行路徑比較
-
-![Five Execution Path Patterns at a Glance](/images/the-atlas-of-agent-design-patterns-part-2/five-patterns-comparison.png)
-
-> **Figure 2-5｜Five Execution Path Patterns at a Glance**  
-> 比較 Direct、Pipeline、Router、State Machine 和 DAG 的適用情境、優勢、限制、典型複雜度和案例，並附上修正後的選擇流程。
-
-| 模式 | 路徑結構 | 動態分支 | 循環 | 平行處理 | 可控性 | 典型用途 |
-|---|---|---:|---:|---:|---:|---|
-| Direct | 單次輸入輸出 | 否 | 否 | 否 | 很高 | 翻譯、摘要、改寫 |
-| Pipeline | 固定順序 | 少 | 通常否 | 有限 | 很高 | RAG、文件處理 |
-| Router | 先分流 | 是 | 視後續路徑 | 可以 | 高 | 多工具、多模式 |
-| State Machine | 狀態與條件 | 很強 | 是 | 可以 | 很高 | Production Agent |
-| DAG | 有向依賴圖 | 是 | 否 | 很強 | 高 | Deep Research、批次 |
-
----
-
-## 如何選擇執行路徑？
-
-可以依序問：
-
-## 1. 一次呼叫能否完成任務，而且所有資訊都已提供？
-
-可以：
-
-> 優先使用 Direct。
-
-## 2. 不同 Request 是否需要不同工具或資料路徑？
-
-需要：
-
-> 使用 Router。
-
-## 3. 是否需要明確 State、重試、暫停恢復或人工審批？
-
-需要：
-
-> 使用 State Machine。
-
-## 4. 子任務能否獨立平行，最後再合併？
-
-可以：
-
-> 使用 DAG。
-
-## 5. 若以上都不是，流程是否固定且穩定？
-
-是：
-
-> 使用 Pipeline。
-
-這不是絕對分類，但比「所有任務都使用 Agent」更接近 Production 設計。
-
----
-
-## 常見反模式
-
-## 反模式一：每個問題都跑完整流程
-
-簡單問題也啟動 Planner、Retriever、Critic 和 Multi-Agent。
-
-結果是：
-
-- 更慢
-- 更貴
-- 更多錯誤節點
-- 更難觀察
-
-## 反模式二：把所有分支交給 LLM
-
-模型可以自由呼叫任何工具，卻沒有：
-
-- Tool Allowlist
-- Max Steps
-- Budget
-- State Constraint
-- Stop Condition
-
-這不是自主，而是失去邊界。
-
-## 反模式三：Pipeline 沒有 Fallback
-
-某個來源失敗，整條鏈直接中止。
-
-## 反模式四：State Machine 沒有 Terminal State
-
-任務在 RETRY、REPLAN 和 VERIFY 之間永久旋轉。
-
-## 反模式五：DAG 過度平行
-
-數十個 Worker 同時啟動，撞上：
+大量 Fan-out 可能讓流程更慢、更不可靠，因為所有 Branch 同時爭搶：
 
 - API Rate Limit
-- Database Connection Limit
-- Queue Backlog
-- Token 峰值
+- Database Connection Pool
+- Model Concurrency Quota
+- Browser Capacity
+- Memory
+- Token 或成本預算
 
-## 反模式六：Router 沒有 Unknown
+因此需要 bounded concurrency、backpressure、資源層級上限與取消規則。能同時執行，不等於應該一次全部啟動。
 
-無論多模糊，都被迫選一條路。
+### Join 邏輯本身就是設計
 
-## 反模式七：人工審批只是裝飾
+Synthesis 節點必須回答：
 
-審批者看不到操作內容、資料來源和影響範圍，只能盲按 Approve。
+- 是否一定要等所有 Branch
+- Partial Result 是否可接受
+- Timeout 如何處理
+- 重複內容如何移除
+- 相互衝突的證據如何解決
+- Provenance 如何保留
+- 一個 Branch 失敗是否取消整體
 
----
+![Figure 2-4 — DAG: Decompose, Run in Parallel, and Aggregate](/images/the-atlas-of-agent-design-patterns-part-2/dag.png)
 
-## Production 執行路徑應具備什麼？
+> **Figure 2-4｜DAG: Decompose, Run in Parallel, and Aggregate**  
+> 任務依賴驅動的無環有向圖；平行執行受資源限制，Join 邏輯是設計本身的一部分。
 
-| 能力 | 作用 |
-|---|---|
-| Trace ID | 串起完整任務 |
-| State Persistence | 保存進度 |
-| Timeout | 防止無限等待 |
-| Retry Limit | 防止無限重試 |
-| Idempotency | 防止重複執行 |
-| Fallback | 主路徑失敗時切換 |
-| Budget Guard | 限制成本 |
-| Tool Allowlist | 限制可用工具 |
-| Terminal States | 定義完成、失敗與取消 |
-| Audit Log | 記錄誰做了什麼 |
-| Human Approval | 保護高風險操作 |
-| Observability | 追蹤 Latency、Error 和 Cost |
+## Pipeline、State Machine 與 DAG 是不同抽象層
 
-執行路徑的價值，不只是讓流程圖比較漂亮。
+| 問題 | Pipeline | State Machine | DAG |
+|---|---|---|---|
+| 主要抽象 | 處理階段 | 狀態與合法轉移 | 任務與有向依賴 |
+| 典型移動 | 預先確定的序列 | 條件式，可能有循環 | 依賴順序，單次 Run 內無環 |
+| 分支 | 可以，但通常不是核心 | 核心能力 | 很自然 |
+| Loop 與 Replan | 通常由外層或有界機制處理 | 很自然 | 需要外層控制或建立新 Run |
+| 平行工作 | 可以 | 視引擎而定 | 依賴允許時很自然 |
+| 暫停與審批 | 沒有持久 State 時較笨重 | 保存 State 後很自然 | 通常交給執行平台或外層 Workflow |
+| 最適合 | 穩定的轉換鏈 | 長時間、可恢復、條件複雜的流程 | Fan-out、依賴複雜、可平行的工作 |
+| 常見風險 | 僵硬或浪費 | State Explosion | Concurrency 與 Join 複雜度 |
 
-它讓系統可以回答：
-
-- 現在走到哪裡？
-- 為什麼走這條路？
-- 哪個節點失敗？
-- 已經試過幾次？
-- 是否還值得繼續？
-- 任務完成了嗎？
-- 哪些操作真的執行過？
-
----
-
-## 本篇結論
-
-Direct、Pipeline、Router、State Machine 和 DAG 分別解決不同流程問題。
-
-- **Direct**：一次就能完成的簡單任務
-- **Pipeline**：固定且可預測的處理流程
-- **Router**：讓不同 Request 走不同路徑
-- **State Machine**：條件轉移、重試、恢復、持久化和審批
-- **DAG**：可平行拆解和合併的工作
-- **Event-driven**：由外部事件啟動的自動化
-- **Human-in-the-loop**：高風險和不可逆操作
-- **Behavior Tree**：層級化、可重用的行為
-- **Programmatic Agent**：產生並執行可驗證程序
-
-成熟系統很少只使用一種。
-
-更常見的組合是：
+這些結構可以乾淨地組合：
 
 ```text
 Event
-  ↓
-Router
-  ↓
-State Machine
-  ↓
-某個 State 內執行 Pipeline 或 DAG
-  ↓
-Human Approval
-  ↓
-Terminal State
+ -> Router
+ -> State Machine
+ -> RESEARCH State 啟動 DAG
+ -> VERIFY State 檢查合併結果
+ -> APPROVAL State 等待人員
+ -> Output Pipeline 格式化並發布
 ```
 
-執行路徑不是越自由越好。
+最好的架構描述會說清楚每一層，而不是強迫整套系統只能貼上一個名詞。
 
-真正重要的是：
+## Event-driven：定義什麼會啟動工作
 
-> 哪些部分應該固定、哪些地方需要分支、哪些工作可以平行，以及哪些節點必須停下來驗證。
+Event-driven 主要處理 Trigger 與 Message Flow，不是一種固定 Workflow Topology。
 
-下一篇將進入第二個維度：
+Event 可能來自：
+
+- Webhook
+- 新 Email
+- 檔案上傳
+- 資料庫異動
+- 排程時間
+- 價格門檻
+- GitHub Issue
+- 外部服務 Callback
+
+接到 Event 後，可以啟動 Direct Handler、Pipeline、State Machine 或 DAG。
+
+CloudEvents 規格的存在，是因為 Event Producer 與 Consumer 需要共同的事件描述方式。正式系統至少需要穩定的事件 identity、source、type，以及足以安全追蹤或拒絕事件的 Context。
+
+### 真實的 Delivery 行為
+
+分散式事件系統常見 at-least-once delivery，因此 Consumer 可能收到同一 Event 不只一次。涉及 Side Effect 的 Handler 必須具備 Idempotency，否則 Retry 可能重複寄信、重複扣款或重複建立資料。
+
+AWS 對 Idempotent API 的說明抓住了核心：即使 Recovery 過程重複請求，預期效果仍應只發生一次。
+
+還要處理：
+
+- Out-of-order Event
+- Late Event
+- Poison Message
+- Dead-letter Handling
+- Schema Evolution
+- Correlation 與 Trace ID
+- Backpressure
+- Replay
+
+Event-driven 不是丟出去就不管，而是生命週期被分散到 Message 與 Consumer 之間，反而更需要 Observability。
+
+## Human-in-the-loop：插入受治理的控制點
+
+Human-in-the-loop 不是獨立推理方式，也不是一種完整拓撲。它是在流程中暫停，等待人員檢視、修改、補充或批准。
+
+```text
+Prepare action
+ -> Persist state
+ -> Human review
+ -> approve -> resume
+ -> edit -> resume with changes
+ -> reject -> cancel or replan
+ -> timeout -> expire or escalate
+```
+
+好的審批畫面應讓審查者看見：
+
+- 準備執行的操作
+- 使用的證據與資料來源
+- 預期影響
+- 風險
+- 是否可回復
+- 哪些欄位可以修改
+- 通過或拒絕後會發生什麼
+
+Durable Workflow 必須保存足夠 State，才能在恢復時避免重做前面的 Side Effect。LangGraph 的 interrupt 機制是其中一種實作範例：暫停 Graph、保存 State，之後再 Resume。但這個底層要求並不屬於任何單一 Framework。
+
+適合使用人工控制的情境：
+
+- 不可逆或高影響操作
+- 權限提升
+- 公開發布
+- 資金轉移
+- 破壞性資料操作
+- 正式環境異動
+- 證據互相衝突
+- Policy Exception
+- 最終決策必須由特定人員承擔
+
+不要做一個只有 Approve 與 Reject，卻不顯示實際操作內容的裝飾按鈕。
+
+## Behavior Tree：另一種層級化控制結構
+
+Behavior Tree 以可重用的控制節點與行為節點，建立層級化切換邏輯。它廣泛用於遊戲與機器人，也可用來描述具反應性的 Agent 行為。
+
+常見節點包括：
+
+- **Sequence：** 依序執行，遇到失敗就停止
+- **Fallback／Selector：** 依序嘗試，遇到成功就停止
+- **Condition：** 檢查 Branch 是否可用
+- **Action：** 執行工作
+- **Decorator：** 修改 Child 的執行策略
+
+例如：
+
+```text
+Fallback
+ -> Cached Result 有效時直接回傳
+ -> Sequence
+ -> Retrieve
+ -> Verify
+ -> Generate
+ -> Ask a Human
+```
+
+Behavior Tree 適合需要模組化、層級化與反應式行為的系統。對一般文字型企業 Workflow，State Machine 往往更容易讓工程、產品與維運一起閱讀。真正的選擇依據應是行為模型，而不是哪張圖看起來更高級。
+
+## 產生程式是執行技術，不是新的路徑拓撲
+
+Agent 可以產生 SQL、Python、Shell Command、API Call、DSL 或 Workflow Definition，再驗證並執行：
+
+```text
+Request -> Generate program -> Validate -> Execute -> Inspect result
+```
+
+當產物能被真正的 Parser、Policy Checker、Sandbox 或測試環境驗證時，這種方式可能非常可靠。
+
+更精確的名稱是 **Program-generating Agent** 或 **Code-as-action Pattern**，而不是把「Programmatic Agent」當成與 Pipeline、DAG 並列的第六種拓撲。產生出來的程式，最後仍會透過本文描述的某一種執行骨架運作。
+
+必要控制包括：
+
+- Sandbox
+- Least Privilege
+- Command 或 API Allowlist
+- 適用時使用唯讀資料庫政策
+- Secret Isolation
+- 時間與資源限制
+- Output Size Limit
+- Test 或 Verification
+
+## 如何選擇執行骨架
+
+下面的問題可以疊加使用，不代表每套系統只能有一個標籤。
+
+### 1. 工作是否由外部事件觸發？
+
+加入 Event-driven Trigger 與 Event Envelope，再選擇真正處理事件的 Workflow。
+
+### 2. 是否包含高影響或不可逆操作？
+
+在對應節點加入人工審批或 Policy Gate。這是控制層，不是整套流程。
+
+### 3. 一次有界操作能否完成？
+
+先以 Direct 為基準。
+
+### 4. 不同請求是否需要不同能力或不同真相來源？
+
+在下游流程前加入 Router。
+
+### 5. 必要階段是否明確而穩定？
+
+以 Pipeline 為起點。
+
+### 6. 是否需要持久 State、條件轉移、暫停恢復、有界 Recovery 或多種 Terminal Outcome？
+
+使用 State Machine 或 Durable Stateful Workflow。
+
+### 7. 任務能否表示成有向依賴，並包含獨立 Branch 與 Join？
+
+在對應 Pipeline 或 State 內使用 DAG。
+
+選擇主要骨架時，可使用以下實務流程：
+
+```text
+一次有界操作能完成嗎？
+ 可以 -> Direct
+ 不行 -> 不同 Request Type 是否需要不同路徑？
+ 是 -> Router，再選擇下游骨架
+ 否 -> 是否需要持久 State、Loop、Wait 或 Approval？
+ 是 -> State Machine
+ 否 -> 是否存在適合 Fan-out 與 Join 的依賴？
+ 是 -> DAG
+ 否 -> Pipeline
+```
+
+這條流程只用來選擇起始骨架。Event Trigger、人工控制、Retry、Verification 與 Tool Policy 仍會跨越整套架構。
+
+![Figure 2-5 — How a Router Sends Different Questions to Different Execution Paths](/images/the-atlas-of-agent-design-patterns-part-2/router-overview.png)
+
+> **Figure 2-5｜How a Router Sends Different Questions to Different Execution Paths**  
+> 依請求特性選擇對應的執行路徑：Direct、RAG、SQL、Calculator、Bounded Agent 或 Clarify/Unsupported。
+
+## 常見執行路徑反模式
+
+### 每個請求都跑最昂貴流程
+
+簡單請求也支付 Planning、Retrieval、Critic 與 Multi-Agent 的延遲與錯誤表面。
+
+### 所有分支都由 LLM 控制
+
+沒有 Allowlist、Step Limit、State Constraint、Budget、Stop Condition 或確定性 Safety Gate。
+
+### Router 被迫每次都猜一條路
+
+沒有 Abstain、Clarification、Unsupported 或 Human Review。
+
+### Retry 直接重做相同 Side Effect
+
+逾時的付款、寄信、部署或資料寫入，沒有 Idempotency Key 或 Outcome Check 就再次執行。
+
+### State Machine 沒有 Terminal State
+
+Workflow 在 Retry、Verify 與 Replan 之間打轉，因為從未定義完成與資源耗盡。
+
+### DAG 無上限 Fan-out
+
+大量 Worker 同時塞滿 API、Model Quota、Browser Slot 與 Database。
+
+### Human Approval 沒有 Review Context
+
+審查者只能按 Approve 或 Reject，看不到證據、影響與真正操作。
+
+### Program-generating Agent 繞過執行邊界
+
+模型產生的 Code 未經 Parsing、Permission、Sandbox 或 Test 就直接執行。
+
+## 每種骨架外層都需要的 Production Controls
+
+| 控制 | 用途 |
+|---|---|
+| Trace 與 Correlation ID | 還原 End-to-end Run |
+| Persisted State | 中斷後安全恢復 |
+| Typed Error | 區分可重試、永久、Policy 與使用者錯誤 |
+| Timeout 與 Cancellation | 停止被遺棄或卡住的工作 |
+| 有界 Retry 與 Backoff | 恢復暫時故障而不無限循環 |
+| Idempotency | 防止重複 Side Effect |
+| Fallback | 在適當錯誤後更換方法或資源 |
+| Budget Guard | 限制模型、工具與 Concurrency 成本 |
+| Tool 與 Permission Policy | 限制可用行動與資料 |
+| Terminal Outcome | 定義 Completed、Failed、Cancelled、Expired 與 Partial |
+| Audit Log | 記錄誰或什麼做出每次決定 |
+| Human Control | 保護高影響操作 |
+| Observability | 量測延遲、錯誤、成本、路由品質與 Retry |
+
+執行路徑的目的不是讓流程圖更漂亮，而是讓系統能回答：
+
+- 這個 Run 現在在哪裡？
+- 為什麼走這條路？
+- 哪些事情已經發生？
+- 哪個操作失敗？
+- Retry 是否安全？
+- 下一個決定由誰負責？
+- 哪一種結果會結束本次執行？
+
+## 結論
+
+五種核心骨架分別解決不同問題：
+
+- **Direct** 在一次有界操作足夠時，避免不必要的編排。
+- **Pipeline** 把已知的處理順序變成可量測、可替換的階段。
+- **Router** 把不同請求送到正確能力與資料真相來源。
+- **State Machine** 管理持久進度、合法轉移、等待、恢復與 Terminal Outcome。
+- **DAG** 在單次 Run 裡，以無環有向依賴表達 Fan-out 與 Join。
+
+Event-driven Trigger 與 Human Approval 橫跨這些骨架；Behavior Tree 提供另一種層級控制模型；程式生成則是一種仍需底層 Workflow 承載的執行技術。
+
+成熟系統很少只有一個標籤。更有用的描述是：
+
+```text
+Cloud Event
+ -> Permission-aware Router
+ -> Durable State Machine
+ -> 具 Bounded Concurrency 的 Research DAG
+ -> Evidence Verification
+ -> 發布前 Human Approval
+ -> Deterministic Output Pipeline
+```
+
+執行方式不是越自由越好。真正重要的是：哪些部分固定、哪些部分動態、如何恢復，以及人應該在哪裡接手。
+
+Part 3 將進入下一個維度：
 
 > Agent 如何決定下一步？
 
-Part 3 會完整比較 ReAct、Plan-and-Execute、Adaptive Planning、Hierarchical Planning 和 HTN，並解釋為什麼成熟系統通常讓 Planner 管全局、ReAct 處理現場，再由 Verifier 決定是否重新規劃。
+下一篇會比較 ReAct、Plan-and-Execute、Adaptive Planning、Hierarchical Planning，以及如何把局部彈性放進受控制的外層 Workflow。
+
+## 參考資料
+
+- [AWS Step Functions, *Learn about state machines in Step Functions*](https://docs.aws.amazon.com/step-functions/latest/dg/concepts-statemachines.html)
+- [AWS Step Functions, *Handling errors in Step Functions workflows*](https://docs.aws.amazon.com/step-functions/latest/dg/concepts-error-handling.html)
+- [Apache Airflow, *DAGs*](https://airflow.apache.org/docs/apache-airflow/3.0.3/core-concepts/dags.html)
+- [CloudEvents, *A specification for describing event data in a common way*](https://cloudevents.io/)
+- [AWS Builders' Library, *Making retries safe with idempotent APIs*](https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/)
+- [Colledanchise and Ögren, *Behavior Trees in Robotics and AI: An Introduction*](https://arxiv.org/abs/1709.00084)
+- [LangGraph Documentation, *Interrupts and human-in-the-loop workflows*](https://langchain-ai.github.io/langgraph/concepts/breakpoints/)
+
+## 系列目錄
+
+| Part | 主題 |
+|---:|---|
+| 1 | LLM Agent 不只有 ReAct：用六個維度看懂 Agent 架構 |
+| 2 | Agent 執行路徑全解：Direct、Pipeline、Router、State Machine 與 DAG |
+| 3 | ReAct、Plan-and-Execute 與 Adaptive Planning |
+| 4 | 從單一路徑到 Tree、Graph 與 LATS |
+| 5 | Agent 驗證、恢復與自我修正 |
+| 6 | Multi-Agent 架構全解 |
+| 7 | Agent Memory 全解 |
+| 8 | Production Agent 架構實戰 |
+| 9 | 如何選擇 Agent 架構 |
+| 10 | 使用現代 Agent Framework 實作設計模式 |
