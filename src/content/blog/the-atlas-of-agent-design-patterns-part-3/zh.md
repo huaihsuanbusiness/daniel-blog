@@ -1,6 +1,6 @@
 ---
-title: "Agent 設計模式圖鑑 Part 3｜ReAct、Plan-and-Execute 與 Adaptive Planning：Agent 如何決定下一步"
-description: "完整比較 Fixed Workflow、ReAct、Plan-and-Execute、Adaptive Planning、Hierarchical Planning 與 HTN，並拆解 Production Agent 如何結合 Planner、Executor、Verifier、State Machine 與 Policy Guardrails。"
+title: "Agent 設計模式圖鑑 Part 3｜ReAct、Plan-and-Execute、Adaptive Planning 與 HTN"
+description: "從固定決策、有界 ReAct、顯式計畫、Adaptive Replanning、Hierarchical Planning 到正式 HTN，完整拆解 Production Agent 如何結合 Planner、Executor、Verifier、State Machine 與政策控制。"
 date: 2026-06-30T19:20:00
 lang: zh
 categories: ["AI"]
@@ -8,628 +8,415 @@ series: "Agent 設計模式圖鑑"
 seriesOrder: 3
 ---
 
-上一篇，我們談的是 Agent 的執行骨架：
+Part 2 拆解了 Agent 系統的外層執行骨架：
 
 - Direct
 - Pipeline
 - Router
 - State Machine
 - DAG
-- Event-driven
-- Human-in-the-loop
 
-這些模式決定：
+這些結構描述工作可以如何在系統中移動，卻沒有完全決定某一個節點內部應該做什麼。
 
-- 任務會經過哪些節點
-- 哪些節點可以分支
-- 哪些工作能夠平行
-- 任務失敗後回到哪裡
-- 狀態如何保存
-- 流程何時正式結束
+假設 State Machine 進入 `RESEARCH`，這個節點仍可能需要判斷：
 
-但即使執行路徑已經畫好，系統仍然必須回答另一個問題：
-
-> Agent 現在應該做什麼？
-
-例如，一個研究 Agent 進入 `RESEARCH` 狀態後，下一步可能是：
-
-- 搜尋網頁
-- 改寫關鍵字
-- 開啟官方文件
-- 查詢資料庫
-- 比較多個來源
+- 搜尋官方文件
+- 查詢內部資料
+- 改寫失敗的查詢
+- 檢查 API 回應
 - 要求使用者補充資訊
-- 判斷資料已經足夠
-- 停止研究並開始整理答案
+- 判斷證據已經足夠並停止
+- 因無法安全完成而升級處理
 
-這些選擇不一定能在開發階段全部寫死。
+這就是決策與規劃層。
 
-Agent 需要根據：
+核心問題是：
 
-- 使用者目標
-- 當前狀態
-- 已完成工作
-- 工具回傳結果
-- 剩餘預算
-- 權限與風險限制
+> 下一個行動應該有多少部分由程式預先決定、事前規劃、執行中修正，或由正式程序模型選出？
 
-選擇下一個行動。
+本文比較五種實用方法：
 
-這正是 Fixed Workflow、ReAct、Plan-and-Execute、Adaptive Planning、Hierarchical Planning 和 HTN 所處理的問題。
+1. 固定決策邏輯
+2. 有界 ReAct
+3. Plan-and-Execute
+4. Adaptive Planning 與 Replanning
+5. Hierarchical Decomposition，以及正式的 HTN Planning
 
-它們不是不同種類的完整 Agent，而是不同的決策與規劃方式。
+另外也會把兩個常被混進同一張清單的概念拆開：
 
----
+- **Goal** 定義想達成的結果。
+- **Policy** 限制哪些行動可以執行。
 
-## 執行路徑與決策方式不是同一件事
+Goal 與 Policy 會影響每一種策略，但它們不是與 ReAct、Plan-and-Execute 並列的規劃演算法。
 
-先看一套簡化的 State Machine：
+## 執行骨架與決策策略是不同層
+
+外層 State Machine 可以定義：
 
 ```text
 START
-  ↓
-PLAN
-  ↓
-RESEARCH
-  ↓
-VERIFY
-  ↓
-ANSWER
-  ↓
-END
+  -> PLAN
+  -> RESEARCH
+  -> VERIFY
+  -> ANSWER
+  -> END
 ```
 
-這張圖只告訴我們系統會經過哪些狀態。
+進入 `RESEARCH` 後，系統仍可採用不同方式。
 
-但進入 `RESEARCH` 後，系統仍然可以採取不同的決策方式。
-
-## 固定邏輯
+### 固定邏輯
 
 ```text
-Search
-  ↓
-Open Top Results
-  ↓
-Extract Facts
-  ↓
-Return
+搜尋官方來源
+  -> 抽取必要欄位
+  -> 回傳結構化結果
 ```
 
-下一步由程式預先決定。
+下一步由應用程式決定。
 
-## ReAct
+### 有界 ReAct
 
 ```text
-Observe Current State
-  ↓
-Decide Next Action
-  ↓
-Use Tool
-  ↓
-Inspect Observation
-  ↓
-Decide Again
+讀取目標與當前狀態
+  -> 選擇允許的行動
+  -> 執行工具
+  -> 讀取正規化 Observation
+  -> 更新進度
+  -> 再次選擇或停止
 ```
 
-下一步取決於最新的工具結果。
+下一個行動取決於最新 Observation，但只能在明確限制內選擇。
 
-## Plan-and-Execute
+### Plan-and-Execute
 
 ```text
-Research Goal
-  ↓
-Create Subplan
-  ↓
-Execute Step 1
-  ↓
-Execute Step 2
-  ↓
-Return Structured Result
+建立結構化計畫
+  -> 選擇當前 Step
+  -> 執行 Step
+  -> 保存結果
+  -> 繼續、局部修復或 Replan
 ```
 
-系統先建立局部計畫，再逐步執行。
+系統先建立全局計畫，再處理各個 Step。
 
-因此，同一個 State Machine 裡，可以在某個節點使用固定流程，也可以使用 ReAct 或 Plan-and-Execute。
+這些策略可以同時存在於同一套外層 Workflow。State Machine 可以先呼叫 Planner，再讓有界 ReAct Executor 執行單一步驟，最後由 Verifier 決定是否允許下一次狀態轉移。
 
-反過來，一個 Plan-and-Execute Agent 也可以被放進 Pipeline、State Machine 或 DAG 裡執行。
+![Figure 3-1 — One Execution Skeleton with Three Decision Strategies](/images/the-atlas-of-agent-design-patterns-part-3/skeleton-with-three-decision-strategies.png)
 
-| 問題 | 對應維度 |
-|---|---|
-| 任務會經過哪些節點？ | 執行路徑 |
-| Agent 下一步做什麼？ | 決策與規劃 |
-| 是否探索多個候選？ | 推理與搜尋 |
-| 做錯後如何恢復？ | 驗證與修正 |
+> **Figure 3-1｜One Execution Skeleton with Three Decision Strategies**  
+> 外層 State Machine 同一個 RESEARCH 節點可以依需求切換 Fixed Logic、有界 ReAct 或 Plan-and-Execute 三種決策策略。
 
-把這些問題分開，Agent 架構才不會變成一鍋名詞濃湯。
+## 更精確的規劃層地圖
 
-![Figure 3-1 — One Execution Skeleton, Three Decision Strategies](/images/the-atlas-of-agent-design-patterns-part-3/skeleton-with-three-decision-strategies.png)
+| 關注點 | 主要問題 | 常見機制 |
+|---|---|---|
+| 固定決策邏輯 | 下一步是否早已知道？ | Rule、應用程式碼、Fixed Workflow |
+| 反應式行動選擇 | 下一個動作是否依賴最新 Observation？ | 有界 ReAct 或其他 Closed-loop Policy |
+| 顯式規劃 | 是否應在執行前先拆解任務？ | Plan-and-Execute |
+| Replanning | 新證據是否讓剩餘計畫失效？ | 由 Trigger 啟動的 Adaptive Planning |
+| 層級化拆解 | Goal 是否包含多層 Subgoal？ | Hierarchical Planner |
+| 正式程序拆解 | 是否存在可重用的 Domain Decomposition Model？ | HTN Planner |
+| 計畫驗證 | 提出的 Plan 是否可行、可接受？ | Verifier、Simulator、Solver、Policy Check |
+| 治理 | 哪些行動可執行，成本上限是多少？ | Policy Layer、Budget、Approval、Audit |
 
-> **Figure 3-1｜One Execution Skeleton, Three Decision Strategies**  
-> 同一個 `RESEARCH` 狀態，可以使用 Fixed Workflow、ReAct 或 Plan-and-Execute。執行骨架控制整體路線，決策策略控制節點內的行為。
+這張地圖刻意保留不同層級，避免把所有名字都誤認成完整的 Agent Architecture。
 
----
+## 固定決策邏輯：已知的工作應保持確定性
 
-## 一、Fixed Workflow：下一步早已決定
-
-在討論 ReAct 前，先從最可控的方式開始。
-
-Fixed Workflow 代表下一步由程式或流程定義，而不是由模型自由選擇。
+固定決策邏輯代表應用程式已經知道下一步：
 
 ```text
 Classify
-  ↓
-Retrieve
-  ↓
-Generate
-  ↓
-Verify
+  -> Retrieve
+  -> Generate
+  -> Verify
 ```
 
-如果 `Retrieve` 完成，下一步就是 `Generate`。
+模型可以在某個 Step 內工作，但不能自由重畫整套流程。
 
-模型不會突然決定搜尋網頁、建立子任務或重新設計整套流程。
+### 適合情境
 
-## 適合 Fixed Workflow 的任務
+- 文件 Ingestion
+- 固定抽取與轉換
+- 穩定的 RAG 流程
+- 已知的審批程序
+- 確定性驗證
+- 有既定規則的 Compliance 操作
+- 每個 Request 都需要相同流程的任務
 
-- 步驟穩定
-- 任務邊界明確
-- 每個 Request 都需要相同步驟
-- 結果格式固定
-- 成本與延遲必須高度可預測
-- 自主決策帶來的價值有限
+### 優點
 
-例如：
+- 成本與延遲可預測
+- 測試直接
+- 權限明確
+- 執行容易重現
+- 錯誤來源容易定位
+- 不容易陷入 Loop
+
+### 限制
+
+遇到應用程式沒有建模的情況時，固定流程無法自行反應。
+
+若官方頁面失效，系統必須預先定義：
+
+- 切換到其他允許來源
+- 將欄位標為 unavailable
+- 要求提供憑證
+- 以 Typed Failure 結束
+- 升級給人員處理
+
+Fixed Logic 並不是不成熟。它常常是 Production Agent 最正確的外層邊界。只有在預定規則真的不足時，才需要加入自主性。
+
+## ReAct：根據最新 Observation 選擇下一個行動
+
+原始 ReAct 方法讓 Reasoning Trace、Task-specific Action 與 Observation 交錯出現。以工程角度來看，最有用的核心是 Closed Loop：
 
 ```text
-Upload File
-  ↓
-Parse
-  ↓
-Chunk
-  ↓
-Embed
-  ↓
-Index
+Current Goal and State
+  -> Choose Action
+  -> Act in Environment
+  -> Receive Observation
+  -> Update Next Decision
 ```
 
-這類 Ingestion Pipeline 通常不需要 Agent 自己決定下一步。
+ReAct 本身不要求特定 Workflow Engine 或 Node Boundary。到了正式環境，團隊通常會把 ReAct-style Loop 放進有界 Executor Node，避免局部工具選擇控制整套應用程式。
 
-## 優點
+### 適合情境
 
-- 容易測試
-- 容易重現
-- 成本穩定
-- 權限邊界清楚
-- 不容易陷入無限循環
-- 節點責任容易定義
-
-## 限制
-
-當外部環境不確定時，固定流程可能不夠靈活。
-
-例如，一個資料來源無法讀取後，如果系統沒有預先設計 Fallback，就不知道應該：
-
-- 改寫 Query
-- 切換來源
-- 要求登入
-- 標記資料不可取得
-- 停止任務
-
-Fixed Workflow 並不落後。
-
-很多成熟 Agent 系統的外層仍然是固定流程，只把少數無法事先寫死的節點交給 Agent。
-
----
-
-## 二、ReAct：看完結果，再決定下一步
-
-ReAct 可以理解為 Reasoning 與 Acting 的交錯循環。
-
-在實際系統裡，更有用的描述是：
-
-```text
-Read Goal and Current State
-  ↓
-Decide Next Action
-  ↓
-Call Tool
-  ↓
-Normalize Observation
-  ↓
-Update Progress
-  ↓
-Decide Again
-```
-
-它不需要先列出完整計畫。
-
-每執行一次行動，就根據新的 Observation 重新判斷下一步。
-
-## ReAct 範例：查詢一家公司最新定價
-
-第一次行動：
-
-```text
-Action:
-Search the official pricing page
-```
-
-Observation：
-
-```text
-The pricing page only shows annual plans.
-```
-
-第二次行動：
-
-```text
-Action:
-Search the official billing documentation
-```
-
-Observation：
-
-```text
-Monthly billing is available only for selected plans.
-```
-
-第三次行動：
-
-```text
-Action:
-Open the official billing FAQ
-```
-
-Agent 不需要在開始前知道所有搜尋步驟。
-
-它會根據每一次工具結果修正方向。
-
-## ReAct 適合什麼任務？
-
-### 工具結果不可預測
-
-例如：
-
-- Search
-- Browser
-- API
-- Database
-- File System
-- Computer-use
-
-### 任務路徑難以事先寫死
-
-例如：
-
+- 網頁與文件研究
 - Debug
-- 網頁研究
-- 尋找完整文件
+- Browser 操作
+- API 探索
+- File-system 調查
 - 操作陌生介面
-- 多來源查證
+- 必須先看到結果，才能知道下一個有效行動的任務
 
-### 下一步高度依賴上一個結果
+### 範例
 
-例如：
+目標是確認某產品目前的 Billing Rule：
 
 ```text
-API returns 401
-  ↓
-Inspect authentication
+Action:
+開啟官方 Pricing Page
 
-API returns 404
-  ↓
-Inspect endpoint
+Observation:
+只顯示 Annual Price
 
-API returns empty data
-  ↓
-Inspect query parameters
+Action:
+開啟官方 Billing Documentation
+
+Observation:
+只有部分 Plan 支援 Monthly Billing
+
+Action:
+檢查官方 FAQ 的 Plan-level Exception
 ```
 
-不同 Observation 會導向不同動作。
+價值在於根據 Observation 修正方向，而不是事前硬列出所有 URL。
 
-## ReAct 的優點
+### ReAct 是局部適應，不等於全局可靠
 
-### 適應性高
+原始 Action-Observation Loop 不會自動提供：
 
-Agent 可以根據真實環境調整策略。
+- 可量測的進度定義
+- 可靠的完成條件
+- Permission Enforcement
+- 成本控制
+- 重複行動偵測
+- Durable State
+- 中斷恢復
+- 證據品質
+- 最終結果驗收
 
-### 適合探索
+這些能力屬於 ReAct 外層的 Production Architecture。
 
-不需要事先列出所有可能分支。
+## ReAct 為什麼會一直做事卻沒有進度
 
-### 工具結果可以修正模型判斷
-
-模型不必只依賴內部知識，可以透過外部資料更新狀態。
-
-### 局部失敗後容易換路
-
-某個來源失敗後，可以改用另一個來源，不必重做整個任務。
-
----
-
-## ReAct 為什麼容易繞圈？
-
-ReAct 的主要問題通常不是缺乏行動能力，而是缺乏全局控制。
-
-典型失敗如下：
+典型失敗看似忙碌，實際重複相同狀態：
 
 ```text
 Search Query A
-  ↓
-Results insufficient
-  ↓
+  -> 證據不足
 Search Query B
-  ↓
-Results insufficient
-  ↓
-Search Query A again
-  ↓
-Open a previous result
-  ↓
-Search Query B again
+  -> 證據不足
+再次 Search Query A
+  -> 開啟先前已排除的頁面
+再次 Search Query B
 ```
 
-Agent 看起來一直在做事，實際進度卻沒有增加。
+常見原因如下。
 
-## 原因一：沒有進度定義
+### 沒有 Progress Model
 
-Agent 只知道「繼續找」，卻不知道什麼叫資料足夠。
+Executor 只知道要繼續，卻不知道哪些 Requirement 尚未完成。
 
-## 原因二：Observation 沒有結構化
+### Observation 沒有結構化
 
-工具結果只是長篇文字，Agent 很難追蹤：
+工具輸出直接變成 Context 裡的長文字，沒有抽取：
 
-- 已查過哪些來源
-- 哪些問題尚未解決
-- 哪些資訊互相衝突
-- 哪些查詢已經失敗
-- 哪些行動正在重複
+- Source Identity
+- Relevant Facts
+- Unresolved Questions
+- Conflict
+- Failure Reason
+- Suggested Next Action
 
-## 原因三：沒有重複行動檢查
+### 沒有 Duplicate Detection
 
-系統沒有偵測：
+Runtime 無法辨識重複的：
 
-- 相同 Query
-- 相同 URL
-- 相同 Tool Call
-- 相同參數
-- 相同失敗原因
+- Query
+- URL
+- Tool Call
+- Parameter
+- Error Condition
+- 只是換句話說的等價行動
 
-## 原因四：停止條件太模糊
+### Completion Criteria 太模糊
+
+「繼續研究，直到資料足夠」無法驗證。
+
+更好的條件是：
+
+```text
+Complete when:
+- 每個必要比較欄位都有資料或明確標為 unavailable
+- 每個事實都有允許的來源
+- 所有重大衝突都已記錄
+- 不再存在 Critical Verifier Failure
+```
+
+### Tool Freedom 過大
+
+大量 Tool 沒有 Permission、Cost、Priority 或 Call Limit，只會產生探索雜訊。
+
+## Production ReAct 需要明確契約
+
+有界 Executor 應收到：
+
+- 當前 Step Objective
+- Allowed Tools
+- Available Inputs
+- Completion Criteria
+- Prohibited Actions
+- Remaining Budget
+- Maximum Actions
+- Current Progress State
+- Escalation Policy
+
+每個 Tool 應回傳結構化 Observation，而不是任意文字。
 
 例如：
 
-> 繼續搜尋，直到找到足夠資訊。
-
-「足夠」沒有被轉成可判定條件。
-
-## 原因五：工具選擇過度自由
-
-Agent 可以呼叫十幾種工具，卻沒有：
-
-- Tool Allowlist
-- Tool Cost
-- Tool Priority
-- Permission Boundary
-- Maximum Calls
-
-最後每個工具都摸一遍，任務仍停在原地。
-
----
-
-## Production ReAct 需要哪些護欄？
-
-ReAct 不應該是完全自由的無限循環。
-
-至少需要：
-
-| 護欄 | 作用 |
-|---|---|
-| Maximum Steps | 限制最大行動次數 |
-| Tool Allowlist | 限制可用工具 |
-| Per-tool Limit | 限制單一工具使用次數 |
-| Budget Guard | 限制 Token、時間與 API 成本 |
-| Duplicate Detection | 阻止重複查詢與操作 |
-| Stop Conditions | 定義任務何時完成 |
-| Progress State | 記錄已完成與未完成項目 |
-| Failure Escalation | 多次失敗後切換 Fallback 或人工處理 |
-| Tool Result Schema | 將 Observation 結構化 |
-| Audit Trace | 保存 Action、Result 與 Decision Record |
-
-一個更穩定的 ReAct Loop 可以寫成：
-
-```text
-Goal + Current State
-  ↓
-Check Budget and Policy
-  ↓
-Select Allowed Action
-  ↓
-Execute Tool
-  ↓
-Normalize Observation
-  ↓
-Update Progress
-  ↓
-Stop Condition?
-  ├─ Yes → Complete
-  └─ No → Select Next Action
+```json
+{
+  "tool": "official_docs_search",
+  "status": "success",
+  "source": "https://example.com/docs",
+  "facts": [
+    {"field": "monthly_billing", "value": "selected_plans_only"}
+  ],
+  "unresolved": ["which plans support monthly billing"],
+  "retryable": false
+}
 ```
 
-重點不是讓 Agent 每一步都重新發明世界，而是讓它在邊界內調整。
+每次 Observation 後，Loop 應判斷三種結果：
 
-![Figure 3-2 — Production ReAct Loop](/images/the-atlas-of-agent-design-patterns-part-3/react-production-loop.png)
+1. **complete**：Step Contract 已滿足
+2. **continue**：有理由執行另一個允許行動
+3. **escalate**：在權限或 Budget 內無法完成
 
-> **Figure 3-2｜Production ReAct Loop**  
-> Production ReAct 不只是 Action 與 Observation 的循環，還需要 Budget Guard、Tool Policy、Max Steps、Duplicate Detection、Progress State 和明確停止條件。
+![Figure 3-2 — Production ReAct Loop with Explicit Step Contract](/images/the-atlas-of-agent-design-patterns-part-3/react-production-loop.png)
 
----
+> **Figure 3-2｜Production ReAct Loop with Explicit Step Contract**  
+> 有界 Executor 必須收到 Step Objective、Allowed Tools、Completion Criteria、Budget 與 Escalation Policy；每次 Observation 後判斷 complete、continue 或 escalate。
 
-## 三、Plan-and-Execute：先看完整地圖，再開始走
+## Plan-and-Execute：先建立全局結構，再開始行動
 
-Plan-and-Execute 採用不同節奏。
+Plan-and-Execute 比較適合被視為一整類工程模式，而不是只有一個權威、唯一實作的演算法。
 
-它不會立即呼叫工具，而是先把目標拆成多個步驟。
+它的核心節奏是：
 
 ```text
 Goal
-  ↓
-Create Plan
-  ↓
-Execute Step 1
-  ↓
-Execute Step 2
-  ↓
-Execute Step 3
-  ↓
-Synthesize Result
+  -> Produce Explicit Plan
+  -> Execute Plan Steps
+  -> Integrate Results
 ```
 
-例如，任務是：
+相關研究以不同方式分開規劃與工具 Observation。Plan-and-Solve Prompting 先拆解再解決 Subtask；ReWOO 則把 Planner-like Reasoning、取得工具證據的 Worker，以及整合結果的 Solver 分開。這些方法彼此相關，但不應被描述成完全相同的 Architecture。
 
-> 比較三個 Agent Framework，並推薦適合 Production RAG 的選擇。
+### 適合情境
 
-Planner 可能先建立：
-
-```text
-1. Define evaluation criteria
-2. Collect official architecture information
-3. Compare workflow control
-4. Compare persistence and observability
-5. Compare multi-agent support
-6. Evaluate Production risks
-7. Produce recommendation
-```
-
-Executor 再依序處理每一步。
-
-## Plan-and-Execute 適合什麼任務？
-
-- 任務較長
-- 有明確交付物
-- 容易漏項
-- 需要多來源資料
-- 子任務有前後依賴
-- 需要追蹤進度
-- 需要將工作分配給多個 Worker
-
-常見情境包括：
-
-- Deep Research
+- 長篇研究
+- 多文件審查
+- Migration Planning
+- 大型程式碼改動
 - 市場分析
-- 長篇報告
-- 專案規劃
-- 大型程式修改
-- 多文件審閱
-- 跨系統資料整理
+- 有大量 Requirement 的專案工作
+- 有順序或 Dependency Constraint 的任務
+- 必須公開進度的任務
 
-## Plan-and-Execute 的優點
+### 優點
 
-### 全局性較好
+#### 全局覆蓋
 
-在行動前先確認任務包含哪些部分。
+Planner 可以在執行前列出所有必要面向。
 
-### 不容易被第一個結果帶走
+#### 進度可追蹤
 
-ReAct 可能看到第一個有趣來源就一路深挖。
+系統可以區分：
 
-Planner 會提醒系統仍有其他子問題未完成。
+- pending
+- ready
+- running
+- blocked
+- completed
+- failed
+- skipped
 
-### 進度容易追蹤
+#### 分工清楚
 
-可以清楚知道：
+獨立 Step 可交給不同 Tool、Worker 或 DAG Branch。
 
-- 哪些步驟已完成
-- 哪些步驟正在執行
-- 哪些步驟被阻塞
-- 哪些結果尚未整合
+#### 容易規劃整合
 
-### 適合平行分工
+每個 Step 的 Expected Output 可以事先設計成適合 Final Synthesis 的格式。
 
-Planner 可以將互相獨立的步驟放進 DAG，交給多個 Worker 同時執行。
+### 核心弱點
 
----
+外觀完整的 Plan 仍可能不可行、遺漏 Requirement，或建立在錯誤 Premise 上。
 
-## Plan-and-Execute 為什麼會一路走錯？
+如果 Planner 沒有讀取真實輸入而直接猜測，Executor 可能非常有效率地完成錯誤任務。因此，產生 Plan 不能取代資料取得、Constraint Check 與 Verification。
 
-Plan-and-Execute 的弱點集中在初始計畫。
+## Plan 必須可執行，而不是儀式性清單
 
-如果 Planner 錯誤理解任務，Executor 可能非常有效率地完成一份錯誤計畫。
-
-例如，使用者要求：
-
-> 評估某職缺是否適合我。
-
-Planner 卻建立：
+以下不是可執行 Plan：
 
 ```text
-1. Read the job title
-2. Infer likely responsibilities
-3. Compare inferred requirements with the CV
-4. Produce a score
+1. 研究主題
+2. 分析資訊
+3. 撰寫答案
 ```
 
-問題在於：
+它只是把任務換句話說。
 
-- 沒有讀取完整 JD
-- 根據職稱猜測內容
-- 後續每一步都建立在錯誤輸入上
+Production Step 應包含：
 
-最後報告可能結構完整、語氣專業，仍然不可信。
-
-## 常見失敗一：計畫過度抽象
-
-```text
-1. Research the topic
-2. Analyze the findings
-3. Write the answer
-```
-
-這不是可執行計畫，只是把任務換句話說。
-
-## 常見失敗二：計畫過度細碎
-
-Planner 列出數十個微型步驟，執行成本與狀態管理快速膨脹。
-
-## 常見失敗三：沒有依賴關係
-
-某些步驟必須等待前置資料，但 Planner 把它們同時啟動。
-
-## 常見失敗四：沒有完成條件
-
-「研究競爭者」不是可驗收步驟。
-
-更好的寫法是：
-
-```text
-Collect official pricing, core features, target users,
-and deployment model for every selected competitor.
-```
-
-## 常見失敗五：計畫建立後不再更新
-
-外部條件已改變，Agent 仍照原計畫一路執行。
-
----
-
-## 好計畫應該包含什麼？
-
-一個可執行計畫不只是步驟清單。
-
-每個步驟最好包含：
-
-| 欄位 | 說明 |
+| 欄位 | 用途 |
 |---|---|
-| Step ID | 唯一識別碼 |
-| Objective | 這一步要完成什麼 |
-| Inputs | 需要哪些資料 |
-| Allowed Tools | 可以使用哪些工具 |
-| Dependencies | 依賴哪些前置步驟 |
-| Expected Output | 應產生什麼結果 |
-| Completion Criteria | 如何判斷完成 |
-| Failure Policy | Retry、Fallback、Pending 或 Stop |
-| Cost Budget | Token、時間與工具限制 |
-| Status | Pending、Running、Completed、Failed |
+| Step ID | 穩定識別碼 |
+| Objective | 這個 Step 必須達成的結果 |
+| Inputs | 必要 State 與 Artefact |
+| Dependencies | 必須先完成的 Step |
+| Allowed Tools | Executor 可用能力 |
+| Expected Output | 應產生的結構化結果 |
+| Completion Criteria | 可觀測的驗收條件 |
+| Failure Policy | Retry、Fallback、Block、Replan 或 Stop |
+| Budget | 時間、Token、Call 或成本 |
+| Status | 當前生命週期狀態 |
+| Provenance Requirements | 結果必須攜帶的證據 |
 
 例如：
 
@@ -638,297 +425,245 @@ Step ID:
 S3
 
 Objective:
-Collect official pricing information
-
-Inputs:
-Company names and official domains
-
-Allowed Tools:
-Web Search, Browser
+收集每個候選產品的官方價格
 
 Dependencies:
-S1 evaluation criteria completed
+S1 評估標準完成
+S2 候選清單核准
+
+Allowed Tools:
+Official Web Search
+Browser
 
 Expected Output:
-Structured pricing table with source and access date
+含 Source URL 與 Access Date 的結構化 Pricing Table
 
 Completion Criteria:
-Pricing found for every company,
-or unavailable items explicitly marked
+每個候選都有已公開價格
+或明確的 unavailable / undisclosed 狀態
 
 Failure Policy:
-Try official pricing page,
-then official documentation,
-then official announcements,
-otherwise mark Unavailable
+先查 Official Pricing Page
+再查 Official Documentation
+再查 Official Announcement
+仍無資料時標為 unavailable
+
+Budget:
+6 Tool Calls
+8 Minutes
 ```
 
-這才是一個 Executor 能執行、Verifier 能驗收的計畫。
+這樣 Executor 才得到有界任務，Verifier 也有驗收契約。
 
-![Figure 3-3 — From Goal to an Executable Plan](/images/the-atlas-of-agent-design-patterns-part-3/executable-plan-contract.png)
+![Figure 3-3 — Executable Plan Contract](/images/the-atlas-of-agent-design-patterns-part-3/executable-plan-contract.png)
 
-> **Figure 3-3｜From Goal to an Executable Plan**  
-> Planner 不只是列步驟，而是把模糊目標轉成帶有 Input、Tool、Dependency、Expected Output、Completion Criteria、Failure Policy 和 Budget 的執行契約。
+> **Figure 3-3｜Executable Plan Contract**  
+> Plan Step 不能只是任務名稱，必須包含 Objective、Dependencies、Allowed Tools、Expected Output、Completion Criteria、Failure Policy 與 Budget。
 
----
+## Plan Validation：Plan 是提案，不是證明
 
-## 四、Adaptive Planning：計畫不是聖旨
+語言模型可以產生看似合理，實際違反 Precondition、遺漏 Required Effect，或使用環境中不存在 Action 的 Plan。
 
-Adaptive Planning 會在執行過程中更新剩餘計畫。
+驗證強度應與任務風險匹配。
+
+### Natural-language Review
+
+適合低風險工作，主要檢查 Requirement 遺漏與順序問題。
+
+### Deterministic Check
+
+檢查：
+
+- Required Field
+- Dependency Reference
+- Step Dependency 是否無環
+- Permitted Tool
+- Budget Total
+- Known Precondition
+- Output Schema
+
+### Simulation 或 Dry Run
+
+在不可逆操作前，以 Environment Model 測試 Plan。
+
+### External Planner 或 Solver
+
+如果 Domain 有正式 Action、Precondition、Effect 與 Constraint，Classical Planner 或 Solver 能提供比自由文字生成更強的保證。例如 LLM+P 先把自然語言問題轉成 Planning Representation，再把 Plan Search 交給 Classical Planner。
+
+這不代表每個商業 Workflow 都需要 PDDL。真正的重點是：流暢的 Plan 不等於有效的 Plan。
+
+## Adaptive Planning：現實改變時，修正剩餘計畫
+
+Static Plan 假設 Premise 持續成立。Adaptive Planner 會檢查 Execution Feedback，並在重大假設失效時修改剩餘工作。
 
 ```text
 Create Plan
-  ↓
-Execute Step
-  ↓
-Inspect Result
-  ↓
-Plan Still Valid?
-  ├─ Yes → Continue
-  └─ No → Revise Remaining Plan
+  -> Execute One Step
+  -> Inspect Result
+  -> Is Remaining Plan Still Valid?
+       yes -> continue
+       no  -> local repair or revised plan
 ```
 
-它結合了 Plan-and-Execute 的全局視角，以及 ReAct 的現場適應能力。
+Adaptive Planning 不應代表每個 Step 後都重寫整份 Plan。它需要明確 Trigger 與有界 Authority。
 
-## 什麼情況需要 Replan？
+### 合理的 Replan Trigger
 
-### 前提被證明錯誤
+- Critical Premise 為假
+- Required Data 不可取得
+- Dependency 改變
+- 使用者 Goal 或 Constraint 改變
+- Verifier 拒絕結果
+- Tool 或 Capability 不可用
+- Remaining Budget 無法支撐原 Plan
+- 多次 Local Repair 失敗
+- 發現新的高優先風險
 
-例如：
+### Local Repair 與 Global Replan
 
-- 原本以為官方 API 可用
-- 實際上 API 已停止服務
-- 剩餘計畫需要改走其他來源
+以下情況使用 **Local Repair**：
 
-### 新資訊改變任務方向
+- Objective 仍然正確
+- 只有一個 Step 的實作失敗
+- Approved Fallback 仍可滿足同一契約
+- Dependency 與後續 Step 不變
 
-例如：
+以下情況才使用 **Replanning**：
 
-- 研究中發現產品已停止營運
-- 原本的功能比較失去意義
-- 應改成遷移方案比較
+- 一個 Premise 同時影響多個 Step
+- 原本的 Decomposition 已失效
+- Deliverable 或 Constraint 改變
+- 後續 Dependency 必須重寫
+- 出現新的 Approval 或 Policy Boundary
 
-### 某一步無法完成
+### 保存仍有效的已完成工作
 
-例如：
-
-- 頁面需要登入
-- 文件不存在
-- 權限不足
-- 工具不支援
-
-### 預算不足
-
-原計畫需要十次大型模型呼叫，但剩餘 Budget 只允許三次。
-
-### 驗證失敗
-
-Verifier 發現：
-
-- Citation 不完整
-- 來源不可靠
-- 結論缺少證據
-- 必要欄位遺漏
-
-這時不一定只需重寫答案，可能要回頭補研究。
-
-## Replanning 不等於全部重來
-
-成熟的 Adaptive Planning 通常只修改剩餘步驟。
+Revised Plan 不應默默丟棄仍然正確的結果。
 
 例如：
 
 ```text
+Plan v1
+
 Completed:
-1. Define comparison criteria
-2. Identify candidate frameworks
+S1 定義評估標準
+S2 選擇候選 Framework
 
 Blocked:
-3. Collect pricing from official pricing pages
+S3 收集官方定價
 ```
 
-更新後：
+Replan 後：
 
 ```text
+Plan v2
+
 Preserved:
-1. Define comparison criteria
-2. Identify candidate frameworks
+S1 定義評估標準
+S2 選擇候選 Framework
 
 Revised:
-3A. Search official documentation
-3B. Search official announcements
-3C. Mark unavailable pricing explicitly
-4. Continue architecture comparison
+S3A 搜尋官方文件
+S3B 搜尋官方公告
+S3C 明確標記未公開定價
+
+Unchanged:
+S4 比較架構
+S5 產生建議
 ```
 
-已完成且仍有效的結果不需要丟棄。
+### Versioning Requirement
 
-## Replan Trigger 應該明確
+應保存：
 
-不要讓 Agent 每完成一步就重新設計整套計畫。
-
-可以設定：
-
-- Critical assumption failed
-- Required data unavailable
-- Verifier rejected output
-- Dependency changed
-- Budget threshold reached
-- User goal changed
-- Two consecutive step failures
-- New high-priority risk discovered
-
-## Adaptive Planning 的風險
-
-### 過度重新規劃
-
-Agent 花大量時間修改計畫，真正執行的工作反而很少。
-
-### 計畫漂移
-
-每次 Replan 都稍微改變目標，最後偏離原始需求。
-
-### 已完成結果被重複執行
-
-Planner 沒有讀取 State，重新安排已完成步驟。
-
-### Replan 變成逃避失敗
-
-某一步失敗後不斷換計畫，而不是承認資料無法取得。
-
-因此，Adaptive Planning 需要：
-
-- Immutable User Goal
-- Completed Step Registry
-- Replan Reason
-- Plan Version
-- Maximum Replans
+- Immutable Original Goal
+- Current Plan Version
+- Previous Plan Version
+- Replan Trigger
 - Plan Diff
-- Verifier Approval for Major Changes
+- Preserved Steps
+- Invalidated Steps
+- New Dependencies
+- Replan Count
+- Verifier Decision
+- 批准修改的 Actor 或 Model
 
-![Figure 3-4 — Adaptive Planning and Plan Versioning](/images/the-atlas-of-agent-design-patterns-part-3/adaptive-planning-with-versions.png)
+AdaPlanner 等研究展示了根據 Feedback 修正 Plan 的方法；正式環境則需要再加上 Plan Version、Limit 與 Auditability，避免 Replanning 本身成為失控 Loop。
 
-> **Figure 3-4｜Adaptive Planning and Plan Versioning**  
-> Plan v1 執行至某一步失敗後，保留已完成結果，記錄 Replan Trigger 與 Plan Diff，再建立只修改剩餘步驟的 Plan v2。
+![Figure 3-4 — Adaptive Planning with Versions](/images/the-atlas-of-agent-design-patterns-part-3/adaptive-planning-with-versions.png)
 
----
+> **Figure 3-4｜Adaptive Planning with Versions**  
+> Replan 由明確 Trigger 啟動；Revised Plan 不丟棄仍有效的 Completed Work，並記錄 Plan Diff、Replan Count 與 Preserved Steps。
 
-## 五、Hierarchical Planning：大任務不是一張扁平清單
+## Hierarchical Planning：以多個層級拆解 Goal
 
-當任務變長時，把所有步驟放在同一層會快速失控。
+當 Goal 包含數個獨立工作領域時，Flat Plan 很快會失去可管理性。
 
-Hierarchical Planning 會將大目標拆成子目標，再把子目標拆成可執行任務。
+Hierarchical Planning 會分層：
 
 ```text
 Main Goal
-├── Subgoal A
-│   ├── Task A1
-│   ├── Task A2
-│   └── Task A3
-├── Subgoal B
-│   ├── Task B1
-│   └── Task B2
-└── Subgoal C
-    ├── Task C1
-    └── Task C2
+  -> Subgoal A
+       -> Task A1
+       -> Task A2
+  -> Subgoal B
+       -> Task B1
+       -> Task B2
+  -> Subgoal C
+       -> Task C1
 ```
 
 例如：
 
 ```text
-Produce Market Analysis
-├── Analyze Market
-│   ├── Estimate market size
-│   └── Identify growth drivers
-├── Analyze Competitors
-│   ├── Collect pricing
-│   ├── Compare features
-│   └── Review positioning
-└── Produce Recommendation
-    ├── Summarize findings
-    ├── Identify risks
-    └── Recommend strategy
+Produce Market Recommendation
+  -> Analyse Market
+       -> Estimate Size
+       -> Identify Growth Drivers
+  -> Analyse Competitors
+       -> Collect Pricing
+       -> Compare Features
+       -> Review Positioning
+  -> Produce Recommendation
+       -> Synthesise Findings
+       -> Identify Risks
+       -> Recommend Action
 ```
 
-## Hierarchical Planning 的價值
+### 優點
 
-### 降低複雜度
+- 上層只追蹤 Outcome，不必追每次 Tool Call
+- Subgoal 可以分工
+- Local Failure 可以隔離
+- Context 可限制在 Worker 的任務範圍
+- 獨立 Branch 可以成為 DAG Node
 
-上層只需要關心子目標是否完成，不必追蹤每一次工具呼叫。
+### 風險
 
-### 容易分派 Worker
+- Subgoal 之間重複工作
+- Assumption 不一致
+- Hand-off 過程丟失原始意圖
+- Output Format 不相容
+- 所有 Subtask 都完成，Parent Goal 卻仍未完成
 
-每個子目標可以交給不同專業 Agent。
+Hierarchical Decomposition 因此需要：
 
-### 容易局部重試
-
-競爭者分析失敗，不必重做市場規模分析。
-
-### 容易控制 Context
-
-每個 Worker 只接收與自己任務相關的資訊。
-
-## Hierarchical Planning 的風險
-
-### 子目標之間重複工作
-
-兩個 Worker 可能查詢相同資料。
-
-### 上下層資訊丟失
-
-上層 Planner 的意圖，在多次轉交後被簡化或扭曲。
-
-### 整合困難
-
-每個子任務都完成，不代表主目標已經完成。
-
-例如：
-
-- 格式不同
-- 假設不同
-- 日期不同
-- 結論互相矛盾
-
-因此，Hierarchical Planning 通常需要：
-
-- 明確 Input / Output Contract
-- Shared Fact Registry
-- Source Tracking
+- Parent 與 Child Completion Contract
+- Shared Facts 與 Terminology
+- Source Provenance
 - Dependency Management
-- Final Synthesis
-- Cross-task Verification
+- Integration Owner
+- Cross-subgoal Verification
 
----
+## HTN：以 Domain Method 做正式層級拆解
 
-## 六、HTN：使用預先定義的方法拆解任務
+Hierarchical Task Network Planning 是正式規劃方法。它會把 Compound Task 不斷 Refinement 成較低層 Task Network，直到只剩可執行的 Primitive Task。
 
-HTN 是 Hierarchical Task Network。
-
-它同樣把大任務拆成小任務，但和自由式 Planner 有一個重要差別：
-
-> HTN 通常使用人類預先定義的拆解方法。
-
-例如，對「處理客戶退款」這個任務，可以定義：
-
-```text
-Process Refund
-├── Verify Order
-├── Check Refund Eligibility
-├── Calculate Refund Amount
-├── Request Approval if Required
-├── Execute Refund
-└── Notify Customer
-```
-
-這不是模型臨時想出的計畫，而是企業已經定義好的程序。
-
-## HTN 的基本元素
+核心概念如下。
 
 ### Compound Task
 
-需要被拆解的大任務。
-
-例如：
+需要被拆解的任務：
 
 ```text
 Process Customer Refund
@@ -936,533 +671,477 @@ Process Customer Refund
 
 ### Method
 
-將大任務拆解的方法。
-
-例如：
+當條件成立時，可以套用的 Domain-specific Decomposition：
 
 ```text
-If order is within 30 days:
-Use Standard Refund Method
-
-If order is older than 30 days:
-Use Exception Review Method
+Standard Refund Method:
+  Verify Order
+  Check Eligibility
+  Calculate Amount
+  Execute Refund
+  Notify Customer
 ```
 
 ### Primitive Task
 
-可以直接執行的最小任務。
+Execution System 可以直接執行的 Action：
 
-例如：
+```text
+Query Order Database
+Create Approval Request
+Issue Refund
+Send Confirmation
+```
 
-- Query order database
-- Calculate refund
-- Create approval request
-- Send confirmation email
+真正差異不只是「Plan 由人事先寫好」。HTN 依賴由 Task、Method、Constraint 與 Operator 構成的 Domain Knowledge。這個 Domain Model 常由專家設計與治理，但 Method 也可能被產生或學習，再經過驗證。
 
-## HTN 適合什麼情境？
+### 適合 HTN 的情境
 
-- 企業 SOP
-- 客服流程
-- 物流
-- 財務審批
+- 已建立的 Operational Procedure
+- Logistics 與 Fulfilment
+- Customer Service Process
 - IT Operations
-- Compliance
-- 已知處理方法的任務
-- 需要高度一致性的流程
+- Regulated Approval
+- 可重用的 Domain-specific Decomposition
+- 允許程序比開放創意更重要的環境
 
-## HTN 的優點
+### 優點
 
-- 比自由 Planning 更可控
-- 拆解方式可審核
-- 容易符合企業規則
-- 執行結果一致
-- 適合權限與合規管理
-- 子流程可以重用
+- Decomposition 可稽核
+- Method 可重用
+- 容易整合 Domain Rule
+- Search Space 可控制
+- 執行結構一致
 
-## HTN 的限制
+### 限制
 
-- 需要人工建立方法庫
-- 面對未知任務較弱
-- 規則維護成本高
-- 方法過時後可能穩定地做錯
+- Domain Model 建置與維護成本高
+- 未建模任務仍然困難
+- 過時 Method 會持續產生過時行為
 - 多個 Method 同時適用時需要選擇策略
+- 正式正確性仍取決於 Domain Model 是否正確
 
-## HTN 和 Plan-and-Execute 的差別
+### HTN 與 LLM 可以組合
 
-| 項目 | Plan-and-Execute | HTN |
-|---|---|---|
-| 計畫來源 | 模型動態產生 | 預先定義的 Method |
-| 靈活性 | 高 | 中 |
-| 可控性 | 中 | 高 |
-| 一致性 | 中 | 高 |
-| 未知任務 | 較適合 | 較不適合 |
-| 企業 SOP | 可以 | 很適合 |
-| 主要風險 | 計畫幻覺 | 規則過時 |
-
-HTN 可以和 LLM 結合：
+實務架構可以是：
 
 ```text
 LLM:
-理解自然語言需求並選擇 HTN 任務
+理解自然語言 Request
+  -> 對應已知 Task 並抽取 Parameter
 
-HTN Engine:
-依照已核准 Method 拆解與執行
+HTN Planner:
+選擇適用 Method
+  -> 拆解成 Primitive Task
+
+Execution System:
+執行允許的 Primitive Task
 
 LLM:
-處理其中需要語言理解的節點
+處理語言密集節點並解釋結果
 ```
 
-這種結構讓 LLM 處理模糊理解，讓 HTN 處理可靠流程。
+LLM 處理模糊性，HTN Model 限制程序。
 
----
+## Goal 與 Policy 是跨流程約束，不是同層策略
 
-## 七、Goal-driven Agent：目標清楚，路線不固定
+前面的類別描述 Decision 或 Plan 如何產生。Goal 與 Policy 則橫跨所有類別。
 
-Goal-driven Agent 只給定最終目標，由 Agent 持續選擇最可能接近目標的行動。
+### Goal
+
+Goal 定義 Desired State 或 Acceptance Condition。
+
+好的 Goal 可以量測：
 
 ```text
-Goal
-  ↓
-Observe Current State
-  ↓
-Choose Action
-  ↓
-Measure Progress
-  ↓
-Repeat
+Target Tests 全部通過
+Full Test Suite 通過
+Lint 通過
+Build 成功
+沒有修改無關檔案
 ```
 
-例如：
-
-> 讓這個 Repository 通過完整測試。
-
-Agent 可以自行：
-
-- 檢查 Repository
-- 執行測試
-- 讀取錯誤
-- 修改程式
-- 再次測試
-- 執行 Lint
-- 檢查 Build
-
-Goal-driven 的彈性很高，但必須有可衡量的完成條件。
-
-好的目標：
+模糊 Goal 則是：
 
 ```text
-All target tests pass
-Full test suite passes
-Lint passes
-Build succeeds
-No unrelated files changed
+Improve the Repository
 ```
 
-模糊目標：
+Fixed Logic、ReAct、Plan-and-Execute、Adaptive Planning 與 HTN 都需要 Goal。
 
-```text
-Improve the repository
-```
+### Policy
 
-後者幾乎沒有停止依據。
-
-## Goal-driven Agent 需要什麼？
-
-- Measurable Objective
-- Current State
-- Progress Metric
-- Allowed Actions
-- Failure Boundary
-- Resource Budget
-- Completion Verifier
-- Maximum Iterations
-
-沒有這些限制，目標導向很容易變成永遠還能再改善一點。
-
----
-
-## 八、Policy-based Decision：不是能做就可以做
-
-Agent 決定下一步時，不應只考慮：
-
-> 哪個行動最可能完成任務？
-
-還要考慮：
-
-- 權限
-- 風險
-- 成本
-- 隱私
-- 合規
-- 可撤銷性
-- 使用者設定
-
-Policy-based Decision 會在行動前檢查：
+Policy 定義 Proposed Action 是否可執行：
 
 ```text
 Proposed Action
-  ↓
-Policy Check
-  ├─ Allowed → Execute
-  ├─ Requires Approval → Pause
-  └─ Denied → Reject or Use Fallback
+  -> Policy Check
+       -> allowed -> execute
+       -> approval required -> pause
+       -> denied -> reject or fallback
 ```
 
-## 常見 Policy
+Policy 可以限制：
 
-### Tool Policy
+- Tool
+- Permission
+- Data Access
+- Cost
+- Risk
+- Privacy
+- Network Access
+- Reversibility
+- Human Approval
 
-哪些工具可以使用？
+重要 Policy 應由 Application 或 Infrastructure Enforcement，而不是只寫在 Prompt。
 
-### Permission Policy
+例如：
 
-哪些資料可以讀寫？
-
-### Cost Policy
-
-本次任務最多使用多少模型與工具成本？
-
-### Risk Policy
-
-哪些操作需要人工批准？
-
-### Data Policy
-
-哪些資料不能送到外部模型？
-
-### Environment Policy
-
-哪些操作只能在 Sandbox 執行？
-
-## 為什麼 Policy 不應只寫在 Prompt？
-
-Prompt 是行為指示，不是可靠的強制執行機制。
-
-重要限制應由程式或基礎設施執行，例如：
-
-- SQL Read-only Connection
-- File-system Sandbox
-- API Scope
+- Read-only Database Credential
+- Scoped API Token
+- Network Restriction
+- Sandboxed File Access
 - Tool Allowlist
 - Spending Limit
 - Approval Gate
-- Network Restriction
 
-不要讓 Agent 自己決定是否遵守自己的安全規則。
+不應讓 Agent 成為判斷自己是否需要遵守安全規則的唯一權威。
 
----
+## 主要決策策略比較
 
-## ReAct、Plan-and-Execute 與 Adaptive Planning 完整比較
+| 維度 | Fixed Logic | Bounded ReAct | Plan-and-Execute | Adaptive Planning | HTN |
+|---|---|---|---|---|---|
+| 核心節奏 | 依預定規則執行 | 根據 Observation 決定 | 先 Plan，再 Execute | Plan、Execute，符合 Trigger 時修改 | 透過 Domain Method Refinement |
+| 全局視角 | 由開發者編碼 | 通常較弱 | 較強 | 較強且可更新 | 編碼於 Task-Method Model |
+| 局部適應 | 除非預設 Branch，否則低 | 在限制內高 | 取決於 Executor | 允許 Repair 或 Replan 時高 | 限於可用 Method 與 Execution Feedback |
+| 可預測性 | 高 | 較低 | 中 | 中至較低 | 在已建模 Domain 內高 |
+| 主要風險 | 僵硬 | Loop 與 Local Myopia | 高效率執行錯誤 Plan | Replan Drift 與成本 | Domain Model 過時或不完整 |
+| 最適合 | 穩定任務 | 不確定 Tool Interaction | Requirement 多的長任務 | 變動環境中的長任務 | 已建立且可重用的程序 |
+| 必要控制 | Test 與 Typed Failure | Limit、Progress、Policy、Stop Criteria | Plan Schema 與 Plan Validation | Version、Trigger、Diff、Replan Limit | Method Governance 與 Domain Validation |
 
-| 比較項目 | ReAct | Plan-and-Execute | Adaptive Planning |
-|---|---|---|---|
-| 核心節奏 | 行動後再決定 | 先規劃再執行 | 先規劃，執行中更新 |
-| 全局視角 | 較弱 | 強 | 強 |
-| 現場適應 | 很強 | 較弱 | 強 |
-| 是否先建立計畫 | 不一定 | 是 | 是 |
-| 是否修改計畫 | 通常沒有正式計畫 | 通常少 | 是 |
-| 適合任務 | 搜尋、Debug、Browser | 報告、研究、長任務 | 外部環境不穩定的長任務 |
-| 成本可預測性 | 較低 | 中～高 | 中 |
-| 主要風險 | 繞圈、短視 | 錯誤計畫一路執行 | 過度 Replan、目標漂移 |
-| 所需護欄 | Max Steps、Tool Policy | Plan Schema、Completion Criteria | Plan Version、Replan Trigger |
-| 最佳用途 | 局部 Executor | 上層 Planner | Production 長任務 |
+這些是預設判斷，不是普世分數。有清楚契約的 Bounded ReAct，可能比模糊的 Static Plan 更可預測。
 
----
+## Production Hybrid：Planner、Bounded Executor、Verifier 與 Replanner
 
-## 最實用的混合模式：Planner + ReAct Executor + Verifier
-
-成熟系統通常不會選擇純 ReAct 或純 Plan-and-Execute。
-
-更常見的組合是：
+穩健架構通常會組合多種方法：
 
 ```text
 User Goal
-  ↓
-Planner
-  ↓
-Structured Plan
-  ↓
-State Machine selects current step
-  ↓
-ReAct Executor
-  ↓
-Verifier
-  ├─ Pass → Next Step or Final Answer
-  ├─ Repair → Return to Executor
-  └─ Replan → Return to Planner
+  -> Planner
+  -> Versioned Plan Store
+  -> State Machine 選擇 Ready Step
+  -> Bounded Executor
+       -> 依情況使用 Fixed Logic 或 ReAct
+  -> Verifier
+       -> Pass
+       -> Local Repair
+       -> Replan
+       -> Fail or Escalate
 ```
 
-## Planner 負責
+### Planner 責任
 
-- 理解完整目標
-- 拆解子任務
-- 定義依賴關係
-- 設定完成條件
+- 理解完整 Goal
+- 建立 Subgoal 與 Step
+- 定義 Dependency
 - 分配 Budget
-- 選擇執行順序
+- 定義 Output 與 Completion Criteria
+- 找出 Approval 與 Policy Boundary
 
-## ReAct Executor 負責
+### Executor 責任
 
-- 在單一步驟內使用工具
-- 根據 Observation 調整行動
-- 嘗試有限的局部 Fallback
-- 更新步驟狀態
-- 回傳結構化結果
+- 執行一個 Step Contract
+- 只使用允許 Tool
+- 根據 Observation 做局部適應
+- 正規化結果
+- 更新 Progress
+- 遇到 Blocker 時回報，而不是偷偷修改 Goal
 
-## Verifier 負責
+### Verifier 責任
 
-- 判斷步驟是否真的完成
-- 檢查輸出格式
-- 驗證來源
-- 判斷是否需要局部修復
-- 判斷是否需要整體 Replan
+- 檢查 Step Contract
+- 驗證 Evidence 與 Output Schema
+- 偵測 Requirement 遺漏
+- 區分 Local Repair 與 Global Replan
+- 接受或拒絕完成狀態
 
-## State Machine 負責
+### Replanner 責任
 
-- 限制允許的狀態轉移
-- 保存進度
-- 限制 Retry
-- 控制人工審批
-- 定義 Terminal State
+- 只對有效 Trigger 反應
+- 保存仍有效的 Completed Work
+- 更新剩餘 Dependency
+- 產生 Plan Diff
+- 遵守 Replan Limit
 
-## Policy Layer 負責
+### State Machine 責任
 
-- 限制工具
-- 限制資料存取
-- 限制成本
-- 攔截高風險操作
+- 保存 Progress
+- 控制合法 Transition
+- 管理 Retry 與 Waiting
+- 執行 Terminal State
+- 協調 Approval
+
+### Policy Layer 責任
+
+- 授權 Tool 與 Data
+- 限制成本與時間
+- 攔截高影響 Action
 - 要求 Human Approval
-
-可以把這套組合理解成：
-
-> Planner 管全局，ReAct 處理現場，Verifier 負責驗收，State Machine 管交通，Policy Layer 守邊界。
+- 建立 Audit Trail
 
 ![Figure 3-5 — Production Planning Architecture](/images/the-atlas-of-agent-design-patterns-part-3/production-planning-architecture.png)
 
 > **Figure 3-5｜Production Planning Architecture**  
-> Planner、Plan Store、State Machine、ReAct Executor 和 Verifier 形成主要工作流；Budget Guard、Tool Policy、State Persistence、Audit Trace 與 Human Approval 則構成外層治理。
+> Planner 產生 Versioned Plan，State Machine 選擇 Ready Step，Bounded Executor 執行，Verifier 驗收，Replanner 在 Trigger 出現時修正剩餘工作。
 
----
+## 如何選擇策略
 
-## 不同任務應該使用哪種決策方式？
+從可以可靠完成任務的最小彈性開始。
 
-| 任務特性 | 建議方式 |
+### 使用 Fixed Logic
+
+- 下一步已知
+- Environment 穩定
+- 每個 Request 使用相同契約
+- Predictability 比 Adaptation 更重要
+
+### 加入 Bounded ReAct
+
+- 下一個有效 Action 依賴最新 Tool Result
+- Environment 難以事前列舉
+- 需要 Local Exploration
+- Completion 仍可驗證
+
+### 加入 Plan-and-Execute
+
+- 任務包含許多 Requirement
+- 遺漏成本高
+- Progress 必須可見
+- Dependency 或 Delegation 很重要
+
+### 加入 Adaptive Replanning
+
+- Premise 可能在執行中改變
+- Static Plan 可能失效
+- Local Repair 有時不足
+- 系統能判斷 Material Replan Trigger
+
+### 使用 Hierarchical Decomposition
+
+- Flat Plan 太大
+- Subgoal 有不同 Owner 或 Context
+- Parent 與 Child Completion 可以定義
+
+### 使用 HTN
+
+- Domain 有可重用且受治理的 Procedure
+- Valid Decomposition Method 可以被建模
+- Consistency 與 Auditability 是核心
+
+### 使用 External Planner 或 Solver
+
+- Precondition 與 Effect 可以形式化
+- Feasibility 比流暢說明更重要
+- Constraint 太重要，不能只靠自由生成
+- 需要 Valid 或 Optimal Plan
+
+## 常見反模式
+
+### 每個任務都先 Planning
+
+翻譯或固定抽取不需要五步 Plan。
+
+### 把 Plan 當成 Ground Truth
+
+Generated Plan 只是完成任務方式的 Hypothesis。
+
+### ReAct 沒有 Step Contract
+
+Executor 探索 Tool，卻不知道應產出什麼。
+
+### 每個 Observation 後都 Replan
+
+系統修改 Plan 的時間比執行更多。
+
+### Local Failure 觸發 Global Replan
+
+一個 Endpoint 不可用，就丟掉整份 Plan。
+
+### Replanning 沒有 Version
+
+Previous Plan 消失，Goal Drift 與重複工作無法追蹤。
+
+### Hierarchy 沒有 Integration Owner
+
+每個 Subgoal 都完成，卻沒有人負責 Final Outcome。
+
+### 把所有 Goal-directed Loop 當成獨立架構
+
+所有有用 Agent 都追求某個 Goal。真正差異在 Action Selection、Planning、Verification 與 Control 如何實作。
+
+### Safety Rule 只寫在 Prompt
+
+模型被要求不要使用某項能力，但 Runtime 仍毫無限制地暴露它。
+
+### Planner 與 Executor 重複做同一件事
+
+Planner 已定義 Research Strategy，Executor 卻從頭重新設計整項任務。
+
+### 不願承認任務無法滿足
+
+正確的 Terminal Result 可能是：
+
+- unavailable
+- unsupported
+- blocked
+- partial
+- requires human action
+
+再多一次 Planning 也無法創造不存在的 Evidence 或 Permission。
+
+## Production Planning 應保存什麼
+
+| 紀錄 | 用途 |
 |---|---|
-| 步驟完全固定 | Fixed Workflow |
-| 只需選擇一個工具 | Router / Tool Selection |
-| 下一步依賴工具結果 | ReAct |
-| 任務長且容易漏項 | Plan-and-Execute |
-| 計畫可能因外部結果改變 | Adaptive Planning |
-| 任務可拆成多層子目標 | Hierarchical Planning |
-| 已有成熟企業 SOP | HTN |
-| 目標可客觀驗證、路線未知 | Goal-driven Agent |
-| 操作涉及權限、成本或風險 | Policy-based Decision |
-
----
-
-## 決策與規劃的常見反模式
-
-## 反模式一：所有任務都先規劃
-
-簡單翻譯也先列五步計畫，只會增加延遲。
-
-## 反模式二：把計畫當成事實
-
-Planner 產生的步驟仍然可能錯誤。
-
-計畫需要被驗證，不是被膜拜。
-
-## 反模式三：ReAct 沒有停止條件
-
-Agent 不斷搜尋、開頁面和改 Query，卻沒有資料充分標準。
-
-## 反模式四：工具結果全部塞進 Context
-
-沒有結構化 State，導致 Agent 忘記哪些工作已完成。
-
-## 反模式五：Replan 沒有版本
-
-新計畫覆蓋舊計畫，無法知道改了什麼、為什麼改。
-
-## 反模式六：子任務沒有完成條件
-
-Executor 回傳一段文字，系統就把步驟標記完成。
-
-## 反模式七：計畫粒度不一致
-
-某些步驟需要一分鐘，另一些需要數小時，難以調度和驗收。
-
-## 反模式八：安全規則只寫在 Prompt
-
-Agent 理論上「不應該」執行高風險操作，但工具層沒有真正限制。
-
-## 反模式九：ReAct 和 Planner 重複工作
-
-Planner 已安排搜尋三個來源，Executor 又重新設計整套研究策略。
-
-## 反模式十：一直重新規劃，不肯承認失敗
-
-資料不存在、權限不足或工具不支援時，正確結果可能是：
-
-- Pending
-- Unavailable
-- Unsupported
-- Requires Human Action
-
-不是所有任務都能靠多想幾輪解決。
-
----
-
-## Production Planning 應該記錄什麼？
-
-| 資料 | 用途 |
-|---|---|
-| Original Goal | 防止任務漂移 |
-| Current Plan Version | 追蹤最新計畫 |
-| Plan Diff | 記錄每次修改 |
-| Step Status | 追蹤進度 |
-| Step Dependencies | 控制執行順序 |
-| Tool Calls | 追蹤實際行動 |
-| Observations | 保存工具結果 |
-| Completion Criteria | 驗收步驟 |
-| Retry Count | 限制局部重試 |
-| Replan Count | 限制重新規劃 |
+| Original Goal | 防止 Drift |
+| Goal Version | 記錄已授權的 Goal Change |
+| Current Plan Version | 指定 Active Plan |
+| Plan Diff | 說明修改內容 |
+| Replan Trigger | 證明修改理由 |
+| Step Contract | 定義 Execution 與 Acceptance |
+| Step Dependency | 控制 Ready 狀態 |
+| Step Status | 追蹤 Progress |
+| Tool Call 與 Observation | 保存實際執行 |
+| Evidence 與 Provenance | 支援 Verification |
+| Retry Count | 限制 Local Repair |
+| Replan Count | 限制 Global Revision |
 | Remaining Budget | 控制成本 |
-| Failure Reason | 選擇 Repair、Fallback 或 Stop |
-| Verifier Result | 判斷是否通過 |
-| Terminal State | Completed、Failed、Partial、Pending |
+| Policy Decision | 保存 Permission 與 Risk Check |
+| Verifier Result | 接受或拒絕完成 |
+| Terminal Outcome | Completed、Partial、Blocked、Failed 或 Cancelled |
 
-沒有這些記錄，長任務只是一段很長的對話，不是一個可管理的系統。
+沒有這些記錄，長任務只是一段很長的對話，而不是可管理流程。
 
----
+## 完整範例：研究 Agent Framework
 
-## 一個完整範例：研究型 Agent 如何決定下一步
+Goal 是：
 
-任務：
+> 比較三個 Agent Framework，並推薦適合 Production RAG 的選擇。
 
-> 比較三種 Agent Framework，並推薦適合 Production RAG 的架構。
+### Router
 
-## 第一步：Router
+選擇 Research Workflow，而不是 Direct Q&A。
 
-判斷這不是簡單問答，需要 Research Workflow。
+### Planner
 
-## 第二步：Planner
-
-建立計畫：
+建立：
 
 ```text
-1. Define evaluation criteria
-2. Identify candidate frameworks
-3. Collect official architecture information
-4. Compare persistence and state management
-5. Compare observability and testing
-6. Compare multi-agent capabilities
-7. Evaluate risks
-8. Produce recommendation
+S1 定義評估標準
+S2 確認候選 Framework
+S3 收集官方 Architecture 資訊
+S4 比較 State 與 Persistence
+S5 比較 Observability 與 Testing
+S6 比較 Tool 與 Multi-agent Support
+S7 評估 Risk 與 Operational Fit
+S8 產生 Recommendation
 ```
 
-## 第三步：Executor
+每個 Step 都有 Contract、Budget 與 Completion Criteria。
 
-執行「Collect official architecture information」時使用 ReAct：
+### Executor
+
+執行 `S3` 時，有界 ReAct Executor 可以：
 
 ```text
-Search official documentation
-  ↓
-Open architecture page
-  ↓
-Information incomplete
-  ↓
-Search persistence documentation
-  ↓
-Open official repository
-  ↓
-Extract structured findings
+開啟官方 Architecture Documentation
+  -> 必要欄位缺失
+開啟官方 Persistence Documentation
+  -> 記錄 Capability 與 Version
+檢查官方 Repository
+  -> 抽取結構化 Evidence
+所有欄位有資料或明確 Unknown 時停止
 ```
 
-## 第四步：Verifier
+### Verifier
 
 檢查：
 
-- 是否全部來自官方來源
-- 是否涵蓋所有評估欄位
-- 是否標記缺失資料
-- 是否混用不同版本資訊
+- 每個重要 Claim 是否來自官方 Source
+- 每個 Comparison Field 是否涵蓋
+- Missing Information 是否標記 Unknown
+- 是否混用了不同 Version 的資料
+- Recommendation 是否遵循 Criteria
 
-## 第五步：Adaptive Replan
+### Adaptive Replan
 
-發現其中一個 Framework 沒有公開某項資訊。
+其中一個 Framework 沒有公開 Pricing 或必要技術欄位。
 
-更新剩餘計畫：
-
-```text
-Replace unavailable field with:
-- Publicly documented capabilities
-- Explicitly marked unknowns
-- No inferred claims
-```
-
-## 第六步：Synthesis
-
-整合所有結果，產生推薦。
-
-這套系統不是單純 ReAct，也不是單純 Plan-and-Execute。
-
-它同時使用：
-
-- Router
-- Structured Planning
-- ReAct Execution
-- Verification
-- Adaptive Replanning
-- State Management
-- Budget Guard
-- Tool Policy
-
-這才更接近 Production Agent。
-
----
-
-## 本篇結論
-
-Agent 決定下一步的方式，可以從高度固定一路走向高度自主。
-
-- **Fixed Workflow**：下一步由程式預先決定
-- **ReAct**：根據工具結果逐步選擇行動
-- **Plan-and-Execute**：先建立全局計畫，再逐步執行
-- **Adaptive Planning**：執行中根據新資訊修改剩餘計畫
-- **Hierarchical Planning**：將大型目標拆成多層子目標
-- **HTN**：依照預先核准的方法拆解任務
-- **Goal-driven Agent**：根據目標與進度持續選擇行動
-- **Policy-based Decision**：在權限、風險與成本邊界內決策
-
-沒有一種方法永遠最好。
-
-簡單任務不需要 Planner；固定流程不需要自由 ReAct；高風險 SOP 不應交給模型臨時發明。
-
-Production 系統更常採用：
+Replanner 只修改剩餘工作：
 
 ```text
-Router
-  ↓
-Planner
-  ↓
-Structured Plan
-  ↓
-State Machine
-  ↓
-ReAct Executor
-  ↓
-Verifier
-  ↓
-Continue / Repair / Replan
+將推測欄位替換成：
+- Publicly Documented Capabilities
+- Explicitly Marked Unknowns
+- No Unsupported Estimate
 ```
 
-真正重要的不是讓 Agent 擁有最多自由，而是：
+### Synthesis
 
-> 在最需要彈性的地方允許自主，在需要可靠性的地方建立約束。
+整合已驗證結果並產生 Recommendation。
 
-下一篇，我們會進入第三個維度：
+這不是 Pure ReAct，也不是 Pure Plan-and-Execute，而是 Router、Planning、Bounded Action Selection、Verification、State Management 與 Triggered Replanning 的治理式組合。
 
-> 當一個問題存在多種可能解法時，Agent 應該怎麼搜尋？
+## 結論
 
-Part 4 將完整比較 Single-path Reasoning、Self-consistency、Generate-and-Rank、Beam Search、Tree of Thoughts、Graph of Thoughts、MCTS 與 LATS。
+把不同機制分層後，規劃層會清楚很多：
+
+- **Fixed Decision Logic** 讓已知工作維持確定性。
+- **Bounded ReAct** 根據最新 Observation 調整局部行動。
+- **Plan-and-Execute** 在執行前建立顯式全局結構。
+- **Adaptive Planning** 在 Material Trigger 出現後修改剩餘工作。
+- **Hierarchical Planning** 把大型 Goal 組織成多層 Subgoal。
+- **HTN** 以正式 Domain Model 將 Compound Task 拆成 Executable Task。
+- **Plan Verification** 判斷看起來合理的 Plan 是否真的可接受。
+- **Goal 與 Policy** 橫跨所有策略，定義結果與邊界。
+
+Production 目標不是最大化規劃自由，而是把彈性放在正確位置：
+
+```text
+固定的外層控制
+  + 需要全局覆蓋時使用 Explicit Plan
+  + Observation 重要時使用 Bounded Local Adaptation
+  + Acceptance 前執行 Verification
+  + 只有現實讓 Plan 失效時才做 Versioned Replanning
+```
+
+Part 4 將從 Planning 進入 Search：
+
+> 當問題存在多個候選解法時，Agent 應如何探索、比較、剪枝與選擇？
+
+## 參考資料
+
+- [Yao et al., *ReAct: Synergizing Reasoning and Acting in Language Models*](https://arxiv.org/abs/2210.03629)
+- [Xu et al., *ReWOO: Decoupling Reasoning from Observations for Efficient Augmented Language Models*](https://arxiv.org/abs/2305.18323)
+- [Wang et al., *Plan-and-Solve Prompting: Improving Zero-Shot Chain-of-Thought Reasoning by Large Language Models*](https://arxiv.org/abs/2305.04091)
+- [Sun et al., *AdaPlanner: Adaptive Planning from Feedback with Language Models*](https://arxiv.org/abs/2305.16653)
+- [Liu et al., *LLM+P: Empowering Large Language Models with Optimal Planning Proficiency*](https://arxiv.org/abs/2304.11477)
+- [Huang et al., *Language Models as Zero-Shot Planners: Extracting Actionable Knowledge for Embodied Agents*](https://arxiv.org/abs/2201.07207)
+- [Valmeekam et al., *Large Language Models Still Can't Plan: A Benchmark for LLMs on Planning and Reasoning about Change*](https://arxiv.org/abs/2206.10498)
+- [Au et al., *SHOP2: An HTN Planning System*](https://arxiv.org/abs/1106.4869)
+- [Höller et al., *On Hierarchical Task Networks*](https://arxiv.org/abs/1606.06900)
+
+## 系列目錄
+
+| Part | 主題 |
+|---:|---|
+| 1 | LLM Agent 不只有 ReAct：用六個維度看懂 Agent 架構 |
+| 2 | Agent 執行路徑全解：Direct、Pipeline、Router、State Machine 與 DAG |
+| 3 | ReAct、Plan-and-Execute、Adaptive Planning 與 HTN |
+| 4 | 從單一路徑到 Tree、Graph 與 LATS |
+| 5 | Agent 驗證、恢復與自我修正 |
+| 6 | Multi-Agent 架構全解 |
+| 7 | Agent Memory 全解 |
+| 8 | Production Agent 架構實戰 |
+| 9 | 如何選擇 Agent 架構 |
+| 10 | 使用現代 Agent Framework 實作設計模式 |
