@@ -1,6 +1,6 @@
 ---
-title: "The Atlas of Agent Design Patterns Part 4 ｜ From a Single Thought to Searching the Whole Solution Space: CoT, ToT, GoT and LATS"
-description: "A complete comparison of Single-path Reasoning, Chain of Thought, Self-consistency, Generate-and-Rank, Beam Search, Tree of Thoughts, Graph of Thoughts, MCTS, LATS, Case-based Reasoning and Neuro-symbolic Reasoning."
+title: "The Atlas of Agent Design Patterns Part 4 | From Single-Path Reasoning to Trees, Graphs, MCTS, and LATS"
+description: "A production-focused guide to single-path reasoning, Chain-of-Thought, self-consistency, Generate-and-Rank, beam search, Tree of Thoughts, Graph of Thoughts, MCTS, LATS, evaluator design, diversity, stopping rules, and search budgets."
 date: 2026-06-30T20:05:00
 lang: en
 categories: ["AI"]
@@ -8,1729 +8,1149 @@ series: "The Atlas of Agent Design Patterns"
 seriesOrder: 4
 ---
 
-The previous articles answered three different questions:
 
-- how does a task move from start to finish?
-- how does the Agent decide its next step?
-- how do Planner, ReAct and Adaptive Planning cooperate?
+Part 3 examined how an agent decides what to do next:
 
-This article enters the third dimension:
+- follow fixed logic
+- react to the latest observation
+- create an explicit plan
+- revise the remaining plan
+- decompose a goal hierarchically
 
-> When a problem has many possible solutions, how should the Agent explore?
+This article addresses a different problem:
 
-Some tasks barely need any exploration.
+> When several candidate solutions or action sequences exist, how should the system explore them, compare them, and decide when to stop?
 
-For example:
+Some tasks need almost no search:
 
 - translate a sentence
-- turn data into a fixed JSON shape
-- answer a precise question from a single document
-- call a calculator for a numeric value
-- look up one known data field
+- extract fixed fields
+- call a known calculator
+- answer from one authoritative record
+- transform data into a defined schema
 
-Other tasks do not have a single obvious path:
+Other tasks contain meaningful alternatives:
 
-- a software bug can have several root causes
-- a system can be designed in several different architectures
-- a research report can be built around several analytical frames
-- a Browser Agent can take several operation routes
-- a complex plan can be sequenced in several different ways
-- a maths problem can be solved through several derivations
+- a bug has several plausible root causes
+- an architecture has several defensible designs
+- a browser task has several action sequences
+- a plan contains competing decompositions
+- a mathematical problem admits several derivations
+- a report can be organised around different analytical frames
 
-If the Agent commits to a single route at the very beginning and pushes all the way through, one early misjudgement can poison everything that comes after.
+Committing to the first plausible path is cheap. It is also fragile when early choices strongly affect the outcome.
 
-So the system can choose to:
+A search-capable system may:
 
-1. generate several candidates
-2. evaluate their quality
-3. keep the more promising directions
-4. drop the unreasonable branches
-5. return to an earlier node when needed
-6. merge information from different paths
-7. adjust the search direction based on environment feedback
-8. pick a final result before the budget runs out
+1. generate several candidate states or actions
+2. evaluate candidates
+3. preserve promising branches
+4. prune weak or invalid branches
+5. backtrack when a branch fails
+6. merge complementary intermediate results
+7. use external feedback to update its search
+8. stop when quality, risk, and budget conditions are satisfied
 
-That is the capability arc from Single-path Reasoning up to Self-consistency, Generate-and-Rank, Tree of Thoughts, Graph of Thoughts and LATS.
+The difficult part is not producing more text. It is maintaining a trustworthy search process.
 
----
+## Reasoning, planning, search, and evaluation are different layers
 
-## Reasoning, planning and search are not the same thing
+These terms often appear together, but they answer different questions.
 
-These three concepts often appear together, but they solve different problems.
+### Reasoning
 
-## Reasoning: how do you get to the next conclusion?
-
-Reasoning is about:
-
-> Given what is known so far, what can be derived?
-
-For example:
+Reasoning derives a conclusion from the information currently available.
 
 ```text
-All Enterprise plans support SSO
-Plan X is an Enterprise plan
-
-Therefore:
-Plan X supports SSO
+All enterprise plans support SSO
+Plan X is an enterprise plan
+Therefore, Plan X supports SSO
 ```
 
-That is a derivation from information to conclusion.
+### Planning
 
-## Planning: to reach a goal, what steps must be taken?
-
-Planning is about:
-
-> Which steps does the task need, and in what order?
-
-For example:
+Planning selects tasks or actions that may lead from the current state to a goal.
 
 ```text
-1. Find official pricing
-2. Compare core features
-3. Check deployment limits
-4. Analyse the target audience
-5. Write the recommendation
+Collect official evidence
+  -> compare capabilities
+  -> verify constraints
+  -> produce recommendation
 ```
 
-Plan-and-Execute, Adaptive Planning and HTN live mainly at this layer.
+### Search
 
-## Search: when several paths exist, which one should be explored?
+Search manages alternatives:
 
-Search is about:
+- which state to expand
+- which candidate to keep
+- which branch to prune
+- whether to backtrack
+- whether to merge results
+- when to stop
 
-> When there are several candidate solutions, which should be expanded, which should be dropped, and which should be kept?
+### Evaluation
 
-For example:
+Evaluation estimates whether a state, action, or completed solution is valid, useful, safe, or preferable.
+
+A single system may use all four:
 
 ```text
-Fix A
-Fix B
-Fix C
-  ↓
-Evaluate and test
-  ↓
-Pick the most promising one
+Planner defines the work
+  -> Search controller explores alternatives
+  -> Executor performs actions
+  -> Evaluator scores results
+  -> Verifier accepts the final outcome
 ```
 
-A single Agent can do all of these together:
+The labels are not interchangeable. A planner may produce one plan without searching alternatives. A search controller may explore several candidate plans. A verifier may reject all of them.
 
-- use a Planner to break the task into steps
-- use ReAct to operate tools
-- use Tree Search to explore several alternatives
-- use a Verifier to judge which path passes
+## The five components of a search system
 
-So planning and search are not a choice between one or the other.
+Before comparing named methods, it helps to describe the machinery they need.
 
-The Planner decides which pieces of work exist; Search decides, when a problem has several possible solutions, which one is worth continuing.
+### Candidate generator
 
----
+Produces possible:
 
-## 1. Single-path Reasoning: walk a single line all the way
+- answers
+- intermediate states
+- next actions
+- plans
+- code patches
+- queries
+- decompositions
 
-Single-path is the simplest form of reasoning.
+### State representation
+
+Records what each candidate means.
+
+A useful state may include:
+
+```text
+Goal progress
+Known facts
+Unresolved requirements
+Actions already taken
+Evidence and provenance
+Cost used
+Policy status
+Environment state
+```
+
+If the state is only an unstructured conversation transcript, equivalent branches become difficult to detect and compare.
+
+### Evaluator
+
+Scores or classifies a candidate using some combination of:
+
+- hard constraints
+- executable tests
+- factual evidence
+- progress toward the goal
+- risk
+- cost
+- preference
+- maintainability
+- policy compliance
+
+### Search controller
+
+Decides:
+
+- which candidate to expand next
+- how many children to generate
+- which branches survive
+- when to prune
+- when to backtrack
+- whether to merge
+- how exploration and exploitation are balanced
+
+### Stopping rule
+
+Ends search when:
+
+- an accepted solution is found
+- quality exceeds a threshold
+- no feasible candidates remain
+- the budget is exhausted
+- the maximum depth or node count is reached
+- improvement has stalled
+- an irreversible action requires approval
+- the task is blocked or unsupported
+
+Without an evaluator, multiple paths are only multiple drafts. Without a stopping rule, the search space becomes a very expensive shrubbery.
+
+![Figure 4-1 — Anatomy of a Multi-Path Search System](/images/the-atlas-of-agent-design-patterns-part-4/line-tree-graph-reasoning-structures.png)
+
+> **Figure 4-1 ｜ Anatomy of a Multi-Path Search System**  
+> The loop starts from a Problem or Current State, then runs through a Candidate Generator, a Search Frontier, an Evaluator and a Stopping Rule, with Backtrack and Merge woven in along the way, and finally returns an Accepted Solution or marks the task as Blocked. Each step in a search depends on the result of the previous one; it is not a flat chain.
+
+
+## Single-path reasoning and Chain-of-Thought
+
+A single-path system preserves one main trajectory:
 
 ```text
 Problem
-  ↓
-Intermediate Step 1
-  ↓
-Intermediate Step 2
-  ↓
-Intermediate Step 3
-  ↓
-Answer
+  -> Intermediate state
+  -> Intermediate state
+  -> Answer
 ```
 
-The system only keeps one main path.
+This is often the correct baseline.
 
-Each step builds on the result of the previous one. It does not explore alternatives in parallel.
+### When one path is enough
 
-## When Single-path fits
+- the task is simple
+- latency matters
+- the environment gives a strong external verifier
+- exploring alternatives adds little value
+- the cost of a wrong first choice is low
 
-- the question is simple
-- the answer is clear
-- the cost of error is low
-- latency requirements are tight
-- reliable external verification comes afterwards
-- there is little value in exploring other candidates
+For example, a system may generate one SQL query and then rely on:
 
-For example, the Agent generates a piece of SQL and hands it to the database to execute.
+- a read-only connection
+- a parser
+- execution
+- result checks
+- query limits
 
-Even if the generation only walks one path, as long as downstream you have:
+Reliability comes from the verifier and execution boundary, not from generating five SQL queries.
 
-- Read-only Policy
-- SQL Parser
-- Execution Test
-- Result Validation
+### Chain-of-Thought is not a search tree
 
-Single-path can still be very reliable.
+Chain-of-Thought prompting encourages a model to produce intermediate reasoning steps before an answer. The original method demonstrated that such prompting can improve performance on multi-step reasoning tasks.
 
-## The limits of Single-path
-
-### Early errors propagate all the way down
-
-If the first intermediate judgement is wrong, every step after it may be built on a wrong premise.
-
-### It does not actively compare alternatives
-
-The first plausible-looking answer is not necessarily the best answer.
-
-### It can be locked in by generation order
-
-Once the model picks one direction, later content tends to keep walking in that direction instead of reopening other possibilities.
-
----
-
-## 2. Chain of Thought: make one line more complete
-
-Chain of Thought, abbreviated CoT, asks the model to generate a sequence of intermediate reasoning steps before producing the final answer.
+Its basic shape remains a chain:
 
 ```text
-Problem
-  ↓
-Intermediate Reasoning
-  ↓
-Intermediate Reasoning
-  ↓
-Answer
+Prompt
+  -> intermediate reasoning
+  -> intermediate reasoning
+  -> answer
 ```
 
-The core of CoT is still one path.
+By itself, Chain-of-Thought does not provide:
 
-It can make the reasoning more complete, but by itself it does not mean the system has:
-
-- multi-candidate exploration
-- candidate comparison
-- branch pruning
+- multiple persistent candidates
+- a search frontier
+- branch scoring
+- pruning
 - backtracking
-- a search controller
+- state merging
 - environment feedback
 
-So:
+Therefore:
 
-> **CoT is an expanded chain of reasoning. It is not a search tree.**
+> Chain-of-Thought may make one path more explicit, but it does not by itself create a multi-path search system.
 
-## What CoT fits
+In production, auditability should focus on structured, observable artefacts:
 
-- multi-step maths problems
-- conditional reasoning
-- logical structuring
-- complex problem decomposition
-- analysis that needs intermediate structure
+- actions taken
+- tools used
+- evidence consulted
+- conditions checked
+- state transitions
+- verifier results
+- accepted and rejected candidates
 
-## The limits of CoT
+A system does not need to expose or store unrestricted private reasoning text to be traceable.
 
-Steps that look thorough are not necessarily correct.
+## Self-consistency: sample several paths and aggregate the answer
 
-A longer chain of reasoning is not the same as higher quality.
-
-In a Production system, instead of saving long stretches of free-form reasoning, it is better to save structured information that can be verified:
-
-- which tool was used
-- which rule was chosen
-- which sources were read
-- which conditions passed
-- which conditions failed
-- why the system switched to a Fallback
-- what the Verifier decided
-
-What the system actually needs is an auditable Decision Record, not the entire internal monologue dumped into the audit log.
-
----
-
-## 3. Self-consistency: run several paths and vote on the answer
-
-Single-path produces one path.
-
-Self-consistency runs several independent generations on the same question:
+Self-consistency is a decoding strategy for Chain-of-Thought-style reasoning. Instead of taking one greedy path, it samples a diverse set of reasoning paths and selects the most consistent final answer.
 
 ```text
-Path A → Answer 42
-Path B → Answer 42
-Path C → Answer 39
-Path D → Answer 42
-Path E → Answer 41
+Path A -> 42
+Path B -> 42
+Path C -> 39
+Path D -> 42
+Path E -> 41
+
+Aggregate -> 42
 ```
 
-Then it picks the most consistent answer:
+### Best fit
 
-```text
-Final Answer → 42
-```
+Self-consistency works best when:
 
-The core intuition is:
+- the task has a relatively well-defined answer
+- equivalent answers can be normalised
+- different paths may reach the same result
+- sampling variance is a meaningful source of error
 
-> If several different reasoning paths land on the same answer, that answer is more likely to be reliable.
+Typical examples include:
 
-## The basic flow of Self-consistency
-
-```text
-Problem
-  ↓
-Sample Multiple Paths
-  ↓
-Extract Final Answers
-  ↓
-Normalize Equivalent Answers
-  ↓
-Vote
-  ↓
-Final Answer
-```
-
-## Tasks that fit Self-consistency
-
-- the answer is reasonably clear
-- answers are easy to standardise
-- they can be compared through voting
-- several reasoning routes may lead to the same conclusion
-
-For example:
-
-- maths problems
+- arithmetic reasoning
 - multiple choice
 - short-answer reasoning
 - classification
-- fixed-scale scoring
+- fixed-scale decisions
 
-## Tasks that do not fit
+### What it does not do
 
-- open-ended writing
-- architecture design
-- several answers can all be reasonable
-- hard to tell whether two answers are equivalent
-- a small number of high-quality answers may beat many mediocre ones
+Self-consistency normally compares completed answers. It does not maintain a frontier of intermediate states or deliberately expand one branch instead of another.
 
-## Majority is not truth
+It is therefore better described as:
 
-Suppose all five paths rely on the same wrong source. They can very consistently get the same wrong answer.
+> sample-and-aggregate, not tree search.
 
-Self-consistency mainly reduces incidental instability in generation. It does not replace:
+### Agreement is not evidence
 
-- fact checking
-- tool execution
-- source verification
-- real testing
+Several paths may share:
 
-## What does Production Self-consistency need?
+- the same false premise
+- the same outdated source
+- the same model bias
+- the same prompt-induced shortcut
 
-| Component | What it does |
-|---|---|
-| Sampling Count | How many paths to generate |
-| Diversity Policy | Avoid candidates being too similar |
-| Answer Normalization | Unify answer formats |
-| Semantic Grouping | Merge semantically identical answers |
-| Agreement Threshold | Minimum agreement required |
-| Tie-breaking Rule | Handle tied votes |
-| Abstain Condition | Refuse to answer when agreement is too low |
-| Budget Limit | Control generation cost |
+Agreement can reduce incidental decoding variance. It does not replace factual verification, tests, or source checks.
 
-For example:
+### Production controls
+
+- sample count
+- sampling diversity
+- answer normalisation
+- semantic grouping
+- agreement threshold
+- tie handling
+- abstention
+- cost budget
+- verifier fallback
+
+Example:
 
 ```text
-Agreement ≥ 70%
-  → Accept
+Agreement >= threshold
+  -> verify and accept
 
-Agreement < 70%
-  → Send to Verifier
+Agreement below threshold
+  -> abstain, collect evidence, or use another evaluator
 ```
 
----
+## Generate-and-Rank: generate complete candidates, then score them
 
-## Multi-candidate, multi-path search and Multi-Agent are three different things
-
-This is one of the most important conceptual boundaries in this article.
-
-Producing five answers does not mean the system uses five Agents.
-
-A single Agent can also:
-
-- generate five candidates
-- build a search tree
-- score the candidates
-- backtrack and re-explore
-
-In the other direction, multiple Agents can completely fail to explore different solutions and only run fixed pieces of work.
-
-| Situation | Multi-candidate | Multi-path search | Multi-Agent |
-|---|---:|---:|---:|
-| Same model generates five answers | Yes | Not necessarily | No |
-| Same Agent runs Tree Search | Yes | Yes | No |
-| Three Workers each read a different document | Multiple outputs | Not necessarily | Yes |
-| Three Agents propose different plans, then a Judge picks one | Yes | Yes | Yes |
-| Supervisor dispatches fixed tasks to Workers | Not necessarily | Not necessarily | Yes |
-
-Multi-Agent describes:
-
-> How many independent roles or execution units cooperate.
-
-Multi-path search describes:
-
-> Whether the system explores several candidate solutions.
-
-The two dimensions can overlap, but they are not the same thing.
-
-![Figure 4-1 — Line, Tree, and Graph Reasoning Structures](/images/the-atlas-of-agent-design-patterns-part-4/line-tree-graph-reasoning-structures.png)
-
-> **Figure 4-1 ｜ Line, Tree, and Graph Reasoning Structures**  
-> A Line keeps one path. A Tree allows branching, pruning and backtracking. A Graph lets different paths merge again and reuse intermediate results. Multiple paths by themselves do not equal Multi-Agent.---
-
-## 4. Generate-and-Rank: propose candidates, then rank them by criteria
-
-Self-consistency mainly looks at which answer appears most often.
-
-Generate-and-Rank first produces several candidates, then ranks them against quality criteria.
+Generate-and-Rank is a general engineering pattern rather than one single canonical algorithm.
 
 ```text
 Problem
-  ↓
-Generate Candidates
-  ├─ Candidate A
-  ├─ Candidate B
-  ├─ Candidate C
-  └─ Candidate D
-  ↓
-Evaluate
-  ↓
-Rank
-  ↓
-Select
+  -> Candidate generator
+       -> A
+       -> B
+       -> C
+       -> D
+  -> hard validation
+  -> external evaluation
+  -> ranking
+  -> select, combine, or abstain
 ```
 
-## Tasks that fit Generate-and-Rank
+It fits cases where several complete alternatives may all be reasonable:
 
-- architecture design
-- copy selection
-- query rewriting
-- code repair
-- SQL generation
-- tool selection
-- plan generation
-- RAG answer candidates
-- UI or product option comparison
+- architecture options
+- query rewrites
+- code patches
+- SQL candidates
+- plans
+- product decisions
+- answer drafts
+- tool choices
 
-## Self-consistency vs Generate-and-Rank
+### Self-consistency versus Generate-and-Rank
 
-| Comparison axis | Self-consistency | Generate-and-Rank |
+| Dimension | Self-consistency | Generate-and-Rank |
 |---|---|---|
-| Core method | Voting | Scoring and ranking |
-| Output type | Clear answer | Several reasonable alternatives |
-| Does it need a Ranker? | Not necessarily | Yes |
-| Can it pick a few strong candidates? | Hard | Yes |
-| Main risk | Majority shares the same mistake | Ranker makes a bad judgement |
+| Aggregation basis | Agreement among answers | Explicit evaluation criteria |
+| Best fit | One normalisable answer | Several plausible alternatives |
+| Intermediate search | No | Usually no |
+| Evaluator | Answer aggregator | Ranker or external test |
+| Main risk | Shared error wins the vote | Weak ranker selects the wrong candidate |
 
-## What can a Ranker do?
+### Layer the evaluator
 
-### Rule-based Ranker
+A strong ranking pipeline should reject invalid candidates before comparing preferences.
 
-Drop candidates by hard rules:
+Recommended order:
 
-- is the JSON valid?
-- does it include citations?
-- is the SQL read-only?
-- does it have the required fields?
-- is it over budget?
+```text
+Hard constraints
+  -> executable tests
+  -> evidence verification
+  -> quality and preference ranking
+```
 
-### Model-based Ranker
+Examples:
 
-Have the model compare candidates against a rubric.
+#### Hard constraints
 
-### External Evaluator
+- valid schema
+- required fields present
+- permitted tools only
+- read-only SQL
+- budget respected
 
-Validate against the real environment:
+#### Executable tests
 
-- unit tests
-- SQL execution
-- compiler
-- browser result
-- retrieval metrics
-- rule engine
-- simulator
+- code compiles
+- unit tests pass
+- SQL executes
+- browser state matches the goal
+- constraints are satisfiable
 
-### Hybrid Ranker
+#### Evidence verification
 
-Use hard rules to drop the unfit ones first, then let the model compare what remains.
+- claims have sources
+- citations support the claim
+- dates and versions are compatible
+- required evidence is not missing
 
-That is usually more reliable than asking the model to "pick the best one" directly.
+#### Preference ranking
+
+- maintainability
+- readability
+- strategic fit
+- user preference
+- long-term cost
+
+A candidate that fails a hard test should not win because it sounds polished.
 
 ![Figure 4-2 — Generate-and-Rank](/images/the-atlas-of-agent-design-patterns-part-4/generate-and-rank.png)
 
 > **Figure 4-2 ｜ Generate-and-Rank**  
 > The Candidate Generator produces several candidates, which then pass through Hard Validation, External Evaluation and Ranking before the system picks the best one. The point is not just generating more candidates; it is having reliable evaluation criteria.
 
----
 
-## What core components does a search system need?
+## Beam search: keep a bounded frontier
 
-Once the system stops comparing only at the final answer and starts expanding and dropping candidates in the middle, it has moved close to a real Search System.
-
-A multi-path search system usually has five core components.
-
-## 1. Candidate Generator
-
-Produces:
-
-- multiple answers
-- multiple next-step actions
-- multiple sub-plans
-- multiple code-patch candidates
-- multiple queries
-- multiple intermediate reasoning states
-
-## 2. State Representation
-
-Describes where each path is.
-
-For example:
+Beam search is an approximate search strategy that keeps only the top `K` partial candidates at each expansion layer.
 
 ```text
-Completed:
-- Found official pricing
-- Found deployment documentation
+Start
+  -> A (8), B (7), C (3)
+  -> keep A and B
 
-Missing:
-- Enterprise limits
-- Regional availability
+Expand A and B
+  -> A1 (6), A2 (9), B1 (8), B2 (4)
+  -> keep A2 and B1
 ```
 
-If the State is just a long blob of unstructured text, it becomes hard for the system to tell where two candidates actually differ.
+### Core controls
 
-## 3. Evaluator
+- beam width
+- branching factor
+- scoring function
+- maximum depth
+- diversity policy
+- termination condition
 
-Evaluates the candidates on:
+### Why it is useful
 
-- correctness
-- completeness
-- executability
-- cost
-- risk
-- source quality
-- constraint satisfaction
-- distance from the goal
+Full expansion grows exponentially. Beam search limits the active frontier.
 
-## 4. Search Controller
+### Why it is risky
 
-Decides:
+Beam search is not complete in general. A branch that looks weak early may lead to the best final solution, but once pruned it is normally gone.
 
-- which candidate to expand next
-- how many candidates to keep
-- when to prune
-- when to backtrack
-- whether to merge branches
-- whether to keep going deeper
+Standard beam search also does not provide general backtracking. It advances layer by layer with a bounded frontier. If the system restores a previously pruned branch, it has added another mechanism beyond ordinary beam search.
 
-## 5. Stopping Rule
+### Diversity matters
 
-Decides when to stop:
+A top-`K` frontier may contain five paraphrases of one idea.
 
-- a solution that passes every test has been found
-- the minimum quality threshold is met
-- search time is exhausted
-- Token Budget is exhausted
-- the maximum node count has been explored
-- the best score has not improved for a long time
-- every remaining candidate is infeasible
+Useful controls include:
 
-Without a reliable Evaluator, a multi-path system is just generating more text.
+- semantic deduplication
+- diversity penalty
+- category quotas
+- novelty score
+- state canonicalisation
 
-Without a Stopping Rule, the search tree will keep growing until the Token bill starts doing photosynthesis.
+Diverse Beam Search is one example of explicitly optimising diversity rather than keeping near-duplicate sequences.
 
----
+## Tree of Thoughts: search over meaningful intermediate states
 
-## 5. Beam Search: keep the top K candidates at every layer
+Tree of Thoughts generalises beyond a single Chain-of-Thought path by treating coherent intermediate units as search states.
 
-Fully expanding every branch is usually too expensive.
+A thought might be:
 
-Beam Search works like this:
+- a partial mathematical solution
+- a candidate subgoal
+- a code-repair direction
+- a partial plan
+- a set of completed actions
+- an article structure
 
-> At every layer, generate several candidates, then keep only the top K by score.
-
-Assume Beam Width is 2:
+The central loop is:
 
 ```text
-                    Start
-              ┌──────┼──────┐
-             A       B       C
-             8       7       3
-              ↓
-           Keep A and B
-          ┌──┴──┐  ┌──┴──┐
-         A1    A2 B1     B2
-          6     9  8      4
-              ↓
-          Keep A2 and B1
+Represent current state
+  -> generate candidate thoughts
+  -> evaluate candidates
+  -> select states to expand
+  -> prune weak states
+  -> continue, backtrack, or stop
 ```
 
-## Core parameters
+The original framework demonstrated deliberate exploration using methods such as breadth-first and depth-first search with state evaluation.
 
-### Beam Width
+### What makes ToT different from CoT
 
-How many candidates to keep at every layer.
-
-A smaller K means:
-
-- lower cost
-- narrower search scope
-- higher chance of dropping an early-low-score, later-high-value candidate
-
-A larger K means:
-
-- broader exploration
-- higher cost
-- gradually close to full Tree Search
-
-### Scoring Function
-
-How candidates are scored.
-
-### Maximum Depth
-
-How deep the search can go.
-
-### Termination Condition
-
-When the search stops.
-
-## Where Beam Search sits
-
-Beam Search can be seen as:
-
-> A constrained search between Generate-and-Rank and a full Tree Search.
-
-Generate-and-Rank usually ranks only after the full candidate set is generated.
-
-Beam Search evaluates and drops candidates at every layer.
-
-## Main risks
-
-### Local high score is not final best
-
-A candidate may look mediocre early and turn out to lead to the best answer later.
-
-Beam Search may cut it too early.
-
-### Lack of candidate diversity
-
-The top K may just be different phrasings of the same solution.
-
-You can add:
-
-- Semantic Deduplication
-- Diversity Penalty
-- Category Quota
-- Novelty Score---
-
-## 6. Tree of Thoughts: branching, evaluating, pruning, and backtracking
-
-Tree of Thoughts, abbreviated ToT, represents the problem-solving process as a tree.
-
-```text
-                     Start
-                ┌─────┼─────┐
-              Thought A   Thought B   Thought C
-               ┌──┴──┐      │        ┌──┴──┐
-              A1    A2      B1       C1    C2
-```
-
-Each Thought is not a single Token. It is a meaningful intermediate state, for example:
-
-- a sub-goal
-- a partial solution
-- a candidate plan
-- a maths intermediate result
-- a code change direction
-- a set of completed operations
-
-## The basic flow of ToT
-
-```text
-Current State
-  ↓
-Generate Candidate Thoughts
-  ↓
-Evaluate Candidates
-  ↓
-Select Promising Branches
-  ↓
-Expand
-  ↓
-Backtrack if Necessary
-```
-
-## CoT vs ToT
-
-| Capability | Chain of Thought | Tree of Thoughts |
+| Capability | Chain-of-Thought | Tree of Thoughts |
 |---|---:|---:|
-| Intermediate reasoning steps | Yes | Yes |
-| Keep multiple paths in parallel | No | Yes |
-| Evaluate intermediate states | Usually no | Yes |
-| Prune | No | Yes |
-| Backtrack | No | Yes |
-| Search controller | None | Yes |
-| Candidate state management | None | Yes |
+| Intermediate units | Yes | Yes |
+| Persistent alternatives | No | Yes |
+| Intermediate evaluation | Not inherent | Core |
+| Search controller | No | Yes |
+| Pruning | No | Yes |
+| Backtracking | No | Supported by the chosen search |
+| State management | Minimal | Required |
 
-CoT is a chain.
+### Thought granularity
 
-ToT is a search system made of:
+A thought must be large enough to evaluate and small enough to expand.
 
-- Candidate Generator
-- State Representation
-- Evaluator
-- Search Controller
-- Stopping Rule
-
-## What tasks fit ToT?
-
-- early choices affect later steps
-- several intermediate options exist
-- partial solutions can be evaluated
-- backtracking is needed
-- the search space can be bounded
-- the cost of a single-path failure is high
-
-For example:
-
-- puzzles
-- combinatorial maths problems
-- programming
-- scheduling
-- complex decision-making
-- article structure planning
-- multi-step solution design
-
-## How big should a Thought be?
-
-A Thought that is too small:
+Too small:
 
 ```text
-Every Token is its own node
+Every token becomes a node
 ```
 
-The search space explodes immediately.
+The search explodes.
 
-A Thought that is too large:
+Too large:
 
 ```text
-The entire final answer is one node
+The entire final answer becomes one node
 ```
 
-The system collapses back into Generate-and-Rank.
+The method collapses back into Generate-and-Rank.
 
-A good Thought should:
+A useful thought:
 
-- be independently evaluable
-- matter for the next decision
-- not make the tree too deep
-- be storable and comparable
+- changes the next decision
+- has a meaningful state representation
+- can be evaluated independently
+- can be compared or deduplicated
+- does not make the tree unnecessarily deep
 
-For a Coding Agent, a candidate Thought could be:
+### Evaluation options
 
-- change API retry logic
-- fix the database transaction
-- add input schema validation
+- scalar value estimate
+- pairwise comparison
+- promising / uncertain / impossible classification
+- deterministic constraints
+- external tests
+- environment feedback
 
-Not "every line of code is its own node".
+The strongest available signal should be used. A compiler is usually a better code evaluator than a model's stylistic confidence.
 
-## How does ToT evaluate candidates?
+### Search controls
 
-### Value Score
-
-Give each candidate a score directly.
-
-### Pairwise Comparison
-
-Compare two candidates and pick the better one.
-
-### Classification
-
-Bucket each candidate as:
-
-- Promising
-- Uncertain
-- Impossible
-
-### External Testing
-
-Use the real environment:
-
-- compile the program
-- run unit tests
-- check constraints
-- execute the SQL
-- inspect the browser state
-
-External testing is usually more reliable than the model evaluating itself.
-
-## Main risks of ToT
-
-### The search tree balloons
-
-If each node generates 5 candidates and depth is 6:
-
-```text
-5⁶ = 15,625 leaf nodes
-```
-
-So the system has to cap:
-
-- Branching Factor
-- Maximum Depth
-- Beam Width
-- Total Node Count
-- Token Budget
-- Tool Budget
-
-### The model is both player and referee
-
-The same model generating and evaluating its own answers can amplify the same bias.
-
-### States are hard to deduplicate
-
-Different text may refer to the same actual state.
-
-It needs:
-
-- State Canonicalization
-- Semantic Deduplication
-- Duplicate Branch Detection
+- branching factor
+- maximum depth
+- maximum nodes
+- beam width
+- duplicate-state detection
+- no-improvement limit
+- time and tool budget
+- accepted-solution threshold
 
 ![Figure 4-3 — Tree Search: Branching, Pruning, and Backtracking](/images/the-atlas-of-agent-design-patterns-part-4/tree-search-pruning-backtracking.png)
 
 > **Figure 4-3 ｜ Tree Search: Branching, Pruning, and Backtracking**  
 > The search tree generates candidate branches from the Root; the Evaluator scores intermediate states; low-value branches get Pruned, failed paths get Backtracked, and only the solutions that pass verification survive.
 
----
 
-## 7. Graph of Thoughts: thoughts not only fork, they can also merge
+## Graph of Thoughts: combine, transform, and reuse intermediate results
 
-Tree of Thoughts usually assumes each node has one main parent.
+Tree structures normally give each node one parent. Some tasks require a richer dependency structure.
 
-Some problems are not pure trees.
+Graph of Thoughts models intermediate information as graph vertices and dependencies as edges. Its operations may include:
 
-For example, a competitive analysis may have three research paths:
+- generation
+- aggregation
+- refinement
+- reduction
+- transformation
+- feedback
 
-```text
-Pricing Analysis
-Feature Analysis
-Customer Analysis
-```
-
-The final product positioning conclusion needs to integrate all three paths together.
-
-Graph of Thoughts, abbreviated GoT, allows:
-
-- a node to depend on several upstream nodes
-- different lines of thought to merge again
-- intermediate results to be reused
-- several candidates to be aggregated
-- a result to be re-transformed or refined
+Example:
 
 ```text
-Pricing ─────┐
-             ├→ Positioning Analysis
-Features ────┤
-             │
-Customers ───┘
+Pricing analysis --------\
+Feature analysis ----------> Positioning synthesis
+Customer evidence --------/
 ```
 
-## Tree vs Graph
+A downstream thought may depend on several upstream thoughts. Intermediate results can be reused instead of copied into separate branches.
 
-| Comparison axis | Tree of Thoughts | Graph of Thoughts |
-|---|---|---|
-| Node parent | Usually one | Can be several |
-| Branch merging | Less natural | Core capability |
-| Reuse of intermediate results | Weaker | Strong |
-| Main structure | Hierarchical tree | Directed graph |
-| Fits tasks that | Look for one better path | Integrate complementary paths |
-| Management difficulty | High | Higher |
+### GoT is more than "a tree that merges at the end"
 
-## Common GoT operations
+The important capability is an arbitrary dependency graph over thought units.
 
-### Generate
+Possible uses include:
 
-Produce several candidates from a node.
+- combining complementary analyses
+- refining a result using feedback
+- distilling several states into one
+- reusing one intermediate result in several downstream tasks
+- iteratively improving a state
 
-### Aggregate
+### Production requirements
 
-Combine several nodes into a new result.
+A graph-shaped reasoning process needs:
 
-### Refine
+- node identity
+- dependency tracking
+- versioning
+- invalidation rules
+- provenance
+- merge semantics
+- conflict handling
+- deduplication
+- iteration or cycle limits
+- convergence criteria
 
-Improve an existing node based on feedback.
+If upstream evidence changes, downstream nodes derived from it may need to be invalidated and recomputed.
 
-### Reduce
+### Main risk
 
-Compress several long results into a shorter representation.
+The graph can become harder to understand than the problem it represents. GoT is valuable when combining and reusing intermediate states is central, not merely because a graph appears more sophisticated than a tree.
 
-### Transform
+## MCTS: balance exploration and exploitation in a search tree
 
-Convert information into another format or analysis angle.
+Monte Carlo Tree Search builds a tree through repeated iterations. The conventional loop contains four phases:
 
-## Tasks that fit GoT
-
-- multi-source research
-- cross-document integration
-- competitive analysis
-- requirements analysis
-- multi-stakeholder synthesis
-- long-form reports
-- multi-stage content generation
-- work that needs to reuse intermediate results
-
-## Main risks of GoT
-
-### Dependencies are more complex
-
-The system has to know:
-
-- which node depends on which results
-- when upstream content changes, which nodes become invalid
-- which data has already been aggregated
-- which branches conflict
-
-### Merging can dilute important information
-
-An Aggregator may squash a few but important points.
-
-### Intermediate data is easy to duplicate
-
-Several branches may quote the same source, so the result looks like multiple pieces of evidence but is really the same source wrapped several times.
-
-### Cycles need to be bounded
-
-If nodes can modify each other, the system has to set:
-
-- Cycle Limit
-- Versioning
-- Convergence Rule
-- Update Policy---
-
-## 8. MCTS and LATS: turn Agent actions into a search problem
-
-Tree of Thoughts mainly handles intermediate Thoughts.
-
-A real Agent does not only reason inside text. It also:
-
-- calls tools
-- modifies code
-- runs tests
-- operates a browser
-- queries databases
-- observes environment state
-
-At that point, what is being searched is no longer just "ideas", but:
-
-> A sequence of actions that can actually be executed in the environment.
-
-## The four core phases of MCTS
-
-Monte Carlo Tree Search can usually be summarised into four looping phases.
-
-### 1. Selection
-
-Starting from the Root, pick a path that is worth continuing.
-
-The system usually balances:
-
-- branches that are known to perform well
-- branches that have not been explored enough
-
-### 2. Expansion
-
-Add one or more candidate actions under the chosen node.
-
-### 3. Simulation or Evaluation
-
-Simulate, execute, or evaluate the likely result of this branch.
-
-In an LLM Agent, this step does not have to be a full random simulation. It can also be:
-
-- the model's Value Estimate
-- a tool execution
-- a test result
-- an environment Observation
-- a Verifier Score
-
-### 4. Backpropagation
-
-Propagate the resulting score back up along the path and update the upstream value estimates.
+1. **Selection:** choose a promising path while balancing known value and underexplored branches.
+2. **Expansion:** add one or more children.
+3. **Simulation or evaluation:** estimate the outcome from the expanded state.
+4. **Backpropagation:** propagate the result through visited ancestors.
 
 ```text
 Selection
-  ↓
-Expansion
-  ↓
-Simulation / Evaluation
-  ↓
-Backpropagation
-  ↓
-Next Search Iteration
+  -> Expansion
+  -> Simulation / Evaluation
+  -> Backpropagation
+  -> next iteration
 ```
 
-## What does LATS add?
+Classical MCTS often uses rollouts. Modern variants may use learned policies, value estimates, domain heuristics, or real environment results.
 
-Language Agent Tree Search, abbreviated LATS, puts the language Agent's abilities into the tree search structure.
+MCTS is not merely "Tree of Thoughts with scores". It maintains statistics across repeated visits and uses a tree policy to decide where the next search effort should go.
 
-A search node may carry:
+## LATS: tree search over language-agent actions and environment states
+
+Language Agent Tree Search integrates language-model reasoning and action generation with Monte Carlo Tree Search, language-model value functions, self-reflection, and external environment feedback.
+
+A node may contain:
 
 ```text
-Environment State
-+ Action History
-+ Observation
-+ Reflection
-+ Value Estimate
+Environment state
+Action history
+Observation
+Reflection
+Value estimate
+Visit statistics
 ```
 
-The basic flow can be understood as:
+A simplified iteration is:
 
 ```text
-Current State
-  ↓
-Generate Candidate Actions
-  ↓
-Select an Action
-  ↓
-Act in Environment
-  ↓
-Observe Result
-  ↓
-Evaluate and Reflect
-  ↓
-Update Search Tree
-  ↓
-Expand or Backtrack
+Select a tree state
+  -> generate candidate actions
+  -> execute or simulate an action
+  -> observe the environment
+  -> evaluate and reflect
+  -> update tree statistics
+  -> expand, revisit, or backtrack
 ```
 
-## ToT vs LATS
+### ToT versus LATS
 
-| Comparison axis | Tree of Thoughts | LATS |
+| Dimension | Tree of Thoughts | LATS |
 |---|---|---|
-| Main search target | Thought | Action and Environment State |
-| Does it need tools? | Not necessarily | Usually yes |
-| Does it rely on external feedback? | Optional | Core capability |
-| Node content | Intermediate reasoning state | Actions, observations, reflection, value |
-| Fits scenarios | Problem solving and option exploration | Coding, browser, interactive environments |
-| Evaluation method | Model or rules | Environment feedback + model evaluation |
+| Main state | Intermediate thought | Agent and environment state |
+| Actions in environment | Optional | Central |
+| External feedback | Optional | Core |
+| Search statistics | Depends on controller | MCTS-style |
+| Typical tasks | Deliberate problem solving | Coding, web interaction, interactive QA |
+| Main cost | Model evaluation | Model plus environment execution and state management |
 
-## A Coding Agent example
+### Why environment feedback matters
 
-Goal:
-
-> Fix an integration test failure.
-
-Candidate directions:
+For code repair:
 
 ```text
-A. Modify input validation
-B. Modify the database query
-C. Adjust the authentication setting
+Candidate patch
+  -> run tests
+  -> observe failures
+  -> update branch value
 ```
 
-Explore branch A:
+For browser interaction:
 
 ```text
-Apply Patch
-  ↓
-Run Tests
-  ↓
-3 Tests Still Fail
+Candidate click
+  -> receive new DOM or screen
+  -> measure progress
+  -> update search state
 ```
 
-Explore branch C:
+This is stronger than asking the model which action "sounds best", provided that the environment signal actually reflects the desired outcome.
 
-```text
-Apply Patch
-  ↓
-Run Tests
-  ↓
-Target Tests Pass
-```
+### Safety boundary
 
-The actual test results become the search feedback.
+Search over actions is safe only when exploration is reversible or isolated.
 
-That is more reliable than asking the model to judge "which plan sounds more reasonable".
+Use:
 
-## A Browser Agent example
+- sandbox
+- temporary branch
+- test database
+- mock service
+- dry run
+- reversible transaction
+- approval gate
 
-The goal is to complete an operation on a website.
+Do not explore by sending five real payments, deleting five copies of production data, or publishing five competing messages.
 
-Candidate actions:
+### Reward hacking and weak value functions
 
-- click the search box
-- open the filter
-- go back to the previous page
-- modify the URL
-- scroll to find a button
+If the score is "make tests pass", a system may delete the tests.
 
-After every action, the Agent gets a new screen or DOM State, then judges whether it has moved closer to the goal.
+The evaluator must also consider:
 
-## Main limits of LATS
-
-### Real execution cost is high
-
-Each branch may require:
-
-- an API call
-- running tests
-- building a Sandbox
-- operating a browser
-- saving and restoring state
-
-### Some actions are irreversible
-
-You cannot, just to explore five paths, actually:
-
-- send five emails
-- create five payments
-- delete data five times
-- modify Production five times
-
-Irreversible actions must stay inside:
-
-- Sandbox
-- Mock Environment
-- Temporary Branch
-- Test Database
-- Human Approval Gate
-
-### The Value Function can be gamed
-
-If a Coding Agent's only objective is "make the tests pass", it may just delete the tests.
-
-So the score cannot only reward short-term success. It also has to account for:
-
-- whether constraints are respected
-- whether side effects were introduced
-- whether the code is maintainable
-- whether other functionality is broken
-- whether the cost is within budget
-- whether the full test suite still passes
+- unchanged requirements
+- policy compliance
+- side effects
+- maintainability
+- full regression suite
+- security
+- cost
+- user intent
 
 ![Figure 4-4 — MCTS and LATS Search Loop](/images/the-atlas-of-agent-design-patterns-part-4/mcts-lats-search-loop.png)
 
 > **Figure 4-4 ｜ MCTS and LATS Search Loop**  
 > The Search Controller does Selection and Expansion. The Agent acts in the Sandbox Environment, gathers Observation, Test Result, Reflection and Value, and Backpropagates them into the search tree.
 
----
 
-## 9. Case-based Reasoning: start from similar past cases
+## Case-based reasoning and neuro-symbolic methods are adjacent components
 
-Not every problem has to be searched from scratch.
+The earlier list becomes clearer when these two ideas are placed outside the main search-topology ladder.
 
-The basic flow of Case-based Reasoning is:
+### Case-based reasoning supplies experience and candidate priors
 
-```text
-New Problem
-  ↓
-Retrieve Similar Cases
-  ↓
-Compare Conditions
-  ↓
-Adapt Previous Solution
-  ↓
-Verify in Current Context
-```
+Classical case-based reasoning is often described through:
 
-## How is a case different from general knowledge?
+- retrieve a similar case
+- reuse or adapt its solution
+- revise the proposed solution
+- retain the new experience when appropriate
 
-General knowledge:
+A case may contain:
 
-```text
-API 401 usually relates to authentication.
-```
+- context
+- action
+- outcome
+- failure
+- applicability conditions
+- lesson
 
-A case:
+Case retrieval can initialise or bias a search. It does not by itself imply a beam, tree, graph, or MCTS controller.
 
-```text
-In Project X, the 401 was caused by a wrong Token Audience.
-After fixing the OAuth Configuration, the service recovered.
-```
+Risks include:
 
-A case usually contains:
+- surface similarity hiding different conditions
+- obsolete cases
+- copying without adaptation
+- polluted case memory
+- similarity metrics that ignore critical constraints
 
-- the problem situation
-- the action taken at the time
-- the execution result
-- the failure reason
-- the applicable conditions
-- the lesson learned afterwards
+Every retrieved case should be checked against the current environment.
 
-## Tasks that fit
+### Neuro-symbolic components strengthen representation and evaluation
 
-- customer service
-- fault diagnosis
-- IT Operations
-- code bug fixing
-- repair work
-- legal case research
-- enterprise SOPs
-- recurring business problems
+Neuro-symbolic systems combine neural components with symbolic structures or procedures.
 
-## Main risks
-
-### Surface similarity, different conditions
-
-The same error message does not always mean the same root cause.
-
-### Old cases may be out of date
-
-Product versions, APIs, regulations and organisational processes may have changed.
-
-### Direct copy without adaptation
-
-The correct flow is:
+An agent workflow might use:
 
 ```text
-Retrieve
-  ↓
-Compare Conditions
-  ↓
-Adapt
-  ↓
-Verify
+Natural-language request
+  -> LLM extracts variables and constraints
+  -> solver or rule engine computes a valid result
+  -> verifier checks the mapping and output
+  -> LLM explains the result
 ```
 
-Not "find the most similar case and apply it as is".
+This can strengthen:
 
----
-
-## 10. Neuro-symbolic Reasoning: let the LLM cooperate with rules and Solvers
-
-The LLM is good at:
-
-- understanding natural language
-- handling fuzzy descriptions
-- generating candidates
-- summarising unstructured information
-- explaining results
-
-A symbolic system is good at:
-
-- precise rules
-- mathematical computation
-- logical constraints
-- reproducible execution
+- constraint satisfaction
+- mathematical calculation
+- planning
+- rule enforcement
 - consistency checking
-- path search
+- executable validation
 
-A Neuro-symbolic system combines the two:
+Neuro-symbolic is not one search topology. A solver may be used as:
 
-```text
-Natural-language Problem
-  ↓
-LLM Parses Requirements
-  ↓
-Structured Representation
-  ↓
-Rule Engine / Solver / Program
-  ↓
-Verified Result
-  ↓
-LLM Explains Result
-```
+- candidate generator
+- evaluator
+- verifier
+- planner
+- constraint filter
 
-## Common combinations
+The critical failure mode is translation error: a solver can precisely solve the wrong formalisation.
 
-- LLM + SQL
-- LLM + Python
-- LLM + Constraint Solver
-- LLM + Rule Engine
-- LLM + Knowledge Graph
-- LLM + Planning Engine
+## The evaluator is the centre of the system
 
-## Example: meeting scheduling
+Candidate generation receives most of the attention because it is visible. Evaluation usually determines whether search actually improves quality.
 
-The user asks:
+A production evaluator should be layered.
 
-> Schedule a meeting for five people. Each person can only attend within specific time windows, and the meeting room cannot be double-booked.
+### Layer 1: hard validity
 
-The LLM can:
+- schema
+- required fields
+- permissions
+- allowed tools
+- syntactic validity
+- budget
+- invariant checks
 
-1. parse the people, the time windows and the constraints
-2. convert the constraints into structured Constraints
-3. hand them to a Solver
-4. turn the result back into natural language
+### Layer 2: environment execution
 
-That is usually more reliable than asking the model to guess a schedule in plain text.
+- tests
+- compiler
+- database
+- browser state
+- simulator
+- solver
+- rule engine
 
-## The biggest risk
+### Layer 3: evidence and factual support
 
-The Solver can run the rules precisely.
+- source authority
+- citation support
+- date and version
+- missing evidence
+- conflict detection
 
-But if the LLM translates the constraints incorrectly at the start, the Solver will simply:
-
-> Precisely solve the wrong problem.
-
-So every layer has to verify:
-
-- whether the natural language was parsed correctly
-- whether the constraints are complete
-- whether the Solver succeeded
-- whether the final explanation matches the Solver result---
-
-## The Evaluator is the real foundation of a search system
-
-The most overestimated part of a multi-path system is the Candidate Generator.
-
-The actually hard part is usually:
-
-> How does the system know which candidate is better?
-
-If the Generator is strong but the Evaluator is weak, the good answer may have already been generated and the system still drops it.
-
-The Evaluator has four layers.
-
-## Layer 1: hard format and rules
-
-- is the JSON valid?
-- do the required fields exist?
-- is the SQL read-only?
-- is it over budget?
-- does it use allowed tools?
-
-## Layer 2: executable tests
-
-- does the program compile?
-- do the tests pass?
-- is the query runnable?
-- does the API return the expected result?
-- are the constraints satisfied?
-
-## Layer 3: factual and source verification
-
-- is the claim supported by a source?
-- do the citations match?
-- is the information out of date?
-- is a required condition missing?
-
-## Layer 4: preference and quality ranking
+### Layer 4: preference
 
 - readability
 - maintainability
-- completeness
-- style
-- business fit
+- user preference
+- strategic fit
+- cost-quality trade-off
 
-A reasonable order is:
+The order matters. Preference should not rescue an invalid or unsupported candidate.
+
+### Avoid one model acting as sole generator, judge, and final approver
+
+Using the same model everywhere can correlate errors.
+
+Possible mitigations:
+
+- deterministic checks
+- environment feedback
+- independent evaluator
+- rubric-based pairwise comparison
+- calibrated abstention
+- human review for high-impact decisions
+- disagreement analysis
+- source-grounded verification
+
+## Diversity and state canonicalisation must be designed
+
+Ten generated candidates may represent one actual idea.
 
 ```text
-Hard Validation
-  ↓
-External Tests
-  ↓
-Factual Verification
-  ↓
-Preference Ranking
+Use Redis caching
+Add a Redis cache layer
+Route caching through Redis
 ```
 
-Do not let a piece of code with beautiful prose but failing tests win on style.
+These are not three meaningfully different strategies.
 
----
+Useful controls:
 
-## Diversity also needs to be designed
+- generate by distinct objective
+- generate by distinct constraint
+- require solution categories
+- semantic deduplication
+- canonical state keys
+- category quotas
+- novelty thresholds
+- preserve one high-risk/high-upside candidate
+- preserve one low-cost candidate
 
-Generating ten candidates does not mean the system has actually explored ten directions.
+Diversity should be evaluated in the problem state, not only in wording.
 
-For example:
+## Search budgets and stopping rules
+
+If each node creates four children and depth is five, full expansion may create:
 
 ```text
-Plan A: use Redis cache
-Plan B: add a Redis cache layer
-Plan C: route caching through Redis
+4^5 = 1,024 leaf nodes
 ```
 
-These three candidates are just restating the same plan.
+Real cost also includes:
 
-## Ways to increase real diversity
+- generation
+- evaluation
+- tools
+- state persistence
+- deduplication
+- backtracking
+- environment reset
+- final synthesis
 
-### Use different evaluation angles
+Production limits may include:
 
-- Performance
-- Security
-- Cost
-- Maintainability
-- User Experience
+| Limit | Purpose |
+|---|---|
+| Maximum candidates | Cap the total frontier |
+| Maximum branching factor | Cap children per state |
+| Maximum depth | Bound search horizon |
+| Beam width | Bound active candidates per layer |
+| Maximum nodes | Cap tree or graph size |
+| Maximum tool calls | Bound environment interaction |
+| Token budget | Bound model cost |
+| Wall-clock limit | Bound latency |
+| No-improvement limit | Stop stalled search |
+| Accepted-solution threshold | Stop after a qualifying result |
+| Cost-aware score | Penalise expensive candidates |
+| Irreversible-action gate | Stop before unsafe execution |
 
-### Use different constraints
+The highest raw score is not always the best production choice.
 
-- Lowest Cost
-- Lowest Latency
-- Simplest Implementation
-- Highest Reliability
-- Minimum Change
+```text
+Candidate A:
+quality 92
+cost 5
 
-### Use different solution categories
+Candidate B:
+quality 93
+cost 50
+```
 
-- Rule-based
-- Retrieval-based
-- Database-based
-- Event-driven
-- Agent-based
+One extra quality point may not justify ten times the cost.
 
-### Semantic Deduplication
+## Choosing a search strategy
 
-Merge candidates that are essentially the same.
+Start with the cheapest mechanism that addresses the actual uncertainty.
 
-### Category Quota
+| Task condition | Starting approach |
+|---|---|
+| One path is sufficient and externally verifiable | Single path plus verifier |
+| One normalisable answer is unstable across samples | Self-consistency |
+| Several complete alternatives need comparison | Generate-and-Rank |
+| Partial candidates develop in layers | Beam search |
+| Early choices matter and backtracking is useful | Tree of Thoughts or another tree search |
+| Intermediate results must merge or be reused | Graph of Thoughts |
+| Search acts in an environment with feedback | MCTS-style action search or LATS |
+| Similar validated cases are available | Case retrieval as a prior |
+| Formal constraints or exact procedures exist | Solver, rule engine, or neuro-symbolic component |
 
-Require that at least:
+Before paying for multi-path search, ask:
 
-- one lowest-cost plan survives
-- one highest-reliability plan survives
-- one smallest-change plan survives
-- one long-term architecture plan survives
+1. Are there genuinely different candidates?
+2. Can intermediate states be represented?
+3. Can candidates be evaluated reliably?
+4. Does an early choice affect later outcomes?
+5. Is exploration safe and reversible?
+6. Is the quality gain worth the cost?
+7. Is there a clear stopping rule?
 
-This is usually more controllable than simply raising the Temperature.
-
----
-
-## Which tasks are worth paying the multi-path search cost for?
-
-Multi-path methods should not be the default.
-
-You can first ask the following questions.
-
-## 1. Does the problem really have several important candidates?
-
-If the answer is obvious, Single-path may already be enough.
-
-## 2. Will early choices affect later steps?
-
-If picking the wrong first step kills the whole path, Tree Search brings more value.
-
-## 3. Can intermediate states be evaluated?
-
-If even partial solutions cannot be scored, the search controller does not know which path to keep.
-
-## 4. Can the final result be verified externally?
-
-For example:
-
-- Unit tests
-- Compiler
-- Database
-- Browser State
-- Rule Engine
-- Citation Check
-
-The more reliable the external signal, the more valuable the search.
-
-## 5. Is the exploration action safe?
-
-Irreversible operations do not suit free exploration.
-
-## 6. Is the extra quality worth the extra cost?
-
-Search usually shows diminishing returns:
-
-- the first few candidates may quickly raise quality
-- further exploration keeps adding cost
-- the quality improvement flattens out
+If the answer to evaluation is no, generating more branches usually magnifies uncertainty rather than resolving it.
 
 ![Figure 4-5 — Search Cost and Answer Quality](/images/the-atlas-of-agent-design-patterns-part-4/search-cost-answer-quality.png)
 
 > **Figure 4-5 ｜ Search Cost and Answer Quality**  
 > Moving from Single-path to Generate-and-Rank, Beam Search and Tree Search may lift quality, but cost also keeps climbing, and the later stages usually hit Diminishing Returns.
 
----
-
-## How to control search cost?
-
-Suppose each node produces 4 candidates and the search depth is 5.
-
-A full expansion may produce:
-
-```text
-4⁵ = 1,024 leaf nodes
-```
-
-That does not even include:
-
-- candidate generation cost
-- evaluation cost
-- tool call cost
-- Context storage
-- State Persistence
-- deduplication
-- backtracking
-- final integration
-
-A Production system usually sets:
-
-| Limit | What it does |
-|---|---|
-| Max Candidates | Caps total candidates |
-| Max Branching Factor | Caps children per node |
-| Max Depth | Caps search depth |
-| Beam Width | Caps how many survive per layer |
-| Max Tool Calls | Caps tool usage |
-| Max Tokens | Controls model cost |
-| Max Wall Time | Caps total runtime |
-| Early Stop | Stops as soon as a qualifying solution is found |
-| No-improvement Limit | Stops after several rounds without improvement |
-| Cost-aware Score | Adds cost into the score |
-
-The best candidate is not always the one with the highest quality score.
-
-A Production system may pick:
-
-```text
-Quality: 92
-Cost: 5
-```
-
-Instead of:
-
-```text
-Quality: 93
-Cost: 50
-```
-
-One extra point is rarely worth ten times the cost.
-
----
-
-## Full comparison of search strategies
-
-| Mode | Candidate count | Mid-search evaluation | Pruning | Backtracking | Branch merging | External feedback | Cost |
-|---|---:|---:|---:|---:|---:|---:|---:|
-| Single-path | 1 | Low | No | No | No | Optional | Low |
-| Self-consistency | Multiple full answers | Usually no | No | No | Vote-based aggregation | Usually no | Medium–High |
-| Generate-and-Rank | Multiple full candidates | Final evaluation | Can drop | Usually no | Usually picks one | Optional | Medium–High |
-| Beam Search | K per layer | Yes | Yes | Limited | Usually no | Optional | High |
-| Tree of Thoughts | Multi-branch | Yes | Yes | Yes | Usually picks a path | Optional | High |
-| Graph of Thoughts | Graph-shaped candidates | Yes | Yes | Designed in | Yes | Optional | Very high |
-| MCTS / LATS | Action search tree | Yes | Yes | Yes | Usually picks a path | Yes | Very high |
-| Case-based Reasoning | Similar cases | Case filtering | Can drop | Not necessarily | Can integrate | Verifies current context | Medium |
-| Neuro-symbolic | Structured candidates | Rules or Solver | Yes | Depends on system | Depends on system | Precise execution results | Medium–High |
-
----
-
-## Does it need a Ranker, backtracking and high cost?
-
-| Mode | Needs a Ranker? | Can backtrack? | Needs external tools? | Relative cost |
-|---|---:|---:|---:|---:|
-| Single-path | No | No | No | Low |
-| Self-consistency | Needs an aggregator | No | No | Medium |
-| Generate-and-Rank | Yes | No | Optional | Medium |
-| Beam Search | Yes | Limited | Optional | High |
-| Tree of Thoughts | Yes | Yes | Optional | High |
-| Graph of Thoughts | Yes | Designed in | Optional | Very high |
-| LATS | Yes | Yes | Usually required | Very high |
-| Case-based Reasoning | Needs case similarity | Not necessarily | Usually needs retrieval | Medium |
-| Neuro-symbolic | Needs rules or a Solver | Depends on system | Yes | Medium–High |
-
----
-
-## Task type vs strategy selection
-
-| Task characteristic | Suggested approach |
-|---|---|
-| Simple and externally verifiable | Single-path + Verifier |
-| Clear answer, but single generation is unstable | Self-consistency |
-| Several complete options need to be compared | Generate-and-Rank |
-| Each stage has many candidates | Beam Search |
-| Need branching, pruning and backtracking | Tree of Thoughts |
-| Multiple paths need to be merged | Graph of Thoughts |
-| Need to act in an environment and get feedback | MCTS / LATS |
-| Large pool of reusable past cases | Case-based Reasoning |
-| Hard rules or mathematical constraints exist | Neuro-symbolic Reasoning |
-
----
 
 ## Common anti-patterns
 
-## Anti-pattern 1: use Tree of Thoughts for everything
+### Tree search for every task
 
-Building a search tree for a simple task only adds cost and latency.
+A simple, verifiable transformation does not need a search frontier.
 
-## Anti-pattern 2: generate many candidates with no reliable Evaluator
+### Many candidates without a reliable evaluator
 
-That is not search. It is piling up drafts.
+This is draft accumulation, not search.
 
-## Anti-pattern 3: treat multiple generations as Multi-Agent
+### Sampling confused with Multi-Agent
 
-Multiple Samples are not the same as multiple Agents.
+Several generations from one model are not several agents.
 
-## Anti-pattern 4: the model generates, scores and signs off all by itself
+### Self-consistency used as fact checking
 
-The same bias may run through every stage.
+Agreement does not establish truth.
 
-## Anti-pattern 5: voting as fact verification
+### Beam search described as complete or backtracking by default
 
-A majority can still share the same wrong source.
+Pruned states are normally lost.
 
-## Anti-pattern 6: no semantic deduplication
+### ToT reduced to a decorative tree diagram
 
-The search tree fills up with nodes that mean the same thing but are phrased differently.
+Without state representation, evaluation, and control, the tree has no operational meaning.
 
-## Anti-pattern 7: no State Canonicalization
+### GoT used when no merge or reuse is required
 
-Two paths have already reached the same state but the system still treats them as different branches.
+A graph adds dependency cost without adding value.
 
-## Anti-pattern 8: only look at quality, ignore cost
+### LATS over irreversible production actions
 
-The search cost goes up tenfold while the quality barely moves.
+Search must occur in a sandbox, simulation, or controlled reversible environment.
 
-## Anti-pattern 9: free exploration over irreversible actions
+### Model-only scoring
 
-You cannot really send five emails just to compare strategies.
+The generator and evaluator reproduce the same error.
 
-## Anti-pattern 10: search with no stopping condition
+### No semantic deduplication
 
-As long as the Agent can still generate new candidates, it keeps exploring.
+The frontier fills with paraphrases.
 
----
+### No stopping rule
 
-## A complete example: how a Coding Agent searches for a fix
+The system searches until the infrastructure, budget, or reader loses the will to live.
 
-The task:
+## Complete example: search for a code repair
 
-> Fix an API integration test failure.
+The task is:
 
-The error:
+> Fix an API integration test that expected `200` and received `401`.
 
-```text
-Expected 200
-Received 401
-```
-
-## Step 1: build the current state
+### Represent the state
 
 ```text
 Known:
-- Endpoint exists
-- Request reached the server
-- Test token was generated
+- endpoint exists
+- request reached the server
+- a test token was generated
 
 Unknown:
-- Token validity
-- Audience
-- Scope
-- Header format
+- token validity
+- audience
+- scope
+- authorisation header format
 ```
 
-## Step 2: generate candidate root causes
+### Generate distinct candidate causes
 
 ```text
-A. Token expired
-B. Wrong audience
-C. Missing scope
-D. Authorization header malformed
+A. expired token
+B. wrong audience
+C. missing scope
+D. malformed authorisation header
 ```
 
-## Step 3: initial ranking
+### Apply hard and evidence-based ranking
 
-Based on configuration and error logs:
+Use configuration, logs, and token claims to rank which branches are worth testing first.
 
-```text
-B: 8.2
-C: 7.8
-A: 5.1
-D: 4.9
-```
-
-## Step 4: expand the candidate branches
-
-Explore B:
+### Expand branch B
 
 ```text
 Inspect token claims
-  ↓
-Audience does not match API configuration
+  -> audience does not match API configuration
 ```
 
-Explore C:
+### Execute a reversible candidate fix
 
 ```text
-Inspect scope
-  ↓
-Required scope is already present
+Update test configuration
+  -> run target integration test
+  -> pass
 ```
 
-## Step 5: apply the fix and run external tests
+### Verify broadly
 
 ```text
-Fix Audience Configuration
-  ↓
-Run Target Integration Test
-  ↓
-Pass
+Run authentication test suite
+  -> pass
+
+Run lint
+  -> pass
+
+Run build
+  -> pass
+
+Check unrelated files
+  -> unchanged
 ```
 
-## Step 6: widen the verification
+### Stop
+
+The completion contract is satisfied, so lower-value branches are not expanded.
+
+The reliable part is not that the model imagined four root causes. It is that the important candidate was tested against the real environment, and the search stopped after the full acceptance criteria passed.
+
+## Conclusion
+
+The main mechanisms occupy different positions in a search system:
+
+- **Single-path reasoning** keeps one trajectory.
+- **Chain-of-Thought** makes one trajectory more explicit.
+- **Self-consistency** samples complete paths and aggregates answers.
+- **Generate-and-Rank** evaluates several complete alternatives.
+- **Beam search** keeps a bounded layer-wise frontier.
+- **Tree of Thoughts** searches over evaluated intermediate thought states.
+- **Graph of Thoughts** combines, transforms, and reuses intermediate states.
+- **MCTS** allocates repeated search effort using tree statistics.
+- **LATS** applies MCTS-style search to language-agent actions and environment feedback.
+- **Case-based reasoning** supplies reusable experience and candidate priors.
+- **Neuro-symbolic components** supply formal representation, constraints, computation, or verification.
+
+More branches do not automatically produce more truth.
+
+A production search system needs:
 
 ```text
-Run Authentication Test Suite
-  ↓
-Pass
-
-Run Lint
-  ↓
-Pass
-
-Run Build
-  ↓
-Pass
+meaningful candidates
+  + explicit state
+  + reliable evaluation
+  + bounded search control
+  + safe execution
+  + a stopping rule
 ```
 
-## Step 7: stop the search
-
-A solution that meets every completion condition has been found, so the lower-scoring branches are not expanded further.
-
-This flow uses:
-
-- Candidate Generation
-- Generate-and-Rank
-- Tree Expansion
-- Environment Feedback
-- Generate-and-Test
-- Early Stopping
-
-What actually makes it reliable is not that the Agent thought about many paths.
-
-It is that:
-
-> Every important path has been checked against the real environment.
-
----
-
-## Conclusion of this article
-
-The way an Agent explores solutions ranges from a single line all the way to a full search system.
-
-- **Single-path Reasoning**: keep only one main path
-- **Chain of Thought**: let a single path carry more intermediate steps
-- **Self-consistency**: generate many times and aggregate by agreement
-- **Generate-and-Rank**: produce several candidates, then rank them by criteria
-- **Beam Search**: keep the top K candidates at every layer
-- **Tree of Thoughts**: branch, evaluate, prune and backtrack
-- **Graph of Thoughts**: let different paths merge and reuse intermediate results
-- **MCTS / LATS**: combine Agent actions, environment feedback and tree search
-- **Case-based Reasoning**: start from similar past cases
-- **Neuro-symbolic Reasoning**: let the LLM cooperate with rules, programs and Solvers
-
-A more complex search does not automatically mean a better result.
-
-Multi-path methods are only worth the cost when all of the following hold:
-
-1. the problem really has several important candidates
-2. early choices affect later steps
-3. intermediate states can be evaluated
-4. search cost is bounded
-5. the final result can be verified externally
-6. exploration does not create irreversible side effects
-
-The most important question is not:
-
-> How many lines of thought can the Agent generate?
+The decisive question is not how many thoughts the model can generate.
 
 It is:
 
-> How does it know which path is worth continuing, and when should it stop?
+> Which signal justifies expanding this path, and which condition proves that search should stop?
 
-The next article enters the fourth dimension:
+Part 5 examines what happens after an output or action fails verification:
 
-> How does the Agent notice that it has made a mistake?
+> How should an agent retry, fall back, repair, replan, or learn from failure without creating another uncontrolled loop?
 
-Part 5 will fully compare Retry, Fallback, Self-Refine, Critic, Verifier, Generate-and-Test, Replanning and Reflexion, and explain why real verification cannot rely on the model saying "I double-checked it".
+## References
+
+- [Wei et al., *Chain-of-Thought Prompting Elicits Reasoning in Large Language Models*](https://arxiv.org/abs/2201.11903)
+- [Wang et al., *Self-Consistency Improves Chain of Thought Reasoning in Language Models*](https://arxiv.org/abs/2203.11171)
+- [Yao et al., *Tree of Thoughts: Deliberate Problem Solving with Large Language Models*](https://arxiv.org/abs/2305.10601)
+- [Besta et al., *Graph of Thoughts: Solving Elaborate Problems with Large Language Models*](https://arxiv.org/abs/2308.09687)
+- [Zhou et al., *Language Agent Tree Search Unifies Reasoning, Acting, and Planning in Language Models*](https://arxiv.org/abs/2310.04406)
+- [Browne et al., *A Survey of Monte Carlo Tree Search Methods*](https://doi.org/10.1109/TCIAIG.2012.2186810)
+- [Vijayakumar et al., *Diverse Beam Search: Decoding Diverse Solutions from Neural Sequence Models*](https://arxiv.org/abs/1610.02424)
+- [Aamodt and Plaza, *Case-Based Reasoning: Foundational Issues, Methodological Variations, and System Approaches*](https://doi.org/10.3233/AIC-1994-7104)
+- [Susskind et al., *Neuro-Symbolic AI: An Emerging Class of AI Workloads and their Characterization*](https://arxiv.org/abs/2109.06133)
+
+## Series
+
+| Part | Topic |
+|---:|---|
+| 1 | Beyond ReAct: A Six-Dimensional Map of LLM Agent Architectures |
+| 2 | Agent Execution Paths: Direct Calls, Pipelines, Routers, State Machines, and DAGs |
+| 3 | ReAct, Plan-and-Execute, Adaptive Planning, and HTN |
+| 4 | From Single-Path Reasoning to Trees, Graphs, MCTS, and LATS |
+| 5 | Verification, Recovery, and Self-Correction |
+| 6 | Multi-Agent Architectures |
+| 7 | Agent Memory |
+| 8 | Production Agent Architectures |
+| 9 | How to Choose an Agent Architecture |
+| 10 | Implementing Agent Patterns with Modern Frameworks |
