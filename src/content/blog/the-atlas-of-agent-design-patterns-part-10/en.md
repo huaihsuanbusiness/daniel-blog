@@ -10,8 +10,6 @@ bonus: true
 last_reviewed: "2026-06-30"
 ---
 
-# The Atlas of Agent Design Patterns Part 10 ｜ Implementing Agent Patterns with Modern Frameworks: From Concept to Code Architecture
-
 ## Implementing Agent Patterns with Modern Frameworks
 
 > **Last reviewed: 2026-06-30**
@@ -36,7 +34,7 @@ The question to settle first:
 
 ---
 
-# One-line definition
+## One-line definition
 
 > **An Agent Framework is a collection of software abstractions, Runtime and tooling that implements and executes an Agent Pattern. It is not the architecture decision itself.**
 
@@ -71,9 +69,9 @@ Only then does the Framework question arrive:
 
 ---
 
-# 1. Build the right three-layer model first
+## 1. Build the right three-layer model first
 
-## Layer 1: Architecture Patterns
+### Layer 1: Architecture Patterns
 
 This layer contains:
 
@@ -94,7 +92,7 @@ It answers:
 
 > How should the system operate?
 
-## Layer 2: Framework and Runtime
+### Layer 2: Framework and Runtime
 
 This layer includes:
 
@@ -110,7 +108,7 @@ It answers:
 
 > Which abstraction, Runtime and API do we use to implement it?
 
-## Layer 3: Infrastructure and Operations
+### Layer 3: Infrastructure and Operations
 
 This layer includes:
 
@@ -129,9 +127,9 @@ It answers:
 
 > How is the system persisted, deployed, isolated, observed and operated?
 
-## Three common mistakes
+### Three common mistakes
 
-### Treating Framework as Pattern
+#### Treating Framework as Pattern
 
 ```text
 Our architecture is LangGraph.
@@ -139,17 +137,17 @@ Our architecture is LangGraph.
 
 This sentence carries too little information. Inside LangGraph, you can implement Pipeline, State Machine, ReAct, Plan-and-Execute and Human-in-the-loop.
 
-### Treating Framework as Infrastructure
+#### Treating Framework as Infrastructure
 
 A Framework exposing a Checkpoint API does not mean backups, Tenant Isolation, Production Queue and Disaster Recovery are in place.
 
-### Treating Tool Integration as Safety
+#### Treating Tool Integration as Safety
 
 The ability to call a Tool does not imply minimum permissions, Approval, Idempotency or Post-condition Verification.
 
 ---
 
-# 2. The implementation map for 2026
+## 2. The implementation map for 2026
 
 This article compares seven implementation paths:
 
@@ -167,7 +165,7 @@ A simple feature-checklist table does not settle the choice.
 
 ---
 
-# 3. Native Code: the most underestimated option
+## 3. Native Code: the most underestimated option
 
 Native Code means implementing the system with ordinary programming constructs:
 
@@ -217,7 +215,7 @@ def run_task(state: TaskState) -> TaskState:
     return state
 ```
 
-## Where it fits
+### Where it fits
 
 - The flow is small
 - The states are few
@@ -226,7 +224,7 @@ def run_task(state: TaskState) -> TaskState:
 - Maximum controllability is needed
 - One Queue plus Database is enough
 
-## Strengths
+### Strengths
 
 - Lowest abstraction overhead
 - Easy to debug
@@ -234,7 +232,7 @@ def run_task(state: TaskState) -> TaskState:
 - Easy to unit test
 - Low migration cost
 
-## Costs
+### Costs
 
 You have to handle these yourself:
 
@@ -246,13 +244,13 @@ You have to handle these yourself:
 - State Migration
 - Tool Loop
 
-## Decision rule
+### Decision rule
 
 > If twenty to fifty lines of clear ordinary code finish the job, do not introduce a new Agent Runtime first.
 
 ---
 
-# 4. LangGraph: low-level, explicit, Stateful Orchestration
+## 4. LangGraph: low-level, explicit, Stateful Orchestration
 
 LangGraph's core position is a low-level Agent Orchestration Runtime.
 
@@ -267,7 +265,7 @@ It fits:
 - Explicit control over Node and Edge
 - Deterministic plus Agentic Hybrid
 
-## Mental model
+### Mental model
 
 ```text
 State
@@ -299,7 +297,7 @@ builder.add_edge("verify", END)
 graph = builder.compile(checkpointer=checkpointer)
 ```
 
-## Where it fits best
+### Where it fits best
 
 - Router
 - State Machine
@@ -310,21 +308,21 @@ graph = builder.compile(checkpointer=checkpointer)
 - Retry / Repair / Replan
 - Long-running Workflow
 
-## Strengths
+### Strengths
 
 - State is a first-class citizen
 - Clear Node and Edge boundaries
 - Fixed nodes and Agentic nodes can coexist
 - Suited to Pause / Resume
 
-## Costs
+### Costs
 
 - Lower-level abstraction
 - A Graph is not the same as a correct architecture
 - The team must understand the difference between Checkpoint and Side Effect
 - A large Graph can turn into another kind of spaghetti, only this time the noodles glow
 
-## Who should pick it?
+### Who should pick it?
 
 - Engineering teams that want explicit flow control
 - Teams that already know what their State Machine looks like
@@ -333,13 +331,13 @@ graph = builder.compile(checkpointer=checkpointer)
 
 ---
 
-# 5. LlamaIndex Workflows: Event Workflow for Data-centric and RAG-centric work
+## 5. LlamaIndex Workflows: Event Workflow for Data-centric and RAG-centric work
 
 LlamaIndex's strengths are tied to data, indices, Retrieval, Query Engine and RAG.
 
 Workflows offers an Event and Step execution model.
 
-## Mental model
+### Mental model
 
 ```text
 Event
@@ -389,7 +387,7 @@ class RAGWorkflow(Workflow):
         return StopEvent(result=answer)
 ```
 
-## Where it fits best
+### Where it fits best
 
 - RAG Pipeline
 - Query Routing
@@ -400,19 +398,19 @@ class RAGWorkflow(Workflow):
 - Structured Output
 - MCP-connected Data Tools
 
-## Strengths
+### Strengths
 
 - Close to Retriever, Index, Query Engine, Document and Node abstractions
 - Event Model suits data flows
 - A fixed Retrieval Flow can carry an Agent or Tool Node inside
 
-## Costs
+### Costs
 
 - Not every piece of business work should be turned into data
 - Too many Events become hard to trace
 - Domain Models that depend directly on Framework Events carry a higher migration cost
 
-## Who should pick it?
+### Who should pick it?
 
 - RAG developers
 - Knowledge Assistants
@@ -421,11 +419,11 @@ class RAGWorkflow(Workflow):
 
 ---
 
-# 6. CrewAI: Crews for collaboration, Flows for control
+## 6. CrewAI: Crews for collaboration, Flows for control
 
 CrewAI has two different mental models.
 
-## Crews
+### Crews
 
 For:
 
@@ -435,7 +433,7 @@ For:
 - Specialised Tools
 - Collaborative Tasks
 
-## Flows
+### Flows
 
 For:
 
@@ -447,7 +445,7 @@ For:
 - Resume
 - Embedding a Crew inside a fixed flow
 
-## The right combination
+### The right combination
 
 ```text
 CrewAI Flow
@@ -469,19 +467,19 @@ Every Step
 Create Another Agent
 ```
 
-## Strengths
+### Strengths
 
 - Agent, Task, Crew, Process are easy to grasp
 - Flow keeps control, and Crew can be added at specific nodes
 - Quick way to test whether role separation earns its keep
 
-## Costs
+### Costs
 
 - Persona can hide engineering responsibility
 - Easy path to Multi-Agent Inflation
 - Side Effect, Tool Permission and Final Owner need extra review
 
-## Who should pick it?
+### Who should pick it?
 
 - Teams prototyping role collaboration quickly
 - Content, research and analysis work
@@ -489,7 +487,7 @@ Create Another Agent
 
 ---
 
-# 7. OpenAI Agents SDK: an Agent Runtime with few primitives
+## 7. OpenAI Agents SDK: an Agent Runtime with few primitives
 
 The OpenAI Agents SDK keeps its core primitives small:
 
@@ -503,7 +501,7 @@ The OpenAI Agents SDK keeps its core primitives small:
 - Human-in-the-loop
 - Sandbox Agent
 
-## Mental model
+### Mental model
 
 ```text
 Agent
@@ -540,7 +538,7 @@ result = Runner.run_sync(
 )
 ```
 
-## Where it fits best
+### Where it fits best
 
 - Tool-using Agent
 - Manager plus Agents as Tools
@@ -551,20 +549,20 @@ result = Runner.run_sync(
 - Sandbox Coding / Document Tasks
 - Voice / Realtime Agent
 
-## Strengths
+### Strengths
 
 - Few primitives
 - Agent Loop is provided
 - Handoff and Manager patterns are both expressible
 - Built-in Trace
 
-## Costs
+### Costs
 
 - Not a complete Business Workflow Engine
 - Guardrail scope must be understood precisely
 - Provider and Hosted Tool choices need lock-in evaluation
 
-## Who should pick it?
+### Who should pick it?
 
 - Teams that want a Tool-using Agent quickly
 - Teams already on OpenAI Models and Hosted Tools
@@ -573,7 +571,7 @@ result = Runner.run_sync(
 
 ---
 
-# 8. AutoGen: still usable, but its position in 2026 must be understood
+## 8. AutoGen: still usable, but its position in 2026 must be understood
 
 AutoGen currently still ships:
 
@@ -588,7 +586,7 @@ AutoGen currently still ships:
 
 AgentChat suits high-level Single / Multi-Agent; Core is a lower-level Event-driven Runtime.
 
-## Where it fits
+### Where it fits
 
 - Existing AutoGen 0.4+ projects
 - Multi-Agent Research
@@ -597,7 +595,7 @@ AgentChat suits high-level Single / Multi-Agent; Core is a lower-level Event-dri
 - Distributed Multi-Agent Experiment
 - Docker Code Execution
 
-## An important shift in 2026
+### An important shift in 2026
 
 Microsoft has positioned Microsoft Agent Framework as the direct successor to AutoGen and Semantic Kernel.
 
@@ -613,7 +611,7 @@ This does not mean AutoGen stops being usable tomorrow. Its documentation is sti
 
 ---
 
-# 9. Microsoft Agent Framework: the successor line to AutoGen and Semantic Kernel
+## 9. Microsoft Agent Framework: the successor line to AutoGen and Semantic Kernel
 
 Microsoft Agent Framework delivers two main capability areas:
 
@@ -632,7 +630,7 @@ It also integrates:
 - Multiple providers
 - Python and .NET
 
-## Where it fits best
+### Where it fits best
 
 - Microsoft / Azure ecosystem
 - Graph Workflow
@@ -643,13 +641,13 @@ It also integrates:
 - Enterprise Telemetry
 - Python plus .NET teams
 
-## Strengths
+### Strengths
 
 - Workflow and Agent coexist
 - Clear direction for enterprise integration
 - Useful for evaluating the future of AutoGen / Semantic Kernel
 
-## Main risks
+### Main risks
 
 - Still Public Preview
 - API, features and deployment model may change
@@ -663,13 +661,13 @@ It also integrates:
 
 ---
 
-# 10. Which Frameworks fit a State Machine?
+## 10. Which Frameworks fit a State Machine?
 
-## First priority: Native Code
+### First priority: Native Code
 
 If the states are few and the flow is fixed, plain Enum, Database and Function are the cleanest choice.
 
-## Strong control: LangGraph
+### Strong control: LangGraph
 
 For:
 
@@ -679,7 +677,7 @@ For:
 - Checkpoint
 - Long-running Task
 
-## Data-centric: LlamaIndex Workflows
+### Data-centric: LlamaIndex Workflows
 
 For:
 
@@ -688,7 +686,7 @@ For:
 - RAG State
 - Data Agent
 
-## High-level hybrid: CrewAI Flows
+### High-level hybrid: CrewAI Flows
 
 For:
 
@@ -696,7 +694,7 @@ For:
 - State Persistence
 - Embedding a Crew inside a Flow
 
-## Microsoft stack: Microsoft Agent Framework Workflows
+### Microsoft stack: Microsoft Agent Framework Workflows
 
 For:
 
@@ -706,7 +704,7 @@ For:
 - Human-in-the-loop
 - Python / .NET
 
-## Do not stop at "supports State"
+### Do not stop at "supports State"
 
 The questions that actually matter:
 
@@ -718,13 +716,13 @@ The questions that actually matter:
 
 ---
 
-# 11. Which Frameworks fit a RAG Workflow?
+## 11. Which Frameworks fit a RAG Workflow?
 
-## LlamaIndex Workflows
+### LlamaIndex Workflows
 
 One of the most natural options, because data, Retriever, Index and Workflow live in the same ecosystem.
 
-## LangGraph
+### LangGraph
 
 Suited to complex Agentic RAG:
 
@@ -735,7 +733,7 @@ Suited to complex Agentic RAG:
 - Verifier
 - Human Review
 
-## Native Code
+### Native Code
 
 If the flow is just:
 
@@ -745,39 +743,39 @@ Retrieve → Rerank → Generate → Verify
 
 A plain Pipeline is often enough.
 
-## CrewAI
+### CrewAI
 
 Let Flow manage the RAG Pipeline, and let Crew handle Research or Synthesis.
 
-## OpenAI Agents SDK
+### OpenAI Agents SDK
 
 Use File Search, MCP or Function Tool and let the Agent decide when to retrieve. Strict Citation Mapping still requires an outer data layer and a Verifier.
 
 ---
 
-# 12. Which Frameworks fit Multi-Agent?
+## 12. Which Frameworks fit Multi-Agent?
 
-## CrewAI
+### CrewAI
 
 The most direct option for high-level role collaboration.
 
-## AutoGen
+### AutoGen
 
 Suited to AgentChat Teams, Selector Group, Swarm and Multi-Agent Research.
 
-## Microsoft Agent Framework
+### Microsoft Agent Framework
 
 Suited to new Microsoft-centric Multi-Agent Workflows, but Public Preview applies.
 
-## OpenAI Agents SDK
+### OpenAI Agents SDK
 
 Suited to Manager plus Agents as Tools, Handoff and a small number of Agents with clear collaboration.
 
-## LangGraph
+### LangGraph
 
 Suited to defining Supervisor–Worker yourself, so Multi-Agent is just Nodes inside a Graph.
 
-## What really decides
+### What really decides
 
 The question is not "can we set up multiple Agents", but:
 
@@ -800,7 +798,7 @@ The question is not "can we set up multiple Agents", but:
 
 ---
 
-# 13. Which Frameworks fit Computer-use?
+## 13. Which Frameworks fit Computer-use?
 
 Computer-use is not a complete architecture. It is a high-risk, Observation-driven Tool Runtime.
 
@@ -820,39 +818,39 @@ Post-condition Verification
 Recover / Human Takeover
 ```
 
-## LangGraph
+### LangGraph
 
 Suited to putting Browser State, Action History, Retry and Human Takeover inside a Graph.
 
-## OpenAI Agents SDK
+### OpenAI Agents SDK
 
 Suited to using Agent Loop, Built-in Tool, Sandbox, Trace and Human-in-the-loop.
 
-## AutoGen
+### AutoGen
 
 Suited to research or prototyping with Code Executor, Agent Team and a tool Runtime.
 
-## Microsoft Agent Framework
+### Microsoft Agent Framework
 
 Suited to integrating Agent plus Workflow inside the Microsoft Stack, but Computer-use Policy and UI State still need to be handled manually.
 
-## CrewAI
+### CrewAI
 
 A Browser Tool can be put inside an Agent, but high-risk Transitions should be controlled by Flow.
 
-## Principle
+### Principle
 
 > Do not skip State, Approval, Duplicate Detection and Post-condition just because the Framework ships a Browser Tool.
 
 ---
 
-# 14. How does the same task map onto different Frameworks?
+## 14. How does the same task map onto different Frameworks?
 
 Task:
 
 > Build a resumable in-site research Agent: first decide whether the question can be answered Directly; otherwise retrieve articles; if evidence is insufficient, rewrite the Query at most once; output after the Citation Verifier passes, otherwise Abstain.
 
-## Architecture pattern
+### Architecture pattern
 
 ```text
 Router
@@ -866,33 +864,33 @@ Citation Verifier
 Complete / Abstain
 ```
 
-## Native Code
+### Native Code
 
 Use Enum State, Python Function, Database Row and an Explicit Retry Counter.
 
-## LangGraph
+### LangGraph
 
 Use StateGraph, Conditional Edge, Checkpointer and a Verifier Node.
 
-## LlamaIndex Workflows
+### LlamaIndex Workflows
 
 Use Query Event, Retrieved Event, Verification Event, Context and Retriever / Reranker.
 
-## CrewAI
+### CrewAI
 
 Use Flow for the whole, an optional Research Crew for deep research, and a Verifier Step at the end.
 
-## OpenAI Agents SDK
+### OpenAI Agents SDK
 
 Use a Router Agent or Python Route, Retrieval Function Tool / MCP, Guardrail, Session and Trace. Strict control of the Rewrite Count should live in outer Python State.
 
-## Microsoft Agent Framework
+### Microsoft Agent Framework
 
 Use an Explicit Workflow, Agent Node, Session State, Checkpoint, Middleware and Telemetry.
 
 ---
 
-# 15. Full Framework comparison table
+## 15. Full Framework comparison table
 
 | Option | Core mental model | Best fit | Stateful Workflow | RAG | Multi-Agent | Human-in-the-loop | Abstraction level | Main risk |
 |---|---|---|---:|---:|---:|---:|---:|---|
@@ -906,7 +904,7 @@ Use an Explicit Workflow, Agent Node, Session State, Checkpoint, Middleware and 
 
 ---
 
-# 16. When does Native Code beat a Framework?
+## 16. When does Native Code beat a Framework?
 
 Use Native Code when:
 
@@ -936,7 +934,7 @@ Use a Framework when:
 
 ---
 
-# 17. Code architecture that lowers Framework lock-in
+## 17. Code architecture that lowers Framework lock-in
 
 Choosing a Framework that never changes is not the point. That kind of Framework does not exist.
 
@@ -944,7 +942,7 @@ The point is:
 
 > Let Domain Logic not depend on every Framework type.
 
-## Recommended layering
+### Recommended layering
 
 ```text
 Application API
@@ -958,7 +956,7 @@ Framework Adapter
 Model / Tool / Storage Provider
 ```
 
-## Domain State should be defined by you
+### Domain State should be defined by you
 
 ```python
 class ResearchState(BaseModel):
@@ -970,7 +968,7 @@ class ResearchState(BaseModel):
     status: str
 ```
 
-## Tool Contract should be independent
+### Tool Contract should be independent
 
 ```python
 from typing import Protocol
@@ -992,7 +990,7 @@ Then build:
 - OpenAIFunctionToolAdapter
 - CrewAIToolAdapter
 
-## Verifier should be independent
+### Verifier should be independent
 
 ```python
 class VerificationResult(BaseModel):
@@ -1003,7 +1001,7 @@ class VerificationResult(BaseModel):
 
 Do not let each Framework invent its own Pass / Fail shape.
 
-## Trace Context should work across Frameworks
+### Trace Context should work across Frameworks
 
 At minimum, keep:
 
@@ -1015,7 +1013,7 @@ At minimum, keep:
 - prompt_version
 - framework_version
 
-## Side Effects should sit at explicit boundaries
+### Side Effects should sit at explicit boundaries
 
 For example:
 
@@ -1034,7 +1032,7 @@ Do not bury them inside opaque Agent Personas.
 
 ---
 
-# 18. Framework selection decision tree
+## 18. Framework selection decision tree
 
 ```text
 Can ordinary code express the workflow clearly?
@@ -1064,7 +1062,7 @@ Do you have an existing AutoGen system or research need?
 
 ---
 
-# 19. Common implementation anti-patterns
+## 19. Common implementation anti-patterns
 
 | Anti-pattern | Problem | Fix |
 |---|---|---|
@@ -1081,9 +1079,9 @@ Do you have an existing AutoGen system or research need?
 
 ---
 
-# 20. Production notes
+## 20. Production notes
 
-## Version pinning
+### Version pinning
 
 Save:
 
@@ -1093,7 +1091,7 @@ Save:
 - Tool Version
 - State Schema Version
 
-## State migration
+### State migration
 
 Before changing the State Schema, answer:
 
@@ -1102,7 +1100,7 @@ Before changing the State Schema, answer:
 - Is a Migration Job needed?
 - Can we Rollback?
 
-## Timeout
+### Timeout
 
 Set separately for:
 
@@ -1112,7 +1110,7 @@ Set separately for:
 - Workflow Timeout
 - Approval Timeout
 
-## Budget
+### Budget
 
 Cap:
 
@@ -1124,7 +1122,7 @@ Cap:
 - Replans
 - Wall Time
 
-## Evaluation
+### Evaluation
 
 At minimum, split into:
 
@@ -1136,7 +1134,7 @@ At minimum, split into:
 - Cost Regression
 - Latency Regression
 
-## Observability
+### Observability
 
 Track:
 
@@ -1150,7 +1148,7 @@ Track:
 - Verifier Result
 - Terminal State
 
-## Human Approval
+### Human Approval
 
 Approval Payload should at least include:
 
@@ -1163,7 +1161,7 @@ Approval Payload should at least include:
 
 ---
 
-# 21. One-page cheat sheet
+## 21. One-page cheat sheet
 
 | Need | Prefer | Do not start with |
 |---|---|---|
@@ -1180,7 +1178,7 @@ Approval Payload should at least include:
 
 ---
 
-# Conclusion of this article
+## Conclusion of this article
 
 Framework value:
 
@@ -1229,7 +1227,7 @@ The whole ten-article series can be wrapped in one final sentence:
 
 ---
 
-# The Atlas of Agent Design Patterns — Series Index
+## The Atlas of Agent Design Patterns — Series Index
 
 | Part | Topic |
 |---:|---|
@@ -1246,7 +1244,7 @@ The whole ten-article series can be wrapped in one final sentence:
 
 ---
 
-# Figure-to-section mapping
+## Figure-to-section mapping
 
 | Figure | Formal title | Suggested filename |
 |---|---|---|
@@ -1259,7 +1257,7 @@ The whole ten-article series can be wrapped in one final sentence:
 
 ---
 
-# Official documentation and review baseline
+## Official documentation and review baseline
 
 This article cross-checked Framework positioning against the following official sources on 2026-06-30:
 

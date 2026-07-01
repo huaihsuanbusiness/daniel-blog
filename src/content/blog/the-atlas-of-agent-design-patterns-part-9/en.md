@@ -8,8 +8,6 @@ series: "The Atlas of Agent Design Patterns"
 seriesOrder: 9
 ---
 
-# The Atlas of Agent Design Patterns Part 9 ｜ How to Choose an Agent Architecture: Decision Trees, Evaluation Matrices and Anti-Patterns
-
 ## How to Choose an Agent Architecture: Decision Trees, Evaluation Matrices, and Anti-Patterns
 
 The previous eight articles walked through Direct, Pipeline, Router, State Machine, DAG, ReAct, Planning, Tree Search, Verifier, Multi-Agent and Memory.
@@ -31,7 +29,7 @@ Four things get done in this article:
 
 ---
 
-# 1. First question: does this task actually need an Agent?
+## 1. First question: does this task actually need an Agent?
 
 Many teams start by asking:
 
@@ -55,7 +53,7 @@ Agent earns its place only when the fixed logic cannot reasonably handle:
 - The task needs dynamic Planning
 - The task needs bounded autonomy to handle unknown situations
 
-## Direct
+### Direct
 
 For:
 
@@ -67,7 +65,7 @@ For:
 
 Examples: translation, rewriting, summarisation, classification, format conversion.
 
-## Pipeline
+### Pipeline
 
 For:
 
@@ -88,7 +86,7 @@ Validate
 Store
 ```
 
-## Router
+### Router
 
 For:
 
@@ -111,7 +109,7 @@ Router
   └→ Human Review
 ```
 
-## Agentic Workflow
+### Agentic Workflow
 
 For:
 
@@ -120,7 +118,7 @@ For:
 - Bounded autonomy required
 - Retry, Fallback or Replanning required
 
-## Stateful Agent
+### Stateful Agent
 
 When the task carries these needs, a State Machine or persistent State usually becomes necessary:
 
@@ -139,13 +137,13 @@ When the task carries these needs, a State Machine or persistent State usually b
 
 ---
 
-# 2. Turn requirements into inspectable system properties
+## 2. Turn requirements into inspectable system properties
 
 Do not jump straight from requirement to Framework.
 
 Translate requirements into five categories of system properties first.
 
-## Task properties
+### Task properties
 
 - Single-step or multi-step?
 - Fixed or dynamic?
@@ -155,7 +153,7 @@ Translate requirements into five categories of system properties first.
 - Pause / Resume needed?
 - Human approval needed?
 
-## Data properties
+### Data properties
 
 - Is the data already in the input?
 - RAG needed?
@@ -164,7 +162,7 @@ Translate requirements into five categories of system properties first.
 - Sensitive data involved?
 - Versioned or time-sensitive?
 
-## Tool properties
+### Tool properties
 
 - How many tools?
 - Are tools reversible?
@@ -173,7 +171,7 @@ Translate requirements into five categories of system properties first.
 - Sandbox needed?
 - Permission differences?
 
-## Quality properties
+### Quality properties
 
 - Is there a clear correct answer?
 - Can Completion Criteria be defined?
@@ -182,7 +180,7 @@ Translate requirements into five categories of system properties first.
 - Is Partial allowed?
 - Does it need Human Judgment?
 
-## Operations properties
+### Operations properties
 
 - Latency ceiling
 - Cost ceiling
@@ -195,13 +193,13 @@ Translate requirements into five categories of system properties first.
 
 ---
 
-# 3. The six-dimension architecture selection flow
+## 3. The six-dimension architecture selection flow
 
 A single name does not describe an Agent architecture well.
 
 Pick across six dimensions.
 
-## Dimension 1: Execution Path
+### Dimension 1: Execution Path
 
 Answers:
 
@@ -227,17 +225,17 @@ Is parallelism needed?
 Is it triggered by an event?
 ```
 
-## Dimension 2: Decision and Planning
+### Dimension 2: Decision and Planning
 
 Answers:
 
 > How is the next step decided?
 
-### Fixed Decision
+#### Fixed Decision
 
 For tasks whose path can be pre-defined, where cost and risk need to be tightly controlled.
 
-### ReAct
+#### ReAct
 
 For Browser, Debug, Search and API Exploration where the next step depends on a tool result.
 
@@ -248,7 +246,7 @@ Requires:
 - Duplicate Detection
 - Stop Condition
 
-### Plan-and-Execute
+#### Plan-and-Execute
 
 For:
 
@@ -257,7 +255,7 @@ For:
 - Easy to miss items
 - Need to estimate Budget first
 
-### Adaptive Planning
+#### Adaptive Planning
 
 For:
 
@@ -273,11 +271,11 @@ Requires:
 - Maximum Replans
 - Completed Step Registry
 
-### HTN
+#### HTN
 
 For tasks with existing SOPs, enterprise processes and controlled decomposition methods.
 
-## Dimension 3: Reasoning and Search
+### Dimension 3: Reasoning and Search
 
 Answers:
 
@@ -295,7 +293,7 @@ Answers:
 
 Do not use complex Search without a reliable Evaluator.
 
-## Dimension 4: Verification and Recovery
+### Dimension 4: Verification and Recovery
 
 Answers:
 
@@ -314,41 +312,41 @@ Answers:
 | Want to avoid repeating the same mistake | Reflexion |
 | High risk or irreversible | Human Review |
 
-## Dimension 5: Agent Organisation
+### Dimension 5: Agent Organisation
 
 Answers:
 
 > Who does the work?
 
-### Single Agent
+#### Single Agent
 
 The default option.
 
-### Role-based Single Agent
+#### Role-based Single Agent
 
 Responsibilities split, but no real independent execution.
 
-### Supervisor–Worker
+#### Supervisor–Worker
 
 Sub-tasks are clearly separable, parallel-friendly, and need central governance.
 
-### Planner–Executor–Critic
+#### Planner–Executor–Critic
 
 Planning, execution and diagnosis split across roles.
 
-### Debate / Voting
+#### Debate / Voting
 
 Multiple viewpoints, adversarial analysis, or fixed-candidate aggregation.
 
-### Blackboard
+#### Blackboard
 
 Multiple Agents share intermediate results.
 
-### Peer-to-Peer / Swarm
+#### Peer-to-Peer / Swarm
 
 Only for highly decentralised setups with a mature Control Plane.
 
-## Dimension 6: State and Memory
+### Dimension 6: State and Memory
 
 Answers:
 
@@ -373,7 +371,7 @@ Answers:
 
 ---
 
-# 4. The full selection matrix
+## 4. The full selection matrix
 
 | Task property | Execution Path | Decision / Planning | Search | Verification | Organisation | State / Memory |
 |---|---|---|---|---|---|---|
@@ -391,9 +389,9 @@ Answers:
 
 ---
 
-# 5. When to pick ReAct, Planning or Adaptive Planning?
+## 5. When to pick ReAct, Planning or Adaptive Planning?
 
-## ReAct
+### ReAct
 
 When:
 
@@ -408,7 +406,7 @@ Avoid when:
 - High-risk fixed flow
 - Clear dependencies and a complete deliverable exist
 
-## Plan-and-Execute
+### Plan-and-Execute
 
 When:
 
@@ -417,7 +415,7 @@ When:
 - Sub-task order matters
 - Need to estimate Budget first
 
-## Adaptive Planning
+### Adaptive Planning
 
 When:
 
@@ -428,7 +426,7 @@ When:
 
 ---
 
-# 6. When is multi-path search worth it?
+## 6. When is multi-path search worth it?
 
 Multi-path search is only worth it when all of these hold:
 
@@ -450,7 +448,7 @@ Multi-path search is only worth it when all of these hold:
 
 ---
 
-# 7. When does Multi-Agent earn its place?
+## 7. When does Multi-Agent earn its place?
 
 Multi-Agent fits when:
 
@@ -488,7 +486,7 @@ This is not a maturity ladder. It is the rising order of coordination cost.
 
 ---
 
-# 8. How to pick the verification mechanism
+## 8. How to pick the verification mechanism
 
 | Task | Priority verification |
 |---|---|
@@ -511,39 +509,39 @@ Principles:
 
 ---
 
-# 9. How to pick Memory
+## 9. How to pick Memory
 
-## Working Memory
+### Working Memory
 
 For long tasks, intermediate information and Context compression.
 
-## Short-term State
+### Short-term State
 
 For State Transition, Retry, Approval, Pause / Resume.
 
-## Episodic Memory
+### Episodic Memory
 
 For similar cases, past events and action replay.
 
-## Semantic Memory
+### Semantic Memory
 
 For governable stable knowledge.
 
-## Procedural Memory
+### Procedural Memory
 
 For SOPs, tool rules and acceptance procedures.
 
-## User Memory
+### User Memory
 
 Only preferences that the user has explicitly authorised, that are long-term stable, and that the user can view and delete.
 
-## Not using Long-term Memory
+### Not using Long-term Memory
 
 When the task is one-off, the data is sensitive, the information expires easily, or it can be re-retrieved from the Source of Truth.
 
 ---
 
-# 10. Autonomy versus controllability
+## 10. Autonomy versus controllability
 
 | Pattern | Autonomy | Controllability |
 |---|---:|---:|
@@ -566,9 +564,9 @@ The Production sweet spot usually is:
 
 ---
 
-# 11. Cost, latency, reliability and observability
+## 11. Cost, latency, reliability and observability
 
-## Cost
+### Cost
 
 - Model Calls
 - Token
@@ -578,7 +576,7 @@ The Production sweet spot usually is:
 - Sandbox
 - Human Review
 
-## Latency
+### Latency
 
 - Model latency
 - Tool latency
@@ -586,7 +584,7 @@ The Production sweet spot usually is:
 - Human approval
 - Retry
 
-## Reliability
+### Reliability
 
 - Success Rate
 - Partial Rate
@@ -594,7 +592,7 @@ The Production sweet spot usually is:
 - Verifier Pass Rate
 - Post-condition Success
 
-## Observability
+### Observability
 
 - Trace
 - State Transition
@@ -606,7 +604,7 @@ The Production sweet spot usually is:
 
 ---
 
-# 12. Cost versus quality matrix
+## 12. Cost versus quality matrix
 
 | Architecture | Potential quality | Runtime cost | Latency | Operational risk | Best fit |
 |---|---:|---:|---:|---:|---|
@@ -628,7 +626,7 @@ Principles:
 
 ---
 
-# 13. Production practicality ranking
+## 13. Production practicality ranking
 
 The ranking here is not about capability strength. It is the order in which most Production projects should prioritise and consider.
 
@@ -646,7 +644,7 @@ The ranking here is not about capability strength. It is the order in which most
 
 ---
 
-# 14. Ten Agent anti-patterns and fixes
+## 14. Ten Agent anti-patterns and fixes
 
 | Anti-pattern | Problem | Fix | Acceptance criterion |
 |---|---|---|---|
@@ -663,7 +661,7 @@ The ranking here is not about capability strength. It is the order in which most
 
 ---
 
-# 15. Agent Architecture Canvas
+## 15. Agent Architecture Canvas
 
 A complete Canvas should carry fifteen fields.
 
@@ -697,13 +695,13 @@ Each field must answer:
 
 ---
 
-# 16. Full case: from requirement to architecture
+## 16. Full case: from requirement to architecture
 
 Requirement:
 
 > Build a Blog Ask AI. Users can ask about article content. The system answers from the site's own articles with sources. It can rewrite Queries when needed, but cannot freely browse the web and cannot retry indefinitely.
 
-## Step 1: Does it need an Agent?
+### Step 1: Does it need an Agent?
 
 Most of the flow is a fixed RAG Pipeline.
 
@@ -716,7 +714,7 @@ Not a full Agent
 but an Agentic RAG Workflow
 ```
 
-## Step 2: Execution Path
+### Step 2: Execution Path
 
 ```text
 Router
@@ -726,20 +724,20 @@ RAG Pipeline
 Citation Verifier
 ```
 
-## Step 3: Decision
+### Step 3: Decision
 
 - Fixed Flow
 - Bounded Query Rewrite
 - Maximum 1 Retry
 
-## Step 4: Search
+### Step 4: Search
 
 - Hybrid Retrieval
 - Reranker
 - Source Diversity
 - No Tree Search needed
 
-## Step 5: Verification
+### Step 5: Verification
 
 - Citation Coverage
 - Claim Support
@@ -752,13 +750,13 @@ Failure outcomes:
 - Clarify
 - Abstain
 
-## Step 6: Organisation
+### Step 6: Organisation
 
 Single Agent is enough.
 
 No Multi-Agent needed.
 
-## Step 7: State and Memory
+### Step 7: State and Memory
 
 Needed:
 
@@ -774,14 +772,14 @@ Not needed:
 - User Memory
 - Shared Memory
 
-## Step 8: Policy
+### Step 8: Policy
 
 - Only site articles allowed
 - No unauthorised content quoting
 - No open Web Search
 - No unsourced fact generation
 
-## Step 9: Budget
+### Step 9: Budget
 
 - Max Retrieval Calls: 2
 - Max Rewrite: 1
@@ -789,7 +787,7 @@ Not needed:
 - Max Latency
 - No Infinite Retry
 
-## Step 10: Terminal States
+### Step 10: Terminal States
 
 - Completed
 - Clarification Required
@@ -797,7 +795,7 @@ Not needed:
 - Insufficient Evidence
 - Failed
 
-## Final architecture description
+### Final architecture description
 
 ```text
 User Goal:
@@ -853,16 +851,16 @@ RAG Orchestrator
 
 ---
 
-# 17. Architecture review Checklist
+## 17. Architecture review Checklist
 
-## Need review
+### Need review
 
 - [ ] The task genuinely needs Agentic capability
 - [ ] Direct, Pipeline or RAG alone is confirmed insufficient
 - [ ] Agent autonomy has measurable payoff
 - [ ] No Agent was added just because it is fashionable
 
-## Workflow review
+### Workflow review
 
 - [ ] Execution Path is clearly defined
 - [ ] Every State has an entry and an exit
@@ -872,7 +870,7 @@ RAG Orchestrator
 - [ ] Pause / Resume behaviour is defined
 - [ ] How to resume after Human Approval is defined
 
-## Tool and permission review
+### Tool and permission review
 
 - [ ] Minimum permissions used
 - [ ] Read / Write tools are separated
@@ -882,7 +880,7 @@ RAG Orchestrator
 - [ ] Tool Allowlist is not written only in the Prompt
 - [ ] Irreversible operations have Idempotency or Compensation
 
-## Verification review
+### Verification review
 
 - [ ] Completion Criteria are explicit
 - [ ] Verifier can output Fail
@@ -894,7 +892,7 @@ RAG Orchestrator
 - [ ] Tests and acceptance conditions cannot be modified by the Agent at will
 - [ ] Partial / Unsupported / Pending are supported
 
-## State and Memory review
+### State and Memory review
 
 - [ ] State and Memory are separated
 - [ ] Working Memory has a TTL
@@ -906,7 +904,7 @@ RAG Orchestrator
 - [ ] Supersede, Delete and Audit are supported
 - [ ] Data that can be retrieved from the Source of Truth is not duplicated for permanent storage
 
-## Cost and reliability review
+### Cost and reliability review
 
 - [ ] Global Budget is defined
 - [ ] Per-step Budget is defined
@@ -919,7 +917,7 @@ RAG Orchestrator
 - [ ] Kill Switch exists
 - [ ] Safe Mode or fallback path exists
 
-## Observability review
+### Observability review
 
 - [ ] Each task has a Trace ID
 - [ ] State Transitions are observable
@@ -931,7 +929,7 @@ RAG Orchestrator
 - [ ] High-risk operations have an Audit Log
 - [ ] Replay can be done safely
 
-## Human responsibility review
+### Human responsibility review
 
 - [ ] Final Owner is named
 - [ ] Approver is named
@@ -941,7 +939,7 @@ RAG Orchestrator
 - [ ] State is reverified before execution
 - [ ] Rejection, timeout and cancellation all have handling paths
 
-## Go-Live decision
+### Go-Live decision
 
 - [ ] Go
 - [ ] Pilot
@@ -952,9 +950,9 @@ RAG Orchestrator
 
 ---
 
-# 18. Go, Pilot, No-Go
+## 18. Go, Pilot, No-Go
 
-## Go
+### Go
 
 - Completion Criteria are explicit
 - Main flow is verifiable
@@ -963,7 +961,7 @@ RAG Orchestrator
 - Trace is complete
 - High-risk operations have Approval
 
-## Pilot
+### Pilot
 
 - Core flow runs
 - Human monitoring still required
@@ -971,7 +969,7 @@ RAG Orchestrator
 - Limited users, data and scope
 - Fast Kill Switch available
 
-## No-Go
+### No-Go
 
 - No reliable Verifier
 - High-risk tools without Approval
@@ -984,7 +982,7 @@ RAG Orchestrator
 
 ---
 
-# 19. Final selection principles
+## 19. Final selection principles
 
 1. Pick the simplest viable architecture first
 2. Place autonomy only at the nodes that genuinely need it
@@ -999,7 +997,7 @@ RAG Orchestrator
 
 ---
 
-# Conclusion of this article
+## Conclusion of this article
 
 Choosing an Agent architecture is not picking the most fashionable term.
 
@@ -1029,7 +1027,7 @@ The whole series can be wrapped in one sentence:
 
 ---
 
-# The Atlas of Agent Design Patterns — Series Index
+## The Atlas of Agent Design Patterns — Series Index
 
 | Part | Topic |
 |---:|---|
@@ -1046,7 +1044,7 @@ The whole series can be wrapped in one sentence:
 
 ---
 
-# Figure-to-section mapping
+## Figure-to-section mapping
 
 | Figure | Formal title | Suggested filename | Section |
 |---|---|---|---|

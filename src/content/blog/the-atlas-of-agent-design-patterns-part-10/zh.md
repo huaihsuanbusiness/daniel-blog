@@ -10,8 +10,6 @@ bonus: true
 last_reviewed: "2026-06-30"
 ---
 
-# Agent 設計模式圖鑑 Part 10｜如何用 Agent Framework 實作這些模式：從概念到程式架構
-
 ## Implementing Agent Patterns with Modern Frameworks
 
 > **更新基準：2026-06-30**
@@ -36,7 +34,7 @@ Framework 則是把模式落地的工具。
 
 ---
 
-# 一句話定義
+## 一句話定義
 
 > **Agent Framework 是實作與執行 Agent Pattern 的軟體抽象、Runtime 與工具集合；它不是架構決策本身。**
 
@@ -71,9 +69,9 @@ Human Approval
 
 ---
 
-# 一、先建立正確的三層模型
+## 一、先建立正確的三層模型
 
-## Layer 1：Architecture Patterns
+### Layer 1：Architecture Patterns
 
 這一層包含：
 
@@ -94,7 +92,7 @@ Human Approval
 
 > 系統應該怎麼運作？
 
-## Layer 2：Framework and Runtime
+### Layer 2：Framework and Runtime
 
 這一層包括：
 
@@ -110,7 +108,7 @@ Human Approval
 
 > 我們用什麼抽象、Runtime 與 API 實作？
 
-## Layer 3：Infrastructure and Operations
+### Layer 3：Infrastructure and Operations
 
 這一層包括：
 
@@ -129,9 +127,9 @@ Human Approval
 
 > 系統如何持久化、部署、隔離、觀察與運營？
 
-## 三個常見錯誤
+### 三個常見錯誤
 
-### 把 Framework 當成 Pattern
+#### 把 Framework 當成 Pattern
 
 ```text
 我們的架構是 LangGraph。
@@ -139,17 +137,17 @@ Human Approval
 
 這句話資訊不足。LangGraph 裡面可以實作 Pipeline、State Machine、ReAct、Plan-and-Execute 與 Human-in-the-loop。
 
-### 把 Framework 當成 Infrastructure
+#### 把 Framework 當成 Infrastructure
 
 Framework 提供 Checkpoint API，不代表已完成資料備份、Tenant Isolation、Production Queue 與 Disaster Recovery。
 
-### 把 Tool Integration 當成 Safety
+#### 把 Tool Integration 當成 Safety
 
 能呼叫 Tool，不代表有最小權限、Approval、Idempotency 與 Post-condition Verification。
 
 ---
 
-# 二、2026 年的實作選項地圖
+## 二、2026 年的實作選項地圖
 
 本文比較七條實作路線：
 
@@ -167,7 +165,7 @@ Framework 提供 Checkpoint API，不代表已完成資料備份、Tenant Isolat
 
 ---
 
-# 三、Native Code：最被低估的選項
+## 三、Native Code：最被低估的選項
 
 Native Code 指使用普通程式結構實作：
 
@@ -217,7 +215,7 @@ def run_task(state: TaskState) -> TaskState:
     return state
 ```
 
-## 適合什麼？
+### 適合什麼？
 
 - 流程很小
 - 狀態很少
@@ -226,7 +224,7 @@ def run_task(state: TaskState) -> TaskState:
 - 需要極高可控性
 - 一個 Queue + Database 已足夠
 
-## 優點
+### 優點
 
 - 最低抽象負擔
 - 容易 Debug
@@ -234,7 +232,7 @@ def run_task(state: TaskState) -> TaskState:
 - 容易做 Unit Test
 - 遷移成本低
 
-## 缺點
+### 缺點
 
 需要自己處理：
 
@@ -246,13 +244,13 @@ def run_task(state: TaskState) -> TaskState:
 - State Migration
 - Tool Loop
 
-## 判斷原則
+### 判斷原則
 
 > 如果用二十到五十行清楚的普通程式就能完成，不要先引入一個新的 Agent Runtime。
 
 ---
 
-# 四、LangGraph：適合低階、明確、Stateful 的 Orchestration
+## 四、LangGraph：適合低階、明確、Stateful 的 Orchestration
 
 LangGraph 的核心定位是低階 Agent Orchestration Runtime。
 
@@ -267,7 +265,7 @@ LangGraph 的核心定位是低階 Agent Orchestration Runtime。
 - 明確控制 Node 與 Edge
 - Deterministic + Agentic Hybrid
 
-## 心智模型
+### 心智模型
 
 ```text
 State
@@ -299,7 +297,7 @@ builder.add_edge("verify", END)
 graph = builder.compile(checkpointer=checkpointer)
 ```
 
-## 最適合的模式
+### 最適合的模式
 
 - Router
 - State Machine
@@ -310,21 +308,21 @@ graph = builder.compile(checkpointer=checkpointer)
 - Retry / Repair / Replan
 - Long-running Workflow
 
-## 優點
+### 優點
 
 - State 是一等公民
 - Node 與 Edge 邊界清楚
 - 固定節點與 Agentic Node 可以共存
 - 適合 Pause / Resume
 
-## 缺點
+### 缺點
 
 - 抽象較低階
 - Graph 不等於正確架構
 - 團隊需要理解 Checkpoint 與 Side Effect 的差別
 - 大型 Graph 容易變成另一種義大利麵，只是這次麵條會發光
 
-## 適合誰？
+### 適合誰？
 
 - 想明確掌控流程的工程團隊
 - 已知道自己的 State Machine 長什麼樣
@@ -333,13 +331,13 @@ graph = builder.compile(checkpointer=checkpointer)
 
 ---
 
-# 五、LlamaIndex Workflows：適合 Data-centric 與 RAG-centric 的 Event Workflow
+## 五、LlamaIndex Workflows：適合 Data-centric 與 RAG-centric 的 Event Workflow
 
 LlamaIndex 的強項與資料、索引、Retrieval、Query Engine 和 RAG 密切相關。
 
 Workflows 提供 Event 與 Step 的執行模型。
 
-## 心智模型
+### 心智模型
 
 ```text
 Event
@@ -389,7 +387,7 @@ class RAGWorkflow(Workflow):
         return StopEvent(result=answer)
 ```
 
-## 最適合的模式
+### 最適合的模式
 
 - RAG Pipeline
 - Query Routing
@@ -400,19 +398,19 @@ class RAGWorkflow(Workflow):
 - Structured Output
 - MCP-connected Data Tools
 
-## 優點
+### 優點
 
 - 與 Retriever、Index、Query Engine、Document、Node 等資料抽象距離近
 - Event Model 適合資料流程
 - 固定 Retrieval Flow 中可以放入 Agent 或 Tool Node
 
-## 缺點
+### 缺點
 
 - 不應把所有業務工作都資料化
 - Event 太多時可能難以追蹤
 - Domain Model 若直接依賴 Framework Event，遷移成本會增加
 
-## 適合誰？
+### 適合誰？
 
 - RAG 開發者
 - Knowledge Assistant
@@ -421,11 +419,11 @@ class RAGWorkflow(Workflow):
 
 ---
 
-# 六、CrewAI：用 Crews 表達協作，用 Flows 表達控制
+## 六、CrewAI：用 Crews 表達協作，用 Flows 表達控制
 
 CrewAI 有兩個不同心智模型。
 
-## Crews
+### Crews
 
 適合：
 
@@ -435,7 +433,7 @@ CrewAI 有兩個不同心智模型。
 - Specialized Tools
 - Collaborative Tasks
 
-## Flows
+### Flows
 
 適合：
 
@@ -447,7 +445,7 @@ CrewAI 有兩個不同心智模型。
 - Resume
 - 在固定流程中嵌入 Crew
 
-## 正確組合
+### 正確組合
 
 ```text
 CrewAI Flow
@@ -469,19 +467,19 @@ Every Step
 Create Another Agent
 ```
 
-## 優點
+### 優點
 
 - Agent、Task、Crew、Process 容易理解
 - Flow 可以維持控制，再於特定節點加入 Crew
 - 適合快速驗證角色分工是否有價值
 
-## 缺點
+### 缺點
 
 - Persona 容易掩蓋工程責任
 - 容易 Multi-Agent Inflation
 - 必須額外審查 Side Effect、Tool Permission 與 Final Owner
 
-## 適合誰？
+### 適合誰？
 
 - 需要快速做角色協作原型
 - 內容、研究、分析型任務
@@ -489,7 +487,7 @@ Create Another Agent
 
 ---
 
-# 七、OpenAI Agents SDK：少量 Primitive 的 Agent Runtime
+## 七、OpenAI Agents SDK：少量 Primitive 的 Agent Runtime
 
 OpenAI Agents SDK 採用較少的核心 Primitive：
 
@@ -503,7 +501,7 @@ OpenAI Agents SDK 採用較少的核心 Primitive：
 - Human-in-the-loop
 - Sandbox Agent
 
-## 心智模型
+### 心智模型
 
 ```text
 Agent
@@ -540,7 +538,7 @@ result = Runner.run_sync(
 )
 ```
 
-## 最適合的模式
+### 最適合的模式
 
 - Tool-using Agent
 - Manager + Agents as Tools
@@ -551,20 +549,20 @@ result = Runner.run_sync(
 - Sandbox Coding / Document Tasks
 - Voice / Realtime Agent
 
-## 優點
+### 優點
 
 - Primitive 少
 - Agent Loop 已提供
 - Handoff 與 Manager Pattern 都可表達
 - Built-in Trace
 
-## 缺點
+### 缺點
 
 - 不等於完整 Business Workflow Engine
 - Guardrail Scope 必須精確理解
 - Provider 與 Hosted Tool 選擇需評估 Lock-in
 
-## 適合誰？
+### 適合誰？
 
 - 想快速建立 Tool-using Agent
 - 使用 OpenAI Model 與 Hosted Tools
@@ -573,7 +571,7 @@ result = Runner.run_sync(
 
 ---
 
-# 八、AutoGen：仍可用，但 2026 年必須理解其位置
+## 八、AutoGen：仍可用，但 2026 年必須理解其位置
 
 AutoGen 目前仍有：
 
@@ -588,7 +586,7 @@ AutoGen 目前仍有：
 
 AgentChat 適合高階 Single / Multi-Agent；Core 則是較低階 Event-driven Runtime。
 
-## 適合什麼？
+### 適合什麼？
 
 - 已有 AutoGen 0.4+ 專案
 - Multi-Agent Research
@@ -597,7 +595,7 @@ AgentChat 適合高階 Single / Multi-Agent；Core 則是較低階 Event-driven 
 - Distributed Multi-Agent Experiment
 - Docker Code Execution
 
-## 2026 年的重要變化
+### 2026 年的重要變化
 
 Microsoft 已將 Microsoft Agent Framework 定位為 AutoGen 與 Semantic Kernel 的直接後繼者。
 
@@ -613,7 +611,7 @@ Microsoft 已將 Microsoft Agent Framework 定位為 AutoGen 與 Semantic Kernel
 
 ---
 
-# 九、Microsoft Agent Framework：AutoGen 與 Semantic Kernel 的後繼路線
+## 九、Microsoft Agent Framework：AutoGen 與 Semantic Kernel 的後繼路線
 
 Microsoft Agent Framework 提供兩大類能力：
 
@@ -632,7 +630,7 @@ Microsoft Agent Framework 提供兩大類能力：
 - 多 Provider
 - Python 與 .NET
 
-## 最適合的模式
+### 最適合的模式
 
 - Microsoft / Azure 生態
 - Graph Workflow
@@ -643,13 +641,13 @@ Microsoft Agent Framework 提供兩大類能力：
 - Enterprise Telemetry
 - Python + .NET 團隊
 
-## 優點
+### 優點
 
 - Workflow 與 Agent 同時存在
 - 企業整合方向清楚
 - 適合 AutoGen / Semantic Kernel 的未來評估
 
-## 主要風險
+### 主要風險
 
 - 目前仍是 Public Preview
 - API、功能與部署方式可能變動
@@ -663,13 +661,13 @@ Microsoft Agent Framework 提供兩大類能力：
 
 ---
 
-# 十、哪些框架適合 State Machine？
+## 十、哪些框架適合 State Machine？
 
-## 第一優先：Native Code
+### 第一優先：Native Code
 
 如果 State 很少、流程很固定，普通 Enum、Database 與 Function 最乾淨。
 
-## 強控制型：LangGraph
+### 強控制型：LangGraph
 
 適合：
 
@@ -679,7 +677,7 @@ Microsoft Agent Framework 提供兩大類能力：
 - Checkpoint
 - Long-running Task
 
-## Data-centric：LlamaIndex Workflows
+### Data-centric：LlamaIndex Workflows
 
 適合：
 
@@ -688,7 +686,7 @@ Microsoft Agent Framework 提供兩大類能力：
 - RAG State
 - Data Agent
 
-## High-level Hybrid：CrewAI Flows
+### High-level Hybrid：CrewAI Flows
 
 適合：
 
@@ -696,7 +694,7 @@ Microsoft Agent Framework 提供兩大類能力：
 - State Persistence
 - 在 Flow 中嵌入 Crew
 
-## Microsoft Stack：Microsoft Agent Framework Workflows
+### Microsoft Stack：Microsoft Agent Framework Workflows
 
 適合：
 
@@ -706,7 +704,7 @@ Microsoft Agent Framework 提供兩大類能力：
 - Human-in-the-loop
 - Python / .NET
 
-## 不要只看「支援 State」
+### 不要只看「支援 State」
 
 真正要問：
 
@@ -718,13 +716,13 @@ Microsoft Agent Framework 提供兩大類能力：
 
 ---
 
-# 十一、哪些框架適合 RAG Workflow？
+## 十一、哪些框架適合 RAG Workflow？
 
-## LlamaIndex Workflows
+### LlamaIndex Workflows
 
 最自然的選擇之一，因為資料、Retriever、Index 與 Workflow 在同一生態。
 
-## LangGraph
+### LangGraph
 
 適合複雜 Agentic RAG：
 
@@ -735,7 +733,7 @@ Microsoft Agent Framework 提供兩大類能力：
 - Verifier
 - Human Review
 
-## Native Code
+### Native Code
 
 如果流程只是：
 
@@ -745,39 +743,39 @@ Retrieve → Rerank → Generate → Verify
 
 普通 Pipeline 常常已足夠。
 
-## CrewAI
+### CrewAI
 
 適合讓 Flow 管理 RAG Pipeline，再讓 Crew 處理 Research / Synthesis。
 
-## OpenAI Agents SDK
+### OpenAI Agents SDK
 
 適合使用 File Search、MCP 或 Function Tool，讓 Agent 判斷何時檢索。若需要嚴格 Citation Mapping，仍需外層資料層與 Verifier。
 
 ---
 
-# 十二、哪些框架適合 Multi-Agent？
+## 十二、哪些框架適合 Multi-Agent？
 
-## CrewAI
+### CrewAI
 
 高階角色協作最直觀。
 
-## AutoGen
+### AutoGen
 
 適合 AgentChat Teams、Selector Group、Swarm 與 Multi-Agent Research。
 
-## Microsoft Agent Framework
+### Microsoft Agent Framework
 
 適合新 Microsoft-centric Multi-Agent Workflow，但要考慮 Public Preview。
 
-## OpenAI Agents SDK
+### OpenAI Agents SDK
 
 適合 Manager + Agents as Tools、Handoff 與少量 Agent 的明確協作。
 
-## LangGraph
+### LangGraph
 
 適合自己定義 Supervisor–Worker，讓 Multi-Agent 只是 Graph 中的 Node。
 
-## 判斷關鍵
+### 判斷關鍵
 
 不是「能不能建立多 Agent」，而是：
 
@@ -800,7 +798,7 @@ Retrieve → Rerank → Generate → Verify
 
 ---
 
-# 十三、哪些框架適合 Computer-use？
+## 十三、哪些框架適合 Computer-use？
 
 Computer-use 不是完整架構，而是一種高風險、Observation-driven 的 Tool Runtime。
 
@@ -820,39 +818,39 @@ Post-condition Verification
 Recover / Human Takeover
 ```
 
-## LangGraph
+### LangGraph
 
 適合把 Browser State、Action History、Retry 與 Human Takeover 放進 Graph。
 
-## OpenAI Agents SDK
+### OpenAI Agents SDK
 
 適合使用 Agent Loop、Built-in Tool、Sandbox、Trace 與 Human-in-the-loop。
 
-## AutoGen
+### AutoGen
 
 適合搭配 Code Executor、Agent Team 與工具 Runtime 做研究或原型。
 
-## Microsoft Agent Framework
+### Microsoft Agent Framework
 
 適合 Microsoft Stack 的 Agent + Workflow 整合，但仍需自行處理 Computer-use Policy 與 UI State。
 
-## CrewAI
+### CrewAI
 
 可以把 Browser Tool 放入 Agent，但應由 Flow 控制高風險 Transition。
 
-## 原則
+### 原則
 
 > 不要因為 Framework 提供 Browser Tool，就跳過 State、Approval、Duplicate Detection 與 Post-condition。
 
 ---
 
-# 十四、同一個任務如何映射到不同 Framework？
+## 十四、同一個任務如何映射到不同 Framework？
 
 任務：
 
 > 建立可恢復的站內研究 Agent：先判斷問題是否能 Direct 回答，否則檢索文章；若證據不足，最多改寫一次 Query；通過 Citation Verifier 後輸出，否則 Abstain。
 
-## 架構模式
+### 架構模式
 
 ```text
 Router
@@ -866,33 +864,33 @@ Citation Verifier
 Complete / Abstain
 ```
 
-## Native Code
+### Native Code
 
 使用 Enum State、Python Function、Database Row 與 Explicit Retry Counter。
 
-## LangGraph
+### LangGraph
 
 使用 StateGraph、Conditional Edge、Checkpointer 與 Verifier Node。
 
-## LlamaIndex Workflows
+### LlamaIndex Workflows
 
 使用 Query Event、Retrieved Event、Verification Event、Context 與 Retriever / Reranker。
 
-## CrewAI
+### CrewAI
 
 使用 Flow 管整體，Optional Research Crew 處理深度研究，Verifier Step 收尾。
 
-## OpenAI Agents SDK
+### OpenAI Agents SDK
 
 使用 Router Agent 或 Python Route、Retrieval Function Tool / MCP、Guardrail、Session 與 Trace。若嚴格控制 Rewrite Count，應在外層 Python State 保存。
 
-## Microsoft Agent Framework
+### Microsoft Agent Framework
 
 使用 Explicit Workflow、Agent Node、Session State、Checkpoint、Middleware 與 Telemetry。
 
 ---
 
-# 十五、完整框架比較表
+## 十五、完整框架比較表
 
 | 選項 | 核心心智模型 | 最適合 | Stateful Workflow | RAG | Multi-Agent | Human-in-the-loop | 抽象層級 | 主要風險 |
 |---|---|---|---:|---:|---:|---:|---:|---|
@@ -906,7 +904,7 @@ Complete / Abstain
 
 ---
 
-# 十六、原生程式碼何時比 Framework 更好？
+## 十六、原生程式碼何時比 Framework 更好？
 
 使用 Native Code，如果：
 
@@ -936,13 +934,13 @@ Complete / Abstain
 
 ---
 
-# 十七、降低 Framework Lock-in 的程式架構
+## 十七、降低 Framework Lock-in 的程式架構
 
 比起選對一個永遠不變的 Framework，更重要的是：
 
 > 讓 Domain Logic 不依賴 Framework 的每一個型別。
 
-## 建議分層
+### 建議分層
 
 ```text
 Application API
@@ -956,7 +954,7 @@ Framework Adapter
 Model / Tool / Storage Provider
 ```
 
-## Domain State 應由你定義
+### Domain State 應由你定義
 
 ```python
 class ResearchState(BaseModel):
@@ -968,7 +966,7 @@ class ResearchState(BaseModel):
     status: str
 ```
 
-## Tool Contract 應獨立
+### Tool Contract 應獨立
 
 ```python
 from typing import Protocol
@@ -990,7 +988,7 @@ class RetrieverPort(Protocol):
 - OpenAIFunctionToolAdapter
 - CrewAIToolAdapter
 
-## Verifier 應獨立
+### Verifier 應獨立
 
 ```python
 class VerificationResult(BaseModel):
@@ -1001,7 +999,7 @@ class VerificationResult(BaseModel):
 
 不要讓每個 Framework 自己發明不同的 Pass / Fail 格式。
 
-## Trace Context 應可跨 Framework
+### Trace Context 應可跨 Framework
 
 至少保留：
 
@@ -1013,7 +1011,7 @@ class VerificationResult(BaseModel):
 - prompt_version
 - framework_version
 
-## Side Effect 應放在明確邊界
+### Side Effect 應放在明確邊界
 
 例如：
 
@@ -1032,7 +1030,7 @@ class VerificationResult(BaseModel):
 
 ---
 
-# 十八、Framework 選型決策樹
+## 十八、Framework 選型決策樹
 
 ```text
 Can ordinary code express the workflow clearly?
@@ -1062,7 +1060,7 @@ Do you have an existing AutoGen system or research need?
 
 ---
 
-# 十九、常見實作反模式
+## 十九、常見實作反模式
 
 | 反模式 | 問題 | 修正 |
 |---|---|---|
@@ -1079,9 +1077,9 @@ Do you have an existing AutoGen system or research need?
 
 ---
 
-# 二十、Production Notes
+## 二十、Production Notes
 
-## Version Pinning
+### Version Pinning
 
 保存：
 
@@ -1091,7 +1089,7 @@ Do you have an existing AutoGen system or research need?
 - Tool Version
 - State Schema Version
 
-## State Migration
+### State Migration
 
 每次改 State Schema 前回答：
 
@@ -1100,7 +1098,7 @@ Do you have an existing AutoGen system or research need?
 - 是否需要 Migration Job？
 - 是否可 Rollback？
 
-## Timeout
+### Timeout
 
 分開設定：
 
@@ -1110,7 +1108,7 @@ Do you have an existing AutoGen system or research need?
 - Workflow Timeout
 - Approval Timeout
 
-## Budget
+### Budget
 
 限制：
 
@@ -1122,7 +1120,7 @@ Do you have an existing AutoGen system or research need?
 - Replans
 - Wall Time
 
-## Evaluation
+### Evaluation
 
 至少分成：
 
@@ -1134,7 +1132,7 @@ Do you have an existing AutoGen system or research need?
 - Cost Regression
 - Latency Regression
 
-## Observability
+### Observability
 
 追蹤：
 
@@ -1148,7 +1146,7 @@ Do you have an existing AutoGen system or research need?
 - Verifier Result
 - Terminal State
 
-## Human Approval
+### Human Approval
 
 Approval Payload 至少包含：
 
@@ -1161,7 +1159,7 @@ Approval Payload 至少包含：
 
 ---
 
-# 二十一、一頁式 Cheat Sheet
+## 二十一、一頁式 Cheat Sheet
 
 | 需求 | 優先考慮 | 不要先做 |
 |---|---|---|
@@ -1178,7 +1176,7 @@ Approval Payload 至少包含：
 
 ---
 
-# 本篇結論
+## 本篇結論
 
 Framework 的價值是：
 
@@ -1227,7 +1225,7 @@ Whatever the Framework Makes Easy
 
 ---
 
-# 《Agent 設計模式圖鑑》系列目錄
+## 《Agent 設計模式圖鑑》系列目錄
 
 | Part | 主題 |
 |---:|---|
@@ -1244,7 +1242,7 @@ Whatever the Framework Makes Easy
 
 ---
 
-# 圖表對位表
+## 圖表對位表
 
 | 圖號 | 正式圖名 | 建議檔名 |
 |---|---|---|
@@ -1257,7 +1255,7 @@ Whatever the Framework Makes Easy
 
 ---
 
-# 官方文件與更新基準
+## 官方文件與更新基準
 
 本文在 2026-06-30 依據以下官方文件校對框架定位：
 

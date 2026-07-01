@@ -8,8 +8,6 @@ series: "The Atlas of Agent Design Patterns"
 seriesOrder: 8
 ---
 
-# The Atlas of Agent Design Patterns Part 8 ｜ Production Agent Architectures in Practice: RAG, Deep Research, Coding and Browser Agents
-
 The previous seven articles split the Agent system into six dimensions:
 
 1. Execution path
@@ -64,7 +62,7 @@ Instead, the goal is:
 
 ---
 
-# A "looks like it works" Agent, and why it still cannot ship
+## A "looks like it works" Agent, and why it still cannot ship
 
 Consider this request:
 
@@ -100,11 +98,11 @@ Each step needs a clear entry, permission, state, budget, evidence, stop conditi
 
 ---
 
-# The seven layers a Production Agent needs
+## The seven layers a Production Agent needs
 
 A mature architecture usually decomposes into seven layers.
 
-## 1. Entry and Routing
+### 1. Entry and Routing
 
 Decides:
 
@@ -114,7 +112,7 @@ Decides:
 - Does it need SQL, a calculator, or a specialised workflow?
 - Does it need human handling?
 
-## 2. Orchestration
+### 2. Orchestration
 
 Owns:
 
@@ -128,7 +126,7 @@ Owns:
 
 It decides how the task moves forward.
 
-## 3. Execution
+### 3. Execution
 
 Does the actual work:
 
@@ -141,7 +139,7 @@ Does the actual work:
 - API
 - Computer-use
 
-## 4. Validation and Recovery
+### 4. Validation and Recovery
 
 Owns:
 
@@ -154,7 +152,7 @@ Owns:
 - Replanning
 - Human Review
 
-## 5. State and Memory
+### 5. State and Memory
 
 Owns:
 
@@ -166,7 +164,7 @@ Owns:
 - User Preferences
 - Shared Memory
 
-## 6. Policy and Safety
+### 6. Policy and Safety
 
 Owns:
 
@@ -180,7 +178,7 @@ Owns:
 - Sandbox
 - Secret Isolation
 
-## 7. Observability and Operations
+### 7. Observability and Operations
 
 Owns:
 
@@ -201,7 +199,7 @@ Owns:
 
 ---
 
-# Start with a baseline: when does a single-turn answer suffice?
+## Start with a baseline: when does a single-turn answer suffice?
 
 Before the six Production recipes, keep one baseline in mind:
 
@@ -213,7 +211,7 @@ LLM
 Output
 ```
 
-## Tasks that fit this baseline
+### Tasks that fit this baseline
 
 - Translation
 - Rewriting
@@ -246,7 +244,7 @@ The first principle of Production design:
 
 ---
 
-# Router: choosing between Direct, RAG and Agent
+## Router: choosing between Direct, RAG and Agent
 
 The same product usually runs several execution paths at once.
 
@@ -259,7 +257,7 @@ User Request → Router
                     └→ Human Review
 ```
 
-## What can the Router decide on?
+### What can the Router decide on?
 
 - Intent
 - Required data source
@@ -272,9 +270,9 @@ User Request → Router
 - Whether persistent state is needed
 - Whether human approval is needed
 
-## A practical routing logic
+### A practical routing logic
 
-### Direct
+#### Direct
 
 For:
 
@@ -283,7 +281,7 @@ For:
 - No external tool is needed
 - Risk is low
 
-### RAG
+#### RAG
 
 For:
 
@@ -292,7 +290,7 @@ For:
 - No long-running autonomy is needed
 - The task is mostly retrieval and answering
 
-### Agent Workflow
+#### Agent Workflow
 
 For:
 
@@ -301,7 +299,7 @@ For:
 - State must be persisted
 - Planning, retry or recovery is needed
 
-### Human Review
+#### Human Review
 
 For:
 
@@ -311,7 +309,7 @@ For:
 - Conflicting data
 - Policy requires human approval
 
-## The Router must also be allowed to say it does not know
+### The Router must also be allowed to say it does not know
 
 At minimum:
 
@@ -324,7 +322,7 @@ Do not force every request into some automated path.
 
 ---
 
-# Recipe one: Production RAG
+## Recipe one: Production RAG
 
 The simplest RAG is:
 
@@ -347,7 +345,7 @@ Production RAG has to handle:
 - When data is insufficient, answer, clarify, or refuse?
 - How are cost and latency controlled?
 
-## A typical Production RAG flow
+### A typical Production RAG flow
 
 ```text
 User Query
@@ -371,9 +369,9 @@ Citation and Faithfulness Verifier
 Answer or Retry / Abstain
 ```
 
-## Core components
+### Core components
 
-### Query Router
+#### Query Router
 
 Decides:
 
@@ -382,7 +380,7 @@ Decides:
 - Whether to query SQL
 - Whether to use the fast or deep mode
 
-### Retrieval
+#### Retrieval
 
 May include:
 
@@ -393,11 +391,11 @@ May include:
 - Graph Query
 - SQL
 
-### Reranker
+#### Reranker
 
 Reorders "semantically similar" into "actually useful for the answer".
 
-### Context Builder
+#### Context Builder
 
 Handles:
 
@@ -408,11 +406,11 @@ Handles:
 - Context ordering
 - Citation IDs
 
-### Generator
+#### Generator
 
 May only produce answers from the permitted Context.
 
-### Citation Verifier
+#### Citation Verifier
 
 Checks:
 
@@ -422,7 +420,7 @@ Checks:
 - Are versions being mixed
 - Are important limits being dropped
 
-## Production RAG state
+### Production RAG state
 
 Even when RAG does not need high autonomy, it can still persist:
 
@@ -436,7 +434,7 @@ Even when RAG does not need high autonomy, it can still persist:
 - Failure reason
 - Query profile
 
-## Production RAG failure policy
+### Production RAG failure policy
 
 | Failure | Handling |
 |---|---|
@@ -452,7 +450,7 @@ Even when RAG does not need high autonomy, it can still persist:
 > **Figure 8-2 ｜ Production RAG Architecture**  
 > The query passes through Router, Rewrite, Hybrid Retrieval, ACL Filter, Reranker and Context Builder. The Generator produces a citation-bearing answer; the Verifier checks faithfulness, coverage and source permissions.
 
-## When does Production RAG not need an Agent?
+### When does Production RAG not need an Agent?
 
 If the flow stays fixed:
 
@@ -475,7 +473,7 @@ Using an LLM and retrieval does not automatically make a system an Agent.
 
 ---
 
-# Recipe two: Deep Research Agent
+## Recipe two: Deep Research Agent
 
 A Deep Research task is rarely "answer one simple question".
 
@@ -489,7 +487,7 @@ It needs:
 - Close gaps
 - Produce a long synthesis report
 
-## A typical architecture
+### A typical architecture
 
 ```text
 Research Goal
@@ -513,7 +511,7 @@ Verifier
 Complete or Replan
 ```
 
-## What the Planner should produce
+### What the Planner should produce
 
 Not:
 
@@ -535,7 +533,7 @@ But:
 - Deadline
 - Failure policy
 
-## Why a DAG
+### Why a DAG
 
 Subquestions can run in parallel.
 
@@ -563,7 +561,7 @@ REPLAN
 Run New Research DAG
 ```
 
-## Evidence Store
+### Evidence Store
 
 Deep Research should not keep only the worker's paragraph summaries.
 
@@ -580,7 +578,7 @@ Each piece of Evidence should carry:
 - Worker
 - Validation status
 
-## Source policy
+### Source policy
 
 Define priorities in advance:
 
@@ -591,7 +589,7 @@ Define priorities in advance:
 - Disallowed sources
 - Freshness window
 
-## Stop conditions for Deep Research
+### Stop conditions for Deep Research
 
 - Required questions covered
 - Minimum source diversity
@@ -606,35 +604,35 @@ Define priorities in advance:
 > **Figure 8-3 ｜ Deep Research Agent Architecture**  
 > The Planner decomposes the research goal into tasks with source policy and completion criteria, dispatches them in parallel through a DAG to Research Workers, and the Evidence Store keeps traceable evidence. Synthesis and Verifier then decide whether to complete or replan.
 
-## Common Deep Research failures
+### Common Deep Research failures
 
-### A lot of search, very little evidence
+#### A lot of search, very little evidence
 
 The Agent reads a great deal of content but never forms a verifiable claim.
 
-### Workers duplicating effort
+#### Workers duplicating effort
 
 Multiple Workers search the same question.
 
-### Sources being double-counted
+#### Sources being double-counted
 
 Five articles all cite the same original report.
 
-### Synthesis mixing conflicting versions
+#### Synthesis mixing conflicting versions
 
 Prices, products or policies drawn from different points in time.
 
-### No completion condition
+#### No completion condition
 
 The Agent can always find "one more source".
 
 ---
 
-# Recipe three: Coding Agent
+## Recipe three: Coding Agent
 
 What matters in a Coding Agent is the ability, in an isolated environment, to understand the repository, change code, run tests, read failures, make bounded fixes, and produce reproducible evidence.
 
-## A typical architecture
+### A typical architecture
 
 ```text
 Task
@@ -664,7 +662,7 @@ Human Approval
 Merge or Deliver
 ```
 
-## Repository Snapshot
+### Repository Snapshot
 
 Before any change, record:
 
@@ -677,7 +675,7 @@ Before any change, record:
 
 This makes the result reproducible and tells you exactly what the Agent modified.
 
-## Planner
+### Planner
 
 Defines:
 
@@ -688,7 +686,7 @@ Defines:
 - Completion criteria
 - Rollback point
 
-## Code Search
+### Code Search
 
 Understand first:
 
@@ -701,7 +699,7 @@ Understand first:
 
 Do not guess a patch from the error message alone.
 
-## Generate-and-Test
+### Generate-and-Test
 
 ```text
 Generate Patch
@@ -715,7 +713,7 @@ Fail?
   └─ No → Broader Validation
 ```
 
-## Acceptance cannot stop at the target test
+### Acceptance cannot stop at the target test
 
 At minimum, expect:
 
@@ -730,7 +728,7 @@ At minimum, expect:
 - Diff review
 - Reproducibility check
 
-## Guard against reward hacking
+### Guard against reward hacking
 
 The Agent must not:
 
@@ -742,7 +740,7 @@ The Agent must not:
 - Only run commands that are easy to pass
 - Touch unrelated files
 
-## Human Approval
+### Human Approval
 
 The following actions should normally require approval:
 
@@ -759,7 +757,7 @@ The following actions should normally require approval:
 > **Figure 8-4 ｜ Production Coding Agent**  
 > The Coding Agent first pins the Repository Snapshot, then runs Planner, Code Search, Patch, Sandbox, layered tests, Lint, Build and a change-scope Verifier. Only after verification and approval can it Merge or Deliver.
 
-## Coding Agent terminal states
+### Coding Agent terminal states
 
 - Completed
 - Failed
@@ -773,7 +771,7 @@ Not every bug can be fixed automatically inside the budget.
 
 ---
 
-# Recipe four: Browser / Computer-use Agent
+## Recipe four: Browser / Computer-use Agent
 
 A Browser Agent needs to operate in a real interface:
 
@@ -788,7 +786,7 @@ A Browser Agent needs to operate in a real interface:
 
 Compared to pure tool calling, it sits closer to an interactive Agent in an uncertain environment.
 
-## A typical loop
+### A typical loop
 
 ```text
 Goal
@@ -808,7 +806,7 @@ Success?
   └─ No → Recover or Continue
 ```
 
-## Why a State Machine is needed
+### Why a State Machine is needed
 
 Browser operations frequently include:
 
@@ -848,7 +846,7 @@ SUBMIT
 VERIFY
 ```
 
-## Browser State should carry
+### Browser State should carry
 
 - Current URL
 - Page title
@@ -862,7 +860,7 @@ VERIFY
 - Screenshot or DOM reference
 - Retry count
 
-## Allowed Action policy
+### Allowed Action policy
 
 Allowed:
 
@@ -884,7 +882,7 @@ Marked as higher risk separately:
 - Publish
 - Change permission
 
-## Success Verifier
+### Success Verifier
 
 Do not rely on the fact that the button was clicked.
 
@@ -898,7 +896,7 @@ Check:
 - Server response
 - Transaction ID
 
-## Recovery
+### Recovery
 
 Common recovery moves:
 
@@ -916,7 +914,7 @@ Common recovery moves:
 > **Figure 8-5 ｜ Browser and Computer-use Agent**  
 > The Browser Agent operates the interface through Observe, State Update, Policy Check, Action, New Observation and Success Verification. State Machine, duplicate-action detection, human takeover and the irreversible-action gate keep it from running away.
 
-## Common Browser Agent risks
+### Common Browser Agent risks
 
 - UI redesigns
 - Element recognition errors
@@ -931,7 +929,7 @@ Common recovery moves:
 
 ---
 
-# Recipe five: High-risk enterprise automation
+## Recipe five: High-risk enterprise automation
 
 Enterprise automation should not start from:
 
@@ -956,7 +954,7 @@ High-risk flows need:
 - Audit log
 - Rollback
 
-## A typical flow
+### A typical flow
 
 ```text
 Request or Event
@@ -980,7 +978,7 @@ Approval Required?
          Audit and Complete
 ```
 
-## The Agent prepares a proposal, not the execution
+### The Agent prepares a proposal, not the execution
 
 A payment example:
 
@@ -1005,7 +1003,7 @@ Before any real action, hand off to:
 - Approval
 - Transaction layer
 
-## Deterministic validation
+### Deterministic validation
 
 Can check:
 
@@ -1019,7 +1017,7 @@ Can check:
 - Segregation of duties
 - Compliance rule
 
-## Human approval
+### Human approval
 
 Approvers must see:
 
@@ -1031,7 +1029,7 @@ Approvers must see:
 - Reversibility
 - Difference from existing state
 
-## Post-execution verification
+### Post-execution verification
 
 An API returning 200 does not mean the work is done.
 
@@ -1045,7 +1043,7 @@ Confirm:
 - Side effects
 - Idempotency key
 
-## Rollback and compensation
+### Rollback and compensation
 
 Some operations cannot be truly rolled back.
 
@@ -1064,7 +1062,7 @@ Compensation is then needed:
 
 ---
 
-# Recipe six: Long-term monitoring Agent
+## Recipe six: Long-term monitoring Agent
 
 A long-term monitoring Agent is not always "thinking".
 
@@ -1086,7 +1084,7 @@ Common tasks:
 - Security event monitoring
 - Supply chain risk monitoring
 
-## A typical flow
+### A typical flow
 
 ```text
 Schedule or Event
@@ -1108,9 +1106,9 @@ Condition Met?
            Notify or Escalate
 ```
 
-## Core components
+### Core components
 
-### Scheduler / Trigger
+#### Scheduler / Trigger
 
 - Cron
 - Queue
@@ -1118,7 +1116,7 @@ Condition Met?
 - Event stream
 - Condition watch
 
-### Baseline state
+#### Baseline state
 
 Persisted:
 
@@ -1130,7 +1128,7 @@ Persisted:
 - Cursor
 - Source version
 
-### Change detection
+#### Change detection
 
 Beyond "is there new data", the system has to decide:
 
@@ -1140,7 +1138,7 @@ Beyond "is there new data", the system has to decide:
 - Whether it has already been notified
 - Whether it is an update of an earlier event
 
-### Deduplication
+#### Deduplication
 
 Needs:
 
@@ -1150,7 +1148,7 @@ Needs:
 - Time window
 - Alert key
 
-### Notification policy
+#### Notification policy
 
 - Severity
 - Recipient
@@ -1160,7 +1158,7 @@ Needs:
 - Escalation
 - Acknowledgement
 
-### No-change behaviour
+#### No-change behaviour
 
 When the condition is not met:
 
@@ -1170,7 +1168,7 @@ Do not notify
 
 A long-term monitoring system should not email "nothing happened today" as digital air.
 
-## Long-term monitoring risks
+### Long-term monitoring risks
 
 - Duplicate notifications
 - Source failure
@@ -1183,7 +1181,7 @@ A long-term monitoring system should not email "nothing happened today" as digit
 - State expiry
 - Unbounded history accumulation
 
-## Required controls
+### Required controls
 
 - Health check
 - Last-success timestamp
@@ -1198,7 +1196,7 @@ A long-term monitoring system should not email "nothing happened today" as digit
 
 ---
 
-# The six Production Agent recipes at a glance
+## The six Production Agent recipes at a glance
 
 The six recipes below exclude the Direct baseline.
 
@@ -1213,7 +1211,7 @@ The six recipes below exclude the Direct baseline.
 
 ---
 
-# Which patterns does each recipe use?
+## Which patterns does each recipe use?
 
 | Pattern | RAG | Deep Research | Coding | Browser | High-risk | Monitoring |
 |---|---:|---:|---:|---:|---:|---:|
@@ -1231,7 +1229,7 @@ The six recipes below exclude the Direct baseline.
 
 ---
 
-# Cost, latency, controllability and fit
+## Cost, latency, controllability and fit
 
 | Architecture | Cost | Latency | Controllability | Observability | Failure recovery | Best fit |
 |---|---:|---:|---:|---:|---:|---|
@@ -1245,7 +1243,7 @@ The six recipes below exclude the Direct baseline.
 
 ---
 
-# Shared control one: Budget
+## Shared control one: Budget
 
 An Agent's budget is not only tokens.
 
@@ -1262,7 +1260,7 @@ It can include:
 - Replans
 - Retries
 
-## Layered budget
+### Layered budget
 
 ```text
 Global Task Budget
@@ -1277,7 +1275,7 @@ If only tokens are capped, the Agent can still burn cost through tools.
 
 ---
 
-# Shared control two: Timeout
+## Shared control two: Timeout
 
 Different layers need different timeouts:
 
@@ -1300,7 +1298,7 @@ Behaviour after timeout must be explicit:
 
 ---
 
-# Shared control three: Retry and Fallback
+## Shared control three: Retry and Fallback
 
 Not every failure should be retried.
 
@@ -1316,17 +1314,17 @@ Not every failure should be retried.
 
 ---
 
-# Shared control four: Stop Condition
+## Shared control four: Stop Condition
 
 The Agent has to know when to formally stop.
 
-## Successful stop
+### Successful stop
 
 - Completion criteria passed
 - Verifier passed
 - Post-condition verified
 
-## Safe stop
+### Safe stop
 
 - Budget exhausted
 - Retry limit reached
@@ -1336,7 +1334,7 @@ The Agent has to know when to formally stop.
 - Human rejected
 - Kill switch activated
 
-## Terminal states
+### Terminal states
 
 - Completed
 - Failed
@@ -1348,7 +1346,7 @@ The Agent has to know when to formally stop.
 
 ---
 
-# Observability, Audit Log and Trace
+## Observability, Audit Log and Trace
 
 A Production Agent must answer:
 
@@ -1363,7 +1361,7 @@ What did it cost?
 Did the final result actually execute?
 ```
 
-## Trace
+### Trace
 
 Track the full path of a single task:
 
@@ -1377,7 +1375,7 @@ Track the full path of a single task:
 - Verification
 - Final outcome
 
-## Metrics
+### Metrics
 
 - Success rate
 - Partial rate
@@ -1391,7 +1389,7 @@ Track the full path of a single task:
 - Citation failure rate
 - Duplicate action rate
 
-## Audit Log
+### Audit Log
 
 High-risk systems should keep:
 
@@ -1405,7 +1403,7 @@ High-risk systems should keep:
 - Timestamp
 - Transaction ID
 
-## Replay
+### Replay
 
 Reproduce in a safe environment:
 
@@ -1421,61 +1419,61 @@ A Trace without version information is just a historical novel whose universe st
 
 ---
 
-# Ten anti-patterns in Production Agent work
+## Ten anti-patterns in Production Agent work
 
-## 1. Every request goes through the Agent
+### 1. Every request goes through the Agent
 
 Simple tasks get dragged through the full pipeline.
 
-## 2. The Router has no Unknown
+### 2. The Router has no Unknown
 
 Ambiguous questions get force-routed anyway.
 
-## 3. Tool permissions written only in the Prompt
+### 3. Tool permissions written only in the Prompt
 
 The infrastructure does not actually constrain anything.
 
-## 4. The Agent has no State
+### 4. The Agent has no State
 
 Long tasks rely on the conversation log to track progress.
 
-## 5. The Verifier only asks the model "is this correct"
+### 5. The Verifier only asks the model "is this correct"
 
 No external evidence.
 
-## 6. Retry has no upper bound
+### 6. Retry has no upper bound
 
 Failures get amplified by repetition.
 
-## 7. Human Approval is reduced to a single button
+### 7. Human Approval is reduced to a single button
 
 Approvers cannot see the impact or the evidence.
 
-## 8. Trace only contains the final answer
+### 8. Trace only contains the final answer
 
 Impossible to find where the failure happened.
 
-## 9. Memory stores everything
+### 9. Memory stores everything
 
 Expired, wrong and sensitive data accumulate together.
 
-## 10. No formal failure state
+### 10. No formal failure state
 
 The system always believes the next iteration will succeed.
 
 ---
 
-# The assembly order: from requirement to Production Agent
+## The assembly order: from requirement to Production Agent
 
 Do not pick a Framework first.
 
 Answer the following in order:
 
-## 1. Does the task actually need an Agent?
+### 1. Does the task actually need an Agent?
 
 If Direct or Pipeline works, use the simpler option first.
 
-## 2. What data and tools does the task need?
+### 2. What data and tools does the task need?
 
 - Documents
 - Database
@@ -1484,11 +1482,11 @@ If Direct or Pipeline works, use the simpler option first.
 - Code
 - API
 
-## 3. Which steps are fixed, which need autonomy?
+### 3. Which steps are fixed, which need autonomy?
 
 Restrict autonomy to the parts that genuinely cannot be hard-coded in advance.
 
-## 4. How will it be verified?
+### 4. How will it be verified?
 
 - Schema
 - Citation
@@ -1497,7 +1495,7 @@ Restrict autonomy to the parts that genuinely cannot be hard-coded in advance.
 - Post-condition
 - Human review
 
-## 5. What State has to be persisted?
+### 5. What State has to be persisted?
 
 - Progress
 - Plan
@@ -1505,7 +1503,7 @@ Restrict autonomy to the parts that genuinely cannot be hard-coded in advance.
 - Approvals
 - Tool results
 
-## 6. What Memory is required?
+### 6. What Memory is required?
 
 - Working
 - Procedural
@@ -1513,7 +1511,7 @@ Restrict autonomy to the parts that genuinely cannot be hard-coded in advance.
 - Shared
 - None
 
-## 7. Which actions carry risk?
+### 7. Which actions carry risk?
 
 - Read
 - Write
@@ -1523,7 +1521,7 @@ Restrict autonomy to the parts that genuinely cannot be hard-coded in advance.
 - Publish
 - Deploy
 
-## 8. What are the budget and stop conditions?
+### 8. What are the budget and stop conditions?
 
 - Cost
 - Time
@@ -1532,7 +1530,7 @@ Restrict autonomy to the parts that genuinely cannot be hard-coded in advance.
 - Tool calls
 - Terminal states
 
-## 9. How will it be observed and held accountable?
+### 9. How will it be observed and held accountable?
 
 - Trace
 - Metrics
@@ -1544,7 +1542,7 @@ Once these questions are answered, the Framework becomes an implementation choic
 
 ---
 
-# Conclusion of this article
+## Conclusion of this article
 
 A mature Agent is neither a single huge Prompt nor a model that can call every tool.
 
@@ -1594,7 +1592,7 @@ So that the reader can move from "knowing which patterns exist" to "being able t
 
 ---
 
-# The Atlas of Agent Design Patterns — Series Index
+## The Atlas of Agent Design Patterns — Series Index
 
 | Part | Topic |
 |---:|---|
@@ -1611,7 +1609,7 @@ So that the reader can move from "knowing which patterns exist" to "being able t
 
 ---
 
-# Figure-to-section mapping
+## Figure-to-section mapping
 
 | Figure | Formal title | Suggested filename | Section |
 |---|---|---|---|
