@@ -1,1642 +1,1331 @@
 ---
-title: "Agent 設計模式圖鑑 Part 8｜Production Agent 架構實戰：RAG、Deep Research、Coding 與 Browser Agent"
-description: "把 Router、Pipeline、State Machine、DAG、Planner、ReAct、Verifier、Memory、Policy、Budget 與 Human Approval 組裝成可運作的 Production RAG、Deep Research、Coding、Browser、企業自動化與長期監控架構。"
-date: 2026-07-01T12:04:00
+title: "Agent 設計模式圖鑑 Part 8｜Production Agent 架構實戰"
+description: "以 Production 視角把 Routing、Durable Orchestration、Tools、Verification、State、Memory、Policy、Evaluation、Observability、Budget 與 Human Control 組合成 RAG、Deep Research、Coding、Browser、企業自動化與長期監控系統。"
+date: 2026-07-01T13:44:00
 lang: zh
 categories: ["AI"]
 series: "Agent 設計模式圖鑑"
 seriesOrder: 8
 ---
 
-## Production Agent Architectures: RAG, Deep Research, Coding, and Browser Agents
 
-前七篇，我們把 Agent 系統拆成六個維度：
+前七篇把 Agent 設計拆成六個實務維度：
 
 1. 執行路徑
 2. 決策與規劃
-3. 推理與探索
-4. 驗證與修正
+3. 推理與搜尋
+4. 驗證與恢復
 5. Agent 組織
 6. 狀態與記憶
 
-每個維度都包含許多模式：
+真正的 Production 設計，是把這些維度組合到一項真實任務周圍，同時面對真實權限、真實失敗模式與必須有人負責的終止結果。
 
-- Direct
-- Pipeline
-- Router
-- State Machine
-- DAG
-- ReAct
-- Plan-and-Execute
-- Adaptive Planning
-- Tree Search
-- Verifier
-- Generate-and-Test
-- Supervisor–Worker
-- Working Memory
-- Procedural Memory
-
-但真正做 Production 系統時，沒有人只部署一個「ReAct」。
-
-一套成熟的 Agent，通常是多種模式的組合：
+Production Agent 並不只是：
 
 ```text
-Router
-  ↓
-State Machine
-  ↓
-Planner
-  ↓
-DAG or ReAct Executor
-  ↓
-Verifier
-  ↓
-Memory Update
-  ↓
-Final Response or Human Approval
+Prompt
+  -> Model
+  -> Tools
+  -> Answer
 ```
 
-這一篇不再逐一介紹積木。
+更誠實的描述是：
 
-我們要做的是：
+```text
+Admission
+  -> Orchestration
+  -> Execution
+  -> Acceptance
 
-> **把前七篇的積木組成可以執行、可以驗證、可以恢復、可以觀察、可以停止的 Production Agent。**
+Cross-cutting:
+Identity · Policy · State · Memory · Budget · Observability · Human Control
+```
 
----
+目標不是最大自主性，而是把自主性限制在一個能回答以下問題的系統裡：
 
-## 一個「看起來會動」的 Agent，為什麼還不能上 Production？
+- 誰提出這個 Action？
+- Request 是否被允許？
+- Task 走過哪條 Path？
+- 哪些 State 已經改變？
+- Result 有什麼 Evidence？
+- 哪些 Check 通過或失敗？
+- 再次嘗試是否安全？
+- 誰負責 Final Decision？
+- 哪個 Terminal State 會結束 Run？
 
-假設使用者提出：
+本文提供六種 Production Recipe：
 
-> 比較三家供應商，整理最新價格與功能，更新採購資料庫，最後寄信給財務主管。
+1. Production RAG
+2. Deep Research Agent
+3. Coding Agent
+4. Browser／Computer-use Agent
+5. High-risk Enterprise Automation
+6. Long-running Monitor
 
-一個自由 Agent 可能：
+它們不是通用藍圖，而是可調整的 Reference Composition。實際系統仍必須依 Task、Data、Risk、Latency 與 Operating Environment 修改。
 
-1. 搜尋供應商網站
-2. 擷取價格
-3. 比較功能
-4. 開啟內部資料庫
-5. 修改採購資料
-6. 撰寫 Email
-7. 寄送 Email
+## Production-ready 是相對於風險的判斷
 
-這條路看起來完整，但真正上線前，至少還缺少：
+「Production-ready」不能只代表架構圖上有很多企業感 Box。
 
-- 使用者是否有權修改採購資料？
-- 價格是否來自官方來源？
-- 不同地區與方案是否混用？
-- 資料庫更新是否可撤銷？
-- 寄信前是否需要人工批准？
-- 工具失敗後最多重試幾次？
-- 已完成哪些步驟？
-- 哪個操作真的執行過？
-- 如果只完成一半，任務是 Failed 還是 Partial？
-- 成本超過上限時要不要停止？
-- 如何避免同一封 Email 寄送兩次？
+低風險的內部 Summary Tool 與 Payment Automation，不需要相同強度的 Control。需要多少 Evidence，應隨以下因素增加：
 
-Production Agent 的重點，不是「能做很多事」。
+- Reversibility
+- Financial 或 Legal Impact
+- Data Sensitivity
+- Permission Scope
+- Duration
+- Side-effect Count
+- Environment Uncertainty
+- False Positive Cost
+- False Negative Cost
 
-而是：
+只有 Control 與 Risk 相匹配，才能稱為 Ready。
 
-> **每一步都有明確入口、權限、狀態、預算、證據、停止條件與責任邊界。**
+## 四個 Runtime Stage 與三個 Cross-cutting Plane
 
----
+舊稿使用七層架構，適合盤點 Component，卻把 Sequential Stage 與包圍整個 Run 的 Concern 混在同一條直線。
 
-## Production Agent 的七個必要層
+更清楚的 Reference Model 是四個 Runtime Stage 加三個 Cross-cutting Plane。
 
-一套成熟架構通常可以拆成七層。
+### Runtime Stage 1：Admission 與 Routing
 
-### 1. Entry and Routing
+這一層判斷：
 
-負責判斷：
+- Request 是否被支援
+- 是否真的需要 Agent
+- 需要哪個 Source of Truth
+- 是否需要 Tool
+- 使用者是否可讀取資料
+- 適用哪個 Risk Class
+- 是否需要 Clarification 或 Human Handling
 
-- 這個 Request 是否需要 Agent？
-- 可以 Direct Answer 嗎？
-- 需要 RAG 嗎？
-- 需要 SQL、Calculator 或專用 Workflow 嗎？
-- 是否需要人工處理？
+可能 Outcome：
 
-### 2. Orchestration
+- Direct Response
+- Fixed Pipeline
+- RAG
+- SQL 或 Deterministic Tool
+- Bounded Agent Workflow
+- Human Review
+- Clarification
+- Unsupported
 
-負責：
+Router 必須能 Abstain。強迫選路，只是把不確定性包裝成自信的錯誤分類。
 
-- Workflow
-- State Machine
-- Planner
-- DAG
-- Event Trigger
+### Runtime Stage 2：Orchestration
+
+Orchestration 負責 Task 如何移動：
+
+- Workflow 或 State Machine
+- Plan 與 Plan Version
+- Task Dependency
 - Queue
-- Human Approval Gate
+- Retry 與 Fallback
+- Pause 與 Resume
+- Approval State
+- Deadline
+- Terminal Outcome
 
-它決定任務怎麼走。
+Orchestrator 不必決定每個局部 Action。它可以在某個 State 內呼叫 Bounded ReAct Executor、啟動 DAG，或執行 Deterministic Pipeline。
 
-### 3. Execution
+### Runtime Stage 3：Execution
 
-負責真正執行工作：
+Execution 透過以下能力完成工作：
 
-- LLM
+- Language Model
 - Retrieval
-- Search
-- Browser
-- Code Tools
 - Database
 - API
-- Computer-use
+- Code Sandbox
+- Browser
+- File
+- External Service
+- Specialised Worker
 
-### 4. Validation and Recovery
+每個可執行 Capability 都應有 Contract：
 
-負責：
-
-- Schema Check
-- Verifier
-- Citation Check
-- External Test
-- Retry
-- Fallback
-- Replanning
-- Human Review
-
-### 5. State and Memory
-
-負責：
-
-- Current State
-- Working Memory
-- Plan Version
-- Tool Results
-- Procedural Memory
-- User Preferences
-- Shared Memory
-
-### 6. Policy and Safety
-
-負責：
-
-- Identity
+- Allowed Input
 - Permission
-- Tool Allowlist
+- Timeout
+- Cost
+- Side-effect Class
+- Idempotency Behaviour
+- Structured Output
+- Error Taxonomy
+
+### Runtime Stage 4：Acceptance 與 Completion
+
+這一層判斷 Result 是否可以被接受。
+
+可以使用：
+
+- Schema Validation
+- Executable Test
+- Source 與 Citation Check
+- Policy Check
+- Post-condition Verification
+- Model-based Rubric Evaluation
+- Authorised Human Approval
+
+Outcome 不應只有 Pass 與 Fail：
+
+- completed
+- failed
+- partial
+- blocked
+- cancelled
+- pending
+- unsupported
+- inconclusive
+- requires human action
+
+### Cross-cutting Plane 1：Identity、Policy 與 Risk
+
+它會限制每個 Runtime Stage：
+
+- Authentication
+- Authorisation
 - Data Access
-- Budget
-- Risk Classification
-- Approval
-- Sandbox
+- Tool Allowlist
+- Delegation Right
 - Secret Isolation
+- Sandbox
+- Risk Classification
+- Approval Requirement
+- Irreversible-action Gate
 
-### 7. Observability and Operations
+重要 Control 必須由 Application 或 Infrastructure Enforcement，不能只靠自然語言指示。
 
-負責：
+### Cross-cutting Plane 2：State、Memory 與 Evidence
+
+它保存 Run 所需資訊：
+
+- Workflow State
+- Step Status
+- Plan Version
+- Working Memory
+- Evidence Store
+- User-scoped Memory
+- Procedural Memory
+- Shared State
+- Tool Result
+- Approval Record
+
+即使共用相同 Physical Storage，State、Memory 與 Evidence 仍應保持不同語意。
+
+### Cross-cutting Plane 3：Operations、Evaluation 與 Accountability
+
+它使系統可以被營運：
 
 - Trace
-- Audit Log
-- Metrics
-- Cost
-- Latency
-- Failure Reason
+- Metric
+- Log
+- Audit Record
 - Replay
-- Alerting
+- Alert
+- Cost Accounting
+- Offline Evaluation
+- Regression Suite
+- Release Gate
+- Incident Response
 - Kill Switch
 
-![Figure 8-1 — Production Agent Reference Architecture](/images/the-atlas-of-agent-design-patterns-part-8/figure-8-1-production-agent-reference-architecture.png)
+Observability 解釋 Live Run 發生什麼；Evaluation 評量 System Version 是否值得發布或繼續運作；Per-run Verifier 則判斷單一 Candidate 是否滿足 Contract。三者相關，但不能互換。
 
-> **Figure 8-1｜Production Agent Reference Architecture**  
-> Request 經過 Identity、Policy 與 Router 後，選擇 Direct、RAG 或 Agent Workflow；Orchestrator 管理 Planner、State Machine 和 Executor，Verifier、Memory、Budget、Human Approval 與 Observability 則構成 Production 控制面。
+![Figure 8-1｜Production Agent 四個 Runtime Stage 與三個 Cross-cutting Plane](/images/the-atlas-of-agent-design-patterns-part-8/production-reference-architecture.png)
 
----
+## 先從 Non-agent Baseline 開始
 
-## 先建立基線：什麼時候只需要簡單問答？
-
-在談六種 Production 配方前，先保留一個最重要的基線：
+選擇任何 Recipe 前，先問一次有界操作或 Fixed Pipeline 是否足夠。
 
 ```text
 Input
-  ↓
-LLM
-  ↓
-Output
+  -> Validate
+  -> Model or Function
+  -> Validate Output
+  -> Result
 ```
 
-### 適合簡單問答的任務
+適合 Baseline 的任務：
 
 - 翻譯
 - 改寫
 - 摘要
+- 固定欄位抽取
+- 分類
 - 格式轉換
 - 根據已提供內容回答
-- 低風險文字生成
-- 簡單分類
+- 確定的計算
+- 沒有 Adaptive Branching 的穩定 Retrieval Pipeline
 
-可以加入：
+Direct Path 仍可包含：
 
 - Input Validation
 - Output Schema
-- Content Policy
+- Policy Check
 - Token Limit
+- Fallback Model
 - Basic Logging
+- Deterministic Post-processing
 
-但不需要：
+原則很簡單：
 
-- Planner
-- Multi-Agent
-- Long-term Memory
-- Tree Search
-- Browser
-- State Machine
+> 使用能可靠滿足 Contract 的最小架構。
 
-Production 設計的第一原則是：
+用一座 Agent 主題樂園證明一個 Function 就能完成，成本通常頗有教育意義。
 
-> **可以用 Direct 解決，就不要先建一座 Agent 主題樂園。**
+## Recipe 1：Production RAG
 
----
+原始 RAG 架構結合 Parametric Generator 與被檢索的 Non-parametric Knowledge。到了 Production，困難的地方不是加上一個 Vector Index，而是控制 Source Selection、Access、Context Assembly、Evidence 與 Failure。
 
-## Router：決定走 Direct、RAG 還是 Agent
-
-同一個產品通常同時包含多種執行路徑。
-
-```text
-                    ┌→ Direct
-                    ├→ RAG
-User Request → Router
-                    ├→ SQL / Calculator
-                    ├→ Agent Workflow
-                    └→ Human Review
-```
-
-### Router 可以依什麼判斷？
-
-- Intent
-- Required Data Source
-- User Role
-- Permission
-- Risk
-- Expected Latency
-- Cost Budget
-- Need for Tools
-- Need for Persistent State
-- Need for Human Approval
-
-### 一個實用的分流邏輯
-
-#### Direct
-
-適用於：
-
-- 所需資訊已在輸入中
-- 一次呼叫可以完成
-- 不需要外部工具
-- 風險低
-
-#### RAG
-
-適用於：
-
-- 問題需要外部文件
-- 答案必須有來源
-- 不需要長期自主操作
-- 任務主要是檢索與回答
-
-#### Agent Workflow
-
-適用於：
-
-- 需要多步驟工具操作
-- 路徑取決於中間結果
-- 需要保存狀態
-- 需要規劃、重試或恢復
-
-#### Human Review
-
-適用於：
-
-- 高風險
-- 不可逆
-- 權限不足
-- 資料衝突
-- 政策要求人工批准
-
-### Router 也必須能說不知道
-
-至少需要：
-
-- Unknown
-- Ambiguous
-- Unsupported
-- Need Clarification
-
-不要強迫每個 Request 都走進某條自動化路徑。
-
----
-
-## 配方一：Production RAG
-
-最簡單的 RAG 可能只有：
+固定 RAG Pipeline 可以完全不是 Agent：
 
 ```text
 Query
-  ↓
-Retrieve
-  ↓
-Generate
+  -> Retrieve
+  -> Rerank
+  -> Build Context
+  -> Generate
+  -> Verify
 ```
 
-Production RAG 則需要處理：
+只有在 Path 必須適應時，Agentic Behaviour 才值得加入，例如：
 
-- Query 是否需要改寫？
-- 應該查哪個資料源？
-- 使用者有權讀取哪些文件？
-- Retrieval 是否召回正確內容？
-- Chunk 是否過期？
-- Citation 是否支持 Claim？
-- 資料不足時要回答、澄清，還是拒絕？
-- 成本與延遲如何控制？
+- Source Selection 取決於 Request
+- 讀完 Gap 後必須繼續 Retrieval
+- 系統必須判斷是否 Clarify
+- 需要數個 Tool 或 Corpus
+- Evidence Conflict 需要新增 Research Step
 
-### Production RAG 典型流程
+### Production Flow
 
 ```text
-User Query
-  ↓
-Query Router / Profile
-  ↓
-Normalize or Rewrite
-  ↓
-Retrieve
-  ↓
-Metadata and ACL Filter
-  ↓
-Rerank
-  ↓
-Context Builder
-  ↓
-Generate
-  ↓
-Citation and Faithfulness Verifier
-  ↓
-Answer or Retry / Abstain
+Request
+  -> Identity and Query Admission
+  -> Source Router
+  -> Query Normalisation or Rewrite
+  -> Permission-aware Retrieval
+  -> Deduplicate and Rerank
+  -> Context Builder
+  -> Generate with Citation IDs
+  -> Claim-to-Evidence Verification
+  -> Answer, Clarify, Retry, or Abstain
 ```
 
-### 核心元件
+### 在 Model Exposure 前執行 Access Control
 
-#### Query Router
+如果 Unauthorised Content 已經進入 Log、Cache、Reranker 或 Model Context，最後才做 ACL Filter 就太晚了。
 
-決定：
+使用 Defence in Depth：
 
-- 是否需要 Retrieval
-- 使用哪個 Corpus
-- 是否查 SQL
-- 是否使用快速或深度模式
+1. 驗證 User 與 Tenant
+2. 限制可搜尋 Corpus
+3. Retrieval 時套用 Metadata Filter
+4. Rerank 前移除 Unauthorised Candidate
+5. Generation 前再次檢查 Selected Context
+6. Audit 被拒絕的 Access Attempt
 
-#### Retrieval
+### Query Rewrite 是受控制的 Transformation
 
-可以包含：
+Rewrite Node 應保留：
 
-- Vector Search
-- Keyword Search
-- Hybrid Search
-- Metadata Filter
-- Graph Query
-- SQL
+- User Intent
+- Security Scope
+- Entity
+- Time Range
+- Language
+- Source Constraint
 
-#### Reranker
+不能把 Private Query 默默擴張到更廣的 Corpus。
 
-把「語義相似」進一步排序成「對回答真正有用」。
+### Context Builder 責任
 
-#### Context Builder
+Context Builder 應管理：
 
-處理：
-
-- Chunk Deduplication
 - Token Budget
 - Source Diversity
-- Metadata
-- Context Ordering
-- Citation IDs
+- Duplicate Passage
+- Document Version
+- Chunk Adjacency
+- Citation Identifier
+- Permission
+- Recency
+- Conflicting Evidence
+- Prompt-injection Boundary
 
-#### Generator
+Retrieved Content 是 Untrusted Data。文件或網頁裡的指示不能自動推翻 System 或 Tool Policy。
 
-只能根據允許使用的 Context 產生答案。
+### Verification
 
-#### Citation Verifier
+有 Citation 的 Answer 仍需檢查：
 
-檢查：
+- 每個 Material Claim 是否有 Evidence？
+- Cited Passage 是否真的支持 Claim？
+- Source 是否被允許？
+- Version 與 Date 是否相容？
+- 是否遺漏重要 Limitation？
+- Answer 是否滿足完整 Contract？
+- 是否應 Abstain？
 
-- Claim 是否有來源
-- Citation 是否真的支持 Claim
-- 是否引用錯誤段落
-- 是否混用版本
-- 是否遺漏重要限制
+### Failure Policy
 
-### Production RAG 的 State
+| Failure | Primary Response |
+|---|---|
+| 找不到被允許的 Source | Clarify、切換 Approved Corpus 或 Abstain |
+| Retrieval Coverage 太低 | Rewrite 或啟動 Deep Retrieval Profile |
+| Citation Mismatch | Repair 或 Reject Answer |
+| Source Conflict | 揭露 Conflict 或要求 Review |
+| Source 過時 | 使用有效的新版本或標記 Limitation |
+| Unauthorised Content | 移除、記錄並調查 |
+| Context Budget 超限 | Compress、Prioritise 或拆分 Task |
+| Source 內有 Prompt Injection | 當作 Data、排除指令並記錄 Incident |
 
-即使 RAG 不需要高度自主，仍然可能保存：
+### Production State
+
+只保存能重現與診斷 Run 的資訊：
 
 - Original Query
 - Rewritten Query
-- Retrieved Document IDs
-- Reranker Scores
-- Selected Context
-- Citation Mapping
+- Corpus 與 Policy Version
+- Retrieved Document ID 與 Version
+- Reranker Score
+- Selected Evidence
+- Citation Map
+- Verifier Result
 - Retry Count
-- Failure Reason
-- Query Profile
+- Terminal Outcome
 
-### Production RAG 的 Failure Policy
+![Figure 8-2｜Production RAG Pipeline](/images/the-atlas-of-agent-design-patterns-part-8/production-rag-pipeline.png)
 
-| 失敗 | 處理 |
-|---|---|
-| No documents found | Clarify、Fallback Corpus 或 Abstain |
-| Low retrieval confidence | Rewrite Query 或 Deep Retrieval |
-| Citation mismatch | Regenerate or Reject |
-| Unauthorized document | Remove and Audit |
-| Stale source | Prefer newer version |
-| Conflicting sources | Surface conflict or Human Review |
+## Recipe 2：Deep Research Agent
 
-![Figure 8-2 — Production RAG Architecture](/images/the-atlas-of-agent-design-patterns-part-8/figure-8-2-production-rag-architecture.png)
+Deep Research 不是單純「搜尋更多」。它必須把 Open Question 轉成可追蹤 Claim，並產生 Gap 可見的 Synthesis。
 
-> **Figure 8-2｜Production RAG Architecture**  
-> Query 經過 Router、Rewrite、Hybrid Retrieval、ACL Filter、Reranker 與 Context Builder，再由 Generator 產生帶 Citation 的答案；Verifier 負責檢查 Faithfulness、Coverage 與來源權限。
-
-### Production RAG 何時不需要 Agent？
-
-如果流程始終固定：
-
-```text
-Retrieve → Rerank → Generate → Verify
-```
-
-它本質上仍然是一條可控 Pipeline。
-
-只有在以下情況，才需要加入 Agentic 節點：
-
-- 動態選擇資料源
-- 根據結果決定是否改寫 Query
-- 多輪補查
-- 工具路由
-- 複雜澄清
-- 自適應檢索
-
-不要因為系統用了 LLM 和 Retrieval，就自動稱為 Agent。
-
----
-
-## 配方二：Deep Research Agent
-
-Deep Research 的任務通常不是回答一個簡單問題。
-
-它需要：
-
-- 拆解研究問題
-- 查找多個來源
-- 平行研究
-- 處理衝突
-- 追蹤證據
-- 補足缺口
-- 產生長篇綜合報告
-
-### 典型架構
+典型架構：
 
 ```text
 Research Goal
-  ↓
-Planner
-  ↓
-Research Plan
-  ↓
-DAG of Research Tasks
-  ├→ Worker A
-  ├→ Worker B
-  ├→ Worker C
-  └→ Worker N
-        ↓
-Evidence Store
-        ↓
-Synthesis
-        ↓
-Verifier
-        ↓
-Complete or Replan
+  -> Admission and Source Policy
+  -> Planner
+  -> Versioned Research Plan
+  -> Dependency-aware Task Graph
+  -> Bounded Research Workers
+  -> Evidence Store
+  -> Synthesis
+  -> Coverage and Conflict Verifier
+  -> Complete, Repair, or Replan
 ```
 
-### Planner 應該產生什麼？
+### Planner 產生 Research Contract
 
-不是：
+有效 Subtask 包含：
 
-```text
-1. Research
-2. Analyze
-3. Write
-```
-
-而是：
-
-- Research Question
-- Subquestion
-- Allowed Sources
-- Expected Evidence
-- Completion Criteria
+- Question
+- Objective
 - Dependency
+- Allowed Source
+- Required Evidence
+- Output Schema
+- Completion Criteria
 - Budget
 - Deadline
 - Failure Policy
 
-### 為什麼需要 DAG？
+「研究市場」不是 Contract。
 
-不同子問題可以平行處理。
+### DAG 是選配，不是儀式
 
-例如：
+只有在 Subtask 真的有 Directional Dependency 與 Independent Branch 時才使用 DAG。
 
-```text
-Pricing
-Features
-Deployment
-Security
-Customer Evidence
-```
+可平行的 Branch 例如：
 
-它們完成後再進入 Synthesis。
+- Product Capability
+- Pricing
+- Security
+- Deployment
+- Customer Evidence
+- Regulation
 
-DAG 本身不處理循環。
+不要只因 Worker Card 很好看就 Parallelise。平行工作可能耗盡 Rate Limit、重複 Search，並製造昂貴的 Join Problem。
 
-若 Verifier 發現證據不足，外層 State Machine 可以：
+### Evidence Store，不是 Paragraph Warehouse
 
-```text
-VERIFY
-  ↓ Fail
-REPLAN
-  ↓
-Run New Research DAG
-```
+每個 Evidence Unit 應保留：
 
-### Evidence Store
-
-Deep Research 不應只保存 Worker 的段落摘要。
-
-每筆 Evidence 最好包含：
-
-- Claim
+- Claim 或 Field
 - Source
 - Source Type
 - Publication Date
 - Access Date
-- Quote or Extract
+- Document Version
+- Supporting Extract
 - Scope
-- Confidence
 - Worker
 - Validation Status
+- Source Lineage
 
-### Source Policy
+Source Lineage 很重要。五篇 Secondary Article 都引用同一份 Report，不代表五個獨立 Source。
 
-應優先定義：
+### Synthesis 必須保存 Disagreement
 
-- Official Sources
-- Primary Research
-- Regulatory Sources
-- Reputable Secondary Sources
-- Disallowed Sources
-- Freshness Window
+Synthesiser 不應把互相衝突的 Evidence 磨成一段平滑文字。
 
-### Deep Research 的停止條件
+應記錄：
 
-- Required Questions Covered
-- Minimum Source Diversity
-- No Critical Evidence Gap
-- Citation Coverage Passed
-- Budget Reached
-- No-improvement Limit
-- Human Deadline
+- Agreement
+- Conflict
+- Unresolved Gap
+- Time 或 Version Difference
+- Inference
+- Confidence
+- 對 Recommendation 的影響
 
-![Figure 8-3 — Deep Research Agent Architecture](/images/the-atlas-of-agent-design-patterns-part-8/figure-8-3-deep-research-agent-architecture.png)
+### Replanning Boundary
 
-> **Figure 8-3｜Deep Research Agent Architecture**  
-> Planner 將研究目標拆成帶有來源政策與完成條件的任務，透過 DAG 平行交給 Research Workers；Evidence Store 保存可追蹤證據，Synthesis 與 Verifier 再決定完成或 Replan。
+一個 Source 或 Query 失敗，但 Subtask 仍有效時，使用 Local Repair。
 
-### Deep Research 的常見失敗
+以下情況才 Replan：
 
-#### 搜尋很多，證據很少
+- Decomposition 不完整
+- Premise 為假
+- 多個 Dependency 改變
+- Deliverable 改變
+- Evidence Contract 無法滿足
 
-Agent 讀取大量內容，卻沒有形成可驗證 Claim。
+Verifier Fail 不應自動重啟所有 Research。仍然有效的 Evidence 應被保存。
 
-#### Worker 重複工作
+### Stop Condition
 
-多個 Worker 搜尋相同問題。
+- Required Question 已涵蓋
+- Minimum Evidence Quality 達標
+- Material Conflict 已揭露
+- Citation Coverage 通過
+- 不存在 Critical Gap
+- Budget 已達上限
+- 達到 No-improvement Limit
+- Human Deadline 到期
 
-#### 來源被重複計算
+「也許還有另一個 Source」不是 Completion Policy。
 
-五篇文章其實都引用同一份原始報告。
+![Figure 8-3｜Deep Research Agent 架構](/images/the-atlas-of-agent-design-patterns-part-8/deep-research-agent-architecture.png)
 
-#### Synthesis 混合互相衝突的版本
+## Recipe 3：Coding Agent
 
-價格、產品或政策來自不同時間。
+Production Coding Agent 是可執行的 Software-change Workflow，不是 Code-completion Prompt。
 
-#### 沒有完成條件
+它必須能：
 
-Agent 永遠還能再找一個來源。
+- 理解 Repository
+- 限制 Change Scope
+- 在隔離環境修改
+- 執行 Test
+- 讀取 Structured Failure
+- 在限制內 Repair
+- 檢查 Final Diff
+- 重現結果
+- 安全停止
 
----
-
-## 配方三：Coding Agent
-
-Coding Agent 的重點不在「能生成程式碼」。
-
-而在於：
-
-> **能在隔離環境中理解 Repository、修改程式、執行測試、讀取失敗、有限修正，並提供可重現證據。**
-
-### 典型架構
+### Reference Flow
 
 ```text
 Task
-  ↓
-Repository Snapshot
-  ↓
-Planner
-  ↓
-Code Search and Inspection
-  ↓
-Generate Patch
-  ↓
-Sandbox Execution
-  ↓
-Target Tests
-  ↓
-Related Tests
-  ↓
-Full Test Suite
-  ↓
-Lint and Build
-  ↓
-Change-scope Verifier
-  ↓
-Human Approval
-  ↓
-Merge or Deliver
+  -> Repository and Environment Snapshot
+  -> Scope and Acceptance Contract
+  -> Inspect Code, Tests, and History
+  -> Plan or Direct Repair
+  -> Generate Patch
+  -> Static Validation
+  -> Sandbox Execution
+  -> Target Test
+  -> Related and Regression Tests
+  -> Lint, Type Check, and Build
+  -> Security and Change-scope Review
+  -> Evidence Bundle
+  -> Approval or Delivery
 ```
 
-### Repository Snapshot
-
-在修改前保存：
-
-- Branch
-- Commit SHA
-- Dirty State
-- Dependency Version
-- Test Environment
-- Runtime Version
-
-這讓結果可重現，也能判斷 Agent 修改了什麼。
-
-### Planner
-
-定義：
-
-- Suspected Area
-- Files to Inspect
-- Tests to Run
-- Allowed Changes
-- Completion Criteria
-- Rollback Point
-
-### Code Search
-
-應先理解：
-
-- Call Graph
-- Existing Tests
-- Data Flow
-- Configuration
-- Similar Implementation
-- Error Logs
-
-不要直接用錯誤訊息猜一個 Patch。
-
-### Generate-and-Test
-
-```text
-Generate Patch
-  ↓
-Static Validation
-  ↓
-Run Target Test
-  ↓
-Fail?
-  ├─ Yes → Inspect Failure → Revise
-  └─ No → Broader Validation
-```
-
-### 完整驗收不能只跑目標測試
-
-至少可能包含：
-
-- Target Test
-- Related Test Suite
-- Full Relevant Suite
-- Lint
-- Type Check
-- Format Check
-- Build
-- Security Scan
-- Diff Review
-- Reproducibility Check
-
-### 防止 Reward Hacking
-
-Agent 不應該：
-
-- 刪除測試
-- 跳過測試
-- 放寬 Assertion
-- 修改 Expected Result
-- 隱藏錯誤
-- 只跑容易通過的命令
-- 修改無關檔案
-
-### Human Approval
-
-以下動作最好需要批准：
-
-- Merge
-- Push
-- Deploy
-- Database Migration
-- Dependency Major Upgrade
-- Secret or Permission Change
-- Production Configuration Change
-
-![Figure 8-4 — Production Coding Agent](/images/the-atlas-of-agent-design-patterns-part-8/figure-8-4-production-coding-agent.png)
-
-> **Figure 8-4｜Production Coding Agent**  
-> Coding Agent 先固定 Repository Snapshot，再經 Planner、Code Search、Patch、Sandbox、分層測試、Lint、Build 與 Change-scope Verifier；只有通過驗證與批准後，才能 Merge 或交付。
-
-### Coding Agent 的 Terminal States
-
-- Completed
-- Failed
-- Partial
-- Blocked
-- Needs Human Review
-- Cannot Reproduce
-- Unsupported Environment
-
-不是每個 Bug 都能在 Budget 內自動修好。
-
----
-
-## 配方四：Browser / Computer-use Agent
-
-Browser Agent 需要在真實介面中：
-
-- 看畫面
-- 理解狀態
-- 選擇動作
-- 點擊
-- 輸入
-- 捲動
-- 等待
-- 檢查結果
-
-它比純 Tool Calling 更接近不確定環境中的互動 Agent。
-
-### 典型循環
-
-```text
-Goal
-  ↓
-Observe Page
-  ↓
-Update Browser State
-  ↓
-Select Allowed Action
-  ↓
-Execute
-  ↓
-Observe New State
-  ↓
-Success?
-  ├─ Yes → Complete
-  └─ No → Recover or Continue
-```
-
-### 為什麼需要 State Machine？
-
-Browser 操作經常包含：
-
-- Login Required
-- CAPTCHA
-- Modal Open
-- Form Partially Filled
-- Waiting for Page
-- Download Started
-- Approval Pending
-- Error
-- Completed
-
-如果只使用自由 ReAct，Agent 可能：
-
-- 重複點擊
-- 回到上一頁
-- 遺失已填資料
-- 不知道下載是否完成
-- 對同一按鈕操作多次
-
-State Machine 可以限制：
-
-```text
-LOGIN
-  ↓
-SEARCH
-  ↓
-SELECT ITEM
-  ↓
-FILL FORM
-  ↓
-REVIEW
-  ↓
-SUBMIT
-  ↓
-VERIFY
-```
-
-### Browser State 應包含
-
-- Current URL
-- Page Title
-- Active Element
-- Visible Controls
-- Form Values
-- Navigation History
-- Download Status
-- Last Action
-- Last Observation
-- Screenshot or DOM Reference
-- Retry Count
-
-### Allowed Action Policy
-
-限制：
-
-- Click
-- Type
-- Scroll
-- Select
-- Download
-- Upload
-- Navigate
-- Wait
-
-高風險動作另外標記：
-
-- Submit
-- Purchase
-- Send
-- Delete
-- Publish
-- Change Permission
-
-### Success Verifier
-
-不要只依賴：
-
-> 按鈕已經點過。
-
-應檢查：
-
-- Confirmation Message
-- New Record Exists
-- Expected URL
-- Download File Exists
-- Form Status
-- Server Response
-- Transaction ID
-
-### Recovery
-
-常見恢復方式：
-
-- Wait and Retry
-- Re-observe Page
-- Close Modal
-- Return to Safe State
-- Reload
-- Re-authenticate
-- Ask User
-- Human Takeover
-
-![Figure 8-5 — Browser and Computer-use Agent](/images/the-atlas-of-agent-design-patterns-part-8/figure-8-5-browser-computer-use-agent.png)
-
-> **Figure 8-5｜Browser and Computer-use Agent**  
-> Browser Agent 透過 Observe、State Update、Policy Check、Action、New Observation 與 Success Verification 循環操作介面；State Machine、Duplicate-action Detection、Human Takeover 與不可逆操作 Gate 防止失控。
-
-### Browser Agent 的常見風險
-
-- UI 改版
-- 元件辨識錯誤
-- Session 過期
-- 重複提交
-- 隱藏 Modal
-- 網路延遲
-- 下載未完成
-- 內容被其他使用者更新
-- 不可逆操作
-- 敏感資料外洩
-
----
-
-## 配方五：高風險企業自動化
-
-企業自動化不應該直接從：
-
-```text
-User Request
-  ↓
-Agent
-  ↓
-Execute
-```
-
-高風險流程需要：
-
-- Identity
-- Permission
-- Policy
-- Deterministic Validation
-- Risk Classification
-- Human Approval
-- Transaction Control
-- Post-condition Verification
-- Audit Log
-- Rollback
-
-### 典型流程
-
-```text
-Request or Event
-  ↓
-Authenticate Identity
-  ↓
-Authorize Action
-  ↓
-Agent Prepares Proposal
-  ↓
-Deterministic Validation
-  ↓
-Risk Classification
-  ↓
-Approval Required?
-  ├─ Yes → Human Review
-  └─ No → Execute
-              ↓
-         Verify Post-condition
-              ↓
-         Audit and Complete
-```
-
-### Agent 應該準備 Proposal，而不是直接執行
-
-例如付款流程：
-
-```text
-Payee
-Amount
-Currency
-Reason
-Source Invoice
-Account
-Risk Flags
-Expected Effect
-Rollback Possibility
-```
-
-Agent 可以整理資訊和建議。
-
-但真正執行前，應交給：
-
-- Policy Engine
-- Permission Check
-- Approval
-- Transaction Layer
-
-### Deterministic Validation
-
-可以檢查：
-
-- Required Fields
-- Amount Limit
-- Duplicate Invoice
-- Account Status
-- Vendor Allowlist
-- Currency
-- Approval Threshold
-- Segregation of Duties
-- Compliance Rule
-
-### Human Approval
-
-審批者必須看到：
-
-- Proposed Action
-- Evidence
-- Risk
-- Policy Results
-- Expected Impact
-- Reversibility
-- Difference from Existing State
-
-### 執行後驗證
-
-不要因為 API 回傳 200 就宣布完成。
-
-需要確認：
-
-- Transaction ID
-- Database State
-- Ledger Entry
-- Target Record
-- Notification Status
-- Side Effects
-- Idempotency Key
-
-### Rollback 與補償
-
-有些操作不能真正 Rollback。
-
-此時需要 Compensation：
-
-- Reverse Transaction
-- Cancel Request
-- Restore Previous Record
-- Notify Owner
-- Open Incident
-
-![Figure 8-6 — High-Risk Enterprise Automation](/images/the-atlas-of-agent-design-patterns-part-8/figure-8-6-high-risk-enterprise-automation.png)
-
-> **Figure 8-6｜High-Risk Enterprise Automation**  
-> Request 先經 Identity、Authorization、Agent Proposal、Deterministic Validation 與 Risk Classification；高風險或不可逆操作必須 Human Approval，執行後再做 Post-condition Verification、Audit 與 Rollback／Compensation。
-
----
-
-## 配方六：長期監控型 Agent
-
-長期監控 Agent 不一定一直在「思考」。
-
-它更像一個：
-
-- Scheduled Workflow
-- Event-driven System
-- Condition Watcher
-- Stateful Monitor
-
-常見任務：
-
-- 監控價格
-- 監控系統健康
-- 監控合約到期
-- 監控新聞
-- 監控資料品質
-- 監控職缺
-- 監控安全事件
-- 監控供應鏈風險
-
-### 典型流程
-
-```text
-Schedule or Event
-  ↓
-Load Previous State
-  ↓
-Collect Current Data
-  ↓
-Normalize
-  ↓
-Compare with Baseline
-  ↓
-Condition Met?
-  ├─ No → Update State and Sleep
-  └─ Yes → Verify
-              ↓
-           Deduplicate
-              ↓
-           Notify or Escalate
-```
-
-### 關鍵元件
-
-#### Scheduler / Trigger
-
-- Cron
-- Queue
-- Webhook
-- Event Stream
-- Condition Watch
-
-#### Baseline State
+### 先建立 Snapshot
 
 保存：
 
-- Last Checked At
-- Last Value
-- Last Alert
-- Known Events
-- Cooldown
-- Cursor
-- Source Version
+- Repository URL 或 Identity
+- Branch
+- Commit SHA
+- Dirty State
+- Runtime Version
+- Dependency Lock
+- Environment Variable Reference，不保存 Raw Secret
+- Test Environment
+- Relevant Service Version
 
-#### Change Detection
+沒有 Reproducible Base 的 Patch，只是一則穿著 Diff 外套的傳聞。
 
-不是只看「有沒有新資料」，還要判斷：
+### 修改前先理解
 
-- 是否有意義
-- 是否超過門檻
-- 是否只是格式變化
-- 是否已經通知過
-- 是否為同一事件的更新
+Agent 應檢查：
 
-#### Deduplication
+- Failing Test
+- Call Path
+- Nearby Implementation
+- Configuration
+- Similar Code
+- Repository Convention
+- Relevant Recent Change
+- Error Log
 
-需要：
+Stack Trace 可能只指出 Symptom 出現的位置，不是 Root Cause。
 
-- Event ID
-- Content Hash
+### Layered Validation
+
+實際 Test Suite 依 Repository 而異，但 Acceptance Chain 一般應包含：
+
+1. Target Test
+2. Related Test Group
+3. Relevant Regression Suite
+4. Lint 與 Formatting Check
+5. Type Check
+6. Build 或 Package Check
+7. 適用時的 Security Check
+8. Diff 與 Scope Review
+9. Reproducibility Check
+
+不需要宣稱每個 Repository 都必須執行巨大 Global Suite。應在 Task Contract 定義 Required Suite，並說明哪些 Check 未執行。
+
+### 保護 Verifier
+
+Agent 不得透過以下方式取得 Pass：
+
+- Delete Test
+- Skip Test
+- Weaken Assertion
+- 未經 Authorisation 修改 Expected Result
+- 修改 Protected Fixture
+- 隱藏 Error
+- 修改 Unrelated File
+
+Test-file Change 應分開追蹤；Acceptance Artefact 被修改時必須 Review。
+
+### Sandbox 與 Permission
+
+Code Execution 應使用：
+
+- Isolated Workspace
+- Least-privilege Credential
+- Controlled Network Access
+- Resource Limit
+- Timeout
+- Output Limit
+- Secret Isolation
+- 可行時使用 Disposable Environment
+
+### Delivery Evidence
+
+Deliverable 應包含：
+
+- Base Commit
+- Changed Files
+- Root Cause 說明
+- Commands Run
+- Exit Codes
+- Tests Passed 與 Not Run
+- Lint 與 Build Result
+- Remaining Risk
+- Reproducible Install 或 Placement Steps
+
+SWE-bench 類 Benchmark 的核心提醒是：Real Repository Repair 需要跨檔案理解與 Executable Evaluation，不只是看起來合理的 Code Generation。
+
+![Figure 8-4｜Coding Agent Reference Flow](/images/the-atlas-of-agent-design-patterns-part-8/coding-agent-reference-flow.png)
+
+## Recipe 4：Browser／Computer-use Agent
+
+Browser Agent 在 Partially Observable 且持續變動的 Environment 中行動。
+
+Button 被 Click 不等於成功，系統必須檢查 Post-condition。
+
+### Reference Loop
+
+```text
+Goal and Current State
+  -> Observe Interface
+  -> Parse Trusted and Untrusted Content
+  -> Build Structured Browser State
+  -> Check Policy
+  -> Select Allowed Action
+  -> Duplicate and Risk Check
+  -> Execute
+  -> Observe New State
+  -> Verify Progress or Completion
+```
+
+### Structured Browser State
+
+保存：
+
+- Current URL 與 Origin
+- Page Title
+- Selected Account 或 Tenant
+- Visible Controls
+- Active Element
+- Form Values
+- Navigation History
+- Last Action
+- Last Observation
+- Download Status
+- Session Status
+- Screenshot 或 DOM Reference
+- Retry Count
+- 適用時的 Transaction Identifier
+
+### Action Class
+
+低風險：
+
+- Navigate
+- Scroll
+- Inspect
+- Search
+- Select
+- 在 Draft Field 輸入
+- 下載被允許的 File
+
+高風險：
+
+- Submit
+- Send
+- Purchase
+- Delete
+- Publish
+- Change Permission
+- Upload Sensitive Data
+- Accept Legal Terms
+
+高風險 Action 應先通過 Preview、Policy Check 與 Approval Gate。
+
+### Prompt Injection 與 Untrusted Interface
+
+Web Page、Email、Document 與 Retrieved Instruction 可能試圖操控 Agent。
+
+Page Text 必須被視為 Untrusted Input；Action Policy 應來自 Trusted Application Boundary，而不是頁面內容。
+
+### Post-condition Verification
+
+Action 後檢查真實 Effect：
+
+- Confirmation Message
+- Expected URL
+- Server Response
+- Created Record
+- Transaction ID
+- Downloaded File 與 Checksum
+- Changed Form Status
+- Before-and-after State
+
+Write Action 後 Response 遺失會形成 Ambiguous Side Effect。再次操作前，必須先 Reconcile Outcome。
+
+### Recovery
+
+- Wait and Re-observe
+- 關閉或處理 Modal
+- 回到 Known Safe State
+- Reload
+- Re-authenticate
+- 使用 Alternative Approved Route
+- Ask User
+- Human Takeover
+- Stop
+
+WebArena 等 Realistic Web Benchmark 說明了為何 Long-horizon Browser Task 需要 Functional Post-condition Evaluation，而不能只用 Action Count 安慰自己。
+
+![Figure 8-5｜Browser／Computer-use Agent Reference Loop](/images/the-atlas-of-agent-design-patterns-part-8/browser-agent-reference-loop.png)
+
+## Recipe 5：High-risk Enterprise Automation
+
+High-risk Automation 不應讓 Language Model 直接擁有 Business Transaction Authority。
+
+較安全的 Pattern：
+
+```text
+Request or Event
+  -> Authenticate
+  -> Authorise
+  -> Agent Prepares Structured Proposal
+  -> Deterministic Validation
+  -> Risk Classification
+  -> Approval Decision
+  -> Transaction Service Executes
+  -> Post-condition Verification
+  -> Reconciliation and Audit
+```
+
+### Agent 產生 Proposal
+
+Payment Proposal 可以包含：
+
+- Payee
+- Amount
+- Currency
+- Invoice
+- Account
+- Business Reason
+- Requested Execution Time
+- Risk Flags
+- Expected Effect
+- Reversibility
+- Idempotency Key
+
+Agent 可以整理 Evidence 並解釋 Request，不應默默變成 Transaction Authority。
+
+### Deterministic Validation
+
+檢查：
+
+- Schema
+- Amount Range
+- Account Ownership
+- Vendor Status
+- Duplicate Invoice
+- Permission
+- Policy
+- Business Rule
+- 適用時的 Sanctions 或 Compliance Check
+- Transaction Limit
+- Required Approval
+
+### Durable Approval
+
+Approval Request 應顯示：
+
+- Exact Proposed Action
+- Evidence
+- Before State
+- Expected After State
+- Risk
+- Reversibility
+- Alternative
+- Expiry
+- Who May Approve
+
+Resume 前重新檢查 State。昨天 Account Balance 下的 Approval，不應自動批准今天已改變的 Transaction。
+
+### Transaction Boundary
+
+真正 Side Effect 由 Deterministic Service 執行。
+
+要求：
+
+- Idempotency
+- Reconciliation
+- Transaction Identifier
+- Least Privilege
+- 可行時的 Rollback 或 Compensating Action
+- Immutable Audit Record
+- 高影響操作的 Separation of Duties
+
+### Security 與 Governance
+
+NIST AI Risk Management Framework 與 OWASP 的現行 Guidance 都強調：Risk 必須跨整個 Lifecycle 管理，不能把 Model Behaviour 當成唯一 Control Boundary。
+
+![Figure 8-6｜High-risk Enterprise Automation Pattern](/images/the-atlas-of-agent-design-patterns-part-8/high-risk-enterprise-pattern.png)
+
+## Recipe 6：Long-running Monitor
+
+Long-running Monitor 會重複檢查 Condition，只在 Meaningful Change 發生時通知。
+
+例如：
+
+- Price Threshold
+- Weather Risk
+- Service Outage
+- New Filing
+- Policy Change
+- Job Posting
+- Inventory Return
+- Security Event
+
+### Reference Flow
+
+```text
+Schedule or Event
+  -> Load Cursor and Baseline
+  -> Fetch Current Source
+  -> Validate Source Health
+  -> Normalise Observation
+  -> Compare with Baseline
+  -> Condition Met?
+       no -> Update Health State and Stop Quietly
+       yes -> Verify Change
+            -> Deduplicate and Apply Cooldown
+            -> Notify or Escalate
+            -> Update Cursor and Alert History
+```
+
+### Persistent State
+
+保存：
+
 - Source
-- Time Window
-- Alert Key
+- Cursor
+- Baseline
+- Last Successful Check
+- Last Attempted Check
+- Last Change
+- Last Notification
+- Alert Signature
+- Cooldown
+- Retry Count
+- Health Status
+- Policy Version
 
-#### Notification Policy
+### Event Contract
+
+CloudEvents 等 Common Event Envelope 可以統一 Event Producer 與 Consumer 之間的 Identity、Type、Source、Time 與 Correlation。
+
+### No-change Behaviour
+
+Condition 未成立時：
+
+```text
+Do Not Notify
+```
+
+Silence 是 Product Contract 的一部分，不是缺少 Feature。
+
+### Health Monitoring
+
+Monitor 可能持續排程，卻已經 Silent Failure。
+
+追蹤：
+
+- Missed Run
+- Stale Last-success Time
+- Repeated Empty Response
+- Source Schema Change
+- Authentication Expiry
+- Dead-letter Message
+- Clock 或 Scheduler Drift
+- Alert-delivery Failure
+
+### Notification Policy
 
 - Severity
 - Recipient
 - Channel
 - Quiet Hours
 - Cooldown
-- Escalation
 - Acknowledgement
+- Escalation
+- Maximum Reminders
+- Deduplication
 
-#### No-change 行為
+### Stop 與 Retention
 
-如果條件未達成：
+Long-running System 需要：
 
-```text
-Do not notify
-```
-
-長期監控系統不應每天寄一封「今天仍然沒有事情」的數位空氣。
-
-### 長期監控的風險
-
-- 重複通知
-- Source 失效
-- Baseline 漂移
-- 靜默故障
-- Scheduler 中斷
-- 誤報
-- 漏報
-- Alert Fatigue
-- State 過期
-- 無限累積歷史
-
-### 必要控制
-
-- Health Check
-- Last-success Timestamp
-- Missed-run Detection
-- Retry Limit
-- Dead-letter Queue
-- Alert Deduplication
-- Cooldown
-- State Retention
-- Human Escalation
+- Expiry
+- Cancellation
 - Kill Switch
+- Retention Policy
+- History Compaction
+- Source-removal Handling
+- Ownership Transfer
+- Human Escalation
 
----
+## Per-run Verifier、Evaluation Suite 與 Observability
 
-## 六種 Production Agent 配方
+這三個 Mechanism 常被一起稱為 Evaluation，但 Scope 不同。
 
-以下六種配方不包含 Direct 基線。
+### Per-run Verifier
 
-| 配方 | 主要任務 | 核心模式 | 必要驗證 | 必要 State / Memory |
-|---|---|---|---|---|
-| Production RAG | 文件問答 | Router、Pipeline、Rerank | Citation、Faithfulness、ACL | Query State、Source Mapping |
-| Deep Research | 多來源研究 | Planner、DAG、Verifier、Replan | Source Coverage、Conflict Check | Plan、Evidence Store |
-| Coding Agent | 修改可執行產物 | State Machine、Generate-and-Test | Tests、Lint、Build、Diff | Repo Snapshot、Attempt State |
-| Browser Agent | 操作 UI | ReAct、State Machine、Policy | Page State、Post-condition | Navigation State、Action History |
-| High-risk Automation | 執行企業操作 | Policy、Human Approval、Transaction | Deterministic Rules、Post-condition | Approval State、Audit Log |
-| Long-term Monitor | 持續監控條件 | Event-driven、Stateful Workflow | Change Verification、Deduplication | Baseline、Cursor、Alert History |
+問題是：
 
----
+> 這次 Run 是否滿足 Contract？
 
-## 每種配方使用哪些模式？
+例如：
 
-| 模式 | RAG | Deep Research | Coding | Browser | High-risk | Monitoring |
-|---|---:|---:|---:|---:|---:|---:|
-| Router | 高 | 中 | 低 | 低 | 中 | 中 |
-| Pipeline | 高 | 中 | 中 | 低 | 高 | 高 |
-| State Machine | 中 | 高 | 高 | 高 | 高 | 高 |
-| DAG | 低 | 高 | 中 | 低 | 低 | 中 |
-| ReAct | 低～中 | 中 | 中 | 高 | 低 | 低 |
-| Planner | 低 | 高 | 高 | 中 | 低～中 | 低 |
-| Verifier | 高 | 高 | 高 | 高 | 高 | 高 |
-| Generate-and-Test | 低 | 低 | 核心 | 低 | 低 | 低 |
-| Human Approval | 視資料 | 視風險 | Merge / Deploy | 不可逆操作 | 核心 | 高風險通知 |
-| Working Memory | 中 | 高 | 高 | 高 | 中 | 低 |
-| Long-term Memory | 低～中 | 中 | 程序型 | 程序型 | 規則型 | Baseline / History |
+- Citation 支持 Claim
+- Target Test 通過
+- Transaction Post-condition 成立
+- Browser Task 達成 Goal
 
----
+### Evaluation Suite
 
-## 成本、延遲、可控性與適用場景
+問題是：
 
-| 架構 | 成本 | 延遲 | 可控性 | 可觀測性 | 失敗恢復 | 最適合 |
-|---|---:|---:|---:|---:|---:|---|
-| Direct Baseline | 低 | 低 | 高 | 高 | 簡單 | 一次性文字任務 |
-| Production RAG | 中 | 低～中 | 高 | 高 | 中～高 | 有來源的文件問答 |
-| Deep Research | 高 | 高 | 中～高 | 中～高 | 高 | 多來源長篇研究 |
-| Coding Agent | 高 | 高 | 高 | 高 | 高 | 可測試的程式任務 |
-| Browser Agent | 高 | 中～高 | 中 | 高 | 中～高 | 動態 UI 操作 |
-| High-risk Automation | 中～高 | 中～高 | 很高 | 很高 | 高 | 企業不可逆操作 |
-| Long-term Monitor | 持續累積 | 非同步 | 高 | 很高 | 高 | 條件監控與告警 |
+> 這個 System Version 是否值得發布或繼續運作？
 
----
+可以包含：
 
-## 共用控制一：Budget
+- Curated Task Set
+- Regression Case
+- Adversarial Input
+- Permission Test
+- Prompt-injection Test
+- Failure 與 Recovery Scenario
+- Cost 與 Latency Threshold
+- Human-scored Quality
+- Canary 或 Shadow Evaluation
 
-Agent 的 Budget 不只包含 Token。
+### Observability
 
-還可以包含：
+問題是：
 
-- Model Calls
-- Tool Calls
-- Search Queries
-- Browser Actions
-- Test Runs
-- Worker Count
-- Wall Time
-- Monetary Cost
-- Replans
-- Retries
+> Live Operation 發生什麼，系統在哪裡退化？
 
-### 分層 Budget
+使用 Trace、Metric 與 Log。OpenTelemetry 提供 Vendor-neutral Telemetry 與 Distributed Tracing Convention，但 Application 仍需定義 Domain-specific Attribute。
 
-```text
-Global Task Budget
-├── Planner Budget
-├── Retrieval Budget
-├── Worker Budget
-├── Tool Budget
-└── Verification Budget
-```
+Agent Span 可以包含：
 
-如果只限制 Token，Agent 仍可能透過工具把成本燒成煙火。
-
----
-
-## 共用控制二：Timeout
-
-不同層需要不同 Timeout：
-
-- Model Call Timeout
-- Tool Timeout
-- Worker Timeout
-- State Timeout
-- Approval Timeout
-- Workflow Timeout
-- Monitoring Source Timeout
-
-Timeout 後的行為必須明確：
-
-- Retry
-- Fallback
-- Reassign
-- Partial
-- Human Review
-- Fail
-
----
-
-## 共用控制三：Retry 與 Fallback
-
-不是所有失敗都 Retry。
-
-| Failure | Strategy |
-|---|---|
-| Temporary network error | Retry |
-| Query parameter issue | Parameterized Retry |
-| Primary service unavailable | Fallback |
-| Output schema failure | Repair |
-| Plan assumption failed | Replan |
-| High-risk ambiguity | Human Review |
-| Unsupported task | Stop |
-
----
-
-## 共用控制四：Stop Condition
-
-Agent 必須知道何時正式停止。
-
-### 成功停止
-
-- Completion Criteria Passed
-- Verifier Passed
-- Post-condition Verified
-
-### 安全停止
-
-- Budget Exhausted
-- Retry Limit Reached
-- Unsupported
-- Permission Denied
-- Required Data Unavailable
-- Human Rejected
-- Kill Switch Activated
-
-### Terminal States
-
-- Completed
-- Failed
-- Partial
-- Pending
-- Blocked
-- Cancelled
-- Requires Human Action
-
----
-
-## Observability、Audit Log 與 Trace
-
-Production Agent 必須能回答：
-
-```text
-這個任務走了哪條路？
-為什麼選這個工具？
-使用了哪些資料？
-哪個步驟失敗？
-重試了幾次？
-誰批准了操作？
-成本是多少？
-最終結果真的執行了嗎？
-```
-
-### Trace
-
-追蹤單一任務的完整路徑：
-
-- Request ID
-- Trace ID
-- Parent / Child Span
+- Request 與 Trace ID
 - Route
 - State Transition
-- Tool Call
-- Model Call
-- Verification
-- Final Outcome
-
-### Metrics
-
-- Success Rate
-- Partial Rate
-- Failure Rate
-- Latency
-- Cost
-- Token Usage
-- Tool Error Rate
-- Retry Rate
-- Human Approval Rate
-- Citation Failure Rate
-- Duplicate Action Rate
-
-### Audit Log
-
-高風險系統應保存：
-
-- Actor
-- Action
-- Before State
-- After State
-- Evidence
+- Model 與 Prompt Version
+- Tool
 - Policy Decision
-- Approver
-- Timestamp
-- Transaction ID
+- Evidence ID
+- Retry 或 Replan
+- Approval
+- Cost
+- Terminal Outcome
 
-### Replay
+Trace 解釋一個 Run，但不能證明 Architecture 很好；Evaluation Score 衡量 Performance，但不能解釋單一 Production Incident。
 
-在安全環境中重現：
+## Shared Control Contract
 
-- Input
-- Plan
-- Tool Results
-- Model Version
-- Prompt Version
+每種 Recipe 都需要以下 Control，只是數值不同。
+
+### Budget
+
+可以限制：
+
+- Model Call
+- Tool Call
+- Search Query
+- Browser Action
+- Test Run
+- Worker Count
+- Wall Time
+- Token
+- Monetary Cost
+- Retry
+- Replan
+- Approval Reminder
+
+使用 Global Task Budget，加上 Per-component Allocation。
+
+### Timeout 與 Cancellation
+
+為以下項目定義 Timeout：
+
+- Model Call
+- Tool
+- Worker
+- Approval
 - State
-- Policy Version
+- Workflow
+- External Source
 
-沒有版本資訊的 Trace，只是一段找不到當時宇宙狀態的歷史小說。
+並定義 Timeout 後的行為：
 
----
+- Retry
+- Reconcile
+- Fallback
+- Partial Result
+- Reassign
+- Human Review
+- Terminal Failure
 
-## Production Agent 的十大反模式
+### Idempotency 與 Reconciliation
 
-### 1. 所有 Request 都走 Agent
+所有 Side-effecting Operation 都應定義：
 
-簡單任務被迫啟動完整流程。
+- Request Identity
+- Duplicate Detection
+- Outcome Lookup
+- Safe Repeat Behaviour
+- Ambiguous-result Handling
+- Compensating Action
 
-### 2. Router 沒有 Unknown
+### Terminal Outcome
 
-模糊問題也被強制分流。
+至少包括：
 
-### 3. 工具權限只寫在 Prompt
+- completed
+- failed
+- partial
+- pending
+- blocked
+- cancelled
+- expired
+- unsupported
+- inconclusive
+- requires human action
 
-基礎設施沒有真正限制。
+沒有 Formal Safe Stop 的系統，只剩一個昂貴的 Hope Loop。
 
-### 4. Agent 沒有 State
+## Agentic System 的 Security Boundary
 
-長任務只靠對話紀錄維持進度。
+Agent Security 不是一段 Prompt。
 
-### 5. Verifier 只問模型「是否正確」
+### 把 External Content 視為 Untrusted
 
-沒有外部證據。
+包括：
 
-### 6. Retry 沒有上限
+- Web Page
+- Document
+- Email
+- Tool Output
+- Retrieved Memory
+- User-uploaded File
+- Other Agent Message
 
-失敗被重複放大。
+將 Data 與 Instruction 分離，保留 Source Boundary。
 
-### 7. Human Approval 只剩一顆按鈕
+### Minimise Agency
 
-審批者看不到影響與證據。
+每個 Executor 只取得：
 
-### 8. Trace 只有最終答案
+- 必要 Tool
+- 最小 Data Scope
+- Short-lived Credential
+- Resource Limit
+- Explicit Side-effect Class
+- Bounded Delegation
+- 不得有通往高權限 Tool 的隱藏路徑
 
-無法定位哪一步出錯。
+### Execution 前驗證 Model Output
 
-### 9. Memory 保存所有內容
+會變成 SQL、Code、API Call 或 Transaction 的 Model Proposal，應先通過 Typed Parser、Policy Engine 與 Execution Boundary。
 
-過期、錯誤與敏感資料一起累積。
+### 保護 Memory 與 State
 
-### 10. 沒有正式失敗狀態
+Untrusted Content 不能未經 Validation 就寫入 Permanent Memory、改變 Policy 或重寫 Goal。
 
-系統永遠相信下一輪就會成功。
+### 準備 Incident Response
 
----
+保存足夠資訊以便：
 
-## 從需求組裝 Production Agent 的順序
+- Suspend Workflow
+- Revoke Credential
+- Identify Affected Tasks
+- Safe Replay
+- Correct Memory
+- Notify Owner
+- Preserve Evidence
+
+## 六種 Recipe 比較
+
+| Recipe | Primary Uncertainty | Main Execution Structure | Strongest Verification Signal | Essential Persistent Data |
+|---|---|---|---|---|
+| Production RAG | 哪些 Evidence 可以回答 Query？ | Pipeline 搭配可選 Adaptive Retrieval | Claim-to-source Support 與 ACL | Query、Source Version、Citation Map |
+| Deep Research | 哪些 Subquestion 與 Source 能關閉 Gap？ | Planner + Task Graph + Outer State Machine | Coverage、Provenance、Conflict Check | Plan、Evidence Unit、Source Lineage |
+| Coding Agent | 哪個 Repository Change 能滿足 Executable Acceptance？ | Stateful Generate-and-Test Workflow | Test、Build、Diff、Reproducibility | Snapshot、Patch、Command、Result |
+| Browser Agent | 哪個 Safe Action 能達成 Interface Goal？ | Bounded Action Loop + State Machine | Functional Post-condition | Browser State 與 Action History |
+| High-risk Automation | Proposed Side Effect 是否可執行？ | Proposal Workflow + Deterministic Transaction Service | Policy、Approval、Reconciliation | Proposal、Approval、Transaction ID |
+| Long-running Monitor | Meaningful Change 是否發生？ | Event 或 Scheduled Stateful Workflow | Change Verification 與 Deduplication | Baseline、Cursor、Health、Alert History |
+
+這些是 Starting Point，不是通用評分。Cost 與 Latency 取決於 Implementation、Scale、Data 與 Quality Standard。
+
+## Assembly Order
 
 不要先選 Framework。
 
-先依序回答：
+### 1. 定義 Contract
 
-### 1. 任務是否真的需要 Agent？
+- Desired Outcome
+- Accepted Evidence
+- Prohibited Outcome
+- Terminal State
+- Latency 與 Cost Envelope
 
-能用 Direct 或 Pipeline，就先用更簡單方案。
+### 2. 判斷是否需要 Agent
 
-### 2. 任務需要哪些資料與工具？
+能用 Direct 或 Fixed Pipeline 時，使用較簡單的選項。
 
-- Documents
-- Database
-- Web
-- Browser
-- Code
-- API
+### 3. 盤點 Data 與 Tool
 
-### 3. 哪些步驟固定，哪些需要自主？
+- Source of Truth
+- Permission
+- Side Effect
+- Freshness
+- Availability
+- Trust Boundary
 
-把自主性限制在真正無法事先寫死的節點。
+### 4. 分開 Fixed 與 Adaptive Work
 
-### 4. 如何驗證？
+穩定邏輯 Hard-code。只有 Observation 真的會改變下一個有效 Action 時才加入 Autonomy。
+
+### 5. 選擇 Execution Structure
+
+- Pipeline
+- Router
+- State Machine
+- DAG
+- Bounded Action Loop
+- Event-driven Workflow
+
+### 6. 在 Generation 前定義 Verification
 
 - Schema
-- Citation
+- Evidence
 - Test
-- Rule
 - Post-condition
-- Human Review
+- Policy
+- Human Decision
 
-### 5. 需要保存什麼 State？
+### 7. 定義 State 與 Memory
 
-- Progress
-- Plan
-- Attempts
-- Approvals
-- Tool Results
+- 哪些必須精確
+- 哪些可以 Summary
+- 哪些 Persist
+- 哪些 Expire
+- 誰可以 Read 或 Write
 
-### 6. 需要什麼 Memory？
+### 8. 套用 Identity 與 Policy
 
-- Working
-- Procedural
-- User
-- Shared
-- None
+- Authorisation
+- Tool Access
+- Data Scope
+- Approval
+- Risk
+- Sandbox
 
-### 7. 哪些操作有風險？
+### 9. 加入 Budget 與 Stop
 
-- Read
-- Write
-- Delete
-- Send
-- Pay
-- Publish
-- Deploy
-
-### 8. 預算與停止條件是什麼？
-
-- Cost
+- Calls
 - Time
-- Steps
-- Retries
-- Tool Calls
-- Terminal States
+- Money
+- Retry
+- Replan
+- Concurrency
+- Terminal Outcome
 
-### 9. 如何觀察與追責？
+### 10. Instrument 與 Evaluate
 
 - Trace
-- Metrics
+- Metric
 - Audit
 - Replay
-- Alert
+- Offline Evaluation
+- Security Test
+- Release Gate
+- Rollback
 
-完成這些問題後，Framework 才是實作選擇，而不是架構答案。
+完成這些問題後，Framework 才只是 Implementation Choice，而不是 Architecture Substitute。
 
----
+## 常見 Anti-pattern
 
-## 本篇結論
+### 每個 Request 都走最自主的 Path
 
-一套成熟 Agent，不是一個巨大 Prompt，也不是一個可以呼叫所有工具的模型。
+簡單工作承擔最大 Latency、Cost 與 Failure Surface。
 
-它通常由以下積木組成：
+### Policy 只寫在 Prompt
+
+Runtime 仍然暴露 Forbidden Capability。
+
+### Unauthorised Data 只在 Model Exposure 後才 Filter
+
+Leak 已經發生。
+
+### Orchestrator 用 Conversation Prose 保存 Progress
+
+Precise State 變得 Lossy，且難以 Resume。
+
+### Verifier 只問另一個 Model 答案對不對
+
+沒有 Executable 或 Evidential Signal。
+
+### 把 Runtime Trace 當成 Evaluation
+
+Team 可以非常清楚地看到每個錯誤答案。
+
+### 只在 Launch 前做 Evaluation
+
+Model、Prompt、Tool、Source 與 Environment 都會 Drift。
+
+### Human Approval 看不到 Evidence 與 Exact Action
+
+Approval 退化成儀式性按鈕。
+
+### Side Effect 沒有 Idempotency 或 Reconciliation
+
+Timeout 變成 Duplicate Write。
+
+### Coding Agent 修改 Test 製造 Pass
+
+Acceptance Mechanism 自己變成 Attack Surface。
+
+### Browser Success 只代表 Click 發生
+
+沒有 Post-condition 證明 Task 完成。
+
+### Monitoring 每次 Run 都發 Alert
+
+系統產生 Notification Fog，而不是有用 Signal。
+
+### Memory 保存所有東西
+
+Sensitive、Stale 與 Unverified Information 進入未來 Context。
+
+### 不支援 Terminal Failure
+
+每個 Failure 都被轉成下一次 Attempt。
+
+## 結論
+
+Production Agent Architecture 是把 Autonomy 組裝在 Control 周圍的工程。
+
+成熟系統通常包含：
 
 ```text
-Identity and Policy
-  ↓
-Router
-  ↓
-Workflow / State Machine
-  ↓
-Planner or Fixed Pipeline
-  ↓
-Executor / Tools
-  ↓
-Verifier
-  ↓
-Memory and State Update
-  ↓
-Human Approval or Final Output
+Identity and Admission
+  -> Router
+  -> Durable Orchestration
+  -> Bounded Execution
+  -> Independent Acceptance
+
+Surrounded by:
+Policy · State · Memory · Evidence · Budget · Evaluation · Observability · Human Control
 ```
 
-不同任務需要不同配方：
+六種 Recipe 強調不同 Constraint：
 
-- **Production RAG**：Router + Retrieval Pipeline + Citation Verifier
-- **Deep Research**：Planner + DAG + Evidence Store + Replanning
-- **Coding Agent**：Repository State + Generate-and-Test + Sandbox
-- **Browser Agent**：ReAct + State Machine + Action Policy
-- **High-risk Automation**：Policy + Deterministic Validation + Human Approval
-- **Long-term Monitor**：Event-driven Workflow + Persistent State + Deduplication
+- **Production RAG** 控制 Evidence 與 Access。
+- **Deep Research** 控制 Decomposition、Provenance 與 Coverage。
+- **Coding Agent** 控制 Executable Change 與 Reproducibility。
+- **Browser Agent** 控制不確定介面中的 Action。
+- **High-risk Automation** 控制 Authority 與 Side Effect。
+- **Long-running Monitor** 控制 Time、Change、Silence 與 Health。
 
-真正讓 Agent 可以進入 Production 的，不是自主性本身。
+真正讓系統取得運作資格的，不是 Agent 或 Tool 的數量，而是它是否能證明自己做了什麼、限制自己可以做什麼、在不重複傷害的前提下恢復，並以有人負責的 Result 停止。
 
-而是：
+Part 9 會把整個系列變成 Decision Process：
 
-- 自主性有邊界
-- 執行有狀態
-- 結果有證據
-- 失敗有出口
-- 操作有權限
-- 成本有上限
-- 系統有 Trace
-- 高風險動作有人負責
+> 面對一個真實 Task，如何選擇能滿足 Evidence、Risk 與 Operational Requirement 的最小架構？
 
-下一篇是系列的最後選型篇。
+## 參考資料
 
-Part 9 將把前八篇整理成：
+- [Lewis et al., *Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks*](https://arxiv.org/abs/2005.11401)
+- [Jimenez et al., *SWE-bench: Can Language Models Resolve Real-World GitHub Issues?*](https://arxiv.org/abs/2310.06770)
+- [Zhou et al., *WebArena: A Realistic Web Environment for Building Autonomous Agents*](https://arxiv.org/abs/2307.13854)
+- [LangGraph Documentation, *Persistence*](https://langchain-ai.github.io/langgraph/concepts/persistence/)
+- [LangGraph Documentation, *Interrupts*](https://langchain-ai.github.io/langgraph/concepts/breakpoints/)
+- [OpenTelemetry Documentation](https://opentelemetry.io/docs/)
+- [CloudEvents, *A specification for describing event data in a common way*](https://cloudevents.io/)
+- [NIST, *Artificial Intelligence Risk Management Framework: Generative Artificial Intelligence Profile*](https://www.nist.gov/publications/artificial-intelligence-risk-management-framework-generative-artificial-intelligence)
+- [OWASP, *Top 10 for Large Language Model Applications*](https://owasp.org/www-project-top-10-for-large-language-model-applications/)
 
-- 是否需要 Agent 的決策樹
-- 六維架構選擇流程
-- 自主度與可控性矩陣
-- 成本與品質矩陣
-- Agent Architecture Canvas
-- 完整架構評審 Checklist
-
-讓讀者從「知道有哪些模式」，走到「能夠做出架構決策」。
-
----
-
-## 《Agent 設計模式圖鑑》系列目錄
+## 系列目錄
 
 | Part | 主題 |
 |---:|---|
 | 1 | LLM Agent 不只有 ReAct：用六個維度看懂 Agent 架構 |
 | 2 | Agent 執行路徑全解：Direct、Pipeline、Router、State Machine 與 DAG |
-| 3 | ReAct、Plan-and-Execute 與 Adaptive Planning |
-| 4 | 從一條思路到搜尋整片解法空間：CoT、ToT、GoT 與 LATS |
-| 5 | Agent 驗證與自我修正 |
+| 3 | ReAct、Plan-and-Execute、Adaptive Planning 與 HTN |
+| 4 | 從單一路徑到 Tree、Graph、MCTS 與 LATS |
+| 5 | 驗證、恢復與自我修正 |
 | 6 | Multi-Agent 架構全解 |
 | 7 | Agent Memory 全解 |
 | 8 | Production Agent 架構實戰 |
 | 9 | 如何選擇 Agent 架構 |
-| Bonus | 使用現代 Agent Framework 實作設計模式 |
-
----
-
-## 圖表對位表
-
-| 圖號 | 正式圖名 | 建議檔名 | 對應段落 |
-|---|---|---|---|
-| Figure 8-1 | Production Agent Reference Architecture | `figure-8-1-production-agent-reference-architecture.png` | Production Agent 七層架構 |
-| Figure 8-2 | Production RAG Architecture | `figure-8-2-production-rag-architecture.png` | Production RAG |
-| Figure 8-3 | Deep Research Agent Architecture | `figure-8-3-deep-research-agent-architecture.png` | Deep Research Agent |
-| Figure 8-4 | Production Coding Agent | `figure-8-4-production-coding-agent.png` | Coding Agent |
-| Figure 8-5 | Browser and Computer-use Agent | `figure-8-5-browser-computer-use-agent.png` | Browser / Computer-use Agent |
-| Figure 8-6 | High-Risk Enterprise Automation | `figure-8-6-high-risk-enterprise-automation.png` | 高風險企業自動化 |
+| 10 | 使用現代 Agent Framework 實作設計模式 |
