@@ -1,6 +1,6 @@
 ---
-title: "The Atlas of Agent Design Patterns Part 7 ｜ Agent Memory Explained: Working, Episodic, Semantic and Procedural Memory"
-description: "A complete breakdown of Stateless, Working Memory, Short-term State, Episodic Memory, Semantic Memory, Procedural Memory, User Memory, Shared Memory and External Knowledge Store, plus how Memory, State, Context and RAG differ from each other."
+title: "The Atlas of Agent Design Patterns Part 7 | Context, State, Memory, and RAG"
+description: "A production-focused guide to working, episodic, semantic, procedural, user, and shared memory; the boundary between memory and RAG; memory write and retrieval policies; conflict resolution; forgetting; and production memory architecture."
 date: 2026-07-01T00:24:00
 lang: en
 categories: ["AI"]
@@ -8,1640 +8,1666 @@ series: "The Atlas of Agent Design Patterns"
 seriesOrder: 7
 ---
 
-An Agent is in the middle of a long task.
+
+An agent is halfway through a long task.
 
 It has already:
 
-- searched three sources
-- ruled out two wrong directions
-- finished half the steps
-- learned that the user does not accept third-party data
-- found that a certain API needs extra permission
-- recorded a failure it should avoid
+- searched three official sources
+- rejected two misleading pages
+- completed four of seven steps
+- learned that the user does not accept third-party pricing
+- discovered that one API requires additional permission
+- recorded a failure that should not be repeated
 
-Then the Context Window gets compressed, or the Session is restarted.
+Then the context window is compressed, the process restarts, or another worker resumes the task.
 
-When the Agent wakes up again, it re-searches the same pages, calls the same tools, ignores the user's restrictions, and makes the same mistake a second time.
+The system searches the same pages again, repeats the rejected action, forgets the user's constraint, and contradicts its earlier conclusion.
 
-That is not just a model capability problem.
+This is not only a model-capability problem. It is usually an information-architecture problem.
 
-More often it is because the system has not correctly distinguished between:
+The system has failed to distinguish:
 
-- Context
-- State
-- Working Memory
-- Long-term Memory
-- RAG
-- External Knowledge Store
+- **context**: what the model can see now
+- **workflow state**: where execution is now
+- **working memory**: what the active task is using
+- **long-term memory**: what may be reused across steps or runs
+- **external knowledge**: information managed by another source
+- **RAG**: a way to retrieve external or stored information into the current context
 
-Agent Memory is not "save every conversation forever", and it is not "wire up a vector database and declare long-term memory".
+A vector database does not automatically create memory. Saving every conversation does not create useful memory either. Both can create an attic full of unlabeled boxes.
 
-A real Memory Design has to answer:
-
-```text
-What is worth remembering?
-How long should it be kept?
-Who can read it?
-Who can write it?
-When should it be updated?
-Which entry do you trust when there is a conflict?
-When should it be forgotten?
-```
-
-This article fully compares:
-
-- Stateless
-- Working Memory
-- Short-term State
-- Episodic Memory
-- Semantic Memory
-- Procedural Memory
-- User Memory
-- Shared Memory
-- External Knowledge Store
-
-and explains how a Production Agent builds a memory system that can be tracked, updated, revoked and expired.
-
----
-
-## Memory, State, Context and RAG answer different questions
-
-These four concepts are often mixed together.
-
-But they answer different questions.
-
-## Context
-
-Context is:
-
-> What the model can actually see during this generation or reasoning pass.
-
-It can contain:
-
-- System Instructions
-- User Query
-- Retrieved Chunks
-- Tool Outputs
-- Current Notes
-- Conversation History
-- Selected Memory Items
-
-Context has a capacity limit.
-
-If information is not in Context, the model cannot directly use it.
-
-## State
-
-State is:
-
-> Where the workflow is right now.
-
-For example:
-
-- Current Node
-- Completed Steps
-- Retry Count
-- Pending Approval
-- Worker Status
-- Current Plan Version
-- Remaining Budget
-
-State mainly serves flow control, not knowledge retrieval.
-
-## Memory
-
-Memory is:
-
-> What reusable information the system keeps for later steps or future tasks.
-
-For example:
-
-- this task's intermediate conclusions
-- past events
-- stable knowledge
-- rules of doing things
-- user preferences
-- intermediate results shared across Agents
-
-Memory can be short-term or cross-Session.
-
-## RAG
-
-RAG is:
-
-> How the system retrieves data from an external knowledge source and puts it into the current Context.
-
-The typical flow is:
+A production memory design must answer:
 
 ```text
-Query
-  ↓
-Retrieve
-  ↓
-Select Chunks
-  ↓
-Insert into Context
-  ↓
-Generate
+What is worth keeping?
+Which type of information is it?
+Who owns it?
+Who may read or modify it?
+What evidence supports it?
+How long is it valid?
+What happens when it conflicts with newer information?
+When should it be deleted, expired, or superseded?
 ```
 
-RAG does not mean the Agent "remembers" those documents.
+This article builds a practical memory model around three separate axes:
 
-It just re-pulls external data when it is needed.
+1. **function**: what kind of information is being retained
+2. **scope and ownership**: who the information applies to
+3. **lifecycle**: how the information is written, retrieved, updated, and forgotten
 
-## A one-line distinction
+That separation removes one of the most common classification errors in agent design.
+
+## Memory taxonomies need more than one axis
+
+Lists such as the following are common:
+
+- working memory
+- episodic memory
+- semantic memory
+- procedural memory
+- user memory
+- shared memory
+- external memory
+
+The problem is that these labels do not all describe the same property.
+
+### Axis 1: information function
+
+This axis describes what the information represents.
+
+- **Working memory**: temporary task material
+- **Episodic memory**: past events, actions, and outcomes
+- **Semantic memory**: reusable facts and concepts
+- **Procedural memory**: reusable knowledge about how to act
+
+### Axis 2: scope and ownership
+
+This axis describes whom the information belongs to or who may use it.
+
+- **Agent-local**
+- **Task-local**
+- **User-scoped**
+- **Team-shared**
+- **Tenant or organisation-scoped**
+- **Public or external**
+
+A user-scoped item may be semantic:
 
 ```text
-Context: what the model sees now
-State: where the flow is now
-Memory: what the system keeps for later
-RAG: what the system is pulling from outside now
+The user prefers Traditional Chinese.
 ```
 
-![Figure 7-2 — Context, State, Memory, and RAG](/images/the-atlas-of-agent-design-patterns-part-7/figure-7-2-context-state-memory-rag.png)
-
-> **Figure 7-2 ｜ Context, State, Memory, and RAG**  
-> Context is the current model input. State holds flow progress. Memory holds reusable information. RAG pulls data from an external Knowledge Store and puts it into Context.
-
----
-
-## 1. Stateless: start from scratch every time
-
-A Stateless system does not keep information across requests.
+It may also be episodic:
 
 ```text
-Request
-  ↓
-Model
-  ↓
-Response
-  ↓
-End
+The user rejected third-party pricing in the previous task.
 ```
 
-The next Request does not know what happened in the last one, unless the caller provides it again.
+Shared memory may contain working notes, verified facts, or procedures. "Shared" does not identify the content type.
 
-## When does Stateless fit?
+### Axis 3: lifecycle and source of truth
 
-- translation
-- rewriting
-- single-pass summarisation
-- simple classification
-- fixed format conversion
-- tasks that do not need cross-step tracking
-- high-privacy, low-persistence scenarios
+This axis describes where the information comes from and how long it should live.
 
-## Strengths
+- immediate model context
+- active-task storage
+- cross-session memory
+- externally managed source
+- immutable event log
+- versioned knowledge store
+- expiring cache
 
-- simple to implement
-- lower privacy risk
-- not polluted by old memory
-- results are easier to reproduce
-- no memory governance needed
-
-## Limits
-
-- duplicate work
-- cannot keep preferences
-- long tasks lose progress easily
-- cannot use past experience
-- Context has to be reloaded every time
-
-Stateless is not a step backwards.
-
-If the task does not need Memory, Stateless is usually the safer default.
-
----
-
-## 2. Working Memory: what the current task is using
-
-Working Memory is the short-term working area of the current task.
-
-It might hold:
-
-- intermediate conclusions
-- current subgoals
-- already-viewed sources
-- unresolved questions
-- tool output summaries
-- temporary variables
-- drafts
-- current hypotheses
-
-For example, the Working Memory of a Research Agent:
+The same fact may move through several lifecycle stages:
 
 ```text
-Goal:
-Compare three frameworks
-
-Verified:
-- Framework A supports persistence
-- Framework B requires external storage
-
-Missing:
-- Framework C observability details
-
-Rejected:
-- Third-party pricing claim
+Tool result
+  -> current context
+  -> working-memory candidate
+  -> verified semantic-memory entry
+  -> superseded after a source update
 ```
 
-## The difference between Working Memory and Context Window
+The labels are composable. They should not be forced into one vertical ladder.
 
-The Context Window is the content the model actually receives right now.
+![Figure 7-1｜Memory Taxonomy Across Three Independent Axes](/images/the-atlas-of-agent-design-patterns-part-7/three-axis-memory-map.png)
 
-Working Memory is the task work data the system keeps.
+## Context, state, memory, external knowledge, and RAG
 
-They are not the same thing.
+These concepts are related, but they answer different questions.
 
-The system can pick part of Working Memory and put it into Context:
+### Context
+
+Context is the input that the model can use in the current inference or reasoning step.
+
+It may contain:
+
+- system instructions
+- the current user request
+- selected conversation history
+- workflow state summaries
+- retrieved documents
+- tool results
+- selected memory entries
+- applicable procedures
+
+Context is assembled. It is not automatically the complete history of the system.
+
+If information is not represented in the model's current input or accessible through an action, the model cannot directly use it for that step.
+
+### Workflow state
+
+Workflow state records execution control.
+
+Typical fields include:
 
 ```text
-Working Memory Store
-  ↓
-Select Relevant Items
-  ↓
-Context Builder
-  ↓
-Model Context
+workflow_id
+current_node
+step_status
+retry_count
+plan_version
+pending_approval
+worker_assignment
+remaining_budget
+last_error
+terminal_status
 ```
-
-Working Memory can be larger than a single Context, and it can be stored in structured form.
-
-## How long should Working Memory be kept?
-
-Usually until:
-
-- the task is complete
-- the task is cancelled
-- the task expires
-- the Session ends
-- the Retention TTL is reached
-
-It is not naturally permanent memory.
-
-## Common risks
-
-### The work area grows without bound
-
-Every Tool Output is kept.
-
-### Old intermediate conclusions are not invalidated
-
-When new evidence arrives, the old conclusion is still retrieved.
-
-### Unverified and verified content get mixed up
-
-Drafts get treated as facts.
-
-### Context Builder picks the wrong data
-
-The actually important information never makes it into Context.
-
----
-
-## 3. Short-term State: workflow progress is not memory content
-
-Short-term State holds the progress of a workflow.
-
-For example:
-
-```text
-Current State:
-VERIFYING
-
-Completed Steps:
-- PLAN
-- RESEARCH
-
-Retry Count:
-1
-
-Pending:
-- Human Approval
-
-Next Node:
-WRITE
-```
-
-## Common State fields
-
-- Workflow ID
-- Current State
-- Step Status
-- Retry Count
-- Attempt Count
-- Parent Task
-- Worker Status
-- Approval Status
-- Remaining Budget
-- Last Error
-- Next Node
-- Updated At
-
-## The difference between State and Working Memory
-
-Working Memory answers:
-
-> What does the current task know and what is it working on?
 
 State answers:
 
-> Where is the current flow and where can it go next?
+> Where is the run, what has happened, and which transition is legal next?
 
-For example:
+These fields often require precise, atomic updates. Summarising `retry_count: 2` into prose and later reconstructing it from a conversation is a tiny administrative tragedy waiting to happen.
+
+### Working memory
+
+Working memory is the active task's temporary information workspace.
+
+It may contain:
+
+- intermediate findings
+- current hypotheses
+- resolved and unresolved requirements
+- source summaries
+- rejected candidates
+- temporary calculations
+- draft artefacts
+- local decisions
+
+Working memory answers:
+
+> What does the active task currently know, and what is it still working on?
+
+Only a selected portion of it needs to enter the model context for each step.
+
+### Long-term memory
+
+Long-term memory retains reusable information beyond one immediate step and sometimes beyond one run.
+
+It may contain:
+
+- past episodes
+- verified facts
+- validated procedures
+- user-approved preferences
+- durable organisational conventions
+
+"Long-term" does not mean "forever". Every durable memory still needs a retention and invalidation policy.
+
+### External knowledge
+
+External knowledge is managed by a source outside the agent's own memory lifecycle.
+
+Examples:
+
+- official documentation
+- product catalogue
+- policy repository
+- code repository
+- database
+- wiki
+- document archive
+- knowledge graph
+- web source
+
+The external system remains the source of truth.
+
+### RAG
+
+Retrieval-augmented generation combines retrieval from a non-parametric source with generation. In an application architecture, the practical flow is:
 
 ```text
-Working Memory:
-Two official documents have been found
+Query
+  -> retrieve candidates
+  -> filter and rerank
+  -> place selected evidence into context
+  -> generate or decide
+```
+
+RAG is a retrieval-and-context-construction mechanism. It is not synonymous with memory.
+
+A memory store may use retrieval. An external document collection may use retrieval. The same retriever can search both, but their governance and source-of-truth rules remain different.
+
+### The concise distinction
+
+```text
+Context:
+what the model can use now
 
 State:
-Currently at VERIFY
+where execution is now
+
+Working memory:
+what the active task is using and maintaining
+
+Long-term memory:
+what the system retains for later reuse
+
+External knowledge:
+what another source manages
+
+RAG:
+how selected information is retrieved into context
 ```
 
-Mixing them up makes the system hard to judge:
+![Figure 7-2｜Context, State, Memory, External Knowledge, and RAG](/images/the-atlas-of-agent-design-patterns-part-7/context-state-memory-rag.png)
 
-- is this data or a flow control field?
-- which content can be summarised?
-- which fields must be kept exactly?
-- which content can expire?
+## Stateless is a legitimate design
 
-State usually needs stronger precision, version control and atomic updates.
-
----
-
-## 4. Episodic Memory: what happened before
-
-Episodic Memory keeps records of past events.
-
-For example:
+A stateless system retains no application memory across requests.
 
 ```text
-Task:
+Request
+  -> bounded processing
+  -> response
+  -> discard task data
+```
+
+This is often the correct choice for:
+
+- translation
+- one-pass rewriting
+- classification
+- fixed extraction
+- format conversion
+- sensitive tasks with no persistence need
+- operations where the caller supplies all required state
+
+Benefits include:
+
+- simpler behaviour
+- lower privacy and retention risk
+- easier reproduction
+- no stale-memory contamination
+- fewer deletion obligations
+- less storage and retrieval cost
+
+Stateless does not mean the runtime has no logs or operational records. It means those records are not reused as agent memory without a separate purpose and policy.
+
+The default should not be "remember everything". The default should be:
+
+> Do not persist information unless future value justifies the governance cost.
+
+## Working memory: the active task workspace
+
+Working memory supports the task currently in progress.
+
+Example:
+
+```text
+Goal:
+Compare three orchestration frameworks
+
+Verified:
+- Framework A supports durable checkpoints
+- Framework B requires external persistence
+
+Unresolved:
+- Framework C observability model
+
+Rejected:
+- Third-party pricing claim
+
+Next:
+Read Framework C official tracing documentation
+```
+
+### Working memory is not the context window
+
+A context window is the model input for one step.
+
+Working memory may be:
+
+- larger than one model context
+- structured
+- stored outside the model
+- selectively injected
+- shared with the workflow runtime
+- retained across process restarts for the same task
+
+A context builder chooses what enters the next call:
+
+```text
+Current request
++ exact workflow fields
++ relevant working-memory items
++ selected long-term memory
++ retrieved external evidence
++ applicable procedure
+```
+
+### Working memory needs trust states
+
+Do not mix all entries into one bag.
+
+Useful statuses include:
+
+- proposed
+- observed
+- verified
+- rejected
+- superseded
+- unresolved
+
+A draft hypothesis should not be retrieved as though it were an accepted fact.
+
+### Typical retention
+
+Working memory usually lasts until:
+
+- the task completes
+- the task is cancelled
+- the task expires
+- the task is archived
+- a retention limit is reached
+
+Some working artefacts may later be promoted into another memory type, but promotion should be deliberate.
+
+## State is not merely another kind of prose memory
+
+State may be persisted in the same database as task memory, but its semantics are different.
+
+Compare:
+
+```text
+Working memory:
+Two official sources support the claim.
+
+Workflow state:
+current_node = VERIFY
+retry_count = 1
+approval_status = PENDING
+```
+
+Working memory can often be summarised or compressed.
+
+Control state may require:
+
+- exact values
+- transactional updates
+- concurrency control
+- checkpointing
+- idempotency
+- legal-transition validation
+
+Treating state as an unstructured conversation summary creates failures such as:
+
+- retry counters resetting
+- completed steps running again
+- approval status being lost
+- two workers claiming the same task
+- an old plan version becoming active
+
+The storage technology may be shared. The contracts should not be.
+
+## Episodic memory: records of events and outcomes
+
+Episodic memory represents what happened in a particular situation.
+
+A useful episode may contain:
+
+```text
+Goal:
 Retrieve a complete job description
 
-Event:
-LinkedIn page returned partial content
+Situation:
+Stored description was empty
 
 Action:
-Used public job API
+Fetched the source URL
 
-Result:
-Full description retrieved
+Observation:
+The page exposed partial content only
 
-Lesson Candidate:
-Try the public API after detecting partial page content
+Fallback:
+Used the public job-posting endpoint
+
+Outcome:
+Complete description retrieved
+
+Environment:
+Source version and access date
+
+Evidence:
+Request trace and retrieved document
+
+Reflection candidate:
+Use the public endpoint after partial-page detection
 ```
 
-Episodic Memory is more structured than ordinary chat logs.
+### What episodes are useful for
 
-It usually contains:
+- diagnosing repeated failures
+- retrieving similar cases
+- replaying an action history
+- supporting long-running work
+- personalising future interactions
+- evaluating which strategies worked
+- creating evidence-backed reflection candidates
 
-- Context
-- Goal
-- Action
-- Observation
-- Outcome
-- Error
-- Timestamp
-- Environment
-- Relevant Source
-- Confidence
+Generative Agents used a memory stream of experiences, reflection, and retrieval to inform planning. Reflexion stores verbal feedback from prior trials in an episodic memory buffer. These are examples of experience being reused, not proof that every event deserves permanent storage.
 
-## When does it fit?
+### Main risks
 
-- fault diagnosis
-- customer service history
-- long-running tasks
-- user interaction records
-- similar case retrieval
-- Reflexion
-- Agent action replay
+#### Surface similarity
 
-## Why Episodic Memory is valuable
+Two episodes may look alike while differing in a critical constraint.
 
-### Find similar cases
+#### Misattribution
 
-When a new problem appears, look up similar past situations.
+The system may record the action that preceded success without identifying the real cause.
 
-### Avoid repeating the same failure
+#### Staleness
 
-Know which methods have already failed.
+APIs, products, permissions, and environments change.
 
-### Provide auditable history
+#### Privacy
 
-Track what the Agent has done before.
+Episodes may contain user data, tool outputs, or sensitive operational details.
 
-### Support personalisation
+#### Volume
 
-Know which suggestions the user accepted or rejected in the past.
+Raw event history can overwhelm retrieval.
 
-## Main risks
+Episodes should preserve evidence and context while remaining compact enough to retrieve and inspect.
 
-### Similar is not the same
+## Semantic memory: reusable facts and concepts
 
-Past cases may only be similar on the surface.
+Semantic memory stores reusable declarative knowledge.
 
-### Outdated
+Examples:
 
-Tools, versions, regulations or environments may have changed.
+- a product capability
+- an organisational definition
+- a tenant configuration
+- an approved domain term
+- a stable user setting
+- a verified relationship between entities
 
-### Privacy
-
-Event records may contain sensitive information.
-
-### Misattribution
-
-The Agent may misjudge what actually caused the success.
-
----
-
-## 5. Semantic Memory: long-term stable knowledge
-
-Semantic Memory keeps stable, reusable knowledge.
-
-For example:
-
-- company names and products
-- organisation definitions
-- domain terminology
-- product specifications
-- user authorisation scope
-- system rules
-- verified facts
-
-It answers:
-
-> What does the system know long-term?
-
-## Semantic Memory should not be just sourceless text
-
-A mature Semantic Memory entry should at least have:
-
-- Fact
-- Source
-- Source Type
-- Effective Date
-- Version
-- Confidence
-- Validation Status
-- Scope
-- Expiry
-- Last Checked At
-
-For example:
+A production semantic-memory record should look more like a versioned claim than a loose sentence.
 
 ```text
-Fact:
+Claim:
 Enterprise plan supports SSO
 
 Source:
 Official product documentation
 
-Version:
+Source version:
 2026-06
 
-Scope:
-Enterprise plan only
+Effective scope:
+Enterprise plan, global region
 
-Validation Status:
+Validation:
 Verified
+
+Valid from:
+2026-06-01
+
+Last checked:
+2026-07-01
 ```
 
-## The relationship between Semantic Memory and RAG
+### Facts need provenance and time
 
-Semantic Memory can sit on top of:
+A fact without a source or effective period is difficult to:
 
-- Database
-- Knowledge Graph
-- Vector Store
-- Key-value Store
-- Structured Profile
-- Document Store
+- verify
+- update
+- supersede
+- audit
+- restrict by scope
 
-RAG is a retrieval method.
+A model-generated inference should not be written as a sourced fact.
 
-Semantic Memory is about the purpose and lifecycle of the information.
+Possible statuses include:
 
-A Semantic Memory Store can be retrieved by RAG, but the two are not synonyms.
+- proposed
+- verified
+- disputed
+- superseded
+- expired
+- revoked
 
-## Main risks
+### Semantic memory and RAG
 
-- expired facts
-- unclear source
-- mixed versions
-- inference written as fact
-- missing regional or plan Scope
-- new information failing to replace old information---
+Semantic memory describes the role and lifecycle of information.
 
-## 6. Procedural Memory: how the Agent should act
+RAG describes how information is retrieved for a model.
 
-Procedural Memory holds rules for doing things.
+A semantic-memory store may be queried through:
 
-For example:
+- metadata filters
+- SQL
+- vector search
+- graph traversal
+- keyword search
+
+An official document store may use the same retrieval techniques without becoming agent memory.
+
+## Procedural memory: reusable knowledge about how to act
+
+Procedural memory stores reusable behaviour or task procedures.
+
+Examples:
+
+- a validated SOP
+- a tool-selection rule
+- an escalation sequence
+- a fallback policy
+- a verification checklist
+- a hand-off contract
+- a safe retry procedure
+- an approved output schema
+
+Example:
 
 ```text
-If the stored job description is empty:
+Procedure:
+Retrieve a complete job description
+
+Trigger:
+Stored JD is empty or partial
+
+Preconditions:
+Source URL exists
+User has access to the listing
+
+Steps:
 1. Open the source URL
-2. Retrieve the complete text
-3. Verify that responsibilities and requirements exist
-4. If the full text is unavailable, mark Pending
-5. Do not score from the job title alone
+2. Detect whether the complete responsibilities and requirements are present
+3. Use the approved public endpoint when the page is partial
+4. Mark Pending if the complete JD remains unavailable
+5. Never score from the title alone
+
+Scope:
+Job-scoring workflow
+
+Owner:
+Recruiting-automation team
+
+Version:
+3.2
+
+Validation:
+Approved
 ```
 
-It answers:
+### Procedure versus prompt
 
-> When the system meets a certain situation, what procedure should it follow?
+A prompt is one delivery mechanism for instructions.
 
-## Procedural Memory can contain
+Procedural memory is the governed knowledge that may be selected, versioned, tested, and inserted into a prompt or tool policy.
 
-- SOP
-- Tool Usage Rules
-- Escalation Policy
-- Fallback Sequence
-- Validation Checklist
-- Handoff Contract
-- Safety Rule
-- Retry Policy
-- Output Format
+The application should not blindly retrieve every procedure that is semantically similar. It must check:
 
-## The difference between Procedural Memory and Prompt
+- trigger
+- preconditions
+- scope
+- version
+- permissions
+- conflicts
+- expiry
+- approval status
 
-A Prompt is an instruction for one call.
+### Voyager and reusable skills
 
-Procedural Memory is the procedural knowledge the system can continuously retrieve, update and govern.
+Voyager demonstrated an executable skill library that stores and retrieves code-based behaviours in an embodied environment. It is a useful example of reusable procedural capability, but production procedures may be natural-language SOPs, workflow definitions, code, policies, or tool schemas.
 
-A mature system may look like:
+### Main risks
 
-```text
-Retrieve Applicable Procedures
-  ↓
-Check Version and Scope
-  ↓
-Insert Selected Rules into Context
-  ↓
-Execute
-```
+- outdated procedure
+- conflicting rules
+- accidental lesson promoted to a global rule
+- lost scope
+- unsafe procedure retrieved for the wrong user or environment
+- procedure changed without review
 
-## Risks of Procedural Memory
+High-impact procedures need owners, tests, versions, and rollback.
 
-### Outdated rules
+## User memory is a scope, not a fifth cognitive content type
 
-APIs, products or policies have changed.
+User memory contains information scoped to a user.
 
-### Rule conflicts
+That information may be:
 
-Two procedures give different actions for the same situation.
+- semantic: a stable preference
+- episodic: a previous accepted decision
+- procedural: a user-specific workflow rule
+- task-working: a preference relevant only to the active request
 
-### Wrong lessons get permanent
+Examples that may be useful when explicitly saved:
 
-One accidental failure gets written as a global rule.
+- preferred language
+- preferred output format
+- accessibility requirement
+- stable notification setting
+- user-approved workflow rule
+- a persistent restriction that changes future execution
 
-### Lost Scope
+Information that should not be casually saved includes:
 
-A rule that only applied to one project now applies to every task.
+- guesses about personality
+- one-off emotions
+- sensitive attributes inferred from unrelated content
+- transient conversation details
+- third-party personal data
+- information the user did not reasonably expect to persist
 
-So Procedural Memory should carry:
+A user-memory design should support:
 
-- Trigger
-- Preconditions
-- Steps
-- Exceptions
-- Scope
-- Version
-- Owner
-- Approval Status
-- Expiry
-- Superseded By
+- clear purpose
+- understandable consent or user action
+- view
+- correction
+- deletion
+- scope
+- retention
+- access control
+- auditability
 
----
+The design goal is not to maximise emotional familiarity. It is to retain information that predictably improves future work under user control.
 
-## 7. User Memory: preferences, limits and long-term settings
+## Shared memory is a coordination scope
 
-User Memory keeps long-term information about a specific user.
+Shared memory allows several agents or services to coordinate through common information.
 
-For example:
+It may contain:
 
-- Preferred Language
-- Writing Style
-- File Format
-- Accessibility Needs
-- Notification Preference
-- Stable Workflow Rules
-- Explicitly Saved Preferences
+- task goal
+- current plan
+- verified facts
+- open questions
+- worker assignments
+- structured results
+- conflict flags
+- accepted decisions
+- shared procedures
 
-## What fits User Memory
+"Shared" describes access and coordination. The underlying entries still have content types and trust states.
 
-- settings the user has actively asked to be remembered
-- long-term stable working preferences
-- restrictions that clearly help future tasks
-- data the user can view, update and delete
+### Blackboard is one shared-memory architecture
 
-## What should not be casually saved
+In a blackboard architecture, multiple knowledge sources or workers read and contribute to a shared problem-solving space. A controller or scheduling mechanism may decide which contribution runs next.
 
-- one-off chit-chat
-- short-term mood
-- unverified guesses
-- overly private information
-- sensitive attributes
-- personal information inferred from third-party content
-- content the user has no reasonable expectation of being saved
+A production blackboard needs more than a shared text field:
 
-## User Memory must support
+- typed entries
+- author
+- source
+- version
+- validation status
+- write permissions
+- conflict rules
+- subscriptions or task triggers
+- audit log
+- retention
 
-- Explicit Consent
-- View
-- Edit
-- Delete
-- Scope Control
-- Retention Policy
-- Sensitive-data Handling
-- Auditability
+### Local and shared memory should be separated
 
-The value of User Memory is not "remember more so the user feels more cared for".
+Agent-local working memory may contain:
 
-It is:
+- raw notes
+- temporary hypotheses
+- tool logs
+- private scratch artefacts
 
-> Under conditions the user can understand and control, save the information that will actually improve future interactions.
+Shared memory should contain only information needed for coordination:
 
----
+- structured results
+- verified facts
+- open questions
+- accepted decisions
+- task status
 
-## 8. Shared Memory: how multiple Agents share information
+This reduces noise, privacy spread, and accidental reuse.
 
-Shared Memory lets multiple Agents use a common working area.
+### Shared-memory permissions
 
-```text
-Research Agent
-       ↕
-Shared Memory
-       ↕
-Analysis Agent
-       ↕
-Writing Agent
-```
+Useful operations include:
 
-Shared Memory may hold:
+- read
+- propose
+- validate
+- approve
+- supersede
+- revoke
+- delete
 
-- Task Goal
-- Plan
-- Verified Facts
-- Open Questions
-- Worker Results
-- Source References
-- Conflict Flags
-- Final Decisions
-- Shared Procedures
+Not every worker should be able to overwrite a verified fact or promote an item into long-term memory.
 
-## The relationship between Shared Memory and Blackboard
+## External knowledge should keep its own source identity
 
-Blackboard is one form of Shared Memory architecture.
-
-Multiple Agents collaborate through a central working area instead of passing entire conversations between each other.
-
-## The biggest risk of Shared Memory: pollution spreads
-
-If the Research Agent writes wrong information:
-
-```text
-Product A costs $10
-```
-
-the Analysis Agent, Writer Agent and Verifier may all reuse it.
-
-So Shared Memory should at least distinguish between:
-
-- Proposed
-- Verified
-- Rejected
-- Superseded
-- Expired
-
-## Each Shared Memory entry needs
-
-- Entry ID
-- Author
-- Source
-- Created At
-- Version
-- Validation Status
-- Confidence
-- Scope
-- Access Policy
-- Expiry
-
-## Permission design
-
-Not every Agent should be allowed to:
-
-- edit a Verified Fact
-- delete someone else's result
-- overwrite a Procedure
-- read sensitive User Memory
-- write to Long-term Memory
-
-You can split into:
-
-```text
-Read
-Propose
-Validate
-Approve
-Supersede
-Delete
-```
-
----
-
-## 9. External Knowledge Store: external knowledge is not the Agent's own memory
-
-External Knowledge Store holds:
+External knowledge stores include:
 
 - documents
+- databases
+- wikis
 - policies
 - manuals
-- wikis
-- databases
-- product catalogues
 - code repositories
+- catalogues
 - knowledge graphs
-- web data
+- web pages
 
-The Agent usually retrieves through:
+They are usually managed by another system and have their own update and permission model.
 
-- Keyword Search
-- Vector Search
-- SQL
-- Graph Query
-- API
-- RAG
-
-## Why separate it from Memory?
-
-External Knowledge usually:
-
-- is managed by an external source
-- has its own update process
-- may belong to multiple users
-- should not be casually rewritten by the Agent
-- needs to keep the original source
-- may be more complete than the Agent's Memory
-
-Memory usually holds:
-
-- Task-specific Summary
-- Learned Procedure
-- User Preference
-- Episode
-- Verified Derived Fact
-
-## A common mistake
-
-Writing a Retrieval Chunk into Memory, then treating it as a permanent fact.
-
-That loses:
-
-- the original document version
-- the update time
-- the paragraph context
-- permissions
-- Source of Truth
-
-A better pattern is to save:
+A common mistake is:
 
 ```text
-Reference:
-Document ID + Version + Section
-
-Derived Memory:
-Scoped summary with source reference
+Retrieve one paragraph
+  -> summarise it
+  -> store the summary as a permanent fact
+  -> lose the source and version
 ```
 
----
-
-## Agent memory layers
-
-Agent Memory can be layered by lifecycle and purpose.
-
-## Layer 1: Immediate Context
-
-The input the model can currently see.
-
-## Layer 2: Working Memory
-
-The current task's intermediate information.
-
-## Layer 3: Short-term State
-
-Workflow progress and control fields.
-
-## Layer 4: Long-term Memory
-
-- Episodic
-- Semantic
-- Procedural
-- User
-
-## Layer 5: Shared Memory
-
-Task information shared across Agents.
-
-## Layer 6: External Knowledge
-
-Data managed by external systems, retrieved on demand.
-
-![Figure 7-1 — Agent Memory Layers](/images/the-atlas-of-agent-design-patterns-part-7/figure-7-1-agent-memory-layers.png)
-
-> **Figure 7-1 ｜ Agent Memory Layers**  
-> From Immediate Context, Working Memory and Short-term State, through Episodic, Semantic, Procedural and User Memory, then Shared Memory, and finally the external Knowledge Store, each layer has different purposes, lifetimes and governance requirements.---
-
-## Memory is not just retrieval: the full lifecycle
-
-The complete flow of a Memory System is not:
+A better record preserves the link:
 
 ```text
-Save Everything
-  ↓
-Vector Search
+Derived memory:
+Scoped summary
+
+Derived from:
+document_id
+document_version
+section
+retrieval time
+access policy
 ```
 
-It is:
+Where possible, retain a reference to the source of truth rather than copying the entire source into memory.
+
+RAG retrieval can then fetch:
+
+- the original external evidence
+- derived memory
+- both, with different trust and freshness rules
+
+## Memory is a lifecycle, not a database
+
+A complete memory system includes at least:
 
 ```text
 Observe
-  ↓
-Decide Whether to Write
-  ↓
-Normalize
-  ↓
-Validate
-  ↓
-Store
-  ↓
-Retrieve
-  ↓
-Re-rank
-  ↓
-Apply
-  ↓
-Revalidate
-  ↓
-Update / Supersede / Forget
+  -> Decide whether to write
+  -> Classify type and scope
+  -> Normalise
+  -> Validate
+  -> Store
+  -> Retrieve candidates
+  -> Filter and rerank
+  -> Assemble context
+  -> Use
+  -> Evaluate usefulness
+  -> Update, supersede, expire, or delete
 ```
 
-## 1. Write Decision
+### 1. Observe
 
-First decide whether it is worth keeping.
+Capture a candidate from:
 
-The questions include:
+- user input
+- tool result
+- workflow event
+- accepted output
+- verifier result
+- human decision
+- reflection
 
-- will it be reused in the future?
-- does it already exist?
-- does it contain sensitive data?
-- does it have a reliable source?
-- is it only temporary information?
-- has user consent been obtained?
+Observation is not automatic approval.
 
-## 2. Normalize
+### 2. Write decision
 
-Convert the content into a structured format.
+Ask:
 
-For example:
+- Will this be useful again?
+- Is the information already stored?
+- Is it temporary state?
+- Does it contain sensitive data?
+- Is there a source?
+- Is the user or policy allowed to persist it?
+- Could the original source be re-retrieved instead?
+
+The correct write target may be `none`.
+
+### 3. Classify
+
+Assign:
+
+- content type
+- owner and scope
+- retention class
+- sensitivity
+- trust state
+- source-of-truth relationship
+
+### 4. Normalise
+
+Convert the candidate into a structured record.
+
+### 5. Validate
+
+Check:
+
+- evidence
+- accuracy
+- scope
+- consent or authority
+- duplication
+- conflict
+- policy
+- retention
+- write permission
+
+### 6. Store
+
+Choose storage by access pattern and contract:
+
+- relational database
+- document store
+- key-value store
+- vector index
+- graph database
+- event log
+- object storage
+
+One memory record may use several physical indexes. A vector index is usually an access path, not the whole record of truth.
+
+### 7. Retrieve
+
+Retrieve candidates using:
+
+- task and query
+- type
+- user or tenant
+- project
+- time
+- permissions
+- status
+- source
+- semantic relevance
+- exact identifiers
+
+### 8. Filter and rerank
+
+Semantic similarity is only one signal.
+
+Useful features include:
+
+- applicability
+- scope match
+- recency
+- source authority
+- validation status
+- confidence
+- contradiction
+- user or tenant match
+- cost of use
+
+Do not pretend that one universal weighted formula works for every memory type. A hard permission mismatch should filter an item out, not merely subtract three points.
+
+### 9. Assemble context
+
+The context builder decides:
+
+- which exact state fields are required
+- which working-memory items are relevant
+- which long-term memories apply
+- which external evidence is needed
+- how much token budget each category receives
+
+### 10. Use and evaluate
+
+Track whether retrieved memory:
+
+- changed the decision
+- improved task success
+- prevented repeated work
+- caused an error
+- was ignored
+- was stale or irrelevant
+
+### 11. Update, supersede, expire, or delete
+
+Memory must support correction and forgetting.
+
+![Figure 7-3｜Memory Is a Lifecycle, Not a Database](/images/the-atlas-of-agent-design-patterns-part-7/memory-lifecycle-loop.png)
+
+## Retrieval: applicability before similarity
+
+A semantically similar item may still be unusable because it:
+
+- belongs to another user
+- applies to another product version
+- is expired
+- is unverified
+- conflicts with current policy
+- is superseded
+- requires permission the current agent lacks
+
+A robust retrieval pipeline is:
 
 ```text
-Type:
-Procedural
-
-Trigger:
-Full job description missing
-
-Action:
-Fetch source URL
-
-Fallback:
-Mark Pending
-
-Scope:
-Job scoring workflow
+Permission and scope filter
+  -> lifecycle-status filter
+  -> candidate retrieval
+  -> semantic and lexical relevance
+  -> recency and authority reranking
+  -> contradiction check
+  -> context-budget selection
 ```
 
-## 3. Validate
+### Hard filters
 
-Before writing, check:
+Examples:
 
-- Source
-- Accuracy
-- Scope
-- Consent
-- Conflict
-- Duplicate
-- Policy
+- tenant
+- user
+- project
+- region
+- memory type
+- access policy
+- active status
+- effective date
+- expiry
+- sensitivity class
 
-## 4. Store
+### Ranking signals
 
-Pick the right storage:
+Examples:
 
-- Relational Database
-- Key-value Store
-- Vector Store
-- Document Store
-- Graph Database
-- Event Log
+- semantic relevance
+- exact-key match
+- source authority
+- recency
+- prior usefulness
+- confidence
+- task compatibility
+- novelty
 
-## 5. Retrieve
+### Retrieval budget
 
-Based on:
+Limit:
 
-- Query
-- Task
-- User
-- Scope
-- Time
-- Memory Type
-- Permission
+- number of memories
+- tokens
+- entries per type
+- age range
+- minimum confidence
+- duplicate content
+- number of conflicting candidates
 
-pull candidate memories.
+LongMemEval highlights that long-term memory performance involves more than raw recall. Systems must handle information extraction, multi-session reasoning, temporal reasoning, knowledge updates, and abstention.
 
-## 6. Re-rank
+A memory system that retrieves a stale preference confidently has not succeeded merely because it found something.
 
-Similarity is not applicability.
+## Conflict and version governance
 
-You also need to evaluate:
+Memory conflicts are normal.
 
-- Relevance
-- Recency
-- Authority
-- Scope Match
-- Validation Status
-- Confidence
-
-## 7. Apply
-
-Put the chosen memory into:
-
-- Context
-- Plan
-- Tool Policy
-- User Profile
-- Shared State
-
-## 8. Revalidate
-
-Old memory may no longer apply in a new environment.
-
-## 9. Update / Supersede / Forget
-
-Memory should be able to:
-
-- be updated
-- be merged
-- have its confidence lowered
-- be replaced by a newer version
-- expire
-- be deleted
-
-![Figure 7-3 — Memory Write, Retrieve, Update, and Forget Loop](/images/the-atlas-of-agent-design-patterns-part-7/figure-7-3-memory-lifecycle-loop.png)
-
-> **Figure 7-3 ｜ Memory Write, Retrieve, Update, and Forget Loop**  
-> Memory is checked on value, source, Scope, Consent and conflict before writing. After retrieval it still has to be Re-ranked and re-validated. Only then can it be Updated, Superseded or Forgotten.
-
----
-
-## Memory Retrieval: similarity is not the only criterion
-
-Vector similarity is often treated as the core of memory retrieval.
-
-But a semantically similar memory may:
-
-- already be expired
-- apply to a different project
-- not be verified yet
-- come from a low-trust source
-- conflict with current policy
-- involve another user
-
-So Memory Retrieval should ideally use a hybrid score:
+Examples:
 
 ```text
-Final Score =
-Semantic Relevance
-+ Scope Match
-+ Recency
-+ Authority
-+ Validation Status
-+ User / Tenant Match
-- Conflict Penalty
-- Expiry Penalty
+Procedure v1:
+Use billing API v1
+
+Procedure v2:
+Use billing API v2
 ```
-
-## Retrieval Filters
-
-Before retrieval you should filter:
-
-- Tenant
-- User
-- Project
-- Memory Type
-- Permission
-- Validation Status
-- Expiry
-- Effective Date
-
-## Retrieval Budget
-
-Do not dump every similar memory into Context.
-
-You can set:
-
-- Max Memories
-- Max Tokens
-- Per-type Limit
-- Recency Window
-- Minimum Confidence
-- Diversity Constraint
-
----
-
-## Memory conflicts: both look true, now what?
-
-Common conflicts:
 
 ```text
-Memory A:
-Use API v1 for billing
+Preference recorded in May:
+Use concise answers
 
-Memory B:
-Use API v2 for billing
+Preference recorded in July:
+Use detailed explanations for technical topics
 ```
 
-Or:
+### Conflict types
 
-```text
-User Preference A:
-Use concise responses
+- **temporal**: old and new versions differ
+- **scope**: different users, regions, projects, plans, or environments
+- **source**: official and secondary sources disagree
+- **procedural**: two rules prescribe different actions
+- **identity**: two records may refer to the same or different entity
+- **preference**: user choices differ by time or task
+- **derived-fact**: conclusions were computed from different evidence
 
-User Preference B:
-Provide detailed explanations
-```
+### Resolution order
 
-The system cannot just pick the entry with the higher Embedding score.
+A useful sequence is:
 
-## Conflict types
+1. verify entity and scope
+2. compare effective time
+3. inspect source authority and provenance
+4. compare validation status
+5. check supersession links
+6. determine whether both can coexist under different conditions
+7. mark unresolved conflict
+8. escalate high-impact ambiguity
 
-### Temporal Conflict
+### Do not overwrite history silently
 
-Old and new versions differ.
-
-### Scope Conflict
-
-Different projects, regions, plans or users.
-
-### Source Conflict
-
-Official source and third-party source disagree.
-
-### Procedural Conflict
-
-Two SOPs give different steps for the same situation.
-
-### User Preference Conflict
-
-Preferences from different times contradict each other.
-
-## Conflict resolution principles
-
-1. Check Scope first
-2. Then compare Effective Date
-3. Then compare Source Authority
-4. Then compare Validation Status
-5. Check whether it has already been Superseded
-6. Mark as Conflict when it cannot be resolved
-7. High-impact rules go to Human Review
-
-## Do not overwrite old memory directly
-
-A better version model:
+Use a version model:
 
 ```text
 Memory v1
-Status: Superseded
+status: superseded
 
 Memory v2
-Status: Active
-Supersedes: v1
+status: active
+supersedes: v1
+reason: official API migration
 ```
 
-Keeping history enables:
+Version history supports:
 
-- Audit
-- Rollback
-- understanding behaviour change
-- investigating errors
+- audit
+- rollback
+- debugging
+- behaviour-change analysis
+- source refresh
 
-![Figure 7-4 — Memory Conflict and Version Governance](/images/the-atlas-of-agent-design-patterns-part-7/figure-7-4-memory-conflict-version-governance.png)
+### Invalidation should propagate
 
-> **Figure 7-4 ｜ Memory Conflict and Version Governance**  
-> A new memory checks Scope, time, source and version before writing. Conflicts can be Resolved, Superseded, Merged or sent to Human Review. New content cannot simply overwrite old content.---
-
-## Single-Agent memory and Shared-Memory architectures
-
-## Single Agent
+If a semantic fact changes, downstream items derived from it may also need review.
 
 ```text
-User Request
-  ↓
-Agent Runtime
- ↕
-Working Memory
- ↕
-Long-term Memory
- ↓
-Response
+External document updated
+  -> semantic claim superseded
+  -> cached summary invalidated
+  -> dependent procedure flagged
+  -> affected shared decision reverified
 ```
 
-Strengths:
+This is why provenance is a graph, even when the user interface looks like a table.
 
-- simple permissions
-- clear responsibility
-- fewer conflicts
+![Figure 7-4｜Conflict, Supersession, and Invalidation Propagation](/images/the-atlas-of-agent-design-patterns-part-7/memory-conflict-supersession.png)
 
-## Multi-Agent Shared Memory
+## Forgetting is a feature
 
-```text
-Research Agent
-Analysis Agent
-Writing Agent
-Verifier Agent
-       ↕
-Shared Memory Layer
-```
+A memory system without forgetting becomes less reliable over time.
 
-The Shared Memory Layer needs:
+Reasons to forget or retire an entry include:
 
-- Task-scoped Working Memory
-- Verified Fact Store
-- Shared Procedure Store
-- User / Tenant Isolation
-- Version Control
-- Access Policy
-- Audit Log
+- task completed
+- retention period ended
+- user deletion
+- source revoked
+- policy changed
+- item superseded
+- confidence fell below threshold
+- memory was never useful
+- privacy or security requirement
+- duplicate consolidation
+- incorrect inference
 
-## Local Memory and Shared Memory should be separated
+"Forget" may mean:
 
-Every Agent can keep its own Local Working Memory.
+- remove from active retrieval
+- expire
+- archive
+- revoke
+- tombstone
+- delete physical data
+- delete derived indexes
+- preserve only a required audit record
 
-Only content that needs to be coordinated goes into Shared Memory.
+Deletion must cover secondary artefacts:
+
+- vector indexes
+- caches
+- summaries
+- replicas
+- derived profiles
+- shared copies
+
+Otherwise the system forgets ceremonially while the data continues living a rich afterlife in six indexes.
+
+## Production memory architecture
+
+A production architecture separates control, storage, retrieval, and governance.
+
+### Context builder
+
+Builds the model input from:
+
+- current request
+- exact workflow state
+- selected working memory
+- applicable long-term memory
+- retrieved external evidence
+- procedures
+- policy instructions
+
+### Memory router
+
+Decides whether a candidate should go to:
+
+- no storage
+- working memory
+- episodic memory
+- semantic memory
+- procedural memory
+- user-scoped memory
+- shared memory
+
+### Write validator
+
+Checks:
+
+- source
+- scope
+- duplication
+- conflict
+- sensitivity
+- authority
+- retention
+- write permission
+- user control
+
+### Typed stores
+
+Different memory contracts may use different storage and indexes.
 
 For example:
 
-```text
-Local:
-Raw notes
-Temporary hypotheses
-Tool logs
+- workflow state in a transactional store
+- episodes in an event or document store
+- semantic claims in a relational or graph model
+- procedures in a versioned registry
+- user preferences in a scoped profile store
+- large source documents in object storage
+- vector indexes as retrieval accelerators
 
-Shared:
-Verified facts
-Structured results
-Open questions
-Accepted decisions
-```
+### Retrieval layer
 
-This reduces:
+Supports:
 
-- noise
-- sensitive information spread
-- duplicate content
-- Context bloat
+- metadata filters
+- exact lookup
+- semantic search
+- keyword search
+- SQL
+- graph traversal
+- time-aware retrieval
+- authority and version reranking
 
-![Figure 7-5 — Single-Agent and Shared-Memory Architectures](/images/the-atlas-of-agent-design-patterns-part-7/figure-7-5-single-agent-shared-memory-architectures.png)
+### Shared-memory gateway
 
-> **Figure 7-5 ｜ Single-Agent and Shared-Memory Architectures**  
-> A Single Agent can directly use its own Working and Long-term Memory. Multi-Agent setups should separate Local Memory from Shared Memory, and share only information that has been verified and carries Scope and access control.
+Controls which local results become visible to other agents.
 
----
+It enforces:
 
-## What should NOT be stored in memory?
+- task scope
+- typed hand-offs
+- trust state
+- read and write permissions
+- conflict flags
+- final-owner decisions
 
-## 1. Every raw conversation
+### Governance layer
 
-Most of it is not worth keeping forever.
+Controls:
 
-## 2. Unverified guesses
+- version
+- supersession
+- expiry
+- deletion
+- access
+- audit
+- retention
+- approval
+- source refresh
+- legal or policy requirements defined by the organisation
+
+### Observability
+
+Track:
+
+- write-candidate rate
+- accepted-write rate
+- retrieval hit rate
+- useful-memory rate
+- stale-memory rate
+- conflict rate
+- privacy-deletion completion
+- memory-caused error rate
+- retrieval latency
+- context token cost
+- abstention quality
+
+![Figure 7-5｜Production Memory Architecture](/images/the-atlas-of-agent-design-patterns-part-7/production-memory-architecture.png)
+
+## Evaluating memory systems
+
+A memory demo often asks:
+
+> Can the system recall one fact from a previous conversation?
+
+Production evaluation needs more.
+
+### Recall
+
+Did the system retrieve the needed item?
+
+### Precision
+
+Did it avoid retrieving irrelevant or prohibited items?
+
+### Temporal correctness
+
+Did it use the version valid for the current time?
+
+### Update handling
+
+Did a newer fact supersede the old one?
+
+### Scope correctness
+
+Did the item apply to the correct user, tenant, project, and region?
+
+### Abstention
+
+Did the system admit that no reliable memory was available?
+
+### Privacy and access
+
+Did it prevent cross-user or unauthorised retrieval?
+
+### Usefulness
+
+Did the memory improve the downstream outcome?
+
+### Harm
+
+Did stale or incorrect memory cause a worse decision?
+
+Evaluation sets should include:
+
+- conflicting updates
+- similar but inapplicable episodes
+- revoked user preferences
+- expired procedures
+- cross-tenant traps
+- unsupported questions
+- deletion requests
+- source-version changes
+
+Long context alone is not a substitute for these behaviours. MemGPT, LongMem, MemoryBank, and related systems explore different mechanisms for extending or managing memory, while benchmarks such as LongMemEval make the update, temporal, and abstention problems visible.
+
+## What should not be stored
+
+### Every raw conversation
+
+Most content has no future value.
+
+### Unverified guesses
 
 ```text
 The user probably prefers...
 ```
 
-Guesses should not become facts.
+A guess should not become a profile fact.
 
-## 3. Transient errors
+### Every transient failure
 
-A single Timeout does not become a permanent procedure rule.
+One timeout should not create a permanent procedure.
 
-## 4. Sourceless facts
+### Sourceless claims
 
-If you do not know where it came from, it is hard to update and verify.
+Without provenance, correction becomes guesswork.
 
-## 5. Sensitive data
+### Whole external documents by default
 
-Unless there is a clear necessity, a legal basis, permission and security controls.
+Store references and indexes unless duplication has a clear purpose.
 
-## 6. Whole external documents that can be re-retrieved
+### Sensitive information without a defined need
 
-Saving a reference and an index is usually more reasonable than copying the whole content.
+Persistence should be purposeful and controlled.
 
-## 7. Already-expired State
+### Finished workflow counters as long-term knowledge
 
-The Retry Count after a finished task usually should not become Long-term Memory.
+`retry_count = 2` usually expires with the run.
 
-## 8. Model conclusions that cannot be revoked
+### Raw model reasoning as an audit substitute
 
-All high-impact memory should be viewable, updatable, retractable or replaceable.
+Store decisions, actions, evidence, and outcomes rather than unrestricted private reasoning text.
 
----
+### Irrevocable conclusions
 
-## Full comparison of nine memory and information layers
+High-impact memory must be correctable, supersedable, or removable.
 
-| Type | What it stores | Typical lifetime | Cross-Session | Main purpose | Main risk |
-|---|---|---|---:|---|---|
-| Stateless | Nothing | Single Request | No | Simple tasks, low risk | Duplicate work |
-| Context | Current model input | Single inference | No | Make the model see now | Capacity limit |
-| Working Memory | Intermediate conclusions, subgoals | Current task | Optional | Task workspace | Unbounded growth |
-| Short-term State | Workflow progress, Retry | Workflow duration | Sometimes | Control the flow | State inconsistency |
-| Episodic Memory | Past events and outcomes | Medium to long term | Yes | Cases and experience | Outdated, misattribution |
-| Semantic Memory | Stable facts and knowledge | Long term | Yes | Reusable knowledge | Version and source issues |
-| Procedural Memory | SOP, rules, procedures | Long term | Yes | Guide behaviour | Rule conflicts |
-| User Memory | Preferences and long-term limits | User-controlled | Yes | Personalisation | Privacy and misrecording |
-| Shared Memory | Information shared across Agents | Task or long term | Sometimes | Collaboration | Pollution and permissions |
-| External Knowledge Store | Documents, databases, wikis | Source-managed | Yes | On-demand retrieval | Permissions, version, recall |
+## Complete example: memory design for a job-scoring agent
 
----
+The task is:
 
-## Comparison table of Memory, RAG, Context and State
+> Score whether a job is worth applying for, but only after reading the complete job description.
 
-| Comparison axis | Context | State | Memory | RAG |
-|---|---|---|---|---|
-| Core question | What does the model see now? | Where is the flow? | What does the system keep? | What does it pull from outside? |
-| Main content | Prompt, Query, Chunks | Node, Status, Retry | Events, knowledge, rules, preferences | Documents and data fragments |
-| Lifetime | One call or Context Window | Workflow duration | Within task or cross-Session | Per query |
-| Goes directly to the model | Yes | Usually selective | After retrieval | Yes |
-| Needs a source | Recommended | Not always | Long-term memory needs it | Required |
-| Needs version | Context itself rarely | Yes | Yes | External source needs it |
-| Main risk | Context Overload | State confusion | Pollution, expiry, privacy | Recall errors, source expiry |
+### Context
 
----
+For the current model call:
 
-## What to store, how long, and when to update?
+- current job description
+- CV summary
+- scoring rubric
+- applicable procedure
+- exact row identifier
+- relevant user constraints
 
-| Information | Suggested location | Retention | Update condition | Forget condition |
-|---|---|---|---|---|
-| Current User Query | Context | Single call | New Query | Call ends |
-| Intermediate research conclusion | Working Memory | Task duration | New evidence appears | Task completes or TTL |
-| Current State | State Store | Workflow duration | Every state transition | Workflow ends |
-| Past task events | Episodic Memory | As needed | New result or correction | Expired, low value |
-| Verified product facts | Semantic Memory | Medium to long term | Official source update | Replaced or invalid |
-| SOP | Procedural Memory | Long term | Process or policy change | Replaced by newer version |
-| User preferences | User Memory | User-controlled | User explicitly modifies | User deletes |
-| Worker results | Shared Memory | Task duration | Worker updates | Task ends or archives |
-| External documents | Knowledge Store | Source decides | Document version update | Source deletes or Retention |
-
----
-
-## Production Memory Architecture
-
-A mature architecture can be split into these components.
-
-## Context Builder
-
-Responsible for choosing:
-
-- Current Query
-- Required State
-- Relevant Working Memory
-- Relevant Long-term Memory
-- Retrieved External Knowledge
-- Applicable Procedures
-
-## Memory Router
-
-Decides which layer the content should be written to:
-
-- Working
-- Episodic
-- Semantic
-- Procedural
-- User
-- Shared
-- None
-
-## Memory Validator
-
-Checks:
-
-- Source
-- Scope
-- Consent
-- Duplicate
-- Conflict
-- Sensitive Data
-- Validation Status
-
-## Memory Store
-
-Use different Storage by type.
-
-Do not have to dump every memory into the same Vector Database.
-
-## Retrieval Layer
-
-Supports:
-
-- Metadata Filter
-- Semantic Search
-- SQL
-- Graph Query
-- Recency
-- Authority
-- Permission
-
-## Governance Layer
-
-Controls:
-
-- Version
-- Expiry
-- Supersede
-- Delete
-- Access
-- Audit
-- Retention
-- Human Approval
-
-## Observability
-
-Tracks:
-
-- Memory Write Rate
-- Retrieval Hit Rate
-- Useful Memory Rate
-- Stale Memory Rate
-- Conflict Rate
-- False-memory Incidents
-- Token Cost
-- Privacy Deletion Success
-
----
-
-## Common anti-patterns in memory
-
-## Anti-pattern 1: save every conversation
-
-The data volume grows fast, and the actually important content gets harder to find.
-
-## Anti-pattern 2: vector database is Long-term Memory
-
-Only similarity, no Scope, version, permissions or update governance.
-
-## Anti-pattern 3: unverified content written in directly
-
-The Agent's guess becomes a permanent fact.
-
-## Anti-pattern 4: old memory overwritten directly
-
-No Audit, no Rollback, no way to understand the change.
-
-## Anti-pattern 5: memory of different users mixed together
-
-User or Tenant isolation fails.
-
-## Anti-pattern 6: no forgetting mechanism
-
-Outdated rules keep affecting future tasks.
-
-## Anti-pattern 7: copying RAG documents into Memory
-
-Source version and Context are lost.
-
-## Anti-pattern 8: treating State as a natural-language summary
-
-Retry Count, Current Node and other fields lose their precision.
-
-## Anti-pattern 9: every Shared Memory entry is editable by everyone
-
-Verified information can be overwritten by anyone.
-
-## Anti-pattern 10: trust everything retrieved
-
-No Scope, Recency or Validation check.
-
----
-
-## A complete example: memory design for a job-scoring Agent
-
-Task:
-
-> Score whether a job listing is worth applying for based on the complete JD.
-
-## Context
-
-Visible in this model call:
-
-- user CV summary
-- current JD
-- scoring Rubric
-- Relevant Procedures
-
-## State
+### Workflow state
 
 ```text
-Current Row:
-253
-
-JD Status:
-Complete
-
-Scoring Status:
-In Progress
-
-Retry Count:
-0
+row_id: 253
+jd_status: COMPLETE
+scoring_status: IN_PROGRESS
+retry_count: 0
+current_node: SCORE
 ```
 
-## Working Memory
+### Working memory
 
 ```text
-Required skills found:
-- Product Strategy
+Required capabilities found:
+- product strategy
 - AI / ML
-- Stakeholder Management
+- stakeholder management
 
-Open question:
-Visa sponsorship unclear
+Potential gap:
+- local-language requirement
+
+Unresolved:
+- visa sponsorship
 ```
 
-## Episodic Memory
+### Episodic memory
+
+A past event records:
 
 ```text
-Previous event:
-A LinkedIn page returned partial content.
+Situation:
+LinkedIn page contained partial JD
 
-Successful fallback:
-Used the public job API.
+Action:
+Fetched approved public endpoint
+
+Outcome:
+Complete JD obtained
+
+Evidence:
+request trace and source identifier
 ```
 
-## Semantic Memory
+This episode may be retrieved when a similar partial-page failure occurs.
+
+### Procedural memory
 
 ```text
-Scoring threshold:
-Apply only when total score ≥ 80
+Trigger:
+Stored JD is empty or partial
+
+Procedure:
+1. Fetch the source URL
+2. Verify responsibilities and requirements are present
+3. Use the approved public endpoint when needed
+4. Mark Pending if full text remains unavailable
+5. Never score from title alone
 ```
 
-This entry must carry source and version.
-
-## Procedural Memory
+### User-scoped memory
 
 ```text
-If the stored JD is empty:
-Fetch the source URL.
+Preference:
+Only roles scoring 80 or above should be considered
 
-If complete text remains unavailable:
-Mark Pending.
+Source:
+Explicit user instruction
 
-Never score from the title alone.
+Scope:
+Job-scoring workflow
 ```
 
-## User Memory
+### Semantic memory
 
 ```text
-Preferred output:
-Traditional Chinese
+Claim:
+The scoring threshold is 80
 
-Application threshold:
-80
+Scope:
+Current workflow version
+
+Validation:
+Approved
+
+Version:
+2.1
 ```
 
-This assumes the user has explicitly asked to be remembered.
+This could also remain purely procedural or configuration data. The important point is that the source and scope are explicit.
 
-## Shared Memory
+### External knowledge
 
-Shared across Workers:
+- the current job listing
+- company careers page
+- public job-posting endpoint
+- visa-policy source
 
-- JD Completeness
-- Extracted Requirements
-- Visa Evidence
-- Final Score
-- Validation Status
+These remain external sources and should be re-retrieved or versioned.
 
-## External Knowledge Store
+### Shared memory
 
-- Original Job Page
-- Company Career Site
-- Public Job API
-- Uploaded CV
-- Scoring Standard
+When several workers are involved, share only:
 
-In this example, a truly reliable system is not "remember everything".
+- complete JD
+- verified extracted requirements
+- unresolved questions
+- final score components
+- source references
 
-It puts each kind of information in the right place, with clear:
+Do not share every browser log and draft hypothesis.
 
-- Scope
-- Source
-- Lifetime
-- Permission
-- Update Rule
+### Forgetting
 
----
+After task completion:
 
-## Production Memory Checklist
+- working notes expire
+- exact workflow counters are removed
+- the accepted score and source references may be retained under policy
+- invalid drafts are not promoted
+- outdated listing content follows retention rules
 
-## Boundaries
+The value comes from remembering the right contract and evidence, not from remembering the most text.
 
-- Are Context, State, Memory and RAG clearly distinguished?
-- Are Working and Long-term Memory distinguished?
-- Are Local and Shared Memory distinguished?
-- Do you know where the Source of Truth lives?
+## Common anti-patterns
 
-## Write
+### A vector store is treated as the entire memory system
 
-- Do you first judge whether the content is worth keeping?
-- Does it have source and Scope?
-- Has it been validated?
-- Are sensitive data and Consent handled?
-- Are duplicates and conflicts detected?
+Similarity is available, but version, ownership, trust, and deletion are missing.
 
-## Retrieve
+### Content types and ownership scopes are mixed
 
-- Do you first apply User, Tenant and Project Filters?
-- Do you consider Recency, Authority and Validation?
-- Do you limit the retrieval count and Token budget?
-- Do you re-check applicability in the new context?
+"User", "shared", and "episodic" are presented as mutually exclusive categories.
 
-## Update and Forget
+### State is stored as prose
 
-- Is there a Version?
-- Does it support Supersede?
-- Is there an Expiry?
-- Can it be deleted and revoked?
-- Is the Audit History preserved?
+Exact workflow control becomes lossy.
 
-## Shared Memory
+### Every retrieval result is trusted
 
-- Who can Propose?
-- Who can Validate?
-- Who can Approve?
-- Who can Supersede?
-- Is unverified information prevented from spreading?
+No applicability, permission, status, or source check occurs.
 
-## Observability
+### Memory writes happen before verification
 
-- Are wrong-memory incidents tracked?
-- Do you know which memories are actually used?
-- Do you know whether retrieval improved the result?
-- Can user deletion requests be fulfilled?
+A model inference becomes a durable fact.
 
----
+### Old memory is overwritten
 
-## Conclusion of this article
+No provenance or rollback remains.
 
-Agent Memory is not just saving conversations, and it is not the same as wiring up a Vector Database.
+### External documents are copied into memory without references
 
-Different types solve different problems:
+The source of truth disappears.
 
-- **Stateless**: start from scratch every time
-- **Working Memory**: hold the current task's intermediate information
-- **Short-term State**: hold the workflow progress
-- **Episodic Memory**: record past events
-- **Semantic Memory**: hold verified long-term knowledge
-- **Procedural Memory**: hold rules for doing things
-- **User Memory**: hold preferences and limits the user has explicitly authorised
-- **Shared Memory**: let multiple Agents share task information
-- **External Knowledge Store**: hold knowledge managed by external sources
+### Shared memory has universal write access
 
-A mature Memory System must be able to answer:
+One worker can overwrite accepted information.
+
+### Retrieval is optimised only for recall
+
+The system becomes excellent at finding the wrong user's old preference.
+
+### No deletion propagation exists
+
+The visible record is deleted, but embeddings and caches remain.
+
+### Memory success is measured only by anecdotal recall
+
+No tests cover updates, conflicts, scope, abstention, or harm.
+
+## Production checklist
+
+### Classification
+
+- Are function, ownership, and lifecycle separate axes?
+- Is workflow state separate from working memory?
+- Are user and shared memory treated as scopes?
+- Is external knowledge separated from derived memory?
+
+### Writing
+
+- Is there a write decision?
+- Can the answer be `do not store`?
+- Are source, scope, authority, and retention recorded?
+- Are guesses prevented from becoming verified facts?
+- Are user controls enforced?
+
+### Retrieval
+
+- Do hard permission and scope filters run first?
+- Is similarity only one ranking signal?
+- Are expiry, supersession, and conflict checked?
+- Is context budget allocated by type?
+- Can the system abstain?
+
+### Updating and forgetting
+
+- Are versions linked?
+- Can records be superseded or revoked?
+- Does invalidation propagate to derived artefacts?
+- Are deletion requests applied to indexes and caches?
+- Are expiry and retention jobs observable?
+
+### Shared memory
+
+- Is local scratch work separated from shared state?
+- Are writes typed and permissioned?
+- Is there a final owner?
+- Are proposed and verified items distinct?
+- Are conflicts explicit?
+
+### Evaluation
+
+- Are recall and precision both measured?
+- Are temporal updates tested?
+- Are cross-user and cross-tenant failures tested?
+- Is downstream usefulness measured?
+- Are memory-caused errors tracked?
+
+## Conclusion
+
+Agent memory becomes clearer when three axes are separated:
+
+- **function**: working, episodic, semantic, procedural
+- **scope**: local, task, user, shared, organisation
+- **lifecycle**: context, active task, cross-session, external source, expired or superseded
+
+Context, state, memory, external knowledge, and RAG then occupy distinct roles:
 
 ```text
-Why record it?
-Who writes it?
-Where does it come from?
-What is its scope?
-How long is it kept?
-Who do you trust when there is a conflict?
-When do you update it?
-When do you forget it?
+Context:
+assembled input for the current model step
+
+State:
+precise execution control
+
+Memory:
+retained information with a reuse lifecycle
+
+External knowledge:
+source-managed information
+
+RAG:
+retrieval into the current context
 ```
 
-The really useful memory is the one that retrieves the right scope, the right version, and enough trust, at the right time.
+A production memory system is not a storage product with an embedding endpoint. It is a governed loop:
 
-> **At the right time, retrieve the right scope, the right version, with enough trust.**
+```text
+select what deserves memory
+  -> classify type and ownership
+  -> validate source and authority
+  -> store with version and retention
+  -> retrieve with scope and permission
+  -> evaluate usefulness
+  -> update, supersede, or forget
+```
 
-The next article will assemble all the building blocks from the previous seven articles.
+The most important design question is not:
 
-Part 8 will actually break down:
+> How much can the agent remember?
 
-- Production RAG
-- Deep Research Agent
-- Coding Agent
-- Browser / Computer-use Agent
-- high-risk enterprise automation
-- long-running monitoring Agents
+It is:
 
-and explain how Router, Planner, DAG, State Machine, Verifier, Memory, Policy, Budget and Human Approval combine into a real working Production Architecture.
+> Which information should influence a future decision, under what conditions, and how can that influence be corrected or removed?
+
+Part 8 moves from individual patterns to complete production architectures:
+
+> How do routing, planning, tools, verification, memory, human approval, budgets, and observability fit together in one controlled system?
+
+## References
+
+- [Sumers et al., *Cognitive Architectures for Language Agents*](https://arxiv.org/abs/2309.02427)
+- [Park et al., *Generative Agents: Interactive Simulacra of Human Behavior*](https://arxiv.org/abs/2304.03442)
+- [Packer et al., *MemGPT: Towards LLMs as Operating Systems*](https://arxiv.org/abs/2310.08560)
+- [Lewis et al., *Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks*](https://arxiv.org/abs/2005.11401)
+- [Shinn et al., *Reflexion: Language Agents with Verbal Reinforcement Learning*](https://arxiv.org/abs/2303.11366)
+- [Wang et al., *Voyager: An Open-Ended Embodied Agent with Large Language Models*](https://arxiv.org/abs/2305.16291)
+- [Zhong et al., *MemoryBank: Enhancing Large Language Models with Long-Term Memory*](https://arxiv.org/abs/2305.10250)
+- [Wu et al., *LongMemEval: Benchmarking Chat Assistants on Long-Term Interactive Memory*](https://arxiv.org/abs/2410.10813)
+
+## Series
+
+| Part | Topic |
+|---:|---|
+| 1 | Beyond ReAct: A Six-Dimensional Map of LLM Agent Architectures |
+| 2 | Agent Execution Paths: Direct Calls, Pipelines, Routers, State Machines, and DAGs |
+| 3 | ReAct, Plan-and-Execute, Adaptive Planning, and HTN |
+| 4 | From Single-Path Reasoning to Trees, Graphs, MCTS, and LATS |
+| 5 | Verification, Recovery, and Self-Correction |
+| 6 | Multi-Agent Architectures |
+| 7 | Context, State, Memory, and RAG |
+| 8 | Production Agent Architectures |
+| 9 | How to Choose an Agent Architecture |
+| 10 | Implementing Agent Patterns with Modern Frameworks |
