@@ -1,6 +1,6 @@
 ---
-title: "Agent 設計模式圖鑑 Part 6｜Multi-Agent 架構全解：Supervisor、Debate、Blackboard 與 Swarm"
-description: "完整比較 Single Agent、Role-based Single Agent、Supervisor–Worker、Planner–Executor–Critic、Debate、Voting、Blackboard、Peer-to-Peer 與 Swarm，並說明 Production Multi-Agent 的通訊、共享狀態、責任邊界、成本與失敗治理。"
+title: "Agent 設計模式圖鑑 Part 6｜Multi-Agent 的組織、協作與控制"
+description: "從 Single Agent、Role-based Workflow、Supervisor-Worker、Planner-Executor-Critic、Debate、Voting、Blackboard、Peer-to-Peer、Swarm-style Coordination，到 Handoff Contract、Shared State、Final Ownership 與 Control Plane，完整拆解 Production Multi-Agent 架構。"
 date: 2026-07-01T00:04:00
 lang: zh
 categories: ["AI"]
@@ -8,1411 +8,910 @@ series: "Agent 設計模式圖鑑"
 seriesOrder: 6
 ---
 
-前幾篇，我們分別討論了：
+# Agent 設計模式圖鑑 Part 6｜Multi-Agent 的組織、協作與控制
 
-- 任務從開始到結束怎麼走
-- Agent 如何決定下一步
-- 多種解法如何搜尋
-- 錯誤如何被驗證與修正
+前幾篇文章依序處理：
 
-這一篇要進入第五個維度：
+- 任務如何在 Execution Structure 中移動
+- Agent 如何選擇下一個 Action
+- 系統如何搜尋多個 Candidate Solution
+- Output 如何被 Verification，Failure 如何被 Repair
 
-> 工作應該由一個 Agent 完成，還是交給多個 Agent 分工？
+這一篇進入組織維度：
 
-Multi-Agent 很容易讓架構圖看起來氣勢磅礡。
+> 任務應由一個 Execution Entity 負責，還是拆給數個可被獨立定址的 Agent？
 
-畫面上有：
+Multi-Agent 架構圖很容易令人心動。簡報上可以同時出現 Planner、Researcher、Analyst、Coder、Critic、Reviewer、Memory Agent 與 Supervisor，每個角色都有一張漂亮卡片與發光箭頭。
 
-- Planner Agent
-- Research Agent
-- Coding Agent
-- Critic Agent
-- Reviewer Agent
-- Supervisor Agent
-- Memory Agent
+畫面看起來像一間數位公司；Runtime 卻可能只是被困在 Token 焚化爐裡的委員會會議。
 
-每個角色都有自己的卡片、圖示和箭頭，整張圖像一間數位辦公室。
+每增加一個 Agent，通常也增加：
 
-但角色變多，不代表系統就變聰明。
+- 另一個 Model Call 或 Session
+- 另一個 Context Boundary
+- 另一個 Handoff
+- 另一份 Task State
+- 另一個 Permission Surface
+- 另一個重複工作的來源
+- 另一個 Latency Dependency
+- 另一個 Failure Mode
+- 另一個「到底誰負責完成」的模糊地帶
 
-更多 Agent 同時也代表：
+因此真正的設計問題不是：
 
-- 更多模型呼叫
-- 更多 Context 轉交
-- 更多狀態同步
-- 更多重複工作
-- 更多責任邊界
-- 更多失敗點
-- 更難重現的結果
-- 更高成本與延遲
-
-因此，Multi-Agent 的核心問題不是：
-
-> 可以建立多少個 Agent？
+> 可以創造多少 Agent Role？
 
 而是：
 
-> **工作是否真的需要分工，以及分工後如何確保每個角色知道自己該做什麼、把結果交給誰、什麼時候停止？**
+> 哪些責任真的需要被拆成獨立 Execution Boundary？工作、State、Authority、Evidence 與 Final Ownership 應如何在這些 Boundary 之間移動？
 
----
+## Multi-Agent 是組織屬性，不是 Reasoning Method
 
-## Multi-Agent 是組織方式，不是推理方式
+Multi-Agent 描述多個可被定址的 Execution Entity 如何分工與協作。
 
-這是本篇最重要的概念邊界。
+它不直接決定系統是否使用：
 
-Multi-Agent 描述的是：
+- ReAct
+- Plan-and-Execute
+- Tree of Thoughts
+- Generate-and-Test
+- Retry
+- Verifier
+- Long-term Memory
 
-> 有多少個獨立角色或執行單位，以及它們如何協作。
-
-它不直接描述：
-
-- 任務是否使用 ReAct
-- 是否先做 Planning
-- 是否探索多條推理路徑
-- 是否使用 Tree of Thoughts
-- 是否有 Retry 或 Verifier
-- 是否保存 Memory
-
-一套 Multi-Agent 系統可以同時使用：
+Supervisor-Worker 系統可以使用 State Machine 作為外層 Workflow，在 Research Worker 內使用 Bounded ReAct，以 DAG 執行平行 Subtask，再由 Verifier 做 Final Acceptance。
 
 ```text
-執行路徑：State Machine
-決策方式：Plan-and-Execute
-探索方式：Single-path
-驗證方式：Verifier + Generate-and-Test
-組織方式：Supervisor–Worker
-記憶方式：Shared Working Memory
+Execution Structure: State Machine
+Decision Strategy: Plan-and-Execute
+Local Execution: Bounded ReAct
+Organisation: Supervisor-Worker
+Shared State: Typed Task Ledger
+Verification: Evidence Verifier
 ```
 
-Multi-Agent 只是其中一個維度。
+這些是不同設計維度。
 
-## 多個答案不等於多個 Agent
+## 什麼才算一個 Agent Instance？
 
-以下情況都不一定是 Multi-Agent：
+以 Model 數量定義 Agent，通常不準確。
 
-- 同一個模型生成五個候選
-- 一個 Agent 使用 Tree Search
-- 一個 Agent 依序切換 Planner、Writer、Critic Prompt
-- 一個 Workflow 包含多個 LLM Node
+數個 Agent 可以共用同一個 Foundation Model；同一個 Workflow 也可能呼叫數個不同 Model，卻仍沒有建立多個 Agent。
 
-反過來，多個 Agent 也不一定探索不同解法。
+本文將 **Agent Instance** 定義為一個可以被定址的 Execution Entity，通常具備以下一部分或大部分特徵：
 
-例如：
+- 自己的 Role 或 Objective
+- 自己的 State 或 Working History
+- 自己的 Tool 與 Data Permission
+- 自己的 Task Lifecycle 與 Status
+- Communication Identity
+- 可以接收 Contract 並回傳 Result
+- 明確 Owner 或 Authority Boundary
 
-- Agent A 讀文件一
-- Agent B 讀文件二
-- Agent C 讀文件三
+Independence 不是二元值。兩個 Agent 可以共用 Model 與 Memory Store，同時保有不同 Task Ownership 與 Permission；反過來，四個 Role Prompt 若由單一 Controller 按順序執行，也可能仍只是 Role-based Workflow。
 
-它們只是平行分工，不一定在競爭不同答案。
+### 一個 Model 可以驅動數個 Agent
 
-| 情況 | 多候選 | 多路徑搜尋 | Multi-Agent |
-|---|---:|---:|---:|
-| 同一模型生成五個答案 | 是 | 不一定 | 否 |
-| 一個 Agent 執行 Tree Search | 是 | 是 | 否 |
-| 同一模型切換三個角色 Prompt | 不一定 | 不一定 | 通常否 |
-| 三個 Worker 分別處理不同文件 | 有多個輸出 | 不一定 | 是 |
-| 三個 Agent 提出方案，由 Judge 選擇 | 是 | 是 | 是 |
+```text
+Agent A: Research Role, Browser Permission, Task A
+Agent B: Analysis Role, Database Permission, Task B
+Agent C: Reviewer Role, No Write Permission, Task C
 
----
+Shared Base Model
+Different Identities, States, Permissions, and Task Lifecycles
+```
 
-## 一、Single Agent：先問是否真的需要多人
+### 多個 Prompt 不會自動變成多個 Agent
 
-Single Agent 由同一個執行單元完成整個任務：
+```text
+Planner Prompt
+ -> Writer Prompt
+ -> Critic Prompt
+ -> Finaliser Prompt
+
+One Controller
+One Shared State
+Predetermined Sequence
+```
+
+這可以是很好的責任分離，但 Role Name 本身不足以證明它是 Multi-Agent System。
+
+### 多個 Candidate 不代表多個 Agent
+
+- 同一 Model Sample 五個 Answer
+- 一個 Agent 執行 Tree Search
+- 一個 Workflow 呼叫數個 LLM Node
+- 同一 Model 切換不同 System Prompt
+
+以上都可能產生多份 Output，卻沒有多個可被獨立定址的 Agent。
+
+<!-- Figure 6-1 insertion point -->
+
+![Figure 6-1 — One Model, Multiple Roles, or Multiple Agents](/images/the-atlas-of-agent-design-patterns-part-6/single-vs-multi-agent-instance.png)
+
+> **Figure 6-1｜One Model, Multiple Roles, or Multiple Agents**  
+> Model Count、Role Count、Agent Instance Count 是三個不同屬性。一個 Model 可以驅動多個 Agent；多個 Role Prompt 不一定構成多個 Agent。Multi-Agent 描述的是可被定址的 Execution Entity 與它的 Lifecycle，不是 Model 數量。
+
+## 不應被壓成單一 Taxonomy 的五個層級
+
+把 Supervisor、Debate、Blackboard 與 Swarm 放在同一張平面清單，會掩蓋它們其實解決不同問題。
+
+| 層級 | 問題 | 範例 |
+|---|---|---|
+| Execution Entity | 有多少可定址 Worker？ | Single Agent、Multiple Agents |
+| Responsibility Split | 誰負責哪一類工作？ | Supervisor-Worker、Planner-Executor-Critic |
+| Communication Topology | Message 如何流動？ | Centralised、Hierarchical、Peer-to-Peer |
+| Coordination Medium | Shared Intermediate State 放在哪裡？ | Blackboard、Task Ledger、Message Bus |
+| Collective Decision Protocol | 競爭 Result 如何被解決？ | Debate、Voting、Judge、Verifier |
+
+Production System 通常會同時組合數個層級：
+
+```text
+Multiple Agent Instances
+ + Supervisor-Worker Responsibility Split
+ + Centralised Messaging
+ + Typed Blackboard
+ + Verifier-based Final Acceptance
+```
+
+這種描述比把整套設計叫做「Debate Architecture」或「Swarm」更精確。
+
+## 除非拆分真的解決問題，否則先從一個 Agent 開始
+
+Single Agent 仍然可以：
+
+- Planning
+- 使用 Tool
+- 維護 Structured State
+- 呼叫 Verifier
+- 在上限內 Retry
+- 暫停等待 Human Approval
+- 執行長時間 State Machine
 
 ```text
 User Request
-  ↓
-Single Agent
-  ├─ Plan
-  ├─ Use Tools
-  ├─ Update State
-  ├─ Verify
-  └─ Answer
+ -> Single Agent
+ -> Plan
+ -> Use Tools
+ -> Update State
+ -> Verify
+ -> Return Result
 ```
 
-這不代表它只能做簡單任務。
+### 優點
 
-只要系統具備：
+- 一個主要 Context
+- Responsibility 清楚
+- Handoff 較少
+- Coordination Cost 較低
+- Trace 簡單
+- Stop Condition 容易定義
+- State Synchronisation 較少
 
-- 清楚的工具邊界
-- 結構化 State
-- Planner
-- Verifier
-- Budget Guard
-- Retry Limit
-- Memory
-
-一個 Agent 也可以處理相當長的工作。
-
-## Single Agent 的優點
-
-### Context 一致
-
-不需要把任務背景反覆轉交給不同角色。
-
-### 責任清楚
-
-只有一個主要執行者，不容易出現「我以為另一個 Agent 會處理」。
-
-### 成本較低
-
-少了多角色的 Prompt、轉交、同步和聚合。
-
-### 容易 Debug
-
-整條 Trace 比較集中。
-
-### 容易建立停止條件
-
-不需要等待多個 Agent 互相確認。
-
-## Single Agent 的限制
+### 限制
 
 - Context 可能過大
-- 工具與責任過多
-- 不同技能難以隔離
-- 長任務容易遺失局部資訊
-- 無法真正平行執行獨立工作
-- 一個錯誤可能污染整個任務
+- 一個 Executor 可能需要太多 Tool
+- Skill 與 Permission Boundary 難以隔離
+- 獨立 Subtask 無法真正 Concurrent
+- 一個錯誤 Assumption 可能污染整個 Run
+- 長任務容易丟失 Local Detail
 
-## 什麼時候優先使用 Single Agent？
+### 適合優先使用 Single Agent 的情況
 
-- 任務可以由一個 Context 處理
-- 工具數量不多
-- 不需要平行工作
-- 任務責任不需要隔離
-- 交接成本高於分工收益
-- 一個強模型已經足夠完成
+- 自然存在單一 Task Owner
+- 工作可放在同一 Context 與 State Model
+- Parallel Execution 沒有明顯價值
+- Permission 不需要隔離
+- Handoff Cost 大於拆分效益
+- 一個完整 Evaluator 就能驗收整體 Result
 
-Production 設計的預設應該是：
+Production 的預設應該是：
 
-> **先從 Single Agent 開始，只有當分工真的解決問題時才增加 Agent。**
+> 從能滿足 Task Contract 的最小組織結構開始。
 
----
+## Role-based Single Workflow：不建立獨立 Agent，也能分離責任
 
-## 二、Role-based Single Agent：一個模型，切換多個角色
-
-Role-based Single Agent 會在不同階段使用不同角色 Prompt：
+Role-based Workflow 讓不同 Stage 承擔不同責任：
 
 ```text
 Planner Role
-  ↓
-Writer Role
-  ↓
-Critic Role
-  ↓
-Finalizer Role
+ -> Writer Role
+ -> Critic Role
+ -> Finaliser Role
 ```
 
-表面上看起來像四個 Agent。
+它可能使用：
 
-但底層可能仍然是：
+- 一個或數個 Model
+- 一份 Shared Workflow State
+- 一個 Central Controller
+- Predetermined Transition
+- 沒有可被獨立定址的 Worker Lifecycle
 
-- 同一個模型
-- 同一個執行程序
-- 同一個 State
-- 依序執行
-- 沒有真正獨立的 Worker
+### 優點
 
-## 它有什麼價值？
+- Prompt 更聚焦
+- 每個 Stage 的 Responsibility 明確
+- Flow 容易控制
+- 比 Conversational Agent Network 便宜
+- Handoff 可預測
 
-### 責任分離
+### 風險
 
-不同階段只關注自己的任務。
+- Role 只有名稱不同
+- Shared Blind Spot 穿過所有 Stage
+- Critic 把 Generator 的 Assumption 當成事實
+- 系統謊稱得到「獨立共識」
+- 所有 Role 繼承相同過度權限
 
-### Prompt 更聚焦
+Role-based Workflow 很有價值，只需要誠實描述它的實作方式。
 
-Planner 不需要同時寫文章；Critic 不需要同時執行工具。
+## 何時真的值得使用多個 Agent？
 
-### 較容易控制流程
+只有當拆分產生無法以更低成本取得的 Operational Benefit 時，才值得加入 Agent。
 
-角色順序由 Workflow 決定。
+### 自然的 Task Decomposition
 
-### 成本低於真正 Multi-Agent
+Subtask 具有不同 Objective，且可以回傳 Structured Result。
 
-不需要維護多個獨立 Agent Session。
+### Parallel Work
 
-## 它不是什麼？
+互不依賴的 Subtask 可以在 Resource Limit 內同時執行。
 
-Role-based Single Agent 不等於：
+### Skill Isolation
 
-- 多個自主 Agent
-- 真正平行執行
-- 獨立 Context
-- 獨立 Memory
-- Peer-to-Peer 協作
+不同 Worker 需要真正不同的 Prompt、Tool、Model 或 Context。
 
-## 主要風險
+### Permission Isolation
 
-### 角色只是換名字
+Reviewer 不應有 Write Permission；Database Worker 可能只需要 Read-only Credential；Deployment Worker 可能需要 Approval。
 
-Planner、Writer 和 Critic 使用幾乎相同 Prompt，只是標題不同。
+### Fault Containment
 
-### 共用相同盲點
+一個 Worker 失敗，不一定讓其他工作全部無效。
 
-同一模型可能在所有角色中重複同一錯誤。
+### Information Locality
 
-### Context 污染
+不同 Worker 擁有不同 Data Source 或 Environment。
 
-Critic 已經看過 Generator 的完整思路，更容易沿著同樣假設判斷。
+### 真正的 Viewpoint Diversity
 
-### 假獨立性
+獨立 Evidence、Model、Assumption 或 Role，可能揭露 Blind Spot。
 
-系統宣稱「三個 Agent 一致通過」，實際上只是同一個模型連續說了三次。
+不要只因 Framework 很容易寫出 `agents = []`，就開始繁殖 Agent。
 
----
+## Supervisor-Worker：以中央協調分派與整合工作
 
-![Figure 6-1 — One Model, Multiple Roles, or Multiple Agents?](/images/the-atlas-of-agent-design-patterns-part-6/one-model-multiple-roles-or-multiple-agents.png)
-
-> **Figure 6-1｜One Model, Multiple Roles, or Multiple Agents?**  
-> Single Agent、Role-based Single Agent 與真正 Multi-Agent 的差別，不只在角色名稱，而在是否具有獨立責任、Context、State、執行與通訊邊界。
-
----
-
-## 三、Supervisor–Worker：最常見的 Multi-Agent 架構
-
-Supervisor–Worker 是最常見、最容易控制的 Multi-Agent 模式。
-
-Supervisor 負責：
-
-- 理解目標
-- 拆解任務
-- 分派 Worker
-- 追蹤進度
-- 處理失敗
-- 聚合結果
-- 決定任務是否完成
-
-Worker 負責特定子任務：
+Supervisor-Worker 使用 Central Coordinator 分派並整合工作。
 
 ```text
-                  Supervisor
-            ┌────────┼────────┐
-        Research   Analysis   Writing
-            \          |          /
-              Return Results
-                     ↓
-            Supervisor Aggregates
-                     ↓
-                  Response
+ Supervisor
+ / | \
+ Researcher Analyst Tester
+ \ | /
+ Structured Worker Results
+ -> Aggregator
+ -> Verifier
+ -> Final Owner
 ```
 
-## Supervisor 的責任
+Supervisor 可以是 LLM Agent、Deterministic Service、Workflow Engine 或 Hybrid Controller。
 
-### Task Decomposition
+### Supervisor 的責任
 
-把目標拆成可以獨立執行的子任務。
+- 理解 Global Goal
+- 拆解工作
+- 判斷哪些 Task Ready
+- 依 Capability、Permission、Cost 與 Load 選擇 Worker
+- 發出 Task Contract
+- 追蹤 Deadline 與 Status
+- 偵測 Duplicate 與 Worker Failure
+- Aggregate 或 Route Result
+- 執行 Budget 與 Stop Condition
 
-### Worker Selection
+### Worker 的責任
 
-根據技能、權限、成本與負載選擇 Worker。
+- 接受或拒絕 Task Contract
+- 執行一個 Bounded Objective
+- 只使用 Permitted Tool 與 Data
+- 保存 Provenance
+- 回傳 Structured Result
+- 回報 Blocker 與 Partial Completion
+- 不偷偷重新定義 Task
 
-### Contract Definition
+### Worker Contract
 
-為每個 Worker 定義：
-
-- Input
-- Objective
-- Allowed Tools
-- Expected Output
-- Completion Criteria
-- Budget
-- Deadline
-
-### Progress Tracking
-
-知道哪些任務：
-
-- Pending
-- Running
-- Completed
-- Failed
-- Blocked
-- Cancelled
-
-### Result Aggregation
-
-比較、去重、處理衝突並產生最終輸出。
-
-## Worker 不應該直接輸出最終答案
-
-常見錯誤流程：
+Worker 應收到：
 
 ```text
-Supervisor
-  ↓
-Worker A / Worker B / Worker C
-  ↓
-Final Response
+Task ID
+Objective
+Inputs
+Dependencies
+Allowed Tools
+Expected Output Schema
+Completion Criteria
+Budget
+Deadline
+Failure Policy
+Return Address
 ```
 
-如果 Worker 直接連到 Final Response，會出現：
+### Structured Worker Result
 
-- 結果格式不同
-- 重複內容
-- 互相矛盾
-- 缺少整體結論
-- 沒有人負責驗收
+```json
+{
+ "task_id": "pricing-framework-a",
+ "status": "partial",
+ "facts": [],
+ "sources": [],
+ "unresolved": ["enterprise price not published"],
+ "cost": {"tool_calls": 4},
+ "return_to": "supervisor-1"
+}
+```
 
-正確流程是：
+### Aggregation 是另一個獨立責任
+
+Worker 可以產生接近 Final-ready 的 Section，但系統仍需要指定 Component：
+
+- Normalise Format
+- Deduplicate Finding
+- 解決或揭露 Conflict
+- 檢查 Version Consistency
+- 保存 Source Link
+- 判斷 Missing Work 是否可接受
+
+這個 Component 可以是 Supervisor、Dedicated Aggregator 或 Finaliser。
+
+### 主要風險
+
+- Supervisor Bottleneck
+- Supervisor Context Overload
+- Assignment 重疊
+- Worker Output 不相容
+- Straggler Worker
+- Central Point of Failure
+- Worker 等待不必要的 Approval
+- Supervisor 產生 Worker Evidence 中不存在的結論
+
+### Production Control
+
+- Worker Capability Registry
+- Concurrency Limit
+- Deadline 與 Heartbeat
+- Reassignment Policy
+- Partial-result Policy
+- Typed Result Schema
+- Final Acceptance Gate
+- 必要時提供 Supervisor Failover
+
+<!-- Figure 6-2 insertion point -->
+
+![Figure 6-2 — Supervisor-Worker with Contract and Aggregation](/images/the-atlas-of-agent-design-patterns-part-6/supervisor-worker-contract.png)
+
+> **Figure 6-2｜Supervisor-Worker with Contract and Aggregation**  
+> Supervisor 發出 Task Contract，Worker 依 Allowed Tools 與 Permission 執行後回傳 Structured Result。Aggregator、Verifier 與 Final Owner 仍然是獨立責任，不能被 Supervisor 吸收。否則瓶頸、Context Overload 與「自己寫考卷自己改」會在 Supervisor 內部一起爆。
+
+## Planner-Executor-Critic-Verifier 是責任拆分，不一定是 Multi-Agent
+
+這個 Pattern 將 Cognitive 與 Control Responsibility 分開。
+
+### Planner
+
+- 理解 Goal
+- 拆解 Step
+- 定義 Dependency
+- 設定 Completion Criteria
+- 分配 Budget
+
+### Executor
+
+- 執行 Current Step
+- 使用 Tool
+- 保存 Evidence
+- 回報 Status 與 Blocker
+
+### Critic
+
+- 診斷 Omission、Risk 或 Weak Reasoning
+- 提供 Evidence 與 Repair Direction
+- 不負責認證完成
+
+### Verifier
+
+- 驗證 Explicit Acceptance Contract
+- 回傳 Pass、Fail、Review 或 Inconclusive
+- 決定是否需要 Repair 或 Replanning
+
+### Final Owner
+
+- 發布或回傳 Formal Result
+- 擁有 Terminal State
+- 不得繞過 Failed Acceptance Check
+
+這套設計可以由以下方式實作：
+
+- 一個 Model 搭配 Role-specific Prompt
+- 數個可被定址的 Agent
+- Deterministic Planner 加 Model Executor
+- Model Critic 加 External Test Verifier
+
+名稱描述的是 Responsibility Separation，不是 Agent Count。
+
+### Production Flow
 
 ```text
-Workers Return Results
-  ↓
-Supervisor or Aggregator
-  ↓
-Verifier
-  ↓
-Final Response
+Goal
+ -> Planner
+ -> Versioned Plan and Step Contracts
+ -> Executor
+ -> Critic Findings
+ -> Bounded Repair
+ -> Verifier
+ -> Pass -> Final Owner
+ -> Repair -> Executor
+ -> Replan -> Planner
+ -> Review -> Human Approver
+ -> Stop -> Terminal Outcome
 ```
 
-## 適合 Supervisor–Worker 的任務
+### 常見失敗
 
-- 多來源研究
-- 不同技能的子任務
-- 可平行執行的工作
-- 大量文件處理
-- 多市場比較
-- Coding + Testing + Review
-- 需要中央治理的企業流程
+Critic 同時變成 Verifier，永遠能找到下一個 Style Improvement，Repair Loop 因此永遠到不了 Contract-based Terminal Decision。
 
-## 主要風險
+<!-- Figure 6-3 insertion point -->
 
-### Supervisor 成為瓶頸
+![Figure 6-3 — Planner, Executor, Critic, Verifier, and Final Owner](/images/the-atlas-of-agent-design-patterns-part-6/planner-executor-critic-verifier.png)
 
-所有工作都經過 Supervisor，可能造成延遲與 Context 壓力。
+> **Figure 6-3｜Planner, Executor, Critic, Verifier, and Final Owner**  
+> 規劃、執行、診斷、驗收、發布是五種不同責任。把它們壓在同一個 Prompt 裡，會讓 Critic 變成另一個 Generator，Repair Loop 永遠到不了 Terminal Decision。
 
-### Worker 任務重疊
+## Debate 與 Voting 是 Collective Decision Protocol
 
-分工不清導致多個 Worker 做相同工作。
+Debate 與 Voting 回答的是：不同 Candidate 應如何比較。它們本身不會定義 Task Ownership、Messaging Infrastructure、Memory 或 Execution Topology。
 
-### Worker 結果無法聚合
+## Debate：不同立場之間必須真正互動
 
-不同 Worker 使用不同格式、假設與版本。
-
-### Supervisor 過度介入
-
-Worker 每一步都要回報，協調成本高於執行本身。
-
-### Worker 失敗沒有替代方案
-
-Supervisor 只會等待，不知道如何重派、Fallback 或標記 Partial。
-
----
-
-![Figure 6-2 — Supervisor–Worker: Delegate, Return, Aggregate](/images/the-atlas-of-agent-design-patterns-part-6/supervisor-worker-delegate-return-aggregate.png)
-
-> **Figure 6-2｜Supervisor–Worker: Delegate, Return, Aggregate**  
-> Supervisor 先定義工作契約並分派任務；Worker 執行後必須回傳結構化結果，再由 Supervisor 聚合、解決衝突、驗證並產生最終答案。
-
----
-
-## 四、Planner–Executor–Critic：依責任拆分認知工作
-
-Planner–Executor–Critic 是一種常見的角色分工。
-
-## Planner
-
-負責：
-
-- 理解目標
-- 拆解步驟
-- 定義依賴
-- 設定完成條件
-- 安排執行順序
-
-## Executor
-
-負責：
-
-- 執行目前步驟
-- 使用工具
-- 更新 State
-- 回報結果
-- 處理局部失敗
-
-## Critic
-
-負責：
-
-- 找出問題
-- 檢查遺漏
-- 評估風險
-- 提供修改建議
-
-這個架構常被寫成：
+真正的 Debate 需要 Interaction。
 
 ```text
-Planner
-  ↓
-Executor
-  ↓
-Critic
-  ↓
-Executor Revises
+Agent A Proposes Claim A
+ <-> Agent B Challenges Evidence
+ <-> Agent A Responds
+ <-> Agent B Exposes Remaining Disagreement
+ -> Judge or Verifier
 ```
 
-但 Production 版本通常還需要 Verifier：
+Independent Proposal 直接送給 Judge，屬於 Ensemble 或 Panel，不一定是 Debate。
+
+### 可能價值
+
+- 揭露未說明的 Assumption
+- 迫使 Evidence 被辯護
+- 呈現 Counterargument
+- 幫助 Judge 看到 Disagreement
+- 在部分 Task 與 Protocol 上改善表現
+
+Multi-Agent Debate 研究在部分 Reasoning 與 Oversight Setting 中報告改善；較新的研究也指出，結果高度依賴 Task、Judge、Agent Strength、Diversity 與 Protocol，部分情境中，多數 Gains 其實來自 Voting。
+
+### 風險
+
+- Persuasion 勝過 Truth
+- 高信心 Agent 主導
+- Social Pressure 讓 Agent 收斂
+- 所有 Agent 共用錯誤 Premise
+- Judge 偏好 Writing Style 或 Model Identity
+- Debate Cost 高於 Disagreement 的價值
+- Private Reasoning Narrative 被誤當 Evidence
+
+### Production Control
+
+- 指定真正不同的 Evidence 或 Assumption
+- 固定 Acceptance Rubric
+- 可行時 Blind Model 或 Role Identity
+- 要求 Citation 或 Executable Evidence
+- 限制 Round
+- 保存未解決 Disagreement
+- Calibrate Judge
+- 允許 `inconclusive`
+
+## Voting：聚合彼此獨立的 Choice
+
+Voting 聚合 Candidate Selection：
 
 ```text
-Planner
-  ↓
-Executor
-  ↓
-Critic
-  ↓
-Executor Revises
-  ↓
-Verifier
-  ├─ Pass → Continue / Complete
-  ├─ Repair → Executor
-  └─ Replan → Planner
+Candidate A: 3 Votes
+Candidate B: 2 Votes
+Candidate C: 0 Votes
 ```
 
-## Critic 不應該同時是最終 Verifier
+可能規則包括：
 
-Critic 可以說：
-
-- 哪裡有風險
-- 哪裡論證不足
-- 哪裡應該補充
-
-Verifier 則必須依規格做：
-
-- Pass
-- Fail
-- Repair
-- Replan
-- Escalate
-
-兩者責任不同。
-
-## 適合這種分工的任務
-
-- 長篇內容生成
-- 複雜研究
-- 程式開發
-- 計畫製作
-- 多輪修訂
-- 有明確驗收標準的工作
-
-## 主要風險
-
-### Planner 與 Executor 重複規劃
-
-Executor 不執行步驟，反而重新設計整套計畫。
-
-### Critic 永遠找得到新問題
-
-沒有最大 Review Rounds 和接受門檻。
-
-### Verifier 只看文筆
-
-真正的規格、測試和來源沒有被檢查。
-
-### 角色間資訊過多
-
-每個角色都接收完整 Context，失去分工意義。
-
----
-
-![Figure 6-3 — Planner–Executor–Critic with Verification](/images/the-atlas-of-agent-design-patterns-part-6/planner-executor-critic-verification.png)
-
-> **Figure 6-3｜Planner–Executor–Critic with Verification**  
-> Planner 管理全局計畫，Executor 執行目前步驟，Critic 提供問題診斷，Verifier 依完成條件決定 Continue、Repair 或 Replan。
-
----
-
-## 五、Debate：讓不同觀點彼此攻防
-
-Debate 讓多個 Agent 提出不同立場，再由 Moderator 或 Judge 整合。
-
-```text
-Agent A: Support
-Agent B: Oppose
-Agent C: Risk Review
-        ↓
-Moderator / Judge
-        ↓
-Final Decision
-```
-
-## Debate 適合什麼？
-
-- 多個合理觀點
-- 高風險決策
-- 找盲點
-- 評估 Trade-off
-- 政策與策略分析
-- 架構方案比較
-- 需要反方觀點的任務
-
-## Debate 的價值
-
-### 強迫系統提出替代觀點
-
-避免第一個答案成為唯一框架。
-
-### 暴露隱藏假設
-
-不同角色會挑戰對方使用的前提。
-
-### 適合風險分析
-
-可以專門安排一個 Red Team 或 Risk Agent。
-
-## Debate 的風險
-
-### 觀點是 Prompt 製造的，不一定是真正多樣
-
-三個 Agent 可能只是換不同語氣講相同內容。
-
-### 說服力勝過正確性
-
-Judge 可能偏好表達流暢的 Agent。
-
-### 無限辯論
-
-雙方不斷重複立場。
-
-### 多數一致仍然可能錯
-
-如果所有 Agent 使用相同錯誤資料，辯論只會讓錯誤更精緻。
-
-## Production Debate 需要什麼？
-
-- 固定輪數
-- 明確議題
-- 獨立證據要求
-- 禁止重複論點
-- Claim–Evidence 格式
-- Judge Rubric
-- External Verifier
-- 最終 Abstain 選項
-
----
-
-## 六、Voting：用聚合選擇答案
-
-Voting 讓多個 Agent 對候選進行選擇。
-
-常見方式：
-
-- Majority Vote
+- Majority
+- Plurality
+- Ranked Choice
 - Weighted Vote
-- Rank Aggregation
-- Approval Voting
-- Confidence-weighted Vote
+- Threshold Approval
+- Safety 或 Policy Veto
 
-```text
-Candidate A
-Candidate B
-Candidate C
-      ↓
-Agent Votes
-      ↓
-Aggregate
-      ↓
-Selected Candidate
-```
+### Voting 適合的情況
 
-## Voting 適合什麼？
+- Candidate Set 固定
+- Vote 可以 Independent 產生
+- Voter 有真正 Diversity
+- Aggregation Rule 符合 Decision
+- 錯誤 Majority 仍會被 Verification 攔下
 
-- 有明確候選集合
-- 答案容易正規化
-- 評估標準一致
-- 需要降低單一 Judge 偏誤
+### Voting 不是 Factual Verification
 
-## Voting 不等於驗證
+五個 Agent 仍可能共用相同過時 Source 或 Prompt Bias。
 
-五個 Agent 都投給同一答案，不代表答案正確。
+Majority Result 仍應通過：
 
-它只表示：
+- Hard Constraint
+- Evidence Check
+- Policy Check
+- 可用時的 External Test
 
-> 在這組候選與這組投票者中，這個答案最受支持。
+## Blackboard：透過 Shared Structured State 協作
 
-Voting 應搭配：
+Blackboard Pattern 早於 LLM Agent。Knowledge Source 透過讀寫 Shared Problem-solving Workspace 協作，並受到某種 Control Policy 管理。
 
-- Ground Truth
-- External Test
-- Source Verification
-- Constraint Check
+在 LLM-based System 中，Blackboard 可以保存：
 
-## Weighted Voting 的風險
-
-若權重來源不可靠，系統只是把偏誤乘上係數。
-
-需要知道：
-
-- 權重如何計算
-- 是否依任務類型調整
-- 過去表現是否仍有效
-- Agent 是否使用相同資料與模型
-
----
-
-## 七、Blackboard：共享工作區，而不是互傳整段對話
-
-Blackboard 架構讓多個 Agent 讀寫一個共享工作區。
-
-```text
-                Shared Blackboard
-        ┌──────────┼──────────┐
-    Researcher   Analyst    Writer
-        ↕            ↕          ↕
-       Facts      Findings     Draft
-```
-
-Blackboard 可以保存：
-
-- Task Goal
-- Known Facts
-- Open Questions
-- Subtasks
-- Evidence
-- Candidate Solutions
-- Risks
-- Decisions
-- Draft Output
-- Worker Status
-
-## Blackboard 的優點
-
-### 降低點對點傳訊
-
-Agent 不必把完整 Context 傳給每一個 Agent。
-
-### 中間結果可以重用
-
-多個 Worker 可以讀取已驗證的事實。
-
-### 適合非同步協作
-
-Worker 可以在不同時間更新共享狀態。
-
-### 容易觀察整體進度
-
-Blackboard 成為任務的共同視圖。
-
-## Blackboard 的風險
-
-### 資訊污染
-
-一個 Agent 寫入錯誤，其他 Agent 全部沿用。
-
-### 重複與衝突
-
-同一事實可能出現多個版本。
-
-### 資料無限增長
-
-所有中間內容都被保留，Blackboard 逐漸變成數位儲藏室。
-
-### 權限不清
-
-每個 Agent 都能修改所有內容。
-
-## Production Blackboard 需要什麼？
-
-- Typed Entries
-- Source
-- Author
-- Created At
-- Version
-- Validation Status
-- Confidence
-- Read / Write Permission
-- Conflict Resolution
-- Expiry
-- Immutable Audit Log
-
-最好將內容分類：
-
-```text
-Proposed
-Verified
-Rejected
-Superseded
-```
-
-而不是所有內容都視為同等可信。
-
----
-
-## 八、Peer-to-Peer：Agent 直接互相協作
-
-Peer-to-Peer 架構沒有單一中央 Supervisor。
-
-Agent 可以直接：
-
-- 發送任務
-- 請求資訊
-- 提供結果
-- 轉交責任
-- 協商下一步
-
-```text
-Agent A ↔ Agent B
-   ↕          ↕
-Agent C ↔ Agent D
-```
-
-## 適合什麼？
-
-- 高度分散的工作
-- 不同 Agent 擁有不同資源
-- 中央節點容易成為瓶頸
-- 任務拓撲會動態改變
-- 多個服務自治協作
-
-## Peer-to-Peer 的優點
-
-- 沒有單點 Supervisor
-- 某個 Agent 失敗時其他 Agent 仍可工作
-- 協作彈性高
-- 適合動態網路
-
-## 主要風險
-
-### 責任漂移
-
-任務在 Agent 間不斷轉手，沒有人負責完成。
-
-### 訊息爆炸
-
-每個 Agent 都向多個 Agent 廣播。
-
-### 循環交接
-
-```text
-A → B → C → A
-```
-
-### 狀態不一致
-
-不同 Agent 對任務進度有不同理解。
-
-### 權限擴散
-
-Agent A 可以透過 Agent B 間接使用原本無權使用的工具。
-
-## 必要控制
-
-- Message Schema
-- Correlation ID
-- Task Owner
-- Hop Limit
-- TTL
-- Deduplication
-- Capability Registry
-- Permission Propagation Rules
-- Terminal Owner
-- Conflict Resolution
-
----
-
-## 九、Swarm：大量輕量 Agent 的分散協作
-
-Swarm 通常包含多個輕量 Agent，以局部規則和共享目標協作。
-
-它可能沒有單一中央 Planner。
-
-Agent 根據：
-
-- 鄰近訊息
-- 當前狀態
-- 局部任務
-- 簡單協作規則
-
-決定下一步。
-
-```text
-Agent 1 ↔ Agent 2 ↔ Agent 3
-   ↕          ↕          ↕
-Agent 4 ↔ Agent 5 ↔ Agent 6
-```
-
-## Swarm 適合什麼？
-
-- 大量可拆分小任務
-- 動態環境
-- 冗餘與韌性
-- 探索型問題
-- 分散資源調度
-- 局部決策足以推動整體目標
-
-## Swarm 的價值
-
-### 韌性
-
-單一 Agent 失敗不一定中斷整體。
-
-### 可擴展
-
-可以增加更多輕量 Agent。
-
-### 適合局部資訊
-
-每個 Agent 不需要知道全局。
-
-### 可能出現湧現行為
-
-簡單規則可能形成複雜協作。
-
-## Swarm 的主要風險
-
-### 湧現行為不一定是好事
-
-不可預測不等於智慧。
-
-### 重複工作
-
-多個 Agent 可能同時處理相同任務。
-
-### 成本失控
-
-大量小型呼叫累積成高額成本。
-
-### 無法停止
-
-沒有中央節點負責判定完成。
-
-### 很難 Debug
-
-單一結果可能來自大量局部互動。
-
-### 責任不清
-
-失敗後很難定位哪個 Agent 或哪條訊息造成問題。
-
-## Production Swarm 需要什麼？
-
-- Global Goal
-- Local Rules
-- Task Claiming
-- Lease / Lock
-- Duplicate Prevention
-- Global Budget
-- Message TTL
-- Maximum Hops
-- Convergence Metric
-- Stop Condition
-- Kill Switch
-- Observability
-- Human Override
-
-不要因為圖上有很多小圓點，就把系統想像成數位蜂群的魔法儀式。
-
-沒有協作規則的 Swarm，只是一群同時消耗 Token 的陌生人。
-
----
-
-![Figure 6-4 — Debate, Voting, and Blackboard](/images/the-atlas-of-agent-design-patterns-part-6/debate-voting-blackboard.png)
-
-> **Figure 6-4｜Debate, Voting, and Blackboard**  
-> Debate 透過觀點攻防找盲點；Voting 對候選做聚合選擇；Blackboard 則讓多個 Agent 共享中間狀態與已驗證資訊。三者解決的是不同協作問題。
-
-![Figure 6-5 — Peer-to-Peer and Swarm Coordination](/images/the-atlas-of-agent-design-patterns-part-6/peer-to-peer-swarm-coordination.png)
-
-> **Figure 6-5｜Peer-to-Peer and Swarm Coordination**  
-> Peer-to-Peer 允許 Agent 直接互相交接與協商；Swarm 依局部規則進行大規模分散協作。兩者都需要 Task Owner、Hop Limit、Message TTL、Budget、Stop Condition 與 Kill Switch。
-
----
-
-## 通訊拓撲如何影響 Multi-Agent？
-
-Multi-Agent 不只差在角色名稱，也差在訊息如何流動。
-
-## Centralized
-
-```text
-Workers ↔ Supervisor
-```
-
-優點：
-
-- 控制清楚
-- 容易觀察
-- 責任明確
-
-風險：
-
-- Supervisor 成為瓶頸
-- 單點故障
-- Context 過載
-
-## Hierarchical
-
-```text
-Top Supervisor
-├── Team Supervisor A
-│   ├── Worker A1
-│   └── Worker A2
-└── Team Supervisor B
-    ├── Worker B1
-    └── Worker B2
-```
-
-優點：
-
-- 適合大型任務
-- 降低單一 Supervisor 壓力
-- 容易分區治理
-
-風險：
-
-- 多層交接失真
-- 延遲增加
-- 責任被稀釋
-
-## Blackboard
-
-```text
-Agents ↔ Shared Workspace
-```
-
-優點：
-
-- 中間結果重用
-- 非同步協作
-- 降低點對點訊息
-
-風險：
-
-- 資訊污染
-- 版本衝突
-- 權限複雜
-
-## Peer-to-Peer
-
-```text
-Agents ↔ Agents
-```
-
-優點：
-
-- 彈性與韌性
-- 無單一中心
-
-風險：
-
-- 訊息爆炸
-- 循環交接
-- 狀態不一致
-
-## Swarm
-
-```text
-Many Local Interactions
-→ Emergent Global Result
-```
-
-優點：
-
-- 大規模分散
-- 局部自治
-- 高冗餘
-
-風險：
-
-- 難以預測
-- 難以停止
-- 難以追責
-
----
-
-## Shared Memory 不是把所有 Context 丟進同一個資料庫
-
-Multi-Agent 系統常需要共享狀態。
-
-但 Shared Memory 不應該等於：
-
-> 所有 Agent 的完整對話與工具結果全部保存。
-
-這會造成：
-
-- Context 膨脹
-- 敏感資料擴散
-- 錯誤資訊污染
-- 檢索品質下降
-- 重複內容
-- 無法判斷最新版本
-
-## Shared Memory 應該保存什麼？
-
-- Task ID
 - Original Goal
-- Current Plan
+- Task Ledger
+- Proposed Facts
 - Verified Facts
 - Open Questions
-- Step Status
-- Worker Assignment
-- Structured Results
-- Source References
-- Conflict Flags
-- Final Decisions
+- Evidence
+- Candidate Solutions
+- Conflicts
+- Decisions
+- Worker Status
 
-## 不同資料應有不同信任狀態
+```text
+Research Agent <-> Shared Blackboard <-> Analysis Agent
+ ^
+ |
+ Reviewer Agent
+```
+
+### Blackboard 不是 Conversation Dump
+
+不要把每一個 Prompt、Completion 與 Tool Transcript 都當成同等可信的 Shared Memory。
+
+應使用 Typed Entry：
 
 ```text
 Proposed
-  ↓
 Verified
-  ↓
-Accepted
-
 Rejected
 Superseded
 Expired
 ```
 
-## 每筆共享資料至少需要
+每個 Item 至少應有：
 
-- Author Agent
-- Timestamp
+- Entry ID
+- Type
+- Author
 - Source
+- Timestamp
 - Version
-- Confidence
-- Validation Status
-- Scope
+- Validation State
+- 有意義時的 Confidence
+- Read / Write Policy
 - Expiry
-- Access Policy
-
----
-
-## Agent 之間應該如何交接？
-
-不要只傳一段自然語言：
-
-```text
-Please continue the task.
-```
-
-應該使用結構化 Handoff Contract。
-
-例如：
-
-```text
-Task ID:
-research-17
-
-Objective:
-Collect official pricing for Framework A
-
-Inputs:
-Official domain, evaluation rubric
-
-Allowed Tools:
-Search, Browser
-
-Expected Output:
-Pricing table with source and access date
-
-Completion Criteria:
-All public plans captured,
-or missing values explicitly marked
-
-Known Constraints:
-Do not use third-party pricing claims
-
-Current Status:
-Pending
-
-Deadline:
-10 minutes
-
-Return To:
-Supervisor
-```
-
-## Handoff Contract 的核心欄位
-
-| 欄位 | 作用 |
-|---|---|
-| Task ID | 追蹤子任務 |
-| Objective | 定義目標 |
-| Inputs | 限制 Context |
-| Allowed Tools | 控制權限 |
-| Expected Output | 統一格式 |
-| Completion Criteria | 判斷完成 |
-| Budget | 控制成本 |
-| Deadline | 防止無限等待 |
-| Return To | 明確回傳對象 |
-| Failure Policy | 定義 Retry、Fallback 或 Partial |
-
-沒有 Contract 的交接，很像把一張沒有地址的便利貼塞進風裡，然後期待它準時抵達正確辦公桌。
-
----
-
-## Multi-Agent 中誰負責最終答案？
-
-這個問題必須明確回答。
-
-可能的責任者包括：
-
-- Supervisor
-- Aggregator
-- Judge
-- Verifier
-- Finalizer
-- Human Approver
-
-但不能是：
-
-> 大家都負責。
-
-如果所有 Agent 都能直接寫最終答案，會出現：
-
-- 多個版本
-- 互相覆蓋
-- 結論衝突
-- 無法追蹤責任
-- 不知道哪個結果已被驗證
-
-Production 系統應指定：
-
-```text
-Single Final Owner
-```
-
-並定義：
-
-- 哪些輸入可以採用
-- 如何處理衝突
-- 是否需要 Verifier
-- 誰有權正式完成任務
-- 哪個狀態代表 Final
-
----
-
-## Multi-Agent 的成本從哪裡來？
-
-Multi-Agent 成本不只來自模型呼叫。
-
-還包括：
-
-- Prompt 重複
-- Context 複製
-- Worker 啟動
-- 訊息傳遞
-- State 同步
-- 結果聚合
-- 衝突解決
-- 重複檢索
-- 等待慢 Worker
-- Verifier 與 Judge
-- Retry 與 Reassignment
-
-假設一個任務需要：
-
-- 1 次 Supervisor 規劃
-- 4 個 Worker
-- 每個 Worker 3 次工具呼叫
-- 1 次 Critic
-- 1 次 Verifier
-- 1 次 Aggregator
-
-看起來只有幾個角色，實際執行可能已經超過十幾次模型與工具互動。
-
-## Multi-Agent 常見延遲問題
-
-### Straggler
-
-整體任務等待最慢 Worker。
-
-### Sequential Handoff
-
-角色依序執行，無法真正平行。
-
-### Context Serialization
-
-大量中間結果需要序列化與重新載入。
-
-### Review Bottleneck
-
-所有結果等待同一個 Critic 或 Verifier。
-
-## 成本控制方法
-
-- Max Agents
-- Max Worker Calls
-- Concurrency Limit
-- Per-worker Budget
-- Shared Retrieval Cache
-- Deduplication
-- Early Cancellation
-- Timeout
-- Partial Aggregation
-- Cheap Model for Simple Workers
-- Centralized Tool Results
-- Stop Low-value Branches
-
----
-
-## Multi-Agent 的主要失敗模式
-
-## 1. Duplicate Work
-
-多個 Worker 執行相同任務。
-
-### 對策
-
-- Task Claiming
-- Unique Task ID
-- Shared Assignment Registry
-- Deduplication
-
-## 2. Responsibility Gap
-
-每個 Agent 都以為別人會處理。
-
-### 對策
-
-- Single Task Owner
-- Completion Criteria
-- Return To
-- Terminal Owner
-
-## 3. Handoff Loss
-
-交接時丟失需求、來源或限制。
-
-### 對策
-
-- Structured Handoff Contract
-- Source References
-- Immutable Goal
-- Required Fields
-
-## 4. Conflicting Results
-
-不同 Agent 給出相反結論。
-
-### 對策
-
-- Conflict Flag
-- Evidence Comparison
-- Aggregator
-- Verifier
-- Human Review
-
-## 5. Infinite Delegation
-
-Agent A 交給 B，B 交給 C，C 又交回 A。
-
-### 對策
-
-- Hop Limit
-- Delegation Graph
-- Cycle Detection
-- Maximum Depth
-
-## 6. Shared Memory Pollution
-
-未驗證資訊被所有 Agent 使用。
-
-### 對策
-
-- Proposed / Verified 狀態
+- Dependency Link
+
+### 主要風險
+
+- 一個 Wrong Fact 污染所有 Worker
+- Concurrent Write Conflict
+- Stale Entry 持續有效
+- Permission 過度寬鬆
+- Board 無上限成長
+- Upstream Correction 後，Downstream Node 沒有失效
+
+### Production Control
+
+- 每種 Entry Type 的 Schema
+- Optimistic Locking 或 Transaction
+- Provenance
+- Conflict-resolution Policy
 - Write Permission
-- Source and Version
 - Validation Gate
+- Retention Policy
+- Immutable Audit Log
+- Downstream Invalidation
 
-## 7. Worker Silence
+<!-- Figure 6-4 insertion point -->
 
-Worker 超時或中斷，Supervisor 永遠等待。
+![Figure 6-4 — Blackboard Coordination with Typed Entries](/images/the-atlas-of-agent-design-patterns-part-6/blackboard-typed-entries.png)
 
-### 對策
+> **Figure 6-4｜Blackboard Coordination with Typed Entries**  
+> Blackboard 不是把對話 dump 進 Shared Memory。Entry 必須有 Type（Proposed / Verified / Rejected / Superseded / Expired）、Source、Author、Version、Validation State 與 Read/Write Policy。沒有這些欄位，Board 會被一個 Unverified Fact 污染整個 Worker Network。
 
-- Deadline
-- Heartbeat
-- Timeout
-- Reassignment
-- Partial Result Policy
+## Peer-to-Peer Coordination：沒有單一中央 Supervisor 的直接 Handoff
 
-## 8. Judge Bias
+Peer-to-Peer Topology 讓 Agent 直接溝通。
 
-Judge 偏好文筆、模型或角色。
+```text
+Agent A <-> Agent B
+ ^ |
+ | v
+Agent D <-> Agent C
+```
 
-### 對策
+適合：
 
-- Rubric
-- Blind Evaluation
-- External Tests
-- Calibration Set
-- Multiple Judges only when justified
+- Resource 分散
+- Task Topology 動態改變
+- Central Coordinator 可能成為 Bottleneck
+- Agent 需要 Local Negotiation 或 Handoff
 
-## 9. Cost Explosion
+### 風險
 
-角色與訊息不斷增加。
+- Circular Delegation
+- Message Storm
+- Task State 不一致
+- Responsibility Drift
+- Indirect Permission Escalation
+- 沒有 Terminal Owner
+- Duplicate Task Claim
 
-### 對策
+### 必要 Control
 
-- Global Budget
-- Per-agent Budget
-- Max Messages
-- Concurrency Limit
-- Early Stop
+- Message Schema
+- Task 與 Correlation ID
+- Sender 與 Recipient Identity
+- Hop Count
+- Time to Live
+- Deduplication Key
+- Task Owner
+- Capability Registry
+- Delegation Permission
+- Terminal Owner
+- Cycle Detection
 
-## 10. No Final Owner
+## Swarm-style System：使用這個詞前，先定義它
 
-任務產生很多結果，沒有正式完成者。
+「Swarm」是一個被過度使用的 Label。
 
-### 對策
+本文將 Swarm-style System 定義為：
 
-- Final Owner
-- Verifier
-- Terminal State
-- Audit Record
+> 許多相對輕量的 Agent，依靠 Local Information、Task-claiming Rule 與有限 Peer Interaction 協作，沒有一個 Fixed Central Planner 控制每一個 Action。
 
----
+有些 Software Framework 用 Swarm 表示普通 Agent Handoff；另一些則用它表示 Decentralised Local-rule Coordination。因此，名稱本身不是 Architecture Specification。
 
-## Multi-Agent Production 控制面
+真正可用的設計仍必須回答：
 
-一套成熟的 Multi-Agent 系統，除了 Agent 本身，還需要一個 Control Plane。
+- 誰建立 Task
+- Work 如何被 Claim
+- Duplicate Claim 如何避免
+- 哪些 State 是 Global
+- 哪些 State 是 Local
+- Convergence 如何量測
+- 誰或什麼宣告完成
+- Cost 如何限制
+- 系統如何被停止
 
-## Agent Registry
+### 可能優點
 
-保存：
+- 沒有單一 Coordination Bottleneck
+- Local Fault Tolerance
+- Dynamic Allocation
+- Redundant Exploration
+- 可擴展到大量小 Task
+
+### 風險
+
+- Emergent Behaviour 只是不可預測，不代表有智慧
+- Duplicate Work
+- Message 與 Model Cost 無上限
+- Global Consistency 弱
+- Outcome 難以重現
+- Accountability 模糊
+- 沒有自然 Stop Condition
+
+### Production Control
+
+- Task Lease 或 Lock
+- Maximum Active Agents
+- Message TTL 與 Hop Limit
+- Global Cost Budget
+- Local Action Budget
+- Convergence Metric
+- No-progress Detection
+- Kill Switch
+- Human Override
+- 完整 Message 與 Ownership Trace
+
+一堆小圓圈不等於 Swarm Protocol。在 Coordination Rule 被寫清楚前，它只是一張 Clip Art。
+
+## Communication Topology 會改變 Operational Risk
+
+| Topology | 主要優點 | 主要風險 |
+|---|---|---|
+| Centralised | Control 與 Final Ownership 清楚 | Bottleneck 與 Single Point of Failure |
+| Hierarchical | 將 Central Control 擴展到多個 Team | Layer 間 Information Loss 與 Latency |
+| Blackboard | 重用 Shared Intermediate State | Pollution、Conflict、Permission Complexity |
+| Peer-to-Peer | 彈性的 Direct Collaboration | Message Cycle 與 Responsibility Drift |
+| Swarm-style | Local Autonomy 與 Dynamic Allocation | Convergence、Cost 與 Accountability |
+
+系統可以混合 Topology。Worker 可以向 Supervisor 回報，同時從 Blackboard 讀取 Verified Fact；Team Supervisor 也可以在 Hierarchy 內做 Local Coordination。
+
+<!-- Figure 6-5 insertion point -->
+
+![Figure 6-5 — Communication Topology and Operational Risk](/images/the-atlas-of-agent-design-patterns-part-6/communication-topology-risks.png)
+
+> **Figure 6-5｜Communication Topology and Operational Risk**  
+> Topology 不是裝飾，會直接決定 Operational Risk。Centralised 有 Bottleneck、Hierarchical 有 Latency、Blackboard 有 Pollution、Peer-to-Peer 有 Cycle、Swarm-style 有 Convergence 與 Cost。Production 系統常常需要混用，但混用前要先把每個 Layer 的責任講清楚。
+
+## Structured Handoff Contract 是整套架構的結締組織
+
+不要這樣交接：
+
+```text
+Please Continue the Task.
+```
+
+Handoff Contract 應包含：
+
+```text
+Task ID
+Parent Task
+Objective
+Inputs
+Known Facts
+Open Questions
+Allowed Tools
+Data and Permission Scope
+Expected Output Schema
+Completion Criteria
+Budget
+Deadline
+Failure Policy
+Return Address
+```
+
+Handoff Result 應包含：
+
+```text
+Status
+Completed Requirements
+Evidence
+Unresolved Items
+Conflicts
+Cost Used
+Side Effects
+Next Recommended Action
+```
+
+### Contract 的價值
+
+- 保存 Original Goal
+- 降低 Context Transfer
+- 標準化 Aggregation
+- 明確 Ownership
+- 支援 Retry 與 Reassignment
+- 顯示 Partial Completion
+- 防止 Permission Leakage
+
+### Context 應被 Scope，而不是整包複製
+
+只傳送 Worker Contract 所需的最少資訊：
+
+- Stable Goal Summary
+- Relevant Verified Facts
+- Permitted Sources
+- Constraints
+- Expected Output
+
+不要自動把每一段 Internal Conversation 複製給每個 Agent。
+
+## Shared State 需要 Trust、Version 與 Ownership
+
+Shared State 應回答：
+
+- 哪個 Goal Version 正在生效？
+- 哪些 Task Ready、Running、Blocked 或 Complete？
+- 哪些 Fact 已 Verified？
+- 哪些 Entry 只是 Proposal？
+- 哪個 Agent 擁有每個 Task？
+- 哪個 Source 支援每份 Result？
+- 哪份 Result 已被 Superseded？
+
+實用的 Shared-state Model 包括：
+
+```text
+Goal Store
+Task Ledger
+Assignment Registry
+Evidence Store
+Decision Log
+Conflict Register
+Final Artefact Registry
+```
+
+### 不要把 Shared State 與 Long-term Memory 混在一起
+
+Shared Workflow State 是為了協調 Current Run；Long-term Memory 則跨 Run 保存經過選擇的資訊。
+
+兩者的 Retention、Permission 與 Validation Rule 應不同。
+
+## Final Ownership 與 Acceptance 必須明確
+
+「大家都負責」通常等於沒有人負責。
+
+Production System 應指定：
+
+- **Task Owner**：對 Current Task 負責
+- **Aggregator**：整合 Worker Result
+- **Verifier**：執行 Acceptance Contract
+- **Final Owner**：發布或回傳 Formal Output
+- **Human Approver**：必要時授權 High-impact Action
+
+同一個 Component 可以兼任數個 Role，但 Responsibility 必須清楚。
+
+### Verifier 不一定是 Final Owner
+
+Verifier 可以判斷 Result Pass；另一個 Finaliser 負責 Format 與 Publish；Legal 或 Business Authorisation 仍可能由 Human Owner 承擔。
+
+### 只能有一個 Formal Final State
+
+應避免：
+
+- 多個互相競爭的 Final Answer
+- Silent Overwrite
+- Unverified Draft 被發布
+- Worker 繞過 Aggregation
+- Disagreement 消失但沒有 Decision Record
+
+## Production Multi-Agent Control Plane
+
+Agent 本身不是完整 Production Architecture；上方還需要 Control Plane。
+
+### Agent Registry
 
 - Agent ID
 - Role
 - Capabilities
 - Allowed Tools
-- Permissions
-- Model
+- Data Permissions
+- Model 與 Version
 - Cost Tier
 - Current Load
 - Health Status
 
-## Task Registry
-
-保存：
+### Task Ledger
 
 - Task ID
 - Parent Task
 - Owner
-- Status
 - Dependencies
+- Status
 - Deadline
 - Budget
-- Attempt Count
+- Attempts
+- Final Outcome
 
-## Message Bus
+### Message Layer
 
-處理：
-
-- Message Schema
-- Delivery
+- Schema
+- Sender 與 Recipient
+- Correlation ID
+- Delivery State
+- 必要時的 Ordering
 - Deduplication
-- Ordering
-- Retry
+- Retry Policy
 - TTL
-- Dead-letter Queue
+- Dead-letter Handling
 
-## Shared State
-
-保存：
+### Shared-state Layer
 
 - Goal
 - Plan
@@ -1420,294 +919,387 @@ Judge 偏好文筆、模型或角色。
 - Worker Results
 - Conflicts
 - Decisions
+- Final Artefacts
 
-## Policy Layer
-
-控制：
+### Policy Layer
 
 - Tool Access
 - Data Access
 - Delegation Rights
-- Cost
-- Risk
+- Indirect Permission Check
+- Cost Limit
+- Risk Gate
 - Human Approval
 
-## Observability
+### Observability
 
-追蹤：
-
-- Agent Trace
+- Agent 與 Task Trace
 - Message Count
 - Tool Calls
-- Token Cost
-- Latency
-- Handoff Failures
+- Token 與 Monetary Cost
+- Worker Latency
+- Handoff Failure
 - Duplicate Work
-- Worker Timeout
+- State Conflict
 - Final Outcome
 
-## Kill Switch
+### Kill Switch
 
-在以下情況停止系統：
+以下情況應 Stop 或 Pause：
 
-- Cost Limit Exceeded
-- Message Storm
-- Delegation Cycle
-- No Progress
-- Security Violation
-- Human Cancellation
+- 超過 Cost Limit
+- 發生 Message Storm
+- 偵測到 Delegation Cycle
+- 沒有 Measurable Progress
+- 跨越 Security Boundary
+- State 無法 Reconcile
+- Human Cancel Run
 
----
+## Cost 與 Latency 本質上是 Coordination Problem
 
-## 九種組織模式完整比較
+Multi-Agent Cost 不只來自 Model Inference：
 
-| 模式 | 主要結構 | 真正獨立 Agent | 中央控制 | 共享狀態 | 平行能力 | 相對成本 | 主要風險 |
-|---|---|---:|---:|---:|---:|---:|---|
-| Single Agent | 一個執行單元 | 1 | 高 | 單一 State | 低 | 低 | Context 過載 |
-| Role-based Single Agent | 一個模型切換角色 | 通常 1 | 高 | 共用 | 低 | 低～中 | 假獨立性 |
-| Supervisor–Worker | 中央分派與聚合 | 多個 | 高 | 可選 | 高 | 中～高 | Supervisor 瓶頸 |
-| Planner–Executor–Critic | 按認知責任分工 | 可多個 | 中～高 | 通常有 | 中 | 中～高 | 角色重疊 |
-| Debate | 多觀點 + Judge | 多個 | 中 | 可選 | 中 | 高 | 說服力偏誤 |
-| Voting | 多個投票者 | 多個 | 中 | 候選集合 | 高 | 中～高 | 多數共同犯錯 |
-| Blackboard | 共享工作區 | 多個 | 中 | 核心能力 | 高 | 高 | 記憶污染 |
-| Peer-to-Peer | 直接互連 | 多個 | 低 | 分散或共享 | 高 | 高 | 循環交接 |
-| Swarm | 大量局部協作 | 多個 | 很低 | 局部／分散 | 很高 | 很高 | 難以預測與停止 |
+- Prompt Repetition
+- Context Packaging
+- Worker Startup
+- Message Transport
+- State Persistence
+- Aggregation
+- Conflict Resolution
+- 等待 Straggler
+- Judge 與 Verifier Call
+- Retry 與 Reassignment
 
----
+### 常見 Latency Pattern
 
-## 任務類型與組織模式選擇表
+#### Straggler
 
-| 任務特性 | 建議模式 |
+Final Result 等待最慢的 Required Worker。
+
+#### Sequential Handoff
+
+標榜 Parallel 的設計實際上一個 Role 接一個 Role 執行。
+
+#### Review Bottleneck
+
+所有 Output 都等待同一個 Critic 或 Verifier。
+
+#### Context Serialisation
+
+大型 Intermediate Artefact 被不斷複製與重新 Summary。
+
+### Control
+
+- Maximum Agents
+- Maximum Worker Calls
+- Bounded Concurrency
+- Per-worker 與 Global Budget
+- Shared Retrieval Cache
+- Deduplication
+- Deadline
+- Early Cancellation
+- Partial Aggregation
+- 依 Task Difficulty 選 Model
+- Cancellation Propagation
+
+## 主要 Failure Mode
+
+### Duplicate Work
+
+兩個 Worker Claim 同一 Task。
+
+Control：Unique Task ID、Lease、Assignment Registry、Deduplication。
+
+### Responsibility Gap
+
+每個 Agent 都認為 Requirement 由別人處理。
+
+Control：Task Owner、Return Address、Completion Contract、Final Owner。
+
+### Handoff Loss
+
+Constraint、Evidence 或 Scope 在 Transfer 中消失。
+
+Control：Structured Contract、Immutable Goal Reference、Required Field。
+
+### Conflicting Result
+
+Worker 使用不同 Version 或得到相反 Conclusion。
+
+Control：Provenance、Conflict Register、Aggregator、Verifier、Human Review。
+
+### Infinite Delegation
+
+A 交給 B、B 交給 C、C 又交回 A。
+
+Control：Delegation Graph、Hop Limit、Cycle Detection、Maximum Depth。
+
+### Shared-state Pollution
+
+Unverified Proposal 被所有 Agent 當成 Fact。
+
+Control：Trust State、Validation Gate、Write Permission、Versioning。
+
+### Worker Silence
+
+Worker Failure，但系統永久等待。
+
+Control：Deadline、Heartbeat、Timeout、Reassignment、Partial Policy。
+
+### Judge Bias
+
+Judge 偏好 Style、Model Identity 或 Majority Confidence。
+
+Control：Rubric、Blind Evaluation、Calibration、External Evidence。
+
+### Permission Laundering
+
+Agent 透過另一個 Agent 間接取得 Restricted Effect。
+
+Control：對真正 Action 做 End-to-end Authorisation，而不是只檢查 Sender Identity。
+
+### No Final Owner
+
+有多份 Output，卻沒有 Component 能正式完成 Task。
+
+Control：Final Owner、Terminal State、Acceptance Record。
+
+## 如何選擇 Organisation Design
+
+從能滿足真實 Separation Need 的最簡單結構開始。
+
+| Need | Starting Design |
 |---|---|
-| 一個 Context 足以完成 | Single Agent |
-| 需要分離角色但不需真正獨立 | Role-based Single Agent |
-| 子任務清楚且需要中央治理 | Supervisor–Worker |
-| 規劃、執行、審查責任需分離 | Planner–Executor–Critic |
-| 需要競爭觀點與反方分析 | Debate |
-| 候選固定且適合聚合選擇 | Voting |
-| 多個 Agent 需要共享中間結果 | Blackboard |
-| 中央節點會成為瓶頸 | Peer-to-Peer |
-| 大量小任務、動態分散協作 | Swarm |
+| 一個 Context 與 Owner 已足夠 | Single Agent |
+| 需要 Role Focus，但不需要 Independent Worker | Role-based Workflow |
+| Subtask 清楚且需要 Central Governance | Supervisor-Worker |
+| Planning、Execution、Diagnosis、Acceptance 要分離 | Responsibility Split，可單 Agent 或多 Agent |
+| 需要對 Competing Claim 做 Interactive Challenge | Debate Protocol |
+| 需要聚合 Independent Fixed Choice | Voting Protocol |
+| 需要重用 Shared Intermediate Result | Blackboard Coordination |
+| 需要直接 Dynamic Handoff | Peer-to-Peer Topology |
+| 許多小 Task 依 Local Rule Allocation | 明確定義的 Swarm-style Protocol |
 
----
+加入 Agent 前，先問：
 
-## 什麼時候不要使用 Multi-Agent？
+1. 它將擁有什麼獨立 Responsibility？
+2. 是否需要 Separate State、Permission、Tool 或 Lifecycle？
+3. 它會收到什麼 Contract？
+4. 它會回傳什麼 Structured Result？
+5. 誰 Aggregate 與 Verify 它的 Output？
+6. 它遲到、錯誤、重複或沉默時怎麼辦？
+7. 預期 Quality 或 Latency Gain 是否大於 Coordination Cost？
 
-## 1. 任務沒有自然分工
+## 何時不應使用 Multi-Agent？
 
-只是為了追求架構感而拆角色。
+以下情況應避免：
 
-## 2. 子任務高度依賴同一份 Context
+- Task 沒有自然 Division
+- 所有 Subtask 都需要相同的大型 Context
+- 一個 Agent 已經滿足 Acceptance Contract
+- 沒有 Aggregation 或 Verification Mechanism
+- Permission Boundary 無法執行
+- Latency Budget 很緊
+- Communication Cost 大於工作本身
+- Decision 需要 Single-point Accountability
+- 系統無法 Observe 或 Stop Interaction Network
 
-切開後反而需要反覆同步。
+## 完整範例：多來源 Framework Research
 
-## 3. 一個 Agent 已經可以穩定完成
+Task：
 
-增加角色只會增加成本。
+> 比較三個 Agent Framework，推薦適合 Production RAG 的選擇。
 
-## 4. 沒有聚合與驗收機制
+### Step 1：Task Admission
 
-多個輸出不知道如何整合。
+Controller 檢查：
 
-## 5. 工具和資料無法安全隔離
+- Scope
+- Allowed Sources
+- Time 與 Tool Budget
+- Independent Subtask 是否值得 Parallel Worker
 
-更多 Agent 只會擴大風險。
-
-## 6. 沒有觀察與停止能力
-
-看不到訊息流、成本與任務狀態。
-
-## 7. 延遲要求很高
-
-多輪交接可能無法接受。
-
-## 8. 問題需要單一責任與一致判斷
-
-例如高風險批准，不應由一群 Agent 互相推卸責任。
-
----
-
-## 一個完整範例：多來源研究報告
-
-任務：
-
-> 比較三個 Agent Framework，並推薦適合 Production RAG 的方案。
-
-## Step 1：Supervisor 建立子任務
+### Step 2：Supervisor 建立 Contract
 
 ```text
-Task A:
-Collect official architecture information
-
-Task B:
-Evaluate persistence and state management
-
-Task C:
-Evaluate observability and testing
-
-Task D:
-Evaluate cost and operational complexity
+Task A: Official Architecture and Execution Model
+Task B: Persistence and State Management
+Task C: Observability, Testing, and Evaluation
+Task D: Deployment and Operational Complexity
 ```
 
-## Step 2：Worker 執行
+每份 Contract 使用相同 Evaluation Rubric，但 Objective 不同。
 
-每個 Worker 取得：
+### Step 3：Worker 執行
 
-- 相同 Evaluation Rubric
-- 不同 Objective
-- Allowed Sources
-- Expected Output Schema
-- Completion Criteria
-- Budget
+Worker 回傳：
 
-## Step 3：Blackboard 保存中間結果
+- Structured Findings
+- Official Sources
+- Version Dates
+- Unresolved Fields
+- Cost 與 Status
+
+### Step 4：Blackboard 保存 Typed Entry
 
 ```text
+Proposed Facts
 Verified Facts
 Open Questions
-Source Links
 Conflicts
-Missing Data
+Missing Evidence
 ```
 
-## Step 4：Critic 檢查
+### Step 5：Critic 診斷缺口
 
-- 是否漏掉必要維度
-- 是否依賴第三方來源
-- 是否存在不同版本混用
-- 是否有未標記推測
+- Missing Dimension
+- 應使用 Official Evidence 卻使用 Third-party Evidence
+- 混用 Framework Version
+- Unsupported Inference
 
-## Step 5：Supervisor 聚合
+### Step 6：Aggregator 整合 Result
 
-- 去重
-- 統一格式
-- 處理衝突
-- 補充缺口
+- Normalise Schema
+- Deduplicate Fact
+- 保存 Disagreement
+- 找出 Missing Evidence
 
-## Step 6：Verifier 驗收
+### Step 7：Verifier 執行 Contract
 
-- 官方來源覆蓋
-- 必要欄位
-- 未知值明確標記
-- Recommendation 是否有證據
+- Official-source Coverage
+- Required Field
+- Explicit Unknown
+- Recommendation 是否有 Evidence
 
-## Step 7：Final Owner 輸出
+### Step 8：Final Owner 發布單一 Result
 
-由 Supervisor 或 Finalizer 產生單一正式答案。
+系統保存 Final Artefact 與 Acceptance Decision。
 
-這套架構使用：
+這套架構可以同時使用 Supervisor-Worker、Blackboard、Critic、Verifier 與 Final Ownership，卻不需要 Debate、Peer-to-Peer 或 Swarm。
 
-- Supervisor–Worker
-- Blackboard
-- Critic
-- Verifier
-- Shared State
-- Final Owner
+價值來自清楚的 Responsibility 與 Evidence Flow，而不是 Agent Count。
 
-但不需要 Swarm，也不需要 Peer-to-Peer。
+## Production Checklist
 
-架構的價值來自清楚分工，不是角色數量。
+### Need 與 Identity
 
----
+- 每個 Agent 是否擁有不同 Responsibility？
+- Agent 是否可以被 Operationally Address？
+- State、Authority 與 Lifecycle Boundary 是否清楚？
+- Role-based Workflow 是否已經足夠？
 
-## Production Multi-Agent Checklist
+### Contract 與 Ownership
 
-## 是否真的需要多 Agent？
+- 每個 Task 是否有 Owner？
+- Handoff Contract 是否 Structured？
+- Return Address 是否明確？
+- 是否只有一個 Formal Final Owner？
 
-- 是否存在自然可分離的子任務？
-- 是否需要平行執行？
-- 是否需要技能或權限隔離？
-- 分工收益是否高於交接成本？
-- 一個 Agent 是否已足夠？
+### Communication
 
-## 角色與責任
+- Message 是否 Typed？
+- 是否定義 Correlation ID、TTL、Deduplication 與 Hop Limit？
+- 是否能偵測 Cycle 與 Message Storm？
+- 是否有 Dead-letter Handling？
 
-- 每個 Agent 是否有單一清楚責任？
-- 是否有 Final Owner？
-- 是否定義 Return To？
-- 是否定義 Completion Criteria？
-- 是否避免角色重疊？
+### Shared State
 
-## 通訊
+- Proposed 與 Verified Entry 是否分開？
+- 是否保存 Source、Author、Version 與 Validation Status？
+- Concurrent Write 是否受控？
+- Stale Downstream Result 是否能被 Invalidate？
 
-- 是否使用結構化 Message Schema？
-- 是否有 Correlation ID？
-- 是否有 Hop Limit 與 TTL？
-- 是否能偵測循環與重複訊息？
-- 是否有 Dead-letter Queue？
+### Permission 與 Safety
 
-## 狀態與記憶
+- Tool 與 Data Permission 是否依 Agent 分開？
+- Delegated Action 是否做 End-to-end Reauthorisation？
+- High-impact Action 是否需要 Approval？
+- Worker 是否能修改 Acceptance Criteria？
 
-- 是否區分 Proposed 與 Verified？
-- 是否保存 Source、Author、Version？
-- 是否限制 Read / Write Permission？
-- 是否有 Conflict Resolution？
-- 是否有 Expiry？
+### Cost 與 Stopping
 
-## 成本與停止
-
-- 是否有 Global Budget？
-- 是否有 Per-agent Budget？
-- 是否有 Max Agents？
-- 是否有 Concurrency Limit？
-- 是否有 No-progress Detection？
+- 是否有 Global 與 Per-agent Budget？
+- Concurrency 是否 Bounded？
+- Deadline 與 Cancellation 是否向下傳播？
+- 是否能偵測 No Progress？
 - 是否有 Kill Switch？
 
-## 驗證與治理
+### Verification
 
-- Worker 結果是否經過聚合與驗證？
-- 是否有 Tool Policy？
-- 是否有 Delegation Permission？
-- 高風險操作是否需要 Human Approval？
-- 是否能重現完整 Agent Trace？
+- Worker Output 是否在 Publish 前被 Aggregate？
+- Disagreement 是否保留到解決為止？
+- Verifier 是否使用 Observable Evidence？
+- Run 是否可以 Partial、Blocked 或 Inconclusive 結束？
 
----
+## 結論
 
-## 本篇結論
+Multi-Agent Architecture 不是在 Canvas 上增加 Role Card 的藝術。
 
-Multi-Agent 的價值不在於讓畫面上出現更多 Agent 卡片。
+它真正要工程化的是：
 
-它真正解決的是：
+- Execution Identity
+- Responsibility Boundary
+- Communication Topology
+- Shared State
+- Collective Decision Protocol
+- Authority
+- Final Ownership
+- Operational Control
 
-- 任務分工
-- 技能隔離
-- 權限隔離
-- 平行執行
-- 觀點競爭
-- 中間結果共享
-- 分散協作
-- 系統韌性
+不同 Mechanism 解決不同問題：
 
-本篇介紹的主要模式包括：
+- **Single Agent** 把 Ownership 與 State 放在一起。
+- **Role-based Workflow** 分離 Responsibility，但不一定建立 Independent Agent。
+- **Supervisor-Worker** 集中 Task Assignment 與 Integration。
+- **Planner-Executor-Critic-Verifier** 分離 Cognitive 與 Acceptance Responsibility，可由一個或數個 Agent 實作。
+- **Debate** 在 Competing Position 間加入 Interactive Challenge。
+- **Voting** 聚合 Independent Choice。
+- **Blackboard** 透過 Typed Shared State 協作。
+- **Peer-to-Peer** 在沒有單一 Central Supervisor 時直接 Handoff。
+- **Swarm-style Coordination** 透過明確 Local Rule 分散大量小型 Decision。
 
-- **Single Agent**：一個執行單元完成整體任務
-- **Role-based Single Agent**：同一模型在不同階段切換角色
-- **Supervisor–Worker**：中央拆解、分派、聚合與驗收
-- **Planner–Executor–Critic**：按認知責任分工
-- **Debate**：以不同立場找出盲點
-- **Voting**：對候選做聚合選擇
-- **Blackboard**：透過共享工作區協作
-- **Peer-to-Peer**：Agent 直接互相交接與協商
-- **Swarm**：大量輕量 Agent 依局部規則分散協作
-
-更多 Agent 不代表更高品質。
-
-真正成熟的 Multi-Agent 系統必須能回答：
+Production System 應能回答：
 
 ```text
-誰負責什麼？
-誰可以使用哪些工具？
-結果要回傳給誰？
-共享資料是否已驗證？
-發生衝突時誰決定？
-任務何時正式完成？
-成本失控時如何停止？
+Who Owns Each Task?
+What May Each Agent Do?
+What State Does Each Agent Trust?
+How Are Messages Identified and Bounded?
+Who Resolves Conflicts?
+Who Verifies the Result?
+Who Owns the Final Output?
+What Stops the System?
 ```
 
-如果這些問題沒有答案，多 Agent 只會把一個黑箱拆成更多小黑箱，再用箭頭把它們串成一座迷宮。
+如果這些問題沒有答案，Multi-Agent 只是把一個 Black Box 拆成一群更小的 Black Box，再用一窩義大利麵箭頭串起來。
 
-下一篇，我們會進入第六個架構維度：
+Part 7 將進入整張架構地圖的最後一個維度：
 
-> Agent 的 Context、State、Memory 和 RAG 到底有什麼不同？
+> Context、Workflow State、Working Memory、Long-term Memory 與 RAG 到底有什麼不同？
 
-Part 7 將完整比較 Working Memory、Episodic Memory、Semantic Memory、Procedural Memory、User Memory、Shared Memory，以及記憶寫入、檢索、過期、衝突與污染治理。
+## 參考資料
+
+- [Wu et al., *AutoGen: Enabling Next-Gen LLM Applications via Multi-Agent Conversation*](https://arxiv.org/abs/2308.08155)
+- [Li et al., *CAMEL: Communicative Agents for Mind Exploration of Large Scale Language Model Society*](https://arxiv.org/abs/2303.17760)
+- [Hong et al., *MetaGPT: Meta Programming for A Multi-Agent Collaborative Framework*](https://arxiv.org/abs/2308.00352)
+- [Qian et al., *ChatDev: Communicative Agents for Software Development*](https://arxiv.org/abs/2307.07924)
+- [Du et al., *Improving Factuality and Reasoning in Language Models through Multiagent Debate*](https://arxiv.org/abs/2305.14325)
+- [Choi et al., *Debate or Vote: Which Yields Better Decisions in Multi-Agent Large Language Models?*](https://arxiv.org/abs/2508.17536)
+- [Wu et al., *Can LLM Agents Really Debate? A Controlled Study of Multi-Agent Debate in Logical Reasoning*](https://arxiv.org/abs/2511.07784)
+- [Nii, *The Blackboard Model of Problem Solving and the Evolution of Blackboard Architectures*](https://doi.org/10.1609/aimag.v7i2.537)
+- [Guo et al., *Large Language Model based Multi-Agents: A Survey of Progress and Challenges*](https://arxiv.org/abs/2402.01680)
+
+## 系列目錄
+
+| Part | 主題 |
+|---:|---|
+| 1 | LLM Agent 不只有 ReAct：用六個維度看懂 Agent 架構 |
+| 2 | Agent 執行路徑全解：Direct、Pipeline、Router、State Machine 與 DAG |
+| 3 | ReAct、Plan-and-Execute、Adaptive Planning 與 HTN |
+| 4 | 從單一路徑到 Tree、Graph、MCTS 與 LATS |
+| 5 | 驗證、恢復與自我修正 |
+| 6 | Multi-Agent 的組織、協作與控制 |
+| 7 | Agent Memory 全解 |
+| 8 | Production Agent 架構實戰 |
+| 9 | 如何選擇 Agent 架構 |
+| 10 | 使用現代 Agent Framework 實作設計模式 |

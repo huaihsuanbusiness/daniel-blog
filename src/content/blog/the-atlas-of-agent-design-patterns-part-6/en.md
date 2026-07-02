@@ -1,6 +1,6 @@
 ---
-title: "The Atlas of Agent Design Patterns Part 6 ｜ Multi-Agent Architectures: Supervisor, Debate, Blackboard and Swarm"
-description: "A complete comparison of Single Agent, Role-based Single Agent, Supervisor–Worker, Planner–Executor–Critic, Debate, Voting, Blackboard, Peer-to-Peer and Swarm, plus how Production Multi-Agent systems handle communication, shared state, responsibility boundaries, cost and failure governance."
+title: "The Atlas of Agent Design Patterns Part 6 | Multi-Agent Organisation, Coordination, and Control"
+description: "A production-focused guide to single agents, role-based workflows, supervisor-worker systems, planner-executor-critic splits, debate, voting, blackboards, peer-to-peer coordination, swarm-style systems, handoff contracts, shared state, final ownership, and control planes."
 date: 2026-07-01T00:04:00
 lang: en
 categories: ["AI"]
@@ -8,1690 +8,1298 @@ series: "The Atlas of Agent Design Patterns"
 seriesOrder: 6
 ---
 
+# The Atlas of Agent Design Patterns Part 6 | Multi-Agent Organisation, Coordination, and Control
+
 The previous articles covered:
 
-- how a task moves from start to finish
-- how the Agent decides its next step
-- how several candidate solutions are searched
-- how errors get verified and repaired
+- how a task moves through an execution structure
+- how an agent chooses its next action
+- how a system searches among candidate solutions
+- how outputs are verified and failures are repaired
 
-This article enters the fifth dimension:
+This article examines the organisation dimension:
 
-> Should the work be done by one Agent, or split across several?
+> Should one execution entity own the task, or should responsibility be divided among several addressable agents?
 
-Multi-Agent systems make architecture diagrams look impressive.
+Multi-agent diagrams are seductive. A slide can show a planner, researcher, analyst, coder, critic, reviewer, memory agent, and supervisor, each with its own polished card and glowing arrow.
 
-The slide shows:
+The diagram may look like a digital company. The runtime may be a committee meeting trapped in a token furnace.
 
-- a Planner Agent
-- a Research Agent
-- a Coding Agent
-- a Critic Agent
-- a Reviewer Agent
-- a Supervisor Agent
-- a Memory Agent
+Every additional agent can introduce:
 
-Every role has its own card, icon and arrow. The whole picture looks like a digital office.
+- another model call or session
+- another context boundary
+- another handoff
+- another version of task state
+- another permission surface
+- another place for duplicated work
+- another latency dependency
+- another failure mode
+- another ambiguity about who owns completion
 
-But more roles do not automatically mean the system gets smarter.
+The central design question is not:
 
-More Agents also means:
-
-- more model calls
-- more Context hand-offs
-- more state synchronisation
-- more duplicate work
-- more responsibility boundaries
-- more failure points
-- harder to reproduce results
-- higher cost and latency
-
-So the core question of Multi-Agent is not:
-
-> How many Agents can we have?
+> How many agent roles can we create?
 
 It is:
 
-> **Does the work really need to be split, and once it is split, how do we make sure every role knows what it should do, who it should hand results to, and when it should stop?**
+> Which responsibilities genuinely need separate execution boundaries, and how will work, state, authority, evidence, and final ownership move between them?
 
----
+## Multi-agent is an organisational property, not a reasoning method
 
-## Multi-Agent is an organisational pattern, not a reasoning pattern
+Multi-agent describes how addressable execution entities divide responsibility and coordinate.
 
-This is the most important conceptual boundary in this article.
+It does not directly determine whether the system uses:
 
-Multi-Agent describes:
+- ReAct
+- Plan-and-Execute
+- Tree of Thoughts
+- Generate-and-Test
+- Retry
+- a verifier
+- long-term memory
 
-> How many independent roles or execution units there are, and how they collaborate.
-
-It does not directly describe:
-
-- whether the task uses ReAct
-- whether Planning happens first
-- whether multiple reasoning paths are explored
-- whether Tree of Thoughts is used
-- whether Retry or Verifier is involved
-- whether Memory is preserved
-
-A Multi-Agent system can simultaneously use:
+A supervisor-worker system may use a state machine as its outer workflow, bounded ReAct inside a research worker, a DAG for parallel subtasks, and a verifier before final acceptance.
 
 ```text
-Execution path: State Machine
+Execution structure: State machine
 Decision strategy: Plan-and-Execute
-Exploration: Single-path
-Verification: Verifier + Generate-and-Test
-Organisation: Supervisor–Worker
-Memory: Shared Working Memory
+Local execution: Bounded ReAct
+Organisation: Supervisor-worker
+Shared state: Typed task ledger
+Verification: Evidence verifier
 ```
 
-Multi-Agent is just one of the dimensions.
+These are different design dimensions.
 
-## Multiple answers do not equal multiple Agents
+## What counts as an agent instance?
 
-None of the following is necessarily a Multi-Agent system:
+Model count is a poor definition.
 
-- the same model generates five candidates
-- a single Agent runs Tree Search
-- a single Agent switches between Planner, Writer and Critic Prompts in sequence
-- a Workflow contains several LLM Nodes
+Several agents may share the same foundation model. One workflow may call several different models without creating several agents.
 
-In the other direction, multiple Agents do not automatically explore different solutions.
+For this article, an **agent instance** is an addressable execution entity with a meaningful subset of the following:
 
-For example:
+- its own role or objective
+- its own state or working history
+- its own tool and data permissions
+- its own task lifecycle and status
+- a communication identity
+- the ability to receive a contract and return a result
+- an explicit owner or authority boundary
 
-- Agent A reads document one
-- Agent B reads document two
-- Agent C reads document three
+Independence is not binary. Two agents may share a model and memory store while retaining separate task ownership and permissions. Conversely, four role prompts executed sequentially by one controller may still be one role-based workflow.
 
-They are simply doing parallel division of labour, not necessarily competing on different answers.
-
-| Situation | Multi-candidate | Multi-path search | Multi-Agent |
-|---|---:|---:|---:|
-| Same model generates five answers | Yes | Not necessarily | No |
-| Same Agent runs Tree Search | Yes | Yes | No |
-| Same model switches between three role Prompts | Not necessarily | Not necessarily | Usually no |
-| Three Workers each handle a different document | Multiple outputs | Not necessarily | Yes |
-| Three Agents propose plans, then a Judge picks one | Yes | Yes | Yes |
-
----
-
-## 1. Single Agent: first ask whether you really need more than one
-
-A Single Agent uses one execution unit to finish the entire task:
+### One model can power several agents
 
 ```text
-User Request
-  ↓
-Single Agent
-  ├─ Plan
-  ├─ Use Tools
-  ├─ Update State
-  ├─ Verify
-  └─ Answer
+Agent A: research role, browser permission, task A
+Agent B: analysis role, database permission, task B
+Agent C: reviewer role, no write permission, task C
+
+Shared base model
+Different identities, states, permissions, and task lifecycles
 ```
 
-That does not mean it can only handle simple tasks.
-
-As long as the system has:
-
-- clear tool boundaries
-- structured State
-- a Planner
-- a Verifier
-- a Budget Guard
-- a Retry Limit
-- Memory
-
-one Agent can still handle quite long jobs.
-
-## Strengths of Single Agent
-
-### Consistent Context
-
-No need to keep re-passing the task background between roles.
-
-### Clear responsibility
-
-There is only one primary executor. The "I thought the other Agent was handling it" problem rarely appears.
-
-### Lower cost
-
-No extra Prompts, hand-offs, synchronisation or aggregation across roles.
-
-### Easier to debug
-
-The whole Trace stays more concentrated.
-
-### Easier to define a stopping condition
-
-There is no need to wait for multiple Agents to confirm each other.
-
-## Limits of Single Agent
-
-- Context can get too large
-- too many tools and responsibilities
-- different skills are hard to isolate
-- long tasks lose local detail
-- independent work cannot truly run in parallel
-- one error can pollute the entire task
-
-## When should you prefer Single Agent?
-
-- the task fits within one Context
-- the tool count is small
-- parallel work is not needed
-- task responsibility does not need to be isolated
-- hand-off cost is higher than the benefit of splitting
-- one strong model is already enough
-
-The Production default should be:
-
-> **Start with a Single Agent, and only add Agents when the split actually solves a problem.**
-
----
-
-## 2. Role-based Single Agent: one model, switching between several roles
-
-A Role-based Single Agent uses different role Prompts at different stages:
+### Several prompts do not automatically create several agents
 
 ```text
-Planner Role
-  ↓
-Writer Role
-  ↓
-Critic Role
-  ↓
-Finalizer Role
+Planner prompt
+ -> writer prompt
+ -> critic prompt
+ -> finaliser prompt
+
+One controller
+One shared state
+Predetermined sequence
 ```
 
-On the surface it looks like four Agents.
+This may be excellent role separation, but role labels alone do not establish a multi-agent system.
 
-But underneath it can still be:
+### Multiple candidates do not imply multiple agents
 
-- the same model
-- the same execution program
-- the same State
-- sequential
-- no truly independent Worker
+- one model samples five answers
+- one agent runs tree search
+- one workflow invokes several LLM nodes
+- one model switches system prompts
 
-## What is it actually worth?
+All may produce multiple outputs without multiple addressable agents.
 
-### Responsibility separation
+<!-- Figure 6-1 insertion point -->
 
-Each stage only focuses on its own job.
+![Figure 6-1 — One Model, Multiple Roles, or Multiple Agents](/images/the-atlas-of-agent-design-patterns-part-6/single-vs-multi-agent-instance.png)
 
-### More focused Prompts
+> **Figure 6-1｜One Model, Multiple Roles, or Multiple Agents**  
+> Model count, role count, and agent-instance count are three different properties. One model can power many agents. Many role prompts do not necessarily form many agents. Multi-agent describes addressable execution entities with their own lifecycle, not the number of models.
 
-The Planner does not also have to write the article. The Critic does not also have to operate the tools.
+## Five layers that should not be flattened into one taxonomy
 
-### Easier to control the flow
+The old habit of placing Supervisor, Debate, Blackboard, and Swarm in one list hides that they solve different problems.
 
-The role order is set by the Workflow.
+| Layer | Question | Examples |
+|---|---|---|
+| Execution entity | How many addressable workers exist? | Single agent, multiple agents |
+| Responsibility split | Who performs which type of work? | Supervisor-worker, planner-executor-critic |
+| Communication topology | How do messages move? | Centralised, hierarchical, peer-to-peer |
+| Coordination medium | Where is shared intermediate state kept? | Blackboard, task ledger, message bus |
+| Collective decision protocol | How are competing results resolved? | Debate, voting, judge, verifier |
 
-### Lower cost than true Multi-Agent
-
-There is no need to maintain multiple independent Agent Sessions.
-
-## What is it not?
-
-A Role-based Single Agent is not:
-
-- multiple autonomous Agents
-- real parallel execution
-- independent Context
-- independent Memory
-- Peer-to-Peer collaboration
-
-## Main risks
-
-### The roles are just renamed
-
-The Planner, Writer and Critic use nearly identical Prompts. Only the headers differ.
-
-### Shared blind spots
-
-The same model can repeat the same mistake across all roles.
-
-### Context contamination
-
-The Critic has already seen the Generator's full reasoning, so it more easily judges along the same assumptions.
-
-### False independence
-
-The system claims "three Agents agreed", but it was just the same model saying yes three times in a row.
-
-![Figure 6-1 — One Model, Multiple Roles, or Multiple Agents?](/images/the-atlas-of-agent-design-patterns-part-6/one-model-multiple-roles-or-multiple-agents.png)
-
-> **Figure 6-1 ｜ One Model, Multiple Roles, or Multiple Agents?**  
-> The difference between Single Agent, Role-based Single Agent and true Multi-Agent is not only the role names. It is whether the system actually has independent responsibility, Context, State, execution and communication boundaries.
-
----
-
-## 3. Supervisor–Worker: the most common Multi-Agent architecture
-
-Supervisor–Worker is the most common and most controllable Multi-Agent pattern.
-
-The Supervisor is responsible for:
-
-- understanding the goal
-- decomposing tasks
-- dispatching Workers
-- tracking progress
-- handling failures
-- aggregating results
-- deciding whether the task is complete
-
-Each Worker handles a specific sub-task:
+A production system often combines one choice from several layers:
 
 ```text
-                  Supervisor
-            ┌────────┼────────┐
-        Research   Analysis   Writing
-            \          |          /
-              Return Results
-                     ↓
-            Supervisor Aggregates
-                     ↓
-                  Response
+Multiple agent instances
+ + supervisor-worker responsibility split
+ + centralised messaging
+ + typed blackboard
+ + verifier-based final acceptance
 ```
 
-## Supervisor responsibilities
+This layered description is more precise than calling the whole design a "debate architecture" or a "swarm".
 
-### Task Decomposition
+## Start with one agent unless separation solves a real problem
 
-Break the goal into sub-tasks that can run independently.
+A single agent can still:
 
-### Worker Selection
-
-Pick the Worker based on skills, permissions, cost and current load.
-
-### Contract Definition
-
-For each Worker define:
-
-- Input
-- Objective
-- Allowed Tools
-- Expected Output
-- Completion Criteria
-- Budget
-- Deadline
-
-### Progress Tracking
-
-Know which tasks are:
-
-- Pending
-- Running
-- Completed
-- Failed
-- Blocked
-- Cancelled
-
-### Result Aggregation
-
-Compare, deduplicate, resolve conflicts and produce the final output.
-
-## Workers should not write the final answer directly
-
-A common wrong flow:
+- plan
+- use tools
+- maintain structured state
+- call a verifier
+- retry within limits
+- pause for human approval
+- work through a long state machine
 
 ```text
-Supervisor
-  ↓
-Worker A / Worker B / Worker C
-  ↓
-Final Response
+User request
+ -> Single Agent
+ -> plan
+ -> use tools
+ -> update state
+ -> verify
+ -> return result
 ```
 
-If Workers connect straight to Final Response, you get:
+### Strengths
 
-- different result formats
-- duplicate content
-- contradictions
-- no overall conclusion
-- no one accepting the result
-
-The right flow is:
-
-```text
-Workers Return Results
-  ↓
-Supervisor or Aggregator
-  ↓
-Verifier
-  ↓
-Final Response
-```
-
-## Tasks that fit Supervisor–Worker
-
-- multi-source research
-- sub-tasks that need different skills
-- work that can run in parallel
-- large-volume document processing
-- multi-market comparison
-- Coding + Testing + Review
-- enterprise workflows that need central governance
-
-## Main risks
-
-### Supervisor becomes the bottleneck
-
-All work goes through the Supervisor, which can cause latency and Context pressure.
-
-### Worker tasks overlap
-
-Unclear division of labour causes multiple Workers to do the same work.
-
-### Worker results cannot be aggregated
-
-Different Workers use different formats, assumptions and versions.
-
-### Supervisor over-intervenes
-
-Workers have to report every step, and the coordination cost exceeds the work itself.
-
-### Worker failure has no fallback
-
-The Supervisor only knows how to wait. It does not know how to re-dispatch, Fallback or mark Partial.
-
-![Figure 6-2 — Supervisor–Worker: Delegate, Return, Aggregate](/images/the-atlas-of-agent-design-patterns-part-6/supervisor-worker-delegate-return-aggregate.png)
-
-> **Figure 6-2 ｜ Supervisor–Worker: Delegate, Return, Aggregate**  
-> The Supervisor defines the work contract and dispatches tasks. Workers must return structured results. The Supervisor then aggregates, resolves conflicts, verifies and produces the final answer.---
-
-## 4. Planner–Executor–Critic: split cognitive work by responsibility
-
-Planner–Executor–Critic is a common division of roles.
-
-## Planner
-
-Responsible for:
-
-- understanding the goal
-- decomposing steps
-- defining dependencies
-- setting completion criteria
-- arranging the execution order
-
-## Executor
-
-Responsible for:
-
-- executing the current step
-- using tools
-- updating State
-- reporting the result
-- handling local failures
-
-## Critic
-
-Responsible for:
-
-- finding problems
-- checking for omissions
-- assessing risk
-- suggesting changes
-
-The architecture is often written as:
-
-```text
-Planner
-  ↓
-Executor
-  ↓
-Critic
-  ↓
-Executor Revises
-```
-
-But a Production version usually also needs a Verifier:
-
-```text
-Planner
-  ↓
-Executor
-  ↓
-Critic
-  ↓
-Executor Revises
-  ↓
-Verifier
-  ├─ Pass → Continue / Complete
-  ├─ Repair → Executor
-  └─ Replan → Planner
-```
-
-## A Critic should not also be the final Verifier
-
-A Critic can say:
-
-- where the risk is
-- where the argument is weak
-- where the answer needs to be expanded
-
-A Verifier must decide based on the specification:
-
-- Pass
-- Fail
-- Repair
-- Replan
-- Escalate
-
-The two responsibilities are different.
-
-## Tasks that fit this split
-
-- long-form content generation
-- complex research
-- programming
-- plan making
-- multiple rounds of revision
-- work with explicit acceptance criteria
-
-## Main risks
-
-### Planner and Executor re-plan
-
-The Executor does not run the step. It redesigns the entire plan instead.
-
-### The Critic can always find a new problem
-
-No maximum Review Rounds, no acceptance threshold.
-
-### Verifier only looks at the writing
-
-The actual specification, tests and sources are never checked.
-
-### Too much information between roles
-
-Every role receives the full Context. The point of splitting is lost.
-
-![Figure 6-3 — Planner–Executor–Critic with Verification](/images/the-atlas-of-agent-design-patterns-part-6/planner-executor-critic-verification.png)
-
-> **Figure 6-3 ｜ Planner–Executor–Critic with Verification**  
-> The Planner manages the global plan, the Executor runs the current step, the Critic provides diagnosis, and the Verifier decides based on completion conditions whether to Continue, Repair or Replan.
-
----
-
-## 5. Debate: let different viewpoints attack each other
-
-Debate has multiple Agents take different positions, then a Moderator or Judge integrates them.
-
-```text
-Agent A: Support
-Agent B: Oppose
-Agent C: Risk Review
-        ↓
-Moderator / Judge
-        ↓
-Final Decision
-```
-
-## What does Debate fit?
-
-- multiple reasonable viewpoints
-- high-risk decisions
-- finding blind spots
-- evaluating Trade-offs
-- policy and strategy analysis
-- architecture option comparison
-- tasks where a counter-argument is required
-
-## Why Debate is valuable
-
-### Forces the system to put forward alternatives
-
-It stops the first answer from becoming the only frame.
-
-### Surfaces hidden assumptions
-
-Different roles challenge each other's premises.
-
-### Good for risk analysis
-
-You can explicitly add a Red Team or Risk Agent.
-
-## Risks of Debate
-
-### Viewpoints are Prompt-engineered, not really diverse
-
-Three Agents may just be repeating the same content in different tones.
-
-### Persuasion beats correctness
-
-The Judge may prefer the more fluent Agent.
-
-### Infinite debate
-
-Both sides keep restating their position.
-
-### Majority agreement can still be wrong
-
-If all Agents rely on the same wrong source, debate only makes the error more polished.
-
-## What does Production Debate need?
-
-- fixed round count
-- explicit topic
-- independent evidence requirement
-- no repeated arguments
-- Claim–Evidence format
-- Judge Rubric
-- External Verifier
-- a final Abstain option
-
----
-
-## 6. Voting: aggregate to choose the answer
-
-Voting has multiple Agents select from the candidates.
-
-Common methods:
-
-- Majority Vote
-- Weighted Vote
-- Rank Aggregation
-- Approval Voting
-- Confidence-weighted Vote
-
-```text
-Candidate A
-Candidate B
-Candidate C
-      ↓
-Agent Votes
-      ↓
-Aggregate
-      ↓
-Selected Candidate
-```
-
-## What does Voting fit?
-
-- there is an explicit candidate set
-- answers are easy to normalise
-- the evaluation standard is consistent
-- you need to reduce single-Judge bias
-
-## Voting is not verification
-
-Five Agents voting for the same answer does not mean the answer is correct.
-
-It only says:
-
-> Among this set of candidates and this group of voters, this answer is the most supported.
-
-Voting should be paired with:
-
-- Ground Truth
-- External Test
-- Source Verification
-- Constraint Check
-
-## Risks of Weighted Voting
-
-If the weight source is unreliable, the system is just multiplying bias by a coefficient.
-
-You need to know:
-
-- how the weights are calculated
-- whether they are adjusted per task type
-- whether past performance is still valid
-- whether the Agents use the same data and model
-
----
-
-## 7. Blackboard: shared workspace, not passing whole conversations around
-
-A Blackboard architecture has multiple Agents read and write a shared workspace.
-
-```text
-                Shared Blackboard
-        ┌──────────┼──────────┐
-    Researcher   Analyst    Writer
-        ↕            ↕          ↕
-       Facts      Findings     Draft
-```
-
-A Blackboard can hold:
-
-- Task Goal
-- Known Facts
-- Open Questions
-- Subtasks
-- Evidence
-- Candidate Solutions
-- Risks
-- Decisions
-- Draft Output
-- Worker Status
-
-## Strengths of Blackboard
-
-### Reduces point-to-point messaging
-
-Agents do not have to pass the full Context to every other Agent.
-
-### Intermediate results can be reused
-
-Multiple Workers can read verified facts.
-
-### Good for asynchronous collaboration
-
-Workers can update the shared state at different times.
-
-### Easy to observe overall progress
-
-The Blackboard becomes the shared view of the task.
-
-## Risks of Blackboard
-
-### Information pollution
-
-One Agent writes a wrong fact, and every other Agent reuses it.
-
-### Duplicates and conflicts
-
-The same fact may appear in multiple versions.
-
-### Data grows without bound
-
-Everything is kept, and the Blackboard gradually turns into a digital storage room.
-
-### Unclear permissions
-
-Every Agent can modify every entry.
-
-## What does Production Blackboard need?
-
-- Typed Entries
-- Source
-- Author
-- Created At
-- Version
-- Validation Status
-- Confidence
-- Read / Write Permission
-- Conflict Resolution
-- Expiry
-- Immutable Audit Log
-
-Best to categorise entries as:
-
-```text
-Proposed
-Verified
-Rejected
-Superseded
-```
-
-instead of treating all content as equally trustworthy.
-
----
-
-## 8. Peer-to-Peer: Agents collaborate directly
-
-A Peer-to-Peer architecture has no single central Supervisor.
-
-Agents can directly:
-
-- send tasks
-- request information
-- hand over results
-- transfer responsibility
-- negotiate the next step
-
-```text
-Agent A ↔ Agent B
-   ↕          ↕
-Agent C ↔ Agent D
-```
-
-## What does it fit?
-
-- highly distributed work
-- different Agents holding different resources
-- a central node is likely to become a bottleneck
-- task topology changes dynamically
-- multiple services collaborate autonomously
-
-## Strengths of Peer-to-Peer
-
-- no single Supervisor point
-- if one Agent fails, others can still work
-- flexible collaboration
-- fits dynamic networks
-
-## Main risks
-
-### Responsibility drift
-
-The task keeps moving between Agents and no one owns completion.
-
-### Message explosion
-
-Every Agent broadcasts to multiple Agents.
-
-### Circular hand-offs
-
-```text
-A → B → C → A
-```
-
-### Inconsistent state
-
-Different Agents have different views of task progress.
-
-### Permission propagation
-
-Agent A can use, indirectly through Agent B, tools that it would not have permission to use directly.
-
-## Required controls
-
-- Message Schema
-- Correlation ID
-- Task Owner
-- Hop Limit
-- TTL
-- Deduplication
-- Capability Registry
-- Permission Propagation Rules
-- Terminal Owner
-- Conflict Resolution
-
----
-
-## 9. Swarm: many lightweight Agents working in a distributed way
-
-A Swarm usually contains many lightweight Agents that cooperate through local rules and a shared goal.
-
-There may be no single central Planner.
-
-Each Agent decides its next step based on:
-
-- nearby messages
-- current state
-- local task
-- simple cooperation rules
-
-```text
-Agent 1 ↔ Agent 2 ↔ Agent 3
-   ↕          ↕          ↕
-Agent 4 ↔ Agent 5 ↔ Agent 6
-```
-
-## What does Swarm fit?
-
-- many small tasks that can be split
-- dynamic environments
-- redundancy and resilience
-- exploration-style problems
-- distributed resource scheduling
-- cases where local decisions are enough to drive the overall goal
-
-## Why Swarm is valuable
-
-### Resilience
-
-One Agent failing does not have to break the whole system.
-
-### Scalability
-
-You can add more lightweight Agents.
-
-### Good for local information
-
-Each Agent does not need to know the whole picture.
-
-### Possible emergent behaviour
-
-Simple rules can produce complex cooperation.
-
-## Main risks of Swarm
-
-### Emergent behaviour is not automatically good
-
-Unpredictable is not the same as intelligent.
-
-### Duplicate work
-
-Multiple Agents can pick up the same task at the same time.
-
-### Cost out of control
-
-Many small calls add up to a large bill.
-
-### No way to stop
-
-There is no central node to judge completion.
-
-### Very hard to debug
-
-A single result may come from many local interactions.
-
-### Unclear responsibility
-
-After a failure it is hard to locate which Agent or message caused it.
-
-## What does Production Swarm need?
-
-- Global Goal
-- Local Rules
-- Task Claiming
-- Lease / Lock
-- Duplicate Prevention
-- Global Budget
-- Message TTL
-- Maximum Hops
-- Convergence Metric
-- Stop Condition
-- Kill Switch
-- Observability
-- Human Override
-
-Do not mistake "lots of little circles on the diagram" for a digital bee colony magic ritual.
-
-A Swarm without cooperation rules is just a group of strangers burning Tokens at the same time.
-
-![Figure 6-4 — Debate, Voting, and Blackboard](/images/the-atlas-of-agent-design-patterns-part-6/debate-voting-blackboard.png)
-
-> **Figure 6-4 ｜ Debate, Voting, and Blackboard**  
-> Debate surfaces blind spots through viewpoint conflict. Voting aggregates candidates into a choice. Blackboard lets multiple Agents share intermediate state and verified information. The three solve different collaboration problems.
-
-![Figure 6-5 — Peer-to-Peer and Swarm Coordination](/images/the-atlas-of-agent-design-patterns-part-6/peer-to-peer-swarm-coordination.png)
-
-> **Figure 6-5 ｜ Peer-to-Peer and Swarm Coordination**  
-> Peer-to-Peer lets Agents hand tasks to each other and negotiate directly. Swarm relies on local rules for large-scale distributed cooperation. Both need Task Owner, Hop Limit, Message TTL, Budget, Stop Condition and Kill Switch.---
-
-## How does communication topology shape Multi-Agent?
-
-Multi-Agent differs not only in role names. It also differs in how messages flow.
-
-## Centralized
-
-```text
-Workers ↔ Supervisor
-```
-
-Strengths:
-
-- clear control
-- easy to observe
+- one primary context
 - clear responsibility
+- fewer handoffs
+- lower coordination cost
+- simpler tracing
+- easier stop conditions
+- less state synchronisation
 
-Risks:
+### Limits
 
-- Supervisor becomes the bottleneck
-- single point of failure
-- Context overload
+- context may become too large
+- one executor may need too many tools
+- skill and permission boundaries are difficult to isolate
+- independent subtasks cannot truly run concurrently
+- one mistaken assumption can contaminate the entire run
+- local detail may disappear in long tasks
 
-## Hierarchical
+### Prefer one agent when
 
-```text
-Top Supervisor
-├── Team Supervisor A
-│   ├── Worker A1
-│   └── Worker A2
-└── Team Supervisor B
-    ├── Worker B1
-    └── Worker B2
-```
+- one task owner is natural
+- the work fits one context and state model
+- parallel execution is not valuable
+- permissions do not need isolation
+- the handoff cost exceeds the benefit of separation
+- the same evaluator can check the complete result
 
-Strengths:
+The production default should be:
 
-- fits large tasks
-- reduces pressure on any single Supervisor
-- easy to govern by zone
+> Begin with the smallest organisational structure that can satisfy the task contract.
 
-Risks:
+## Role-based single workflow: separation without independent agents
 
-- information loss across layers
-- added latency
-- diluted responsibility
-
-## Blackboard
-
-```text
-Agents ↔ Shared Workspace
-```
-
-Strengths:
-
-- intermediate results can be reused
-- asynchronous collaboration
-- fewer point-to-point messages
-
-Risks:
-
-- information pollution
-- version conflicts
-- complex permissions
-
-## Peer-to-Peer
+A role-based workflow gives different stages different responsibilities:
 
 ```text
-Agents ↔ Agents
+Planner role
+ -> Writer role
+ -> Critic role
+ -> Finaliser role
 ```
 
-Strengths:
+It may use:
 
-- flexibility and resilience
-- no single centre
+- one model or several models
+- one shared workflow state
+- one central controller
+- predetermined transitions
+- no independently addressable worker lifecycle
 
-Risks:
+### Benefits
 
-- message explosion
-- circular hand-offs
-- inconsistent state
+- more focused prompts
+- explicit responsibility per stage
+- easier flow control
+- lower overhead than a conversational agent network
+- predictable handoffs
 
-## Swarm
+### Risks
+
+- roles differ only in name
+- shared blind spots survive every stage
+- the critic receives the generator's assumptions as truth
+- the system falsely reports independent agreement
+- all roles inherit the same excessive permissions
+
+Role-based workflows are valuable. They should simply be described honestly.
+
+## When multiple agents are justified
+
+Adding agents is useful when separation creates an operational benefit that cannot be obtained as cheaply with one workflow.
+
+### Natural task decomposition
+
+Subtasks have distinct objectives and can return structured results.
+
+### Parallel work
+
+Independent subtasks can run concurrently within resource limits.
+
+### Skill isolation
+
+Different workers need materially different prompts, tools, models, or context.
+
+### Permission isolation
+
+A reviewer should not have write permission. A database worker may need read-only credentials. A deployment worker may require approval.
+
+### Fault containment
+
+One worker can fail without invalidating all other work.
+
+### Information locality
+
+Different workers own different data sources or environments.
+
+### Genuine viewpoint diversity
+
+Independent evidence, models, assumptions, or roles may expose blind spots.
+
+Do not add agents merely because the framework makes `agents = []` easy to write.
+
+## Supervisor-worker: central delegation with explicit contracts
+
+A supervisor-worker design uses a central coordinator to assign and integrate work.
 
 ```text
-Many Local Interactions
-→ Emergent Global Result
+ Supervisor
+ / | \
+ Researcher Analyst Tester
+ \ | /
+ Structured worker results
+ -> Aggregator
+ -> Verifier
+ -> Final owner
 ```
 
-Strengths:
+The supervisor may be an LLM agent, deterministic service, workflow engine, or hybrid controller.
 
-- large-scale distribution
-- local autonomy
-- high redundancy
+### Supervisor responsibilities
 
-Risks:
+- interpret the global goal
+- decompose work
+- decide which tasks are ready
+- select workers by capability, permission, cost, and load
+- issue task contracts
+- track deadlines and status
+- detect duplication and worker failure
+- aggregate or route results
+- enforce budget and stop conditions
 
-- hard to predict
-- hard to stop
-- hard to attribute failures
+### Worker responsibilities
 
----
+- accept or reject the task contract
+- execute one bounded objective
+- use only permitted tools and data
+- preserve provenance
+- return a structured result
+- report blockers and partial completion
+- avoid silently redefining the task
 
-## Shared Memory is not dumping every Context into the same database
+### Worker contract
 
-Multi-Agent systems often need shared state.
+A worker should receive:
 
-But Shared Memory should not mean:
+```text
+Task ID
+Objective
+Inputs
+Dependencies
+Allowed tools
+Expected output schema
+Completion criteria
+Budget
+Deadline
+Failure policy
+Return address
+```
 
-> Every Agent's full conversation and tool result is preserved.
+### Structured worker result
 
-That causes:
+```json
+{
+ "task_id": "pricing-framework-a",
+ "status": "partial",
+ "facts": [],
+ "sources": [],
+ "unresolved": ["enterprise price not published"],
+ "cost": {"tool_calls": 4},
+ "return_to": "supervisor-1"
+}
+```
 
-- Context bloat
-- sensitive data spread
-- wrong information pollution
-- retrieval quality drop
-- duplicates
-- no way to tell which version is latest
+### Aggregation is a separate responsibility
 
-## What should Shared Memory actually hold?
+Workers may produce final-ready sections, but the system still needs a designated component that:
 
-- Task ID
-- Original Goal
-- Current Plan
-- Verified Facts
-- Open Questions
-- Step Status
-- Worker Assignment
-- Structured Results
-- Source References
-- Conflict Flags
-- Final Decisions
+- normalises formats
+- deduplicates findings
+- resolves or exposes conflicts
+- checks version consistency
+- preserves source links
+- determines whether missing work is acceptable
 
-## Different data should have different trust states
+That component may be the supervisor, a dedicated aggregator, or a finaliser.
+
+### Main risks
+
+- supervisor bottleneck
+- supervisor context overload
+- overlapping assignments
+- incompatible worker outputs
+- straggler workers
+- central point of failure
+- workers waiting for unnecessary approval
+- supervisor inventing conclusions not present in worker evidence
+
+### Production controls
+
+- worker capability registry
+- concurrency limit
+- deadline and heartbeat
+- reassignment policy
+- partial-result policy
+- typed result schema
+- final acceptance gate
+- supervisor failover where required
+
+<!-- Figure 6-2 insertion point -->
+
+![Figure 6-2 — Supervisor-Worker with Contract and Aggregation](/images/the-atlas-of-agent-design-patterns-part-6/supervisor-worker-contract.png)
+
+> **Figure 6-2｜Supervisor-Worker with Contract and Aggregation**  
+> A supervisor issues a task contract; workers execute within their allowed tools and permissions and return a structured result. Aggregator, verifier, and final owner remain separate responsibilities and must not be absorbed into the supervisor. Otherwise bottleneck, context overload, and self-grading converge on the same component.
+
+## Planner-executor-critic-verifier is a responsibility split, not necessarily multi-agent
+
+The pattern separates cognitive and control responsibilities:
+
+### Planner
+
+- interprets the goal
+- decomposes steps
+- defines dependencies
+- sets completion criteria
+- assigns budgets
+
+### Executor
+
+- performs the current step
+- uses tools
+- records evidence
+- reports status and blockers
+
+### Critic
+
+- diagnoses omissions, risk, or weak reasoning
+- supplies evidence and repair direction
+- does not certify completion
+
+### Verifier
+
+- evaluates the explicit acceptance contract
+- returns pass, fail, review, or inconclusive
+- decides whether repair or replanning is required
+
+### Final owner
+
+- publishes or returns the formal result
+- owns the terminal state
+- cannot bypass failed acceptance checks
+
+This design can be implemented as:
+
+- one model with role-specific prompts
+- several addressable agents
+- deterministic planner plus model executor
+- model critic plus external test verifier
+
+The name describes responsibility separation, not agent count.
+
+### A production flow
+
+```text
+Goal
+ -> Planner
+ -> Versioned plan and step contracts
+ -> Executor
+ -> Critic findings
+ -> Bounded repair
+ -> Verifier
+ -> pass -> Final owner
+ -> repair -> Executor
+ -> replan -> Planner
+ -> review -> Human approver
+ -> stop -> Terminal outcome
+```
+
+### Common failure
+
+The critic becomes the verifier and always discovers another stylistic improvement. The repair loop never reaches a contract-based terminal decision.
+
+<!-- Figure 6-3 insertion point -->
+
+![Figure 6-3 — Planner, Executor, Critic, Verifier, and Final Owner](/images/the-atlas-of-agent-design-patterns-part-6/planner-executor-critic-verifier.png)
+
+> **Figure 6-3｜Planner, Executor, Critic, Verifier, and Final Owner**  
+> Planning, execution, diagnosis, acceptance, and publication are five different responsibilities. Pressing them into one prompt turns the critic into another generator, and the repair loop never reaches a contract-based terminal decision.
+
+## Debate and voting are collective decision protocols
+
+Debate and voting answer how competing candidates are compared. They do not by themselves specify task ownership, messaging infrastructure, memory, or execution topology.
+
+## Debate: interactive challenge between positions
+
+A real debate requires interaction.
+
+```text
+Agent A proposes claim A
+ <-> Agent B challenges evidence
+ <-> Agent A responds
+ <-> Agent B exposes remaining disagreement
+ -> Judge or verifier
+```
+
+Independent proposals sent directly to a judge are an ensemble or panel, not necessarily a debate.
+
+### Potential value
+
+- exposes unstated assumptions
+- forces evidence to be defended
+- presents counterarguments
+- helps a judge inspect disagreement
+- may improve performance on some tasks and protocols
+
+Multi-agent debate research has reported gains in selected reasoning and oversight settings. Later work also shows that results depend on task, judge, agent strength, diversity, and protocol, and that voting can account for much of the apparent gain in some settings.
+
+### Risks
+
+- persuasion beats truth
+- confident agents dominate
+- agents converge through social pressure
+- all agents share the same false premise
+- the judge prefers writing style or model identity
+- debate cost exceeds the value of the disagreement
+- private reasoning narratives are treated as evidence
+
+### Production controls
+
+- assign genuinely different evidence or assumptions
+- keep the acceptance rubric fixed
+- blind model or role identity where practical
+- require citations or executable evidence
+- limit rounds
+- preserve unresolved disagreement
+- calibrate the judge
+- allow `inconclusive`
+
+## Voting: aggregate independent choices
+
+Voting combines candidate selections:
+
+```text
+Candidate A: 3 votes
+Candidate B: 2 votes
+Candidate C: 0 votes
+```
+
+Possible rules include:
+
+- majority
+- plurality
+- ranked choice
+- weighted vote
+- threshold approval
+- veto for safety or policy
+
+### Voting works best when
+
+- the candidate set is fixed
+- votes can be produced independently
+- voters have meaningful diversity
+- the aggregation rule matches the decision
+- a wrong majority can still be caught by verification
+
+### Voting is not factual verification
+
+Five agents can share the same outdated source or prompt bias.
+
+A majority result should still pass:
+
+- hard constraints
+- evidence checks
+- policy checks
+- external tests where available
+
+## Blackboard: coordinate through shared structured state
+
+The blackboard pattern predates LLM agents. Knowledge sources collaborate by reading and writing a shared problem-solving workspace under some control policy.
+
+For an LLM-based system, a blackboard can hold:
+
+- original goal
+- task ledger
+- proposed facts
+- verified facts
+- open questions
+- evidence
+- candidate solutions
+- conflicts
+- decisions
+- worker status
+
+```text
+Research agent <-> Shared blackboard <-> Analysis agent
+ ^
+ |
+ Reviewer agent
+```
+
+### Blackboard is not a conversation dump
+
+Do not store every prompt, completion, and tool transcript as equally trusted shared memory.
+
+Use typed entries:
 
 ```text
 Proposed
-  ↓
 Verified
-  ↓
-Accepted
-
 Rejected
 Superseded
 Expired
 ```
 
-## Each shared item should at least have
+Each item should carry:
 
-- Author Agent
-- Timestamp
-- Source
-- Version
-- Confidence
-- Validation Status
-- Scope
-- Expiry
-- Access Policy
+- entry ID
+- type
+- author
+- source
+- timestamp
+- version
+- validation state
+- confidence where meaningful
+- read and write policy
+- expiry
+- dependency links
 
----
+### Main risks
 
-## How should Agents hand off to each other?
+- one wrong fact contaminates all workers
+- concurrent writes conflict
+- stale entries remain active
+- permissions are too broad
+- the board grows without bound
+- downstream nodes do not invalidate after an upstream correction
 
-Do not just send a piece of natural language:
+### Production controls
+
+- schema per entry type
+- optimistic locking or transactions
+- provenance
+- conflict-resolution policy
+- write permissions
+- validation gate
+- retention policy
+- immutable audit log
+- downstream invalidation
+
+<!-- Figure 6-4 insertion point -->
+
+![Figure 6-4 — Blackboard Coordination with Typed Entries](/images/the-atlas-of-agent-design-patterns-part-6/blackboard-typed-entries.png)
+
+> **Figure 6-4｜Blackboard Coordination with Typed Entries**  
+> A blackboard is not a conversation dump. Each entry needs a type (Proposed, Verified, Rejected, Superseded, Expired), source, author, version, validation state, and read/write policy. Without these fields, one unverified fact can contaminate the whole worker network.
+
+## Peer-to-peer coordination: direct handoffs without one central supervisor
+
+In a peer-to-peer topology, agents communicate directly.
+
+```text
+Agent A <-> Agent B
+ ^ |
+ | v
+Agent D <-> Agent C
+```
+
+It can help when:
+
+- resources are distributed
+- task topology changes dynamically
+- a central coordinator would be a bottleneck
+- agents need local negotiation or handoff
+
+### Risks
+
+- circular delegation
+- message storms
+- inconsistent task state
+- responsibility drift
+- indirect permission escalation
+- no terminal owner
+- duplicate task claims
+
+### Required controls
+
+- message schema
+- task and correlation ID
+- sender and recipient identity
+- hop count
+- time to live
+- deduplication key
+- task owner
+- capability registry
+- delegation permission
+- terminal owner
+- cycle detection
+
+## Swarm-style systems: define the term before using it
+
+"Swarm" is an overloaded label.
+
+In this article, a swarm-style system means:
+
+> Many relatively lightweight agents coordinate through local information, task-claiming rules, and limited peer interactions, without a fixed central planner controlling every action.
+
+Some software frameworks use the word "swarm" for ordinary agent handoffs. Others use it for decentralised local-rule coordination. The name is therefore not an architecture specification.
+
+A usable design must still define:
+
+- who creates tasks
+- how work is claimed
+- how duplicate claims are prevented
+- what state is global
+- what state is local
+- how convergence is measured
+- who or what declares completion
+- how cost is capped
+- how the system is stopped
+
+### Potential strengths
+
+- no single coordination bottleneck
+- local fault tolerance
+- dynamic allocation
+- redundant exploration
+- scalable handling of many small tasks
+
+### Risks
+
+- emergent behaviour that is merely unpredictable
+- duplicate work
+- unbounded message and model cost
+- weak global consistency
+- hard-to-reproduce outcomes
+- unclear accountability
+- no natural stop condition
+
+### Production controls
+
+- task leases or locks
+- maximum active agents
+- message TTL and hop limits
+- global cost budget
+- local action budget
+- convergence metric
+- no-progress detection
+- kill switch
+- human override
+- full message and ownership trace
+
+A pile of small circles is not a swarm protocol. It is clip art until the coordination rules are specified.
+
+## Communication topology changes operational risk
+
+| Topology | Main strength | Main risk |
+|---|---|---|
+| Centralised | Clear control and final ownership | Bottleneck and single point of failure |
+| Hierarchical | Scales central control across teams | Information loss and latency across layers |
+| Blackboard | Reuses shared intermediate state | Pollution, conflict, and permission complexity |
+| Peer-to-peer | Flexible direct collaboration | Message cycles and responsibility drift |
+| Swarm-style | Local autonomy and dynamic allocation | Convergence, cost, and accountability |
+
+A system may combine topologies. Workers may report to a supervisor while reading verified facts from a blackboard. A team supervisor may coordinate locally inside a hierarchy.
+
+<!-- Figure 6-5 insertion point -->
+
+![Figure 6-5 — Communication Topology and Operational Risk](/images/the-atlas-of-agent-design-patterns-part-6/communication-topology-risks.png)
+
+> **Figure 6-5｜Communication Topology and Operational Risk**  
+> Topology is not decoration; it directly determines operational risk. Centralised systems suffer bottlenecks, hierarchical systems suffer latency, blackboards suffer pollution, peer-to-peer systems suffer cycles, and swarm-style systems suffer convergence and cost issues. Production systems often mix topologies, but each layer's responsibility must be defined before the mix is allowed.
+
+## Structured handoff contracts are the connective tissue
+
+Do not hand work over with:
 
 ```text
 Please continue the task.
 ```
 
-Use a structured Handoff Contract.
-
-For example:
+A handoff contract should contain:
 
 ```text
-Task ID:
-research-17
-
-Objective:
-Collect official pricing for Framework A
-
-Inputs:
-Official domain, evaluation rubric
-
-Allowed Tools:
-Search, Browser
-
-Expected Output:
-Pricing table with source and access date
-
-Completion Criteria:
-All public plans captured,
-or missing values explicitly marked
-
-Known Constraints:
-Do not use third-party pricing claims
-
-Current Status:
-Pending
-
-Deadline:
-10 minutes
-
-Return To:
-Supervisor
+Task ID
+Parent task
+Objective
+Inputs
+Known facts
+Open questions
+Allowed tools
+Data and permission scope
+Expected output schema
+Completion criteria
+Budget
+Deadline
+Failure policy
+Return address
 ```
 
-## Core fields in a Handoff Contract
-
-| Field | What it does |
-|---|---|
-| Task ID | Tracks the sub-task |
-| Objective | Defines the goal |
-| Inputs | Bounds the Context |
-| Allowed Tools | Controls permissions |
-| Expected Output | Standardises the format |
-| Completion Criteria | Judges completion |
-| Budget | Controls cost |
-| Deadline | Prevents infinite waiting |
-| Return To | Names where to send the result |
-| Failure Policy | Defines Retry, Fallback or Partial |
-
-A hand-off without a Contract is roughly equivalent to writing a sticky note with no address, throwing it into the wind, and hoping it lands on the right desk on time.
-
----
-
-## In Multi-Agent, who owns the final answer?
-
-This question has to be answered explicitly.
-
-Possible owners include:
-
-- Supervisor
-- Aggregator
-- Judge
-- Verifier
-- Finalizer
-- Human Approver
-
-But it cannot be:
-
-> Everyone owns it.
-
-If every Agent can write the final answer directly, you get:
-
-- multiple versions
-- overwrites
-- conflicting conclusions
-- no way to track responsibility
-- no way to know which result has been verified
-
-A Production system should designate:
+A handoff result should contain:
 
 ```text
-Single Final Owner
-```
-
-and define:
-
-- which inputs can be accepted
-- how conflicts are resolved
-- whether a Verifier is required
-- who has the right to formally complete the task
-- which state represents Final
-
----
-
-## Where does the cost of Multi-Agent come from?
-
-Multi-Agent cost does not only come from model calls.
-
-It also includes:
-
-- Prompt repetition
-- Context copying
-- Worker startup
-- message passing
-- state synchronisation
-- result aggregation
-- conflict resolution
-- duplicate retrieval
-- waiting on the slow Worker
-- Verifier and Judge
-- Retry and Reassignment
-
-Suppose a task needs:
-
-- 1 Supervisor plan
-- 4 Workers
-- 3 tool calls per Worker
-- 1 Critic
-- 1 Verifier
-- 1 Aggregator
-
-It looks like only a handful of roles, but the actual run may already involve more than ten model and tool interactions.
-
-## Common Multi-Agent latency issues
-
-### Straggler
-
-The whole task waits for the slowest Worker.
-
-### Sequential Handoff
-
-Roles run sequentially and cannot really run in parallel.
-
-### Context Serialization
-
-Many intermediate results need to be serialised and reloaded.
-
-### Review Bottleneck
-
-All results wait for the same Critic or Verifier.
-
-## Cost control methods
-
-- Max Agents
-- Max Worker Calls
-- Concurrency Limit
-- Per-worker Budget
-- Shared Retrieval Cache
-- Deduplication
-- Early Cancellation
-- Timeout
-- Partial Aggregation
-- Cheap Model for Simple Workers
-- Centralized Tool Results
-- Stop Low-value Branches
-
----
-
-## Main failure modes of Multi-Agent
-
-## 1. Duplicate Work
-
-Multiple Workers run the same task.
-
-### Countermeasures
-
-- Task Claiming
-- Unique Task ID
-- Shared Assignment Registry
-- Deduplication
-
-## 2. Responsibility Gap
-
-Every Agent assumes someone else is handling it.
-
-### Countermeasures
-
-- Single Task Owner
-- Completion Criteria
-- Return To
-- Terminal Owner
-
-## 3. Handoff Loss
-
-The hand-off loses requirements, sources or constraints.
-
-### Countermeasures
-
-- Structured Handoff Contract
-- Source References
-- Immutable Goal
-- Required Fields
-
-## 4. Conflicting Results
-
-Different Agents give opposite conclusions.
-
-### Countermeasures
-
-- Conflict Flag
-- Evidence Comparison
-- Aggregator
-- Verifier
-- Human Review
-
-## 5. Infinite Delegation
-
-Agent A hands to B, B hands to C, C hands back to A.
-
-### Countermeasures
-
-- Hop Limit
-- Delegation Graph
-- Cycle Detection
-- Maximum Depth
-
-## 6. Shared Memory Pollution
-
-Unverified information is used by every Agent.
-
-### Countermeasures
-
-- Proposed / Verified states
-- Write Permission
-- Source and Version
-- Validation Gate
-
-## 7. Worker Silence
-
-A Worker times out or crashes, and the Supervisor waits forever.
-
-### Countermeasures
-
-- Deadline
-- Heartbeat
-- Timeout
-- Reassignment
-- Partial Result Policy
-
-## 8. Judge Bias
-
-The Judge prefers writing quality, certain models or roles.
-
-### Countermeasures
-
-- Rubric
-- Blind Evaluation
-- External Tests
-- Calibration Set
-- Multiple Judges only when justified
-
-## 9. Cost Explosion
-
-Roles and messages keep multiplying.
-
-### Countermeasures
-
-- Global Budget
-- Per-agent Budget
-- Max Messages
-- Concurrency Limit
-- Early Stop
-
-## 10. No Final Owner
-
-Many results come out, but no one formally closes the task.
-
-### Countermeasures
-
-- Final Owner
-- Verifier
-- Terminal State
-- Audit Record---
-
-## The Multi-Agent Production control plane
-
-A mature Multi-Agent system needs a Control Plane on top of the Agents themselves.
-
-## Agent Registry
-
-Holds:
-
-- Agent ID
-- Role
-- Capabilities
-- Allowed Tools
-- Permissions
-- Model
-- Cost Tier
-- Current Load
-- Health Status
-
-## Task Registry
-
-Holds:
-
-- Task ID
-- Parent Task
-- Owner
-- Status
-- Dependencies
-- Deadline
-- Budget
-- Attempt Count
-
-## Message Bus
-
-Handles:
-
-- Message Schema
-- Delivery
-- Deduplication
-- Ordering
-- Retry
-- TTL
-- Dead-letter Queue
-
-## Shared State
-
-Holds:
-
-- Goal
-- Plan
-- Verified Facts
-- Worker Results
-- Conflicts
-- Decisions
-
-## Policy Layer
-
-Controls:
-
-- Tool Access
-- Data Access
-- Delegation Rights
-- Cost
-- Risk
-- Human Approval
-
-## Observability
-
-Tracks:
-
-- Agent Trace
-- Message Count
-- Tool Calls
-- Token Cost
-- Latency
-- Handoff Failures
-- Duplicate Work
-- Worker Timeout
-- Final Outcome
-
-## Kill Switch
-
-Stops the system when:
-
-- Cost Limit Exceeded
-- Message Storm
-- Delegation Cycle
-- No Progress
-- Security Violation
-- Human Cancellation
-
----
-
-## Full comparison of nine organisational patterns
-
-| Pattern | Main structure | Truly independent Agents | Central control | Shared state | Parallel ability | Relative cost | Main risk |
-|---|---|---:|---:|---:|---:|---:|---|
-| Single Agent | One execution unit | 1 | High | Single State | Low | Low | Context overload |
-| Role-based Single Agent | One model switching roles | Usually 1 | High | Shared | Low | Low to medium | False independence |
-| Supervisor–Worker | Central dispatch and aggregation | Multiple | High | Optional | High | Medium to high | Supervisor bottleneck |
-| Planner–Executor–Critic | Split by cognitive responsibility | Can be multiple | Medium to high | Usually yes | Medium | Medium to high | Role overlap |
-| Debate | Multiple viewpoints + Judge | Multiple | Medium | Optional | Medium | High | Persuasion bias |
-| Voting | Multiple voters | Multiple | Medium | Candidate set | High | Medium to high | Shared mistake across majority |
-| Blackboard | Shared workspace | Multiple | Medium | Core capability | High | High | Memory pollution |
-| Peer-to-Peer | Direct interconnection | Multiple | Low | Distributed or shared | High | High | Circular hand-off |
-| Swarm | Many local cooperations | Multiple | Very low | Local / distributed | Very high | Very high | Hard to predict or stop |
-
----
-
-## Task type vs organisational pattern
-
-| Task characteristic | Suggested pattern |
-|---|---|
-| One Context can finish the task | Single Agent |
-| Roles need separation but not true independence | Role-based Single Agent |
-| Sub-tasks are clear and need central governance | Supervisor–Worker |
-| Planning, execution and review need to be separated | Planner–Executor–Critic |
-| Competing viewpoints and counter-arguments are needed | Debate |
-| Fixed candidates fit an aggregated choice | Voting |
-| Multiple Agents need shared intermediate results | Blackboard |
-| A central node would become a bottleneck | Peer-to-Peer |
-| Many small tasks with dynamic distributed cooperation | Swarm |
-
----
-
-## When should you NOT use Multi-Agent?
-
-## 1. The task has no natural division of labour
-
-Just splitting roles for the look of it.
-
-## 2. Sub-tasks depend heavily on the same Context
-
-Splitting only forces you to keep re-synchronising.
-
-## 3. One Agent is already stable enough
-
-Adding roles only adds cost.
-
-## 4. There is no aggregation or acceptance mechanism
-
-Multiple outputs and no way to integrate them.
-
-## 5. Tools and data cannot be safely isolated
-
-More Agents only widens the risk surface.
-
-## 6. There is no observability or stopping ability
-
-You cannot see message flow, cost or task state.
-
-## 7. The latency budget is tight
-
-Multiple rounds of hand-off may not be acceptable.
-
-## 8. The problem needs single-point accountability
-
-High-risk approval, for example, should not be passed around between Agents that keep blaming each other.
-
----
-
-## A complete example: a multi-source research report
-
-Task:
-
-> Compare three Agent frameworks and recommend the one that fits a Production RAG setup.
-
-## Step 1: Supervisor creates sub-tasks
-
-```text
-Task A:
-Collect official architecture information
-
-Task B:
-Evaluate persistence and state management
-
-Task C:
-Evaluate observability and testing
-
-Task D:
-Evaluate cost and operational complexity
-```
-
-## Step 2: Workers execute
-
-Each Worker receives:
-
-- the same Evaluation Rubric
-- a different Objective
-- Allowed Sources
-- Expected Output Schema
-- Completion Criteria
-- Budget
-
-## Step 3: Blackboard holds the intermediate results
-
-```text
-Verified Facts
-Open Questions
-Source Links
+Status
+Completed requirements
+Evidence
+Unresolved items
 Conflicts
-Missing Data
+Cost used
+Side effects
+Next recommended action
 ```
 
-## Step 4: Critic checks
+### Why contracts matter
 
-- whether required dimensions are missing
-- whether the answer depends on third-party sources
-- whether different versions have been mixed
-- whether there are unflagged inferences
+- preserve the original goal
+- reduce context transfer
+- standardise aggregation
+- make ownership explicit
+- support retries and reassignment
+- make partial completion visible
+- prevent permission leakage
 
-## Step 5: Supervisor aggregates
+### Context should be scoped, not copied wholesale
 
-- deduplicates
-- unifies format
-- resolves conflicts
-- fills gaps
+Send the minimum information needed for the worker's contract:
 
-## Step 6: Verifier accepts
+- stable goal summary
+- relevant verified facts
+- permitted sources
+- constraints
+- expected output
+
+Do not automatically copy every internal conversation into every agent.
+
+## Shared state needs trust, version, and ownership
+
+Shared state should answer:
+
+- Which goal version is active?
+- Which tasks are ready, running, blocked, or complete?
+- Which facts are verified?
+- Which entries are proposals?
+- Which agent owns each task?
+- Which source supports each result?
+- Which result has been superseded?
+
+A useful shared-state model includes:
+
+```text
+Goal store
+Task ledger
+Assignment registry
+Evidence store
+Decision log
+Conflict register
+Final artefact registry
+```
+
+### Do not confuse shared state with long-term memory
+
+Shared workflow state exists to coordinate the current run. Long-term memory persists selected information across runs.
+
+The retention, permissions, and validation rules should differ.
+
+## Final ownership and acceptance must be explicit
+
+"Everyone owns the result" usually means no one owns it.
+
+A production system should designate:
+
+- **task owner**: accountable for the current task
+- **aggregator**: combines worker results
+- **verifier**: applies the acceptance contract
+- **final owner**: publishes or returns the formal output
+- **human approver**: authorises high-impact action where required
+
+One component may perform several roles, but the responsibilities must remain explicit.
+
+### Verifier is not always the final owner
+
+The verifier may say that a result passes. A separate finaliser may format and publish it. A human may still own legal or business authorisation.
+
+### Only one state should be formal final
+
+Prevent:
+
+- competing final answers
+- silent overwrites
+- unverified drafts being published
+- workers bypassing aggregation
+- disagreement disappearing without a decision record
+
+## The production multi-agent control plane
+
+Agents alone are not the production architecture. A control plane coordinates them.
+
+### Agent registry
+
+- agent ID
+- role
+- capabilities
+- allowed tools
+- data permissions
+- model and version
+- cost tier
+- current load
+- health status
+
+### Task ledger
+
+- task ID
+- parent task
+- owner
+- dependencies
+- status
+- deadline
+- budget
+- attempts
+- final outcome
+
+### Message layer
+
+- schema
+- sender and recipient
+- correlation ID
+- delivery state
+- ordering where required
+- deduplication
+- retry policy
+- TTL
+- dead-letter handling
+
+### Shared-state layer
+
+- goal
+- plan
+- verified facts
+- worker results
+- conflicts
+- decisions
+- final artefacts
+
+### Policy layer
+
+- tool access
+- data access
+- delegation rights
+- indirect permission checks
+- cost limits
+- risk gates
+- human approval
+
+### Observability
+
+- agent and task trace
+- message count
+- tool calls
+- token and money cost
+- worker latency
+- handoff failures
+- duplicate work
+- state conflicts
+- final outcome
+
+### Kill switch
+
+Stop or pause the system when:
+
+- cost limit is exceeded
+- a message storm occurs
+- a delegation cycle is detected
+- no measurable progress occurs
+- a security boundary is crossed
+- state cannot be reconciled
+- a human cancels the run
+
+## Cost and latency are coordination problems
+
+Multi-agent cost includes more than model inference:
+
+- prompt repetition
+- context packaging
+- worker startup
+- message transport
+- state persistence
+- aggregation
+- conflict resolution
+- waiting for stragglers
+- judge and verifier calls
+- retries and reassignment
+
+### Common latency patterns
+
+#### Straggler
+
+The final result waits for the slowest required worker.
+
+#### Sequential handoff
+
+A design advertised as parallel runs one role after another.
+
+#### Review bottleneck
+
+Every output waits for one critic or verifier.
+
+#### Context serialisation
+
+Large intermediate artefacts are repeatedly copied and summarised.
+
+### Controls
+
+- maximum agents
+- maximum worker calls
+- bounded concurrency
+- per-worker and global budgets
+- shared retrieval cache
+- deduplication
+- deadline
+- early cancellation
+- partial aggregation
+- model selection by task difficulty
+- cancellation propagation
+
+## Main failure modes
+
+### Duplicate work
+
+Two workers claim the same task.
+
+Controls: unique task ID, lease, assignment registry, deduplication.
+
+### Responsibility gap
+
+Every agent assumes another agent owns the requirement.
+
+Controls: task owner, return address, completion contract, final owner.
+
+### Handoff loss
+
+Constraints, evidence, or scope disappear during transfer.
+
+Controls: structured contract, immutable goal reference, required fields.
+
+### Conflicting results
+
+Workers use different versions or reach opposite conclusions.
+
+Controls: provenance, conflict register, aggregator, verifier, human review.
+
+### Infinite delegation
+
+A delegates to B, B to C, and C back to A.
+
+Controls: delegation graph, hop limit, cycle detection, maximum depth.
+
+### Shared-state pollution
+
+An unverified proposal becomes a fact for every agent.
+
+Controls: trust states, validation gate, write permissions, versioning.
+
+### Worker silence
+
+A worker fails while the system waits forever.
+
+Controls: deadline, heartbeat, timeout, reassignment, partial policy.
+
+### Judge bias
+
+The judge favours style, model identity, or majority confidence.
+
+Controls: rubric, blind evaluation, calibration, external evidence.
+
+### Permission laundering
+
+An agent obtains a restricted effect indirectly through another agent.
+
+Controls: end-to-end authorisation on the action, not only sender identity.
+
+### No final owner
+
+Several outputs exist, but no component can formally complete the task.
+
+Controls: final owner, terminal state, acceptance record.
+
+## Choosing an organisational design
+
+Start with the simplest structure that satisfies the actual separation need.
+
+| Need | Starting design |
+|---|---|
+| One context and one owner are enough | Single agent |
+| Role focus without independent workers | Role-based workflow |
+| Clear subtasks with central governance | Supervisor-worker |
+| Separate planning, execution, diagnosis, and acceptance | Responsibility split, single or multi-agent |
+| Interactive challenge of competing claims | Debate protocol |
+| Aggregate independent fixed choices | Voting protocol |
+| Reuse shared intermediate results | Blackboard coordination |
+| Direct dynamic handoffs | Peer-to-peer topology |
+| Many small tasks with local-rule allocation | Explicitly defined swarm-style protocol |
+
+Before adding an agent, ask:
+
+1. What independent responsibility will it own?
+2. Does it need separate state, permissions, tools, or lifecycle?
+3. What contract will it receive?
+4. What structured result will it return?
+5. Who aggregates and verifies its output?
+6. What happens if it is late, wrong, duplicated, or silent?
+7. Is the expected quality or latency gain larger than the coordination cost?
+
+## When not to use multi-agent
+
+Avoid it when:
+
+- the task has no natural division
+- all subtasks need the same large context
+- one agent already meets the acceptance contract
+- no aggregation or verification mechanism exists
+- permission boundaries cannot be enforced
+- the latency budget is tight
+- communication is more expensive than the work
+- one accountable decision-maker is required
+- the system cannot observe or stop the interaction network
+
+## Complete example: multi-source framework research
+
+The task is:
+
+> Compare three agent frameworks and recommend one for a production RAG system.
+
+### Step 1: task admission
+
+The controller checks:
+
+- scope
+- sources allowed
+- time and tool budget
+- whether independent subtasks justify parallel workers
+
+### Step 2: supervisor creates contracts
+
+```text
+Task A: official architecture and execution model
+Task B: persistence and state management
+Task C: observability, testing, and evaluation
+Task D: deployment and operational complexity
+```
+
+Every contract includes the same evaluation rubric, but a different objective.
+
+### Step 3: workers execute
+
+Workers return:
+
+- structured findings
+- official sources
+- version dates
+- unresolved fields
+- cost and status
+
+### Step 4: blackboard stores typed entries
+
+```text
+Proposed facts
+Verified facts
+Open questions
+Conflicts
+Missing evidence
+```
+
+### Step 5: critic diagnoses gaps
+
+- missing dimensions
+- third-party evidence where official evidence is required
+- mixed framework versions
+- unsupported inference
+
+### Step 6: aggregator combines results
+
+- normalises schema
+- deduplicates facts
+- preserves disagreement
+- identifies missing evidence
+
+### Step 7: verifier applies the contract
 
 - official-source coverage
 - required fields
-- unknowns explicitly marked
-- whether the Recommendation has evidence
+- explicit unknowns
+- recommendation supported by evidence
 
-## Step 7: Final Owner outputs
+### Step 8: final owner publishes one result
 
-A Supervisor or Finalizer produces the single formal answer.
+The system records the final artefact and the acceptance decision.
 
-This architecture uses:
+This architecture may use supervisor-worker, blackboard coordination, critic, verifier, and final ownership. It does not need debate, peer-to-peer messaging, or a swarm.
 
-- Supervisor–Worker
-- Blackboard
-- Critic
-- Verifier
-- Shared State
-- Final Owner
+The value comes from clear responsibility and evidence flow, not from agent count.
 
-But it does not need a Swarm, and it does not need Peer-to-Peer.
+## Production checklist
 
-The value of the architecture comes from clear division of labour, not from how many roles it has.
+### Need and identity
 
----
+- Does each agent own a distinct responsibility?
+- Is the agent operationally addressable?
+- Are state, authority, and lifecycle boundaries clear?
+- Would a role-based workflow be enough?
 
-## Production Multi-Agent checklist
+### Contracts and ownership
 
-## Do you really need multiple Agents?
+- Does every task have an owner?
+- Is the handoff contract structured?
+- Is the return address explicit?
+- Is there one formal final owner?
 
-- Are there naturally separable sub-tasks?
-- Do you need parallel execution?
-- Do you need skill or permission isolation?
-- Is the gain from splitting bigger than the hand-off cost?
-- Is one Agent already enough?
+### Communication
 
-## Roles and responsibilities
+- Are messages typed?
+- Are correlation ID, TTL, deduplication, and hop limits defined?
+- Can cycles and message storms be detected?
+- Is dead-letter handling available?
 
-- Does every Agent have a single clear responsibility?
-- Is there a Final Owner?
-- Is Return To defined?
-- Are Completion Criteria defined?
-- Have you avoided role overlap?
+### Shared state
 
-## Communication
+- Are proposed and verified entries separated?
+- Are source, author, version, and validation status stored?
+- Are concurrent writes controlled?
+- Can stale downstream results be invalidated?
 
-- Is there a structured Message Schema?
-- Is there a Correlation ID?
-- Is there a Hop Limit and TTL?
-- Can you detect cycles and duplicate messages?
-- Is there a Dead-letter Queue?
+### Permission and safety
 
-## State and Memory
+- Are tool and data permissions per agent?
+- Are delegated actions reauthorised end to end?
+- Do high-impact actions require approval?
+- Can a worker modify the acceptance criteria?
 
-- Do you separate Proposed and Verified?
-- Do you store Source, Author, Version?
-- Do you restrict Read / Write Permission?
-- Is there Conflict Resolution?
-- Is there Expiry?
+### Cost and stopping
 
-## Cost and stopping
+- Are global and per-agent budgets defined?
+- Is concurrency bounded?
+- Are deadlines and cancellation propagated?
+- Is no-progress detection available?
+- Is there a kill switch?
 
-- Is there a Global Budget?
-- Is there a Per-agent Budget?
-- Is there a Max Agents?
-- Is there a Concurrency Limit?
-- Is there No-progress Detection?
-- Is there a Kill Switch?
+### Verification
 
-## Verification and governance
+- Are worker outputs aggregated before publication?
+- Is disagreement preserved until resolved?
+- Does the verifier use observable evidence?
+- Can the run end as partial, blocked, or inconclusive?
 
-- Are Worker results aggregated and verified?
-- Is there a Tool Policy?
-- Is there a Delegation Permission?
-- Do high-risk operations require Human Approval?
-- Can the full Agent Trace be reproduced?
+## Conclusion
 
----
+Multi-agent architecture is not the art of placing more role cards on a canvas.
 
-## Conclusion of this article
+It is the engineering of:
 
-The value of Multi-Agent does not come from putting more Agent cards on the diagram.
+- execution identity
+- responsibility boundaries
+- communication topology
+- shared state
+- collective decision protocols
+- authority
+- final ownership
+- operational control
 
-What it really solves is:
+The main mechanisms solve different problems:
 
-- task division of labour
-- skill isolation
-- permission isolation
-- parallel execution
-- competing viewpoints
-- shared intermediate results
-- distributed collaboration
-- system resilience
+- **Single agent** keeps ownership and state together.
+- **Role-based workflow** separates responsibilities without necessarily creating independent agents.
+- **Supervisor-worker** centralises task assignment and integration.
+- **Planner-executor-critic-verifier** separates cognitive and acceptance responsibilities and may be implemented with one or several agents.
+- **Debate** adds interactive challenge between competing positions.
+- **Voting** aggregates independent choices.
+- **Blackboard** coordinates through typed shared state.
+- **Peer-to-peer** enables direct handoff without one central supervisor.
+- **Swarm-style coordination** distributes many small decisions through explicitly defined local rules.
 
-The main patterns covered here are:
-
-- **Single Agent**: one execution unit finishes the whole task
-- **Role-based Single Agent**: the same model switches roles across stages
-- **Supervisor–Worker**: central decomposition, dispatch, aggregation and acceptance
-- **Planner–Executor–Critic**: split by cognitive responsibility
-- **Debate**: surface blind spots through opposing positions
-- **Voting**: aggregate candidates into a selection
-- **Blackboard**: collaborate through a shared workspace
-- **Peer-to-Peer**: Agents hand off and negotiate directly
-- **Swarm**: many lightweight Agents cooperating through local rules
-
-More Agents does not automatically mean higher quality.
-
-A truly mature Multi-Agent system must be able to answer:
+A production system should be able to answer:
 
 ```text
-Who owns what?
-Who can use which tools?
-Where do results go back to?
-Are the shared data items verified?
-Who decides when there is a conflict?
-When is the task officially complete?
-How does it stop when cost goes out of control?
+Who owns each task?
+What may each agent do?
+What state does each agent trust?
+How are messages identified and bounded?
+Who resolves conflicts?
+Who verifies the result?
+Who owns the final output?
+What stops the system?
 ```
 
-If those questions have no answer, Multi-Agent only takes one black box apart into many smaller black boxes and strings them into a maze with arrows.
+Without those answers, multi-agent design merely replaces one black box with a flock of smaller black boxes and a spaghetti nest of arrows.
 
-The next article enters the sixth architectural dimension:
+Part 7 moves to the final dimension in the map:
 
-> How are Context, State, Memory and RAG actually different in an Agent?
+> How are context, workflow state, working memory, long-term memory, and RAG different?
 
-Part 7 will fully compare Working Memory, Episodic Memory, Semantic Memory, Procedural Memory, User Memory, Shared Memory, as well as memory write, retrieval, expiry, conflict and pollution governance.
+## References
+
+- [Wu et al., *AutoGen: Enabling Next-Gen LLM Applications via Multi-Agent Conversation*](https://arxiv.org/abs/2308.08155)
+- [Li et al., *CAMEL: Communicative Agents for Mind Exploration of Large Scale Language Model Society*](https://arxiv.org/abs/2303.17760)
+- [Hong et al., *MetaGPT: Meta Programming for A Multi-Agent Collaborative Framework*](https://arxiv.org/abs/2308.00352)
+- [Qian et al., *ChatDev: Communicative Agents for Software Development*](https://arxiv.org/abs/2307.07924)
+- [Du et al., *Improving Factuality and Reasoning in Language Models through Multiagent Debate*](https://arxiv.org/abs/2305.14325)
+- [Choi et al., *Debate or Vote: Which Yields Better Decisions in Multi-Agent Large Language Models?*](https://arxiv.org/abs/2508.17536)
+- [Wu et al., *Can LLM Agents Really Debate? A Controlled Study of Multi-Agent Debate in Logical Reasoning*](https://arxiv.org/abs/2511.07784)
+- [Nii, *The Blackboard Model of Problem Solving and the Evolution of Blackboard Architectures*](https://doi.org/10.1609/aimag.v7i2.537)
+- [Guo et al., *Large Language Model based Multi-Agents: A Survey of Progress and Challenges*](https://arxiv.org/abs/2402.01680)
+
+## Series
+
+| Part | Topic |
+|---:|---|
+| 1 | Beyond ReAct: A Six-Dimensional Map of LLM Agent Architectures |
+| 2 | Agent Execution Paths: Direct Calls, Pipelines, Routers, State Machines, and DAGs |
+| 3 | ReAct, Plan-and-Execute, Adaptive Planning, and HTN |
+| 4 | From Single-Path Reasoning to Trees, Graphs, MCTS, and LATS |
+| 5 | Verification, Recovery, and Self-Correction |
+| 6 | Multi-Agent Organisation, Coordination, and Control |
+| 7 | Agent Memory |
+| 8 | Production Agent Architectures |
+| 9 | How to Choose an Agent Architecture |
+| 10 | Implementing Agent Patterns with Modern Frameworks |
