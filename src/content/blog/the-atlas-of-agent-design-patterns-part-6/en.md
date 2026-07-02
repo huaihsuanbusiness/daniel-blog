@@ -8,7 +8,6 @@ series: "The Atlas of Agent Design Patterns"
 seriesOrder: 6
 ---
 
-# The Atlas of Agent Design Patterns Part 6 | Multi-Agent Organisation, Coordination, and Control
 
 The previous articles covered:
 

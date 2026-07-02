@@ -8,7 +8,6 @@ series: "Agent 設計模式圖鑑"
 seriesOrder: 6
 ---
 
-# Agent 設計模式圖鑑 Part 6｜Multi-Agent 的組織、協作與控制
 
 前幾篇文章依序處理：
 

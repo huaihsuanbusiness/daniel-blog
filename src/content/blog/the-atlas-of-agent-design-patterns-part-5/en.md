@@ -8,7 +8,6 @@ series: "The Atlas of Agent Design Patterns"
 seriesOrder: 5
 ---
 
-# The Atlas of Agent Design Patterns Part 5 | Verification, Recovery, and Self-Correction
 
 Imagine a coding agent receives this task:
 
