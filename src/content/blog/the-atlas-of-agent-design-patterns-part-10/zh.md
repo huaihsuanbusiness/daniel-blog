@@ -1,972 +1,208 @@
 ---
-title: "Agent 設計模式圖鑑 Part 10｜如何用 Agent Framework 實作這些模式：從概念到程式架構"
-description: "比較 Native Code、LangGraph、LlamaIndex Workflows、CrewAI、OpenAI Agents SDK、AutoGen 與 Microsoft Agent Framework，說明 State Machine、RAG Workflow、Multi-Agent、Computer-use 與 Production Control Plane 應如何落地。"
+title: "Agent 設計模式圖鑑 Part 10｜不被 Framework 綁架的 Agent 模式實作"
+description: "以 Architecture-first 方法比較 Native Code、LangChain 與 LangGraph、LlamaIndex Workflows、CrewAI、OpenAI Agents SDK、AutoGen、Semantic Kernel 與 Microsoft Agent Framework。"
 date: 2026-07-01T15:23:00
 lang: zh
 categories: ["AI"]
 series: "Agent 設計模式圖鑑"
 seriesOrder: 10
 bonus: true
-last_reviewed: "2026-06-30"
+last_reviewed: "2026-07-01"
 ---
 
-## Implementing Agent Patterns with Modern Frameworks
 
-> **更新基準：2026-06-30**
-> 這篇是整個系列唯一刻意依賴具名 Framework 的文章。框架 API、產品名稱、部署服務與維護狀態都可能改變，實作前應再次核對官方文件。
+> **檢查基準：2026 年 7 月 1 日**
+>
+> 本文刻意討論具名 Framework。API、Package Name、Deployment Service、Support Status 與 Migration Guidance 都可能改變。正式實作前必須重新核對官方文件並固定通過測試的版本。
 
-前九篇，我們刻意不依賴特定 Framework。
+前九篇聚焦 Architecture Pattern，而不是產品。
 
-原因很簡單：
+這個分離很重要：
 
-- ReAct 不屬於某一家公司
-- State Machine 不屬於某一套 SDK
-- Supervisor–Worker 不是某個產品功能
-- Working Memory 也不等於某一種資料庫
+- ReAct 不屬於某一套 SDK。
+- State Machine 不是 Feature Checklist。
+- Multi-agent 不是一組 Persona。
+- Memory 不是 Vector Database。
+- Human Approval 不是 Callback。
+- Checkpoint 不是 Business Transaction。
+- Trace 不是 Audit Record。
 
-這些是架構模式。
+Framework 可以減少重複工程，也可能把 Architecture 藏起來，最後 Team 只能用 Package Class Name 解釋系統。
 
-Framework 則是把模式落地的工具。
-
-需要先回答的問題是：
-
-> **知道自己要實作哪種模式之後，該選哪種 Framework、何時不用 Framework，以及如何避免架構被單一 Framework 綁死？**
-
----
-
-## 一句話定義
-
-> **Agent Framework 是實作與執行 Agent Pattern 的軟體抽象、Runtime 與工具集合；它不是架構決策本身。**
-
-例如，你已經決定系統需要：
+正確順序是：
 
 ```text
-Router
- ↓
-State Machine
- ↓
-RAG Retrieval
- ↓
-Agentic Research Node
- ↓
-Verifier
- ↓
-Human Approval
+Domain Contract
+  -> Architecture and Control Pattern
+  -> Framework or Runtime
+  -> Infrastructure and Operations
 ```
 
-接下來才是 Framework 問題：
+而不是：
 
-- State 與 Transition 要自己寫，還是交給 LangGraph？
-- Retrieval 與 Document Pipeline 是否以 LlamaIndex 為中心？
-- Multi-Agent 是否真的需要 CrewAI、AutoGen 或 Microsoft Agent Framework？
-- Agent Loop、Handoff、Guardrail 與 Trace 是否適合 OpenAI Agents SDK？
-- 整個流程其實是否只需要普通 Python？
+```text
+Framework
+  -> Whatever the Tutorial Makes Easy
+```
 
-![Figure 10-1 — Patterns, Frameworks, and Infrastructure](/images/the-atlas-of-agent-design-patterns-part-10/figure-10-1-patterns-frameworks-infrastructure.png)
+本文比較 2026 年的主要實作路線，並說明如何讓 Domain State、Tool Contract、Verification、Policy 與 Side Effect 遠離 Framework-specific Gravity Well。
 
-> **Figure 10-1｜Patterns, Frameworks, and Infrastructure**
-> Pattern 定義系統如何設計；Framework 提供實作抽象與 Runtime；Infrastructure 負責 Queue、Database、Sandbox、Observability、Deployment 與 Security。三者不能混為同一層。
+## Framework 問題應出現在 Architecture Decision 之後
 
----
+Framework 真正提供系統所需的 Abstraction 或 Runtime 時，才有價值。
 
-## 一、先建立正確的三層模型
+例如：
 
-### Layer 1：Architecture Patterns
+- Durable State 與 Resume
+- Agent Loop
+- Graph 或 Event Orchestration
+- Tool Schema
+- Handoff
+- Streaming
+- Tracing
+- Human Interruption
+- Multi-agent Messaging
+- Provider Integration
 
-這一層包含：
+Framework 不會替你決定：
+
+- User 可以讀哪些 Data
+- Action 是否有法律授權
+- 什麼才算完成
+- Retry 是否安全
+- 哪個 Evidence 支持 Claim
+- Side Effect 是否只發生一次
+- 誰負責 Final Result
+
+這些是 Application 與 Governance Decision。
+
+## 四層實作模型
+
+舊版使用 Pattern、Framework、Infrastructure 三層。
+
+它缺少一個應位於所有層上方的結構：Domain Contract。
+
+### Layer 1：Domain 與 Acceptance Contract
+
+這一層定義：
+
+- User Goal
+- Domain State
+- Accepted Evidence
+- Prohibited Outcome
+- Tool 與 Side-effect Contract
+- Permission
+- Terminal Outcome
+- Final Owner
+
+例如：
+
+```text
+Research Answer 只有在每個 Material Claim 都有 Approved Evidence 時才算完成。
+
+Code Repair 只有在 Required Test、Build 與 Diff Check 通過時才算完成。
+
+Payment 只有在 Deterministic Validation 與 Authorised Approval 後才可執行。
+```
+
+這些 Contract 不應由 Framework Type 定義。
+
+### Layer 2：Architecture 與 Control Pattern
+
+這一層定義 System 如何運作：
 
 - Direct
 - Pipeline
 - Router
 - State Machine
 - DAG
-- ReAct
+- Bounded ReAct
 - Plan-and-Execute
+- Adaptive Replanning
 - Generate-and-Test
 - Supervisor–Worker
 - Verifier
-- Working Memory
 - Human Approval
+- Working Memory
 
-它回答：
+一套 Framework 可以實作多種 Pattern。單一 Framework Name 無法說明 System 用了哪些模式。
 
-> 系統應該怎麼運作？
+### Layer 3：Framework、SDK 或 Workflow Runtime
 
-### Layer 2：Framework and Runtime
+這一層提供 Implementation Primitive：
 
-這一層包括：
-
-- Native Python
+- Native Code 或 Existing Workflow Engine
+- LangChain Agents
 - LangGraph
-- LlamaIndex Workflows
+- LlamaIndex Workflows 與 AgentWorkflow
 - CrewAI
 - OpenAI Agents SDK
 - AutoGen
+- Semantic Kernel
 - Microsoft Agent Framework
 
-它回答：
+這些產品不是相同類別。有些提供 High-level Agent Loop，有些提供 Low-level Orchestration，有些以 Data 與 Retrieval 為中心，有些以 Team 為中心，有些是大型 Platform Ecosystem 內的 Migration Path。
 
-> 我們用什麼抽象、Runtime 與 API 實作？
+### Layer 4：Infrastructure 與 Operations
 
-### Layer 3：Infrastructure and Operations
+這一層提供：
 
-這一層包括：
-
-- PostgreSQL
-- Redis
-- Vector Database
+- Database
 - Queue
 - Object Storage
 - Sandbox
-- Secret Manager
-- Trace Backend
-- Policy Engine
-- Audit Log
+- Secret Management
+- Policy Enforcement
+- Deployment
+- Telemetry Backend
+- Business Audit
+- Backup
+- Incident Response
+- Disaster Recovery
 
-它回答：
+Checkpoint API 不會自動提供 Tenant Isolation、Retention Policy、Backup Recovery 或 Transactional Side-effect Safety。
 
-> 系統如何持久化、部署、隔離、觀察與運營？
+![Figure 10-1｜Domain Contract、Architecture Pattern、Framework、Infrastructure 四層實作模型](/images/the-atlas-of-agent-design-patterns-part-10/four-layer-implementation-model.png)
 
-### 三個常見錯誤
+## 先定義 Framework-neutral Contract
 
-#### 把 Framework 當成 Pattern
+Framework Portability 不是把所有 Call 包進一個 Generic Interface 就完成。
 
-```text
-我們的架構是 LangGraph。
-```
+真正需要由 Application 擁有的是關鍵 Semantics。
 
-這句話資訊不足。LangGraph 裡面可以實作 Pipeline、State Machine、ReAct、Plan-and-Execute 與 Human-in-the-loop。
+### Domain State
 
-#### 把 Framework 當成 Infrastructure
-
-Framework 提供 Checkpoint API，不代表已完成資料備份、Tenant Isolation、Production Queue 與 Disaster Recovery。
-
-#### 把 Tool Integration 當成 Safety
-
-能呼叫 Tool，不代表有最小權限、Approval、Idempotency 與 Post-condition Verification。
-
----
-
-## 二、2026 年的實作選項地圖
-
-本文比較七條實作路線：
-
-1. Native Code
-2. LangGraph
-3. LlamaIndex Workflows
-4. CrewAI
-5. OpenAI Agents SDK
-6. AutoGen
-7. Microsoft Agent Framework
-
-它們不是同一類產品。有些偏 Stateful Orchestration，有些偏 Data / RAG，有些偏 Lightweight Agent Loop，有些偏 Multi-Agent，有些偏 Microsoft Enterprise Stack。
-
-因此，不能只用一張「功能有沒有打勾」的表格決定。
-
----
-
-## 三、Native Code：最被低估的選項
-
-Native Code 指使用普通程式結構實作：
-
-- Function
-- Class
-- Enum
-- Queue
-- Database
-- State Table
-- Retry Library
-- Background Worker
-- HTTP API
-
-例如：
+用 Application Term 定義 State：
 
 ```python
-from enum import Enum
-from pydantic import BaseModel
+from enum import StrEnum
+from pydantic import BaseModel, Field
 
 
-class Status(str, Enum):
-    PLAN = "plan"
-    RETRIEVE = "retrieve"
-    VERIFY = "verify"
-    COMPLETE = "complete"
+class RunStatus(StrEnum):
+    ADMITTED = "admitted"
+    RETRIEVING = "retrieving"
+    VERIFYING = "verifying"
+    WAITING_FOR_APPROVAL = "waiting_for_approval"
+    COMPLETED = "completed"
+    PARTIAL = "partial"
     FAILED = "failed"
 
 
-class TaskState(BaseModel):
-    task_id: str
-    status: Status
-    retry_count: int = 0
-    plan_version: int = 1
-    last_error: str | None = None
-```
-
-接著用普通控制流程：
-
-```python
-def run_task(state: TaskState) -> TaskState:
-    if state.status == Status.PLAN:
-        return plan(state)
-    if state.status == Status.RETRIEVE:
-        return retrieve(state)
-    if state.status == Status.VERIFY:
-        return verify(state)
-    return state
-```
-
-### 適合什麼？
-
-- 流程很小
-- 狀態很少
-- 團隊不想引入新的 Runtime
-- 業務規則遠多於 Agent 行為
-- 需要極高可控性
-- 一個 Queue + Database 已足夠
-
-### 優點
-
-- 最低抽象負擔
-- 容易 Debug
-- 依賴少
-- 容易做 Unit Test
-- 遷移成本低
-
-### 缺點
-
-需要自己處理：
-
-- Checkpoint
-- Resume
-- Event Streaming
-- Human Interruption
-- Trace
-- State Migration
-- Tool Loop
-
-### 判斷原則
-
-> 如果用二十到五十行清楚的普通程式就能完成，不要先引入一個新的 Agent Runtime。
-
----
-
-## 四、LangGraph：適合低階、明確、Stateful 的 Orchestration
-
-LangGraph 的核心定位是低階 Agent Orchestration Runtime。
-
-它適合：
-
-- State Machine
-- Graph Workflow
-- Long-running Agent
-- Durable Execution
-- Human-in-the-loop
-- Checkpoint / Resume
-- 明確控制 Node 與 Edge
-- Deterministic + Agentic Hybrid
-
-### 心智模型
-
-```text
-State
- ↓
-Node
- ↓
-Edge
- ↓
-New State
-```
-
-簡化骨架：
-
-```python
-from langgraph.graph import StateGraph, START, END
-
-builder = StateGraph(AppState)
-builder.add_node("route", route_request)
-builder.add_node("retrieve", retrieve_documents)
-builder.add_node("agent", run_agent)
-builder.add_node("verify", verify_result)
-
-builder.add_edge(START, "route")
-builder.add_conditional_edges("route", choose_path)
-builder.add_edge("retrieve", "verify")
-builder.add_edge("agent", "verify")
-builder.add_edge("verify", END)
-
-graph = builder.compile(checkpointer=checkpointer)
-```
-
-### 最適合的模式
-
-- Router
-- State Machine
-- DAG-like Graph
-- Plan-and-Execute
-- Adaptive Replanning
-- Human Approval
-- Retry / Repair / Replan
-- Long-running Workflow
-
-### 優點
-
-- State 是一等公民
-- Node 與 Edge 邊界清楚
-- 固定節點與 Agentic Node 可以共存
-- 適合 Pause / Resume
-
-### 缺點
-
-- 抽象較低階
-- Graph 不等於正確架構
-- 團隊需要理解 Checkpoint 與 Side Effect 的差別
-- 大型 Graph 容易變成另一種義大利麵，只是這次麵條會發光
-
-### 適合誰？
-
-- 想明確掌控流程的工程團隊
-- 已知道自己的 State Machine 長什麼樣
-- 需要長任務、審批與恢復
-- 不想被高階 Persona 抽象限制
-
----
-
-## 五、LlamaIndex Workflows：適合 Data-centric 與 RAG-centric 的 Event Workflow
-
-LlamaIndex 的強項與資料、索引、Retrieval、Query Engine 和 RAG 密切相關。
-
-Workflows 提供 Event 與 Step 的執行模型。
-
-### 心智模型
-
-```text
-Event
- ↓
-Step
- ↓
-New Event
- ↓
-Another Step
-```
-
-簡化骨架：
-
-```python
-from llama_index.core.workflow import (
-    Workflow,
-    step,
-    StartEvent,
-    StopEvent,
-    Event,
-    Context,
-)
-
-
-class RetrievedEvent(Event):
-    nodes: list
-
-
-class RAGWorkflow(Workflow):
-
-    @step
-    async def retrieve(
-        self,
-        ctx: Context,
-        ev: StartEvent,
-    ) -> RetrievedEvent:
-        nodes = await retriever.aretrieve(ev.query)
-        return RetrievedEvent(nodes=nodes)
-
-    @step
-    async def answer(
-        self,
-        ctx: Context,
-        ev: RetrievedEvent,
-    ) -> StopEvent:
-        answer = await synthesize(ev.nodes)
-        return StopEvent(result=answer)
-```
-
-### 最適合的模式
-
-- RAG Pipeline
-- Query Routing
-- Retrieval Retry
-- Document Processing
-- Event-driven Research
-- Agent Workflow over Data
-- Structured Output
-- MCP-connected Data Tools
-
-### 優點
-
-- 與 Retriever、Index、Query Engine、Document、Node 等資料抽象距離近
-- Event Model 適合資料流程
-- 固定 Retrieval Flow 中可以放入 Agent 或 Tool Node
-
-### 缺點
-
-- 不應把所有業務工作都資料化
-- Event 太多時可能難以追蹤
-- Domain Model 若直接依賴 Framework Event，遷移成本會增加
-
-### 適合誰？
-
-- RAG 開發者
-- Knowledge Assistant
-- Document Workflow
-- 已大量使用 LlamaIndex 資料元件的團隊
-
----
-
-## 六、CrewAI：用 Crews 表達協作，用 Flows 表達控制
-
-CrewAI 有兩個不同心智模型。
-
-### Crews
-
-適合：
-
-- Role-based Agents
-- Researcher / Analyst / Writer
-- Sequential or Hierarchical Process
-- Specialized Tools
-- Collaborative Tasks
-
-### Flows
-
-適合：
-
-- Event-driven Workflow
-- State
-- Router
-- Conditional Branch
-- Persistence
-- Resume
-- 在固定流程中嵌入 Crew
-
-### 正確組合
-
-```text
-CrewAI Flow
- ↓
-Deterministic Steps
- ↓
-One Crew for an Open-ended Subtask
- ↓
-Verifier
- ↓
-Continue Workflow
-```
-
-不是：
-
-```text
-Every Step
- ↓
-Create Another Agent
-```
-
-### 優點
-
-- Agent、Task、Crew、Process 容易理解
-- Flow 可以維持控制，再於特定節點加入 Crew
-- 適合快速驗證角色分工是否有價值
-
-### 缺點
-
-- Persona 容易掩蓋工程責任
-- 容易 Multi-Agent Inflation
-- 必須額外審查 Side Effect、Tool Permission 與 Final Owner
-
-### 適合誰？
-
-- 需要快速做角色協作原型
-- 內容、研究、分析型任務
-- 想用 Flow 管整體、Crew 處理局部自治
-
----
-
-## 七、OpenAI Agents SDK：少量 Primitive 的 Agent Runtime
-
-OpenAI Agents SDK 採用較少的核心 Primitive：
-
-- Agent
-- Runner
-- Tool
-- Handoff / Agent as Tool
-- Guardrail
-- Session
-- Tracing
-- Human-in-the-loop
-- Sandbox Agent
-
-### 心智模型
-
-```text
-Agent
- ↓
-Runner
- ↓
-Tool Calls / Handoff
- ↓
-Guardrails
- ↓
-Final Output
-```
-
-簡化骨架：
-
-```python
-from agents import Agent, Runner, function_tool
-
-
-@function_tool
-def search_blog(query: str) -> str:
-    return retrieve_from_blog(query)
-
-
-agent = Agent(
-    name="Blog Assistant",
-    instructions="Answer only from approved blog sources.",
-    tools=[search_blog],
-)
-
-result = Runner.run_sync(
-    agent,
-    "What is the difference between RAG and memory?",
-)
-```
-
-### 最適合的模式
-
-- Tool-using Agent
-- Manager + Agents as Tools
-- Handoff
-- Guardrail
-- Session-based Working Context
-- Traced Agent Run
-- Sandbox Coding / Document Tasks
-- Voice / Realtime Agent
-
-### 優點
-
-- Primitive 少
-- Agent Loop 已提供
-- Handoff 與 Manager Pattern 都可表達
-- Built-in Trace
-
-### 缺點
-
-- 不等於完整 Business Workflow Engine
-- Guardrail Scope 必須精確理解
-- Provider 與 Hosted Tool 選擇需評估 Lock-in
-
-### 適合誰？
-
-- 想快速建立 Tool-using Agent
-- 使用 OpenAI Model 與 Hosted Tools
-- 需要 Handoff、Trace、Session
-- 不需要複雜 Graph，但又不想自己寫 Agent Loop
-
----
-
-## 八、AutoGen：仍可用，但 2026 年必須理解其位置
-
-AutoGen 目前仍有：
-
-- AgentChat
-- Core
-- Extensions
-- Studio
-- Teams
-- Swarm
-- Code Executor
-- Distributed Runtime
-
-AgentChat 適合高階 Single / Multi-Agent；Core 則是較低階 Event-driven Runtime。
-
-### 適合什麼？
-
-- 已有 AutoGen 0.4+ 專案
-- Multi-Agent Research
-- Agent Team Prototype
-- Event-driven Agent Runtime
-- Distributed Multi-Agent Experiment
-- Docker Code Execution
-
-### 2026 年的重要變化
-
-Microsoft 已將 Microsoft Agent Framework 定位為 AutoGen 與 Semantic Kernel 的直接後繼者。
-
-因此，新專案應先判斷：
-
-- 是否已有 AutoGen Codebase？
-- 是否需要相容既有 Component？
-- 是否是研究與原型？
-- 是否願意評估 Microsoft Agent Framework？
-- 是否能承受遷移與 API 變化？
-
-這不代表 AutoGen 立刻不能用。它仍有穩定文件與既有生態，但新 Microsoft-centric Production Project 應把 AutoGen 與 Microsoft Agent Framework 的差異列為正式架構決策。
-
----
-
-## 九、Microsoft Agent Framework：AutoGen 與 Semantic Kernel 的後繼路線
-
-Microsoft Agent Framework 提供兩大類能力：
-
-- Agents
-- Graph-based Workflows
-
-並整合：
-
-- Session-based State
-- Type-safe Routing
-- Checkpointing
-- Middleware
-- Telemetry
-- Human-in-the-loop
-- MCP
-- 多 Provider
-- Python 與 .NET
-
-### 最適合的模式
-
-- Microsoft / Azure 生態
-- Graph Workflow
-- Multi-Agent Orchestration
-- Session State
-- Human Approval
-- Middleware Policy
-- Enterprise Telemetry
-- Python + .NET 團隊
-
-### 優點
-
-- Workflow 與 Agent 同時存在
-- 企業整合方向清楚
-- 適合 AutoGen / Semantic Kernel 的未來評估
-
-### 主要風險
-
-- 目前仍是 Public Preview
-- API、功能與部署方式可能變動
-- Microsoft 生態不等於自動安全
-- 已有穩定系統不應因為新框架出現就立刻整套搬家
-
-![Figure 10-2 — Framework Fit by Architecture Pattern](/images/the-atlas-of-agent-design-patterns-part-10/figure-10-2-framework-fit-by-pattern.png)
-
-> **Figure 10-2｜Framework Fit by Architecture Pattern**
-> 不同 Framework 的重心不同：LangGraph 偏 Stateful Orchestration，LlamaIndex Workflows 偏 Data/RAG，CrewAI 偏 Crew + Flow，OpenAI Agents SDK 偏 Lightweight Agent Runtime，而 Microsoft Agent Framework 偏 Microsoft 生態中的 Agent + Graph Workflow。
-
----
-
-## 十、哪些框架適合 State Machine？
-
-### 第一優先：Native Code
-
-如果 State 很少、流程很固定，普通 Enum、Database 與 Function 最乾淨。
-
-### 強控制型：LangGraph
-
-適合：
-
-- 明確 Node / Edge
-- Conditional Routing
-- Pause / Resume
-- Checkpoint
-- Long-running Task
-
-### Data-centric：LlamaIndex Workflows
-
-適合：
-
-- Event-driven Retrieval
-- Document Processing
-- RAG State
-- Data Agent
-
-### High-level Hybrid：CrewAI Flows
-
-適合：
-
-- Start / Listen / Router
-- State Persistence
-- 在 Flow 中嵌入 Crew
-
-### Microsoft Stack：Microsoft Agent Framework Workflows
-
-適合：
-
-- Graph Workflow
-- Type-safe Routing
-- Checkpointing
-- Human-in-the-loop
-- Python / .NET
-
-### 不要只看「支援 State」
-
-真正要問：
-
-- State Schema 是否由你掌控？
-- State 能否版本化？
-- Resume 是否重播 Side Effect？
-- Human Approval 後是否重新驗證？
-- Checkpoint 是否可遷移？
-
----
-
-## 十一、哪些框架適合 RAG Workflow？
-
-### LlamaIndex Workflows
-
-最自然的選擇之一，因為資料、Retriever、Index 與 Workflow 在同一生態。
-
-### LangGraph
-
-適合複雜 Agentic RAG：
-
-- Query Router
-- Rewrite
-- Multi-source Retrieval
-- Retry
-- Verifier
-- Human Review
-
-### Native Code
-
-如果流程只是：
-
-```text
-Retrieve → Rerank → Generate → Verify
-```
-
-普通 Pipeline 常常已足夠。
-
-### CrewAI
-
-適合讓 Flow 管理 RAG Pipeline，再讓 Crew 處理 Research / Synthesis。
-
-### OpenAI Agents SDK
-
-適合使用 File Search、MCP 或 Function Tool，讓 Agent 判斷何時檢索。若需要嚴格 Citation Mapping，仍需外層資料層與 Verifier。
-
----
-
-## 十二、哪些框架適合 Multi-Agent？
-
-### CrewAI
-
-高階角色協作最直觀。
-
-### AutoGen
-
-適合 AgentChat Teams、Selector Group、Swarm 與 Multi-Agent Research。
-
-### Microsoft Agent Framework
-
-適合新 Microsoft-centric Multi-Agent Workflow，但要考慮 Public Preview。
-
-### OpenAI Agents SDK
-
-適合 Manager + Agents as Tools、Handoff 與少量 Agent 的明確協作。
-
-### LangGraph
-
-適合自己定義 Supervisor–Worker，讓 Multi-Agent 只是 Graph 中的 Node。
-
-### 判斷關鍵
-
-不是「能不能建立多 Agent」，而是：
-
-- 誰負責 Task Assignment？
-- Context 如何傳遞？
-- Worker Output Contract 是什麼？
-- 誰處理 Conflict？
-- 誰是 Final Owner？
-- 如何停止？
-
-![Figure 10-3 — Workflow-Centric Frameworks](/images/the-atlas-of-agent-design-patterns-part-10/figure-10-3-workflow-centric-frameworks.png)
-
-> **Figure 10-3｜Workflow-Centric Frameworks**
-> LangGraph 以 State、Node、Edge 為核心；LlamaIndex Workflows 以 Event、Step、Context 為核心；CrewAI Flows 以 Start、Listen、Router 與 State 為核心。三者都能做 Workflow，但心智模型不同。
-
-![Figure 10-4 — Multi-Agent Runtime Choices](/images/the-atlas-of-agent-design-patterns-part-10/figure-10-4-multi-agent-runtime-choices.png)
-
-> **Figure 10-4｜Multi-Agent Runtime Choices**
-> CrewAI 強調 Crew、Role 與 Task；AutoGen 強調 AgentChat、Teams 與 Event-driven Core；Microsoft Agent Framework 結合 Agent 與 Graph Workflow；OpenAI Agents SDK 以 Handoff、Agents as Tools 與少量 Primitive 表達協作。
-
----
-
-## 十三、哪些框架適合 Computer-use？
-
-Computer-use 不是完整架構，而是一種高風險、Observation-driven 的 Tool Runtime。
-
-完整系統仍需要：
-
-```text
-State Machine
- ↓
-Observe
- ↓
-Policy Check
- ↓
-Action
- ↓
-Post-condition Verification
- ↓
-Recover / Human Takeover
-```
-
-### LangGraph
-
-適合把 Browser State、Action History、Retry 與 Human Takeover 放進 Graph。
-
-### OpenAI Agents SDK
-
-適合使用 Agent Loop、Built-in Tool、Sandbox、Trace 與 Human-in-the-loop。
-
-### AutoGen
-
-適合搭配 Code Executor、Agent Team 與工具 Runtime 做研究或原型。
-
-### Microsoft Agent Framework
-
-適合 Microsoft Stack 的 Agent + Workflow 整合，但仍需自行處理 Computer-use Policy 與 UI State。
-
-### CrewAI
-
-可以把 Browser Tool 放入 Agent，但應由 Flow 控制高風險 Transition。
-
-### 原則
-
-> 不要因為 Framework 提供 Browser Tool，就跳過 State、Approval、Duplicate Detection 與 Post-condition。
-
----
-
-## 十四、同一個任務如何映射到不同 Framework？
-
-任務：
-
-> 建立可恢復的站內研究 Agent：先判斷問題是否能 Direct 回答，否則檢索文章；若證據不足，最多改寫一次 Query；通過 Citation Verifier 後輸出，否則 Abstain。
-
-### 架構模式
-
-```text
-Router
- ↓
-RAG Pipeline
- ↓
-Bounded Rewrite
- ↓
-Citation Verifier
- ↓
-Complete / Abstain
-```
-
-### Native Code
-
-使用 Enum State、Python Function、Database Row 與 Explicit Retry Counter。
-
-### LangGraph
-
-使用 StateGraph、Conditional Edge、Checkpointer 與 Verifier Node。
-
-### LlamaIndex Workflows
-
-使用 Query Event、Retrieved Event、Verification Event、Context 與 Retriever / Reranker。
-
-### CrewAI
-
-使用 Flow 管整體，Optional Research Crew 處理深度研究，Verifier Step 收尾。
-
-### OpenAI Agents SDK
-
-使用 Router Agent 或 Python Route、Retrieval Function Tool / MCP、Guardrail、Session 與 Trace。若嚴格控制 Rewrite Count，應在外層 Python State 保存。
-
-### Microsoft Agent Framework
-
-使用 Explicit Workflow、Agent Node、Session State、Checkpoint、Middleware 與 Telemetry。
-
----
-
-## 十五、完整框架比較表
-
-| 選項 | 核心心智模型 | 最適合 | Stateful Workflow | RAG | Multi-Agent | Human-in-the-loop | 抽象層級 | 主要風險 |
-|---|---|---|---:|---:|---:|---:|---:|---|
-| Native Code | Function + State + DB | 小型固定流程 | 自行實作 | 自行組裝 | 自行實作 | 自行實作 | 最低 | 重造 Runtime |
-| LangGraph | State + Node + Edge | Stateful Hybrid Workflow | 強 | 強 | 可自訂 | 強 | 低～中 | Graph 複雜度 |
-| LlamaIndex Workflows | Event + Step + Context | RAG / Data Workflow | 中～強 | 很強 | AgentWorkflow | 可實作 | 中 | Data 抽象滲透 |
-| CrewAI | Crew + Task + Flow | Role Collaboration | Flow 支援 | 中 | 很強 | 支援 | 高 | Multi-Agent Inflation |
-| OpenAI Agents SDK | Agent + Runner + Tool | Lightweight Agent Runtime | Session / Outer State | Tool-based | Handoff / Manager | 支援 | 中 | Provider / Guardrail Scope |
-| AutoGen | AgentChat + Core | Existing Multi-Agent / Research | Core 支援 | 工具組裝 | 很強 | 支援 | 中～高 | 生態轉型與遷移 |
-| Microsoft Agent Framework | Agent + Graph Workflow | Microsoft Enterprise Stack | 很強 | 可整合 | 強 | 強 | 中 | Public Preview 變動 |
-
----
-
-## 十六、原生程式碼何時比 Framework 更好？
-
-使用 Native Code，如果：
-
-- 只有三到五個步驟
-- 沒有真正 Agent Loop
-- 不需要 Resume
-- 不需要 Human Interruption
-- 不需要 Dynamic Graph
-- 不需要 Multi-Agent
-- 團隊已有成熟 Queue / Workflow System
-- Framework State Model 與 Domain Model 衝突
-
-使用 Framework，如果：
-
-- 需要 Checkpoint / Resume
-- 需要複雜 Conditional Routing
-- 需要 Agent Loop
-- 需要 Trace Integration
-- 需要 Human-in-the-loop
-- 需要快速測試 Multi-Agent Pattern
-- Framework 明顯減少重複工程
-
-![Figure 10-5 — Native Code or Framework?](/images/the-atlas-of-agent-design-patterns-part-10/figure-10-5-native-code-or-framework.png)
-
-> **Figure 10-5｜Native Code or Framework?**
-> 小型固定流程優先使用普通程式；當 Checkpoint、Resume、Dynamic Routing、Agent Loop、Human Interruption 或 Multi-Agent Runtime 的收益大於抽象成本時，再引入 Framework。
-
----
-
-## 十七、降低 Framework Lock-in 的程式架構
-
-比起選對一個永遠不變的 Framework，更重要的是：
-
-> 讓 Domain Logic 不依賴 Framework 的每一個型別。
-
-### 建議分層
-
-```text
-Application API
- ↓
-Domain Workflow
- ↓
-Ports / Interfaces
- ↓
-Framework Adapter
- ↓
-Model / Tool / Storage Provider
-```
-
-### Domain State 應由你定義
-
-```python
 class ResearchState(BaseModel):
     task_id: str
-    query: str
+    tenant_id: str
+    original_query: str
     rewritten_query: str | None = None
-    retrieved_source_ids: list[str] = []
+    source_ids: list[str] = Field(default_factory=list)
     retry_count: int = 0
-    status: str
+    plan_version: int = 1
+    status: RunStatus = RunStatus.ADMITTED
 ```
 
-### Tool Contract 應獨立
+Framework 可以 Serialise 這份 State，但 Business Meaning 屬於 Application。
+
+### Tool Port
 
 ```python
 from typing import Protocol
@@ -977,293 +213,1081 @@ class RetrieverPort(Protocol):
         self,
         query: str,
         tenant_id: str,
+        limit: int,
     ) -> list["SourceRecord"]:
         ...
 ```
 
-接著才建立：
+Framework Adapter 可以把這個 Port 暴露成：
 
-- LlamaIndexRetrieverAdapter
-- LangGraphNodeAdapter
-- OpenAIFunctionToolAdapter
-- CrewAIToolAdapter
+- LangGraph Node Dependency
+- LlamaIndex Step Dependency
+- OpenAI Agents SDK Function Tool
+- CrewAI Tool
+- AutoGen Tool
+- Microsoft Agent Framework Function
 
-### Verifier 應獨立
+### Verification Result
 
 ```python
 class VerificationResult(BaseModel):
-    passed: bool
-    reasons: list[str]
-    required_action: str
+    status: str
+    failed_checks: list[str] = Field(default_factory=list)
+    evidence_ids: list[str] = Field(default_factory=list)
+    required_action: str | None = None
 ```
 
-不要讓每個 Framework 自己發明不同的 Pass / Fail 格式。
+不要讓每個 Runtime 發明不同版本的 `PASS`。
 
-### Trace Context 應可跨 Framework
+### Side-effect Command
 
-至少保留：
+Side Effect 應是顯式 Command：
 
-- trace_id
-- task_id
-- user_id / tenant_id
-- parent_span_id
-- model_version
-- prompt_version
-- framework_version
-
-### Side Effect 應放在明確邊界
-
-例如：
-
-- Send Email
-- Write Database
-- Deploy
-- Purchase
-- Delete
-
-不要埋在不透明 Agent Persona 中。
-
-![Figure 10-6 — Framework-Resilient Production Architecture](/images/the-atlas-of-agent-design-patterns-part-10/figure-10-6-framework-resilient-production-architecture.png)
-
-> **Figure 10-6｜Framework-Resilient Production Architecture**
-> Domain State、Tool Contract、Verifier 與 Policy 位於 Framework 之外；LangGraph、LlamaIndex、CrewAI、OpenAI Agents SDK、AutoGen 或 Microsoft Agent Framework 僅作為 Adapter 與 Runtime，降低遷移成本。
-
----
-
-## 十八、Framework 選型決策樹
-
-```text
-Can ordinary code express the workflow clearly?
-├─ Yes → Native Code
-└─ No
- ↓
-Is the core problem stateful orchestration?
-├─ Yes → LangGraph or Microsoft Agent Framework
-└─ No
- ↓
-Is the core problem RAG or data workflow?
-├─ Yes → LlamaIndex Workflows
-└─ No
- ↓
-Is role-based collaboration the main value?
-├─ Yes → CrewAI
-└─ No
- ↓
-Do you need a lightweight tool-using agent runtime?
-├─ Yes → OpenAI Agents SDK
-└─ No
- ↓
-Do you have an existing AutoGen system or research need?
-├─ Yes → AutoGen, with migration review
-└─ No → Revisit architecture requirements
+```python
+class SendEmailCommand(BaseModel):
+    command_id: str
+    recipient: str
+    subject: str
+    body_ref: str
+    approved_by: str | None = None
 ```
 
----
+Command Boundary 可以執行：
 
-## 十九、常見實作反模式
+- Idempotency
+- Permission
+- Approval
+- Validation
+- Audit
+- Reconciliation
 
-| 反模式 | 問題 | 修正 |
-|---|---|---|
-| Framework-first Architecture | 先選工具再改需求 | 先完成 Architecture Canvas |
-| Framework Type Leakage | Domain 依賴 Event / Message 類型 | 建立 Adapter |
-| Agent for Every Step | 每個 Function 都包成 Agent | 固定步驟保留為 Function |
-| Hidden Side Effects | 寫入藏在 Persona Tool 裡 | 專用 Node + Approval Gate |
-| Checkpoint Equals Transaction | 重播造成重複操作 | Idempotency + Compensation |
-| Framework Trace Equals Audit | Trace 無法滿足業務審計 | 獨立 Audit Log |
-| Multi-Agent by Persona | 角色名稱冒充獨立責任 | 檢查 Context、State、Permission |
-| Preview Framework in Critical Path | 變動直接衝擊核心流程 | Pin Version + Adapter + Pilot |
-| No Exit Strategy | 無法遷移 | 外置 Domain State 與 Contract |
-| Copying Tutorial Architecture | 教學範例被當 Production | 補 Security、Reliability、Cost、Scale |
+不要把 Write 藏在 Conversational Persona 裡。
 
----
+### Trace Context
 
-## 二十、Production Notes
+至少保存：
 
-### Version Pinning
-
-保存：
-
-- Framework Version
+- Trace ID
+- Task ID
+- User 與 Tenant
+- Parent Span
 - Model Version
 - Prompt Version
-- Tool Version
-- State Schema Version
+- Framework Version
+- Policy Version
+- State-schema Version
 
-### State Migration
+Framework Tracing 可以補充 Context，但不應擁有 Identity Model。
 
-每次改 State Schema 前回答：
+## Native Code 與既有 Workflow Engine
 
-- 舊 Checkpoint 能否讀取？
-- 正在執行的 Task 怎麼辦？
-- 是否需要 Migration Job？
-- 是否可 Rollback？
+「Native Code」代表普通 Application Code，不代表沒有 Architecture。
 
-### Timeout
+它可以使用：
 
-分開設定：
+- Function
+- Typed State
+- Database Row
+- Queue
+- Background Worker
+- Retry Library
+- Scheduler
+- Existing Workflow Engine
+- OpenTelemetry
+- Policy Middleware
 
-- Model Timeout
-- Tool Timeout
-- Node Timeout
-- Workflow Timeout
-- Approval Timeout
+### 適合此路線的情況
 
-### Budget
+- Flow 小且明確
+- Existing Orchestration 已解決 Durability
+- Business Rule 比 Model Behaviour 更重要
+- 不需要 Open-ended Agent Loop
+- Team 需要最大 State 與 Side-effect Control
+- 新 Runtime 只會重複既有能力
 
-限制：
+### 優點
 
-- Model Calls
-- Tool Calls
-- Search Calls
-- Agent Turns
-- Workers
-- Replans
-- Wall Time
+- 低 Abstraction Leakage
+- 直接 Test
+- State Transition 明確
+- Migration 容易
+- 較少 Framework-specific Event Type
+- Side-effect Boundary 精確
 
-### Evaluation
+### 仍需自行負責
 
-至少分成：
+- Persistence
+- Resume
+- Concurrency
+- Cancellation
+- Human Approval
+- Streaming
+- Tool Loop
+- Trace Instrumentation
+- State Migration
+- Deployment 與 Scaling
 
-- Unit Test
-- Workflow Test
-- Golden Set
-- Failure-path Test
-- Security Test
-- Cost Regression
-- Latency Regression
+Decision 不應依賴任意的 Step 或 Code Line 數量。
 
-### Observability
+應問：
 
-追蹤：
+> 新 Runtime 是否能移除有意義的重複工程，同時不降低控制，也不複製現有 Infrastructure？
 
-- Route
-- State Transition
-- Tool Call
-- Token
-- Cost
-- Retry
-- Handoff
-- Verifier Result
-- Terminal State
+## LangChain Agents 與 LangGraph
 
-### Human Approval
+目前 LangChain 官方文件將 LangChain Agents 定位為 High-level Agent Abstraction，LangGraph 則是支援 Advanced Stateful Workflow 的 Low-level Orchestration Framework 與 Runtime。
 
-Approval Payload 至少包含：
+### LangChain Agents
 
-- Proposed Action
-- Evidence
-- Risk
-- Before / After
-- Reversibility
-- Expiry
+適合以下需求的起點：
 
----
+- Standard Tool-using Loop
+- Model 與 Tool Integration
+- Prebuilt Agent Abstraction
+- 不想自行設計每條 Graph Edge
 
-## 二十一、一頁式 Cheat Sheet
+Prebuilt Loop 與 Contract 相符時使用。
 
-| 需求 | 優先考慮 | 不要先做 |
-|---|---|---|
-| 小型固定流程 | Native Code | 引入完整 Agent Runtime |
-| Stateful Agent | LangGraph | 把 State 藏在 Conversation |
-| Data / RAG Workflow | LlamaIndex Workflows | 每個 Retrieval 都變 Agent |
-| Role Collaboration | CrewAI | 沒有 Final Owner 的 Crew |
-| Lightweight Tool Agent | OpenAI Agents SDK | 把它當完整 Business Workflow Engine |
-| Existing AutoGen | AutoGen + Migration Review | 直接照 0.2 舊範例 |
-| Microsoft New Build | Microsoft Agent Framework Evaluation | 忽略 Public Preview 風險 |
-| Computer-use | State Machine + Tool Runtime | 只靠 Browser Tool |
-| High-risk Action | Native Policy + Approval + Audit | 把權限寫在 Prompt |
-| Framework Uncertainty | Ports and Adapters | 讓 Domain 依賴 Framework Type |
+需要更明確 Control 時才往下使用 LangGraph。
 
----
+### LangGraph
 
-## 本篇結論
+LangGraph 針對 Long-running、Stateful Orchestration，提供：
 
-Framework 的價值是：
+- Explicit Node 與 Edge
+- Durable Execution
+- Persistence
+- Streaming
+- Human-in-the-loop Interrupt
+- Deterministic 與 Agentic Step 共存
 
-- 減少重複工程
-- 提供 Runtime
-- 提供 Agent Loop
-- 提供 State、Trace 或 Handoff
-- 加快特定模式落地
-
-Framework 的風險是：
-
-- 抽象掩蓋真實流程
-- Domain 被型別綁定
-- API 快速變化
-- Tutorial 被誤當 Production Architecture
-- Multi-Agent 角色膨脹
-- Checkpoint 被誤認為 Transaction
-
-因此，正確順序應該是：
+Mental Model：
 
 ```text
-Requirement
- ↓
-Architecture Pattern
- ↓
-State and Tool Contract
- ↓
-Verifier and Policy
- ↓
-Framework Selection
- ↓
-Infrastructure and Operations
+Application State
+  -> Node
+  -> State Update
+  -> Conditional Transition
+  -> Checkpoint
+```
+
+### 重要的 Persistence Semantics
+
+LangGraph Checkpoint 保存 Graph State，不會讓任意 Side Effect 自動具有 Transaction Semantics。
+
+官方 Interrupt Guidance 明確提醒，Interrupt 前的 Side Effect 應具 Idempotency，因為 Resume 時 Node 可能 Replay。
+
+因此：
+
+- Write 前後有 Checkpoint 仍不夠
+- Side Effect 需要 Command Identity
+- Resume 必須 Reconcile External State
+- Approval 必須重新驗證
+- State Schema 需要 Migration Plan
+
+### 適合 LangGraph
+
+- State Transition 是核心
+- 需要 Pause 與 Resume
+- 需要 Approval Interrupt
+- Deterministic 與 Agentic Node 必須共存
+- Repair 與 Replan Loop 明確
+- Lower-level Control 的收益高於成本
+
+### 主要風險
+
+- Graph Spaghetti
+- Framework State 滲入 Domain State
+- 把 Checkpoint Replay 當 Exactly-once Execution
+- 把 Trace 當 Audit
+- Fixed Pipeline 足夠時仍建立 Graph
+
+## LlamaIndex Workflows 與 AgentWorkflow
+
+LlamaIndex 仍以 Data、Document、Index、Retriever、Query Engine 與 RAG 為重要核心。
+
+Workflows 提供 Event 與 Step Model；AgentWorkflow 則在同一 Ecosystem 中提供 Single-agent 與 Multi-agent Orchestration。
+
+### Mental Model
+
+Workflow：
+
+```text
+Event
+  -> Step
+  -> New Event
+  -> Another Step
+```
+
+AgentWorkflow：
+
+```text
+Agent
+  -> Tool or Handoff
+  -> Workflow State
+  -> Structured Result
+```
+
+### 適合此路線
+
+- Retrieval 與 Document Abstraction 是核心
+- System 已使用 LlamaIndex
+- Data Event 驅動 Workflow
+- Agent Step 必須緊密使用 Retriever 與 Query Engine
+- Structured Output 與 Evidence Object 是 First-class Concern
+
+### 重要邊界
+
+Data Framework 不是 Source-of-truth Policy。
+
+仍需定義：
+
+- Tenant Filtering
+- Document Permission
+- Source Lineage
+- Citation Mapping
+- Version Handling
+- Prompt-injection Boundary
+- Delete Propagation
+- Acceptance Verification
+
+### Migration Lesson
+
+LlamaIndex 舊版 QueryPipeline 文件目前已建議改用 Workflows 做 Orchestration。
+
+這提醒我們：
+
+> 即使在同一個 Ecosystem，Preferred Abstraction 也會改變。Domain Workflow 不應依賴 Framework Event Class。
+
+## CrewAI：Crews 與 Flows 解決不同問題
+
+CrewAI 提供兩個重要 Abstraction。
+
+### Crews
+
+適合：
+
+- Role-based Collaboration
+- Bounded Specialised Task
+- Sequential 或 Hierarchical Process
+- 快速 Multi-agent Experiment
+
+### Flows
+
+適合：
+
+- Start、Listen 與 Route Control
+- Explicit State
+- Persistence 與 Resume
+- Event-driven Execution
+- 在 Controlled Workflow 中嵌入 Crew
+
+### 建議組合
+
+```text
+Flow Controls Business Process
+  -> Deterministic Step
+  -> Bounded Crew for an Open-ended Subtask
+  -> Verifier
+  -> Continue or Stop
 ```
 
 而不是：
 
 ```text
-Framework
- ↓
-Whatever the Framework Makes Easy
+Every Function
+  -> Another Persona
+  -> Another Conversation
 ```
 
-整個十篇系列可以用最後一句話收束：
+### 適合 CrewAI
 
-> **Pattern 告訴你系統應該怎麼運作；Framework 只是幫你把那個決定寫成程式。**
+- Role Collaboration 是主要 Hypothesis
+- Team 需要快速 Prototype
+- Flow 能維持外層 Control Boundary
+- Worker Output Contract 與 Final Owner 明確
 
----
+### 主要風險
 
-## 《Agent 設計模式圖鑑》系列目錄
+- Persona Inflation
+- Side Effect 藏在 Tool
+- Final Ownership 不清楚
+- 把 Role Label 當成 Independent Responsibility
+- 用 Expected-output Prose 取代 Executable Acceptance Contract
+
+## OpenAI Agents SDK
+
+OpenAI Agents SDK 提供 Lightweight Agent Runtime，主要 Primitive 包括：
+
+- Agent 與 Runner
+- Function Tool
+- Agent as Tool
+- Handoff
+- Guardrail
+- Session
+- Human-in-the-loop
+- Tracing
+
+SDK 對 OpenAI Model 預設使用 Responses API，同時負責 Turn、Tool、Guardrail、Handoff 與 Session 周圍的 Orchestration Loop。
+
+### 適合此路線
+
+- Compact Tool-using Agent Loop 足夠
+- Manager 與 Handoff Pattern 清楚
+- Built-in Tracing 有價值
+- Stack 已使用 OpenAI Model 或 Hosted Capability
+- 不需要大型 Graph Runtime
+
+### Guardrail Scope 很重要
+
+Guardrail 不是 Universal Policy Engine。
+
+目前 SDK 文件指出，Handoff 使用的 Runtime Path 與一般 Function Tool 不同，Tool Guardrail 不會自動套用到 Handoff Call 本身。
+
+因此：
+
+- 必須列出所有 Enforcement Point
+- Business Authorisation 放在 Model Instruction 外
+- Tool Input 在 Execution Boundary 驗證
+- 不假設一組 Guardrail 能覆蓋所有 Runtime Path
+
+### Session 不是 Business Workflow Database
+
+Session 可以支援 Conversation Continuity。可恢復的受監管 Business Process 仍需要：
+
+- Durable Domain State
+- State Versioning
+- Approval Record
+- Transaction Reconciliation
+- Audit
+- Migration 與 Incident Handling
+
+### Tracing 不是 Audit
+
+Built-in Tracing 可以記錄 Agent Run、Tool Call、Handoff、Guardrail 與 Custom Event。
+
+Audit Record 還需要：
+
+- Business Meaning
+- Actor Identity
+- Immutable Retention
+- Legal 與 Compliance Field
+- Approval Evidence
+- Side-effect Outcome
+
+Sensitive Trace Content 也需要明確處理。
+
+## AutoGen、Semantic Kernel 與 Microsoft Agent Framework
+
+Microsoft 的 Framework Landscape 已發生重大改變。
+
+Microsoft 官方文件把 Microsoft Agent Framework 定位為 AutoGen 與 Semantic Kernel 的直接後繼者，目前仍標示為 Public Preview。
+
+這不代表 Existing System 明天就失效。
+
+### AutoGen
+
+AutoGen 仍提供：
+
+- AgentChat
+- Teams
+- Swarm 與其他 Team Preset
+- Core
+- Event-driven Messaging
+- Distributed Runtime Concept
+- Code-execution Extension
+
+適合：
+
+- Existing AutoGen System 正常運作
+- Research 或 Multi-agent Experiment 是核心
+- AgentChat 或 Core 已符合 Architecture
+- Migration Cost 高於 Immediate Benefit
+
+新的 Microsoft-centred Production System 應正式比較 Microsoft Agent Framework。
+
+### Semantic Kernel
+
+Semantic Kernel 對 Existing Application 與 Integration 仍有價值。
+
+適合：
+
+- Existing Codebase 已依賴
+- 目前能力能滿足 Contract
+- Migration 沒有可證明的 Value
+- Platform Support 與 Lifecycle 符合 Organisation
+
+不能只因為出現 Successor 就重寫 Stable System。
+
+### Microsoft Agent Framework
+
+Microsoft Agent Framework 結合：
+
+- Agent Abstraction
+- Graph-based Workflow
+- Session State
+- Type-safe Routing
+- Checkpointing
+- Middleware
+- Telemetry
+- Human-in-the-loop
+- MCP 與 Provider Integration
+- Python 與 .NET
+
+適合評估：
+
+- Organisation 以 Microsoft 或 Azure 為中心
+- Graph Workflow 與 Agent 希望在同一 Ecosystem
+- Python 與 .NET Interoperability 很重要
+- Team 能接受 Preview Risk
+
+### Preview Rule
+
+Critical Path 使用 Preview Framework 時需要：
+
+- Pinned Version
+- Adapter Boundary
+- Migration Test
+- Pilot
+- Rollback
+- Checkpoint Compatibility Test
+- Owner 接受 Support 與 Change Risk
+
+![Figure 10-2｜Framework 比較：抽象、適用情境與要驗證的問題](/images/the-atlas-of-agent-design-patterns-part-10/framework-fit-by-pattern.png)
+
+## 同一 Architecture 映射到不同 Runtime
+
+Requirement：
+
+> 建立可恢復的 Blog Research Workflow。可直接回答時走 Direct；否則 Retrieval Approved Article。Evidence 不足時最多 Rewrite 一次。Citation Verification 通過後才輸出，否則 Abstain。
+
+Architecture：
+
+```text
+Admission and Router
+  -> Retrieval Pipeline
+  -> Bounded Rewrite
+  -> Citation Verifier
+  -> Complete or Abstain
+```
+
+### Native Code 或 Existing Workflow Engine
+
+使用：
+
+- Typed State
+- Database Persistence
+- Explicit Transition Function
+- Retry Counter
+- Queue 或 Workflow Job
+- Independent Verifier
+
+### LangChain Agent
+
+只在 Bounded Adaptive Node 使用 Prebuilt Tool Loop。
+
+Routing、Retry Limit 與 Final Verification 由 Application Code 控制。
+
+### LangGraph
+
+使用：
+
+- Explicit Application State
+- Route Node
+- Retrieval Node
+- Rewrite Node
+- Verifier Node
+- Conditional Edge
+- Checkpointer
+- 需要 Approval 時加入 Interrupt
+
+### LlamaIndex Workflows
+
+使用：
+
+- Request Event
+- Retrieval Step
+- Evidence Event
+- Rewrite Event
+- Verification Event
+- Context 或 Store
+- LlamaIndex Retriever 與 Reranker
+
+### CrewAI
+
+Outer Process 使用 Flow。
+
+只有 Bounded Research Subtask 確實受益於 Role Collaboration 時才使用 Crew。
+
+### OpenAI Agents SDK
+
+使用：
+
+- Application 或 Router Agent
+- Retrieval Function Tool 或 MCP
+- Bounded Run Control
+- Output 與 Tool Validation
+- 適用時使用 Session
+- Built-in Tracing
+
+Rewrite Count 與 Citation Contract 保存在 Application State。
+
+### AutoGen
+
+只有 AgentChat 或 Core 的 Team／Event Model 解決真實 Requirement 時才使用。
+
+Single-agent Retrieval Workflow 不需要 Team。
+
+### Microsoft Agent Framework
+
+使用：
+
+- Explicit Workflow
+- 只有需要 Adaptation 的地方使用 Agent Node
+- Session State
+- Checkpointing
+- Middleware
+- Telemetry
+- Preview-risk Control
+
+Architecture 不變，只是 Implementation Vocabulary 改變。
+
+![Figure 10-3｜同一 Architecture 對應不同 Runtime](/images/the-atlas-of-agent-design-patterns-part-10/architecture-across-runtimes.png)
+
+## Checkpoint、Session、Memory、Transaction 與 Audit 不同
+
+這些名詞常被混在一起。
+
+### Checkpoint
+
+用於 Resume 或 Replay 的 Saved Execution State。
+
+### Session
+
+Conversation 或 Agent-run Context 的 Continuity Boundary。
+
+### Memory
+
+預期影響 Future Reasoning 或 Task 的資訊。
+
+### Transaction
+
+具有 Atomicity、Consistency、Idempotency、Reconciliation 或 Compensation 要求的 Business Operation。
+
+### Audit Record
+
+記錄誰在什麼 Authority 下、使用什麼 Evidence、做了什麼並得到什麼 Result 的 Accountable Record。
+
+Checkpoint 可以表示：
+
+```text
+Workflow Reached SEND_PAYMENT
+```
+
+它不能證明：
+
+```text
+Payment Executed Exactly Once
+```
+
+Session 可以保存 Message，不能證明 Policy 改變後 State 仍可安全 Resume。
+
+### Safe Side-effect Pattern
+
+```text
+Workflow State
+  -> Create Typed Command
+  -> Validate Policy and Approval
+  -> Execute with Command ID
+  -> Persist External Result
+  -> Reconcile
+  -> Advance Workflow State
+```
+
+Resume 時：
+
+```text
+Look Up Command ID
+  -> Already Completed?
+       yes -> Reuse Result
+       no  -> Determine Whether Safe to Execute
+```
+
+![Figure 10-4｜Checkpoint、Session、Memory、Transaction 與 Audit 的差異與 Safe Side-effect Pattern](/images/the-atlas-of-agent-design-patterns-part-10/side-effect-and-transaction-contracts.png)
+
+## Multi-agent 實作需要 Contract，不是 Avatar
+
+不同 Runtime 都能輕鬆建立數個 Agent。
+
+真正困難的是：
+
+- Task Assignment
+- Context Transfer
+- Output Schema
+- Shared-state Permission
+- Conflict Resolution
+- Termination
+- Aggregation
+- Final Ownership
+- Budget
+- Observability
+
+### Supervisor–Worker Contract
+
+Supervisor Input：
+
+- Goal
+- Task Graph
+- Worker Capability Registry
+- Budget
+- Acceptance Criteria
+
+Worker Output：
+
+- Status
+- Result
+- Evidence
+- Unresolved Item
+- Cost
+- Side Effect
+- Provenance
+
+Aggregator Output：
+
+- Merged Result
+- Conflict
+- Missing Work
+- Acceptance Status
+
+### Handoff Contract
+
+Handoff 應指定：
+
+- Reason
+- Target Capability
+- Context Subset
+- Permission
+- Expected Result
+- Return Path
+- Stop Condition
+
+Broadcast 整段 Conversation 不是 Neutral Default。
+
+### Framework Mapping
+
+- CrewAI 以 Role、Task、Crew 與 Flow 表示。
+- AutoGen AgentChat 以 Team 與 Speaker／Handoff Pattern 表示。
+- AutoGen Core 以 Event-driven Actor 表示。
+- OpenAI Agents SDK 以 Manager、Agent-as-tool 與 Handoff 表示。
+- LangGraph 可以把 Agent 表示為 Graph Node。
+- LlamaIndex AgentWorkflow 支援 Agent Handoff 與 Agent-as-tool Pattern。
+- Microsoft Agent Framework 結合 Agent 與 Explicit Workflow。
+
+沒有任何 Runtime 能移除 Final Owner 的必要性。
+
+## Native Orchestration 或 Framework？
+
+不要使用固定的「三到五個 Step」規則。
+
+### 優先 Native Code 或 Existing Workflow Platform
+
+- Current Primitive 能清楚表示 Flow
+- Durability 已解決
+- Agentic Portion 很小
+- Team 可以直接 Test 與 Operate
+- 新 Runtime 只會重複 Queue、State 或 Approval Infrastructure
+- Framework-specific Type 會主導 Domain Model
+
+### 優先 Framework
+
+- 能移除有意義的重複工程
+- State 與 Resume Semantics 符合 Contract
+- Agent Loop 是真實 Requirement
+- Human Interruption 很難自行正確實作
+- Graph、Event 或 Team Primitive 提升清晰度
+- Runtime 可觀測且可測試
+- Migration 與 Lifecycle Risk 可接受
+
+### 拒絕 Framework
+
+- Abstraction 隱藏 Side Effect
+- Persistence 無法滿足 State Requirement
+- Policy Enforcement 依賴 Prompt
+- Team 無法測試 Replay 與 Resume
+- Support Status 不符合 Risk
+- Migration 需要重寫 Domain Logic
+
+![Figure 10-5｜Native Orchestration 或 Framework 決策](/images/the-atlas-of-agent-design-patterns-part-10/native-vs-framework-decision.png)
+
+## 以 Fit 選擇 Framework，不用通用 Strength Score
+
+沒有 Shared Benchmark 時，不應在 Comparison Table 將某 Framework 標成某能力的「Very Strong」。
+
+應改用 Qualitative Fit Question。
+
+| Option | Primary Abstraction | Natural Fit | Questions to Verify |
+|---|---|---|---|
+| Native 或 Existing Workflow Engine | Function、Job、State、Queue | Small 或 Business-dominant Workflow | 哪些 Runtime 能力需自行建置？ |
+| LangChain Agents | High-level Agent Loop | Standard Tool-using Agent | Prebuilt Loop 是否符合 Contract？ |
+| LangGraph | State、Node、Edge、Checkpoint | Long-running Stateful Orchestration | Replay 與 Side Effect 是否安全？ |
+| LlamaIndex Workflows | Event、Step、Context、Data Abstraction | RAG 與 Data-centric Workflow | Domain Contract 能否留在 Event Type 外？ |
+| CrewAI | Crew、Task、Process、Flow | Controlled Flow 內的 Role Collaboration | 每個 Role 是否真的是 Responsibility Boundary？ |
+| OpenAI Agents SDK | Agent、Runner、Tool、Handoff、Guardrail | Lightweight Tool 與 Handoff Runtime | Guardrail 與 State 覆蓋哪些 Path？ |
+| AutoGen | AgentChat Team 與 Event-driven Core | Existing System、Research、Multi-agent Experiment | Migration 與 Lifecycle Plan 是什麼？ |
+| Semantic Kernel | Kernel、Plugin、Agent、Enterprise Integration | Existing Microsoft Application | Migration 是否真的有價值？ |
+| Microsoft Agent Framework | Agent 與 Graph Workflow | New Microsoft-centred Evaluation | Preview Change Risk 是否可接受？ |
+
+Final Answer 可以是 Mixed Stack：
+
+```text
+Existing Workflow Engine
+  + LangGraph for One Complex Stateful Subflow
+  + LlamaIndex Retriever
+  + OpenTelemetry
+  + Independent Policy and Audit
+```
+
+Framework Purity 不是 Architecture Requirement。
+
+## 建立 Framework-resilient Code
+
+### Domain Model 留在 Adapter 外
+
+不要讓 Framework Event、Message、RunContext 或 Agent Type 穿越 Domain Boundary。
+
+### Tool Port 保持狹窄
+
+Application 應依賴 Capability：
+
+- Retrieve Evidence
+- Execute Query
+- Run Test
+- Send Approved Message
+- Write Validated Record
+
+而不是依賴 Framework Tool Decorator。
+
+### Verification 保持獨立
+
+Verifier 應接受 Domain Artefact 與 Evidence，而不是 Framework Transcript。
+
+### Policy 留在 Prompt 外
+
+使用：
+
+- Typed Validation
+- Authorisation Service
+- Tool Gateway
+- Network 與 Credential Boundary
+- Approval Service
+- Deterministic Transaction Service
+
+### Observability 可攜
+
+盡量使用 Application Trace ID 與 OpenTelemetry-compatible Semantics。
+
+Framework Trace 可以連結成 Child Span 或 Diagnostic Artefact。
+
+### Event Schema 必須 Versioned
+
+Persisted Event 與 Checkpoint 可能比 Framework Version 活得更久。
+
+保存：
+
+- Schema Version
+- Framework Version
+- Migration Version
+- Producer
+- Timestamp
+- Correlation ID
+
+### 維持 Migration Seam
+
+每個 Framework Dependency 都要記錄：
+
+- 為什麼存在
+- 滿足哪個 Contract
+- Persist 哪些 Data
+- 如何替換
+- 如何 Export State
+- 如何 Replay Test
+- 誰負責 Migration
+
+![Figure 10-6｜Framework-resilient Production Architecture 與 Migration Seam](/images/the-atlas-of-agent-design-patterns-part-10/framework-resilient-architecture.png)
+
+## 測試 Framework Semantics，不只測 Business Output
+
+Workflow 可以產生正確 Final Answer，卻仍不適合運營。
+
+### Unit Test
+
+- Domain State Transition
+- Tool Validation
+- Verifier Rule
+- Policy
+- Idempotency Key
+
+### Contract Test
+
+- Framework Adapter Input 與 Output
+- Provider Replacement
+- Tool Schema
+- Event Translation
+- Trace Propagation
+
+### Workflow Test
+
+- Normal Path
+- Retry
+- Fallback
+- Repair
+- Replan
+- Pause 與 Resume
+- Cancellation
+- Terminal State
+
+### Replay 與 Side-effect Test
+
+- Node Replay
+- Duplicate Command
+- Lost Response
+- Resume after Approval
+- State Migration
+- Partial Checkpoint
+- Worker Crash
+
+### Security Test
+
+- Prompt Injection
+- Tool Escalation
+- Cross-tenant Access
+- Secret Exposure
+- Unsafe Handoff
+- Memory Poisoning
+- Unauthorised Side Effect
+
+### Evaluation
+
+- Task Success
+- Evidence Support
+- False Pass 與 False Fail
+- Latency
+- Cost
+- Human-review Load
+- Recovery Rate
+
+### Upgrade Test
+
+Framework Version 改變前：
+
+- Run Golden Set
+- Read Release 與 Migration Note
+- Load Old Checkpoint
+- Resume Active Workflow
+- Compare Trace
+- Test Rollback
+- Verify Adapter Compatibility
+
+## 常見 Implementation Anti-pattern
+
+### Framework-first Architecture
+
+Contract 尚未定義，Runtime 已被選定。
+
+### Framework Type Leakage
+
+Domain Logic 依賴 Framework Event 與 Message。
+
+### Agent for Every Function
+
+Deterministic Step 被轉成 Conversational Actor。
+
+### Hidden Side Effect
+
+Write 發生在 Opaque Tool 或 Persona 內。
+
+### Checkpoint Equals Transaction
+
+Replay 重複執行 External Operation。
+
+### Session Equals Durable Workflow
+
+Conversation Continuity 被誤認為 Resumable Business State。
+
+### Guardrail Equals Policy Engine
+
+一個 SDK Hook 被假設能覆蓋所有 Execution Path。
+
+### Trace Equals Audit
+
+Diagnostic Telemetry 被誤認為 Accountable Business Evidence。
+
+### Multi-agent by Persona
+
+Role Name 取代真實 Responsibility Boundary。
+
+### Preview Framework in an Unprotected Critical Path
+
+沒有 Adapter、Pilot、Rollback 或 Compatibility Test。
+
+### Tutorial Code Becomes Production Code
+
+Authentication、Tenancy、Budget、Failure Path、Security 與 Operations 全部缺席。
+
+### No Exit Strategy
+
+System 無法 Export State 或 Replace Runtime。
+
+## Production Checklist
+
+### Architecture
+
+- [ ] Framework Selection 前已有 Domain Contract
+- [ ] Adaptive Node 被逐一標出
+- [ ] State、Memory、Session 與 Transaction 已分離
+- [ ] Side Effect 有 Explicit Command Boundary
+- [ ] Final Owner 已命名
+
+### Framework Fit
+
+- [ ] Required Semantics 已記錄
+- [ ] Official Support Status 已記錄
+- [ ] Tested Version 已 Pin
+- [ ] Persistence 與 Replay Behaviour 已測試
+- [ ] Framework Type 沒有主導 Domain Model
+- [ ] Migration Path 存在
+
+### Reliability
+
+- [ ] Retry、Repair、Fallback 與 Replan 分開
+- [ ] 每個 Loop 有 Limit
+- [ ] Checkpoint Resume 不會 Duplicate Side Effect
+- [ ] Approval 會 Expire，State 會 Revalidate
+- [ ] Terminal Outcome 包含 Partial 與 Unsupported
+
+### Security
+
+- [ ] Tool Permission 在 Prompt 外 Enforcement
+- [ ] Untrusted Content 無法改變 Policy
+- [ ] Cross-tenant Access 經測試
+- [ ] Secret 從 Trace 排除或 Redact
+- [ ] High-impact Action 需要適當 Authority
+- [ ] Kill Switch 與 Incident Response 存在
+
+### Testing and Operations
+
+- [ ] Adapter Contract Test 存在
+- [ ] Failure 與 Replay Path 經測試
+- [ ] Upgrade Test 包含 Old Checkpoint
+- [ ] Evaluation 涵蓋 Quality、Cost 與 Latency
+- [ ] Trace 與 Business Audit 分離
+- [ ] Rollback 已演練
+
+## 最終選型指引
+
+使用以下問題，不使用 Universal Leaderboard。
+
+### 是否需要 Agent Loop？
+
+不需要時使用 Ordinary Code、Pipeline 或 Existing Workflow Engine。
+
+### Durable Stateful Orchestration 是否為核心問題？
+
+評估 LangGraph、Existing Workflow Platform，或在能接受 Preview Status 時評估 Microsoft Agent Framework。
+
+### Data 與 Retrieval 是否為核心？
+
+評估 LlamaIndex Workflows，必要時放在更大的 Orchestrator 內。
+
+### Role Collaboration 是否為主要 Hypothesis？
+
+以相同 Worker Contract 比較 CrewAI、AutoGen、LlamaIndex AgentWorkflow、OpenAI Agents SDK Handoff、LangGraph Node 或 Microsoft Agent Framework。
+
+### Lightweight Tool 與 Handoff Runtime 是否足夠？
+
+評估 OpenAI Agents SDK 或 High-level LangChain Agent。
+
+### 是否為 Existing AutoGen 或 Semantic Kernel Estate？
+
+比較 Stay、Adapt 與 Migrate。「有 Successor」不是充分 Business Case。
+
+### System 是否 High Risk？
+
+優先選擇 Team 能透過 Test、Replay、Policy Enforcement、Incident Response 與 Support Commitment 證明其 Semantics 的 Runtime。
+
+## 結論
+
+Framework 是槓桿，不是 Architecture。
+
+可靠 Implementation 自己擁有：
+
+```text
+Domain State
++ Tool and Side-effect Contracts
++ Verification
++ Policy and Authority
++ Terminal Outcomes
++ Evaluation
++ Operational Ownership
+```
+
+Framework 可以提供：
+
+```text
+Agent Loop
++ Graph or Event Runtime
++ Checkpointing
++ Handoffs
++ Streaming
++ Tracing
++ Integrations
+```
+
+Infrastructure 提供：
+
+```text
+Persistence
++ Queue
++ Sandbox
++ Secrets
++ Deployment
++ Audit
++ Monitoring
++ Incident Response
+```
+
+最好的 Framework 不是 Feature List 最長的那一個。
+
+而是 Semantics 與 Architecture 相符、Lifecycle Risk 符合 Task，且移除它時不需要重寫整個 System Meaning 的那一個。
+
+## 參考資料
+
+- [LangChain Documentation, *LangChain overview*](https://docs.langchain.com/oss/python/langchain/overview)
+- [LangGraph Documentation, *LangGraph overview*](https://docs.langchain.com/oss/python/langgraph/overview)
+- [LangGraph Documentation, *Persistence*](https://docs.langchain.com/oss/python/langgraph/persistence)
+- [LangGraph Documentation, *Interrupts*](https://docs.langchain.com/oss/python/langgraph/interrupts)
+- [LlamaIndex Documentation, *Workflows*](https://docs.llamaindex.ai/en/stable/understanding/workflows/)
+- [LlamaIndex Documentation, *AgentWorkflow and structured output*](https://docs.llamaindex.ai/en/latest/understanding/agent/structured_output/)
+- [CrewAI Documentation](https://docs.crewai.com/)
+- [OpenAI, *Agents SDK*](https://openai.github.io/openai-agents-python/)
+- [OpenAI Agents SDK, *Guardrails*](https://openai.github.io/openai-agents-python/guardrails/)
+- [OpenAI Agents SDK, *Tracing*](https://openai.github.io/openai-agents-python/tracing/)
+- [AutoGen Documentation](https://microsoft.github.io/autogen/stable/)
+- [Microsoft, *Microsoft Agent Framework overview*](https://learn.microsoft.com/en-us/agent-framework/overview/)
+- [Microsoft, *Agent Framework migration guides*](https://learn.microsoft.com/en-us/agent-framework/migration-guide/)
+- [OpenTelemetry Documentation](https://opentelemetry.io/docs/)
+
+## 系列目錄
 
 | Part | 主題 |
 |---:|---|
-| 1 | 六維 Agent 架構地圖 |
-| 2 | Execution Path |
-| 3 | Decision and Planning |
-| 4 | Reasoning and Search |
-| 5 | Verification and Recovery |
-| 6 | Multi-Agent Organisation |
-| 7 | State and Memory |
-| 8 | Production Agent Recipes |
-| 9 | Architecture Selection |
-| 10 | Framework Implementation Bonus |
-
----
-
-## 圖表對位表
-
-| 圖號 | 正式圖名 | 建議檔名 |
-|---|---|---|
-| Figure 10-1 | Patterns, Frameworks, and Infrastructure | `figure-10-1-patterns-frameworks-infrastructure.png` |
-| Figure 10-2 | Framework Fit by Architecture Pattern | `figure-10-2-framework-fit-by-pattern.png` |
-| Figure 10-3 | Workflow-Centric Frameworks | `figure-10-3-workflow-centric-frameworks.png` |
-| Figure 10-4 | Multi-Agent Runtime Choices | `figure-10-4-multi-agent-runtime-choices.png` |
-| Figure 10-5 | Native Code or Framework? | `figure-10-5-native-code-or-framework.png` |
-| Figure 10-6 | Framework-Resilient Production Architecture | `figure-10-6-framework-resilient-production-architecture.png` |
-
----
-
-## 官方文件與更新基準
-
-本文在 2026-06-30 依據以下官方文件校對框架定位：
-
-- [LangGraph Overview](https://docs.langchain.com/oss/python/langgraph/overview)
-- [LlamaIndex Workflows Documentation](https://docs.llamaindex.ai/en/stable/understanding/workflows/)
-- [CrewAI Documentation](https://docs.crewai.com/)
-- [OpenAI Agents SDK](https://openai.github.io/openai-agents-python/)
-- [AutoGen Stable Documentation](https://microsoft.github.io/autogen/stable/)
-- [Microsoft Agent Framework Overview](https://learn.microsoft.com/en-us/agent-framework/overview/)
-
-框架狀態與 API 可能在發布後變動。實作前應再次查閱官方文件與 Migration Guide。
+| 1 | LLM Agent 不只有 ReAct：用六個維度看懂 Agent 架構 |
+| 2 | Agent 執行路徑全解：Direct、Pipeline、Router、State Machine 與 DAG |
+| 3 | ReAct、Plan-and-Execute、Adaptive Planning 與 HTN |
+| 4 | 從單一路徑到 Tree、Graph、MCTS 與 LATS |
+| 5 | 驗證、恢復與自我修正 |
+| 6 | Multi-Agent 架構全解 |
+| 7 | Agent Memory 全解 |
+| 8 | Production Agent 架構實戰 |
+| 9 | 如何選擇 Agent 架構 |
+| 10 | 不被 Framework 綁架的 Agent 模式實作 |
