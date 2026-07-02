@@ -1,6 +1,6 @@
 ---
-title: "Agent 設計模式圖鑑 Part 9｜如何選擇 Agent 架構：決策樹、評估矩陣與常見反模式"
-description: "從是否需要 Agent 開始，透過六維選型流程、評估矩陣、Production 實用性排序、常見反模式與架構評審 Checklist，將 Agent 名詞轉化成可落地的架構決策。"
+title: "Agent 設計模式圖鑑 Part 9｜如何選擇 Agent 架構"
+description: "以嚴格決策流程選擇能滿足任務動態、證據、風險、權限、恢復、記憶、成本與運營需求的最小 Agent 架構。"
 date: 2026-07-01T13:58:00
 lang: zh
 categories: ["AI"]
@@ -8,1048 +8,1169 @@ series: "Agent 設計模式圖鑑"
 seriesOrder: 9
 ---
 
-## How to Choose an Agent Architecture: Decision Trees, Evaluation Matrices, and Anti-Patterns
 
-前八篇，我們已經看過 Direct、Pipeline、Router、State Machine、DAG、ReAct、Planning、Tree Search、Verifier、Multi-Agent 與 Memory。
+前八篇介紹了主要積木：
 
-知道名詞，只代表你擁有一盒積木。
+- Direct、Pipeline、Router、State Machine、DAG 與 Event-driven Workflow
+- Fixed Decision、Bounded ReAct、Plan-and-Execute、Adaptive Replanning 與 HTN
+- Single-path、Sampling、Ranking、Tree、Graph、MCTS 與 LATS
+- Retry、Fallback、Repair、Verification、Generate-and-Test 與 Reflexion
+- Single-agent 與 Multi-agent Organisation
+- State、Memory、External Knowledge 與 Production Control
 
-更難的是：
+知道這些名字，不等於完成架構設計。
 
-> 面對真實需求，應該拿哪些積木、拒絕哪些積木，以及如何證明這套架構值得進入 Production？
+Architecture 是一個決策流程，把 Requirement 轉成：
 
-Part 9 的主要任務，是讓讀者從「知道名詞」走到「可以做架構決策」。
+- Execution Path
+- Permission Boundary
+- Acceptance Contract
+- Recovery Policy
+- State Model
+- Operational Envelope
+- Named Owner
 
-本文會完成四件事：
+目標不是挑出看起來能力最強的 Pattern，而是：
 
-1. 判斷任務是否真的需要 Agent
-2. 沿六個維度做選型
-3. 以成本、延遲、可靠度與可觀測性評估方案
-4. 使用 Architecture Canvas、反模式表與 Review Checklist 完成正式評審
+> 選擇能以足夠證據、控制與可恢復性滿足 Contract 的最小系統。
 
----
+## 架構選型是一個受限制的決策
 
-## 一、先問：這個任務真的需要 Agent 嗎？
+只有 Pattern 能解決真實 Requirement 時，才應被加入。
 
-很多團隊一開始就問：
+錯誤選型流程通常像：
 
-- 要用 ReAct 還是 Plan-and-Execute？
-- 要不要 Multi-Agent？
-- 要不要 Long-term Memory？
-- 要不要 Tree of Thoughts？
+```text
+Task 很困難
+  -> 加 Planning
+  -> 加 Tree Search
+  -> 加 Multi-Agent
+  -> 加 Long-term Memory
+```
 
-但更早的問題應該是：
+Production Decision 應改問：
 
-> 這個任務能不能由 Direct、Pipeline 或 Router 完成？
+```text
+什麼條件成立才算完成？
+Execution 過程中什麼可能改變？
+哪些 Action 有 Side Effect？
+哪種 Evidence 能證明成功？
+哪些 State 必須 Persist？
+哪些 Failure 可以 Recovery？
+有哪些 Limit 與 Authority？
+```
 
-Agent 不是預設答案。
+Architecture 是回答這些問題所需的 Mechanism，不是一串時髦名詞。
 
-Agent 是當固定邏輯無法合理處理以下情況時，才應該加入的能力：
+## Gate 0：選 Pattern 前先定義 Contract
 
-- 下一步依賴中間 Observation
-- Tool Result 會改變後續路線
-- 任務路徑無法事先完整列舉
-- 任務需要持久 State
-- 任務需要動態 Planning
-- 任務需要有限自主地處理未知情況
+在判斷是否需要 Agent 前，先定義工作。
 
-### Direct
+### Desired Outcome
 
-適合：
+用可觀測方式描述 Result。
 
-- 一次模型呼叫
-- 無外部工具
-- 不需要持久 State
-- 低風險
-- 輸入中已有足夠資訊
+弱定義：
 
-例如翻譯、改寫、摘要、分類與格式轉換。
+```text
+研究市場並提供有用答案
+```
 
-### Pipeline
+較強定義：
 
-適合：
+```text
+比較三個指定產品的八個必要欄位。
+使用 Approved Source。
+缺少資料時明確標記。
+揭露 Conflict。
+依 Evaluation Criteria 產生 Recommendation。
+```
 
-- 固定順序
-- 每一步可預測
-- 可獨立測試
-- 不需要動態選擇下一個 Tool
+### Acceptance Evidence
+
+找出可以證明 Result 的訊號。
 
 例如：
+
+- Schema Validation
+- Executable Test
+- Source 與 Citation Support
+- Post-condition
+- Rule 或 Solver
+- Authorised Human Judgement
+- Transaction Record
+
+沒有可信 Acceptance Signal 的 Task，不適合高自主性。
+
+### Prohibited Outcome
+
+例如：
+
+- Unsupported Claim
+- Unauthorised Data Access
+- 偷偷修改 Test
+- Duplicate Payment
+- 未批准的 External Publication
+- Unverified Content 寫入 Permanent Memory
+
+### Terminal Outcome
+
+不能只有 Success 與 Failure：
+
+- completed
+- partial
+- blocked
+- pending
+- unsupported
+- inconclusive
+- cancelled
+- expired
+- requires human action
+
+### Operating Envelope
+
+定義：
+
+- Latency
+- Monetary Cost
+- Model 與 Tool Call
+- Retry 與 Replan
+- Concurrency
+- Data Residency
+- Availability
+- Retention
+- Human-response Time
+
+選型應從 Contract 開始，不是從 Framework 首頁開始。
+
+## Gate 1：Task 是否需要 Agentic Adaptation？
+
+Agent 不是 Default Route。
+
+### 使用 Direct
+
+- 一個 Bounded Operation 足夠
+- 所需資訊都在 Input
+- 不需要動態 Tool Selection
+- Output 可以直接 Check
+- Risk 低或由外部控制
+
+Direct 仍可包含 Input Validation、Output Schema、Policy 與 Logging。
+
+### 使用 Pipeline
+
+- Step 已知
+- Order 穩定
+- 每個 Stage 有 Contract
+- Failure 有預定處理
+- Observation 不會要求新 Strategy
 
 ```text
 Upload
- ↓
-Parse
- ↓
-Validate
- ↓
-Store
+  -> Parse
+  -> Validate
+  -> Transform
+  -> Store
 ```
+
+### 加入 Router
+
+- 不同 Request 需要不同 Path
+- Data Source 不同
+- Cost 或 Risk Class 不同
+- 某些 Task 應交給人
+- 某些 Request 不被支援
+
+Router 必須支援：
+
+- unknown
+- ambiguous
+- clarification required
+- unsupported
+- denied
+
+### 加入 Bounded Agentic Adaptation
+
+- 下一個有效 Action 依賴 Tool Result
+- 無法合理列舉完整 Route
+- Environment 是 Partially Observable
+- 需要 Local Exploration
+- 系統必須在 Approved Tool 中動態選擇
+
+### 加入 Durable State
+
+- Task 可能 Pause 或 Resume
+- Approval 是 Async
+- Execution 為 Long-running
+- Retry 與 Replan 跨越 Process Boundary
+- Partial Completion 有意義
+- 需要 Interruption Recovery
+
+核心差異不是「簡單或聰明」，而是：
+
+> Current Observation 出現前，是否能安全決定下一個有效 Action？
+
+![Figure 9-1｜是否需要 Agentic Adaptation 決策樹](/images/the-atlas-of-agent-design-patterns-part-9/agent-need-decision-tree.png)
+
+## Gate 2：把 Requirement 轉成可檢查的 Property
+
+不要直接從 User Story 跳到 Architecture Label。
+
+### Task Dynamics
+
+- Single-step 或 Multi-step
+- Fixed 或 Observation-dependent
+- Branching
+- Loop
+- Dependency
+- Parallelism
+- Event 或 Schedule Trigger
+- Pause 與 Resume
+- Long-running Duration
+
+### Data 與 Trust
+
+- Source of Truth
+- Freshness
+- Version
+- Sensitivity
+- Tenant 與 User Scope
+- External 或 Internal
+- Structured 或 Unstructured
+- Untrusted-content Boundary
+- Retrieval 或 Live Access
+
+### Tool 與 Side Effect
+
+- Read 或 Write
+- Reversible 或 Irreversible
+- Idempotent 或 Non-idempotent
+- Deterministic 或 Probabilistic
+- Permission Level
+- Sandbox Availability
+- Rate Limit
+- Failure Taxonomy
+- Reconciliation Support
+
+### Verification
+
+- 是否有 Objective Test
+- 是否有 Source Support
+- 是否有 Post-condition
+- 是否需要 Human Judgement
+- False-positive Cost
+- False-negative Cost
+- 是否允許 Partial
+- 是否允許 Abstention
+
+### Operations
+
+- Latency Ceiling
+- Cost Ceiling
+- Throughput
+- Availability Target
+- Observability
+- Reproducibility
+- Audit
+- Retention
+- Incident Response
+- Kill Switch
+
+### Responsibility
+
+- Request Owner
+- System Owner
+- Final Completer
+- Approver
+- Data Owner
+- Incident Owner
+- Separation-of-duties Requirement
+
+這些 Property 才是 Architecture Input。
+
+## 先選 Execution Structure
+
+Execution Structure 回答：
+
+> Work 如何在 System 中移動？
+
+這些選項可以組合，不是互斥 Badge。
+
+### Direct
+
+一個 Bounded Operation。
+
+### Pipeline
+
+Stable Sequence。
 
 ### Router
 
-適合：
+不同 Input 走不同 Path。
 
-- 不同 Request 需要不同路徑
-- 不同資料來源
-- 不同成本層級
-- 不同風險與工具
+### State Machine
 
-例如：
+Legal Transition、Loop、Waiting、Recovery 或 Terminal State 很重要時使用。
 
-```text
-User Request
- ↓
-Router
- ├→ Direct
- ├→ RAG
- ├→ SQL
- ├→ Calculator
- ├→ Agent Workflow
- └→ Human Review
-```
+### DAG
 
-### Agentic Workflow
+Task 有 Dependency Constraint，可以平行再 Join 時使用。
 
-適合：
+DAG 本身不提供 Recovery Loop。Replanning 後可以由 Outer Workflow 啟動新 DAG。
 
-- 下一步依賴 Observation
-- 需要多輪工具互動
-- 需要有限自主
-- 需要 Retry、Fallback 或 Replanning
+### Event-driven Workflow
 
-### Stateful Agent
+Work 由 Event、Schedule、Queue 或 Async Change 啟動時使用。
 
-如果任務包含以下需求，通常需要 State Machine 或持久 State：
-
-- Pause / Resume
-- Human Approval
-- Retry Limit
-- Replanning
-- 長時間執行
-- 斷點恢復
-- Pending / Partial / Blocked 等終止狀態
-
-![Figure 9-1 — Do You Need an Agent?](/images/the-atlas-of-agent-design-patterns-part-9/figure-9-1-do-you-need-an-agent.png)
-
-> **Figure 9-1｜Do You Need an Agent?**
-> 先從 Direct、Pipeline 與 Router 開始，只有當下一步依賴 Observation、工具回傳或持久 State 時，才升級成 Agentic Workflow 或 Stateful Agent。
-
----
-
-## 二、把需求轉成可判斷的系統特性
-
-不要直接從需求跳到 Framework。
-
-先把需求轉成五類架構特性。
-
-### 任務特性
-
-- 單步或多步？
-- 固定或動態？
-- 是否有分支？
-- 是否需要循環？
-- 是否需要平行？
-- 是否需要 Pause / Resume？
-- 是否需要人工批准？
-
-### 資料特性
-
-- 資料是否已在輸入中？
-- 是否需要 RAG？
-- 是否需要即時 Web？
-- 是否需要 SQL？
-- 是否涉及敏感資料？
-- 是否有版本與時效？
-
-### 工具特性
-
-- 工具有幾種？
-- 工具是否可逆？
-- 是否會寫入？
-- 是否有高風險操作？
-- 是否需要 Sandbox？
-- 是否有權限差異？
-
-### 品質特性
-
-- 是否有明確正確答案？
-- 是否能定義 Completion Criteria？
-- 是否能外部測試？
-- 是否需要 Citation？
-- 是否允許 Partial？
-- 是否需要 Human Judgment？
-
-### 運營特性
-
-- 延遲上限
-- 成本上限
-- 可觀測性
-- 可重現性
-- 合規要求
-- Audit
-- Availability
-- Error Budget
-
----
-
-## 三、六維架構選擇流程
-
-一套 Agent Architecture 不應只用一個名稱描述。
-
-應沿六個維度分別選擇。
-
-### 維度一：Execution Path
-
-回答：
-
-> 任務從開始到結束怎麼走？
-
-| 模式 | 適合情境 | 主要優點 | 主要風險 |
-|---|---|---|---|
-| Direct | 單步、低風險 | 最簡單、最低成本 | 能力有限 |
-| Pipeline | 固定流程 | 可控、可測試 | 不適合動態分支 |
-| Router | 多種 Request | 成本與路徑分流 | 錯誤路由 |
-| State Machine | 長任務、恢復、審批 | 狀態清楚 | 設計成本較高 |
-| DAG | 可平行子任務 | 提升吞吐 | 依賴管理 |
-| Event-driven | 監控、非同步 | 適合事件與排程 | 分散狀態複雜 |
-
-選型問題：
+Long-running Monitor 可以組合：
 
 ```text
-流程固定嗎？
-是否有分支？
-是否需要循環？
-是否需要持久 State？
-是否需要平行？
-是否由事件觸發？
+Event Trigger
+  -> State Machine
+  -> Fixed Pipeline
+  -> Notification Gate
 ```
 
-### 維度二：Decision and Planning
+問題不是哪一個名字代表整個 Product，而是哪些 Structure 控制哪些部分。
 
-回答：
+## 只在需要的位置加入 Decision 與 Planning
 
-> 下一步怎麼決定？
+Decision Strategy 回答：
 
-#### Fixed Decision
+> Execution Structure 內部如何選擇下一個 Action？
 
-適合路線可預先定義、成本與風險需要高度可控的任務。
+### Fixed Decision Logic
 
-#### ReAct
+Route 與 Fallback 已知時使用。
 
-適合下一步依賴工具結果的 Browser、Debug、Search 與 API Exploration。
+### Bounded ReAct
 
-需要：
+下一個 Local Action 依賴最新 Observation 時使用。
 
-- Max Steps
-- Tool Allowlist
+必要 Control：
+
+- Step Objective
+- Allowed Tools
+- Maximum Actions
 - Duplicate Detection
-- Stop Condition
-
-#### Plan-and-Execute
-
-適合：
-
-- 長任務
-- 有多個子目標
-- 容易漏項
-- 需要先估算 Budget
-
-#### Adaptive Planning
-
-適合：
-
-- 初始計畫可能失效
-- 外部資料不穩定
-- Tool 可能不可用
-- 需要修改剩餘步驟
-
-需要：
-
-- Plan Version
-- Replan Trigger
-- Maximum Replans
-- Completed Step Registry
-
-#### HTN
-
-適合已有 SOP、企業流程與受控拆解方法。
-
-### 維度三：Reasoning and Search
-
-回答：
-
-> 系統要探索幾條候選路徑？
-
-| 模式 | 何時使用 | 必要前提 |
-|---|---|---|
-| Single-path | 簡單問題、成本敏感 | 有強 Verifier |
-| Self-consistency | 明確答案、可投票 | 可正規化答案 |
-| Generate-and-Rank | 多個完整方案 | 有可靠 Ranker |
-| Beam Search | 每層有多候選 | 中間狀態可評分 |
-| Tree of Thoughts | 需要剪枝與回溯 | Evaluator 可信 |
-| Graph of Thoughts | 多路徑需合併 | 狀態管理成熟 |
-| MCTS / LATS | 環境中行動與回饋 | Sandbox 與外部 Observation |
-
-如果沒有可靠 Evaluator，不要使用複雜 Search。
-
-### 維度四：Verification and Recovery
-
-回答：
-
-> 系統怎麼知道自己做錯，以及怎麼修？
-
-| 失敗類型 | 建議模式 |
-|---|---|
-| 暫時性錯誤 | Retry |
-| 參數不理想 | Parameterized Retry |
-| 主方法不可用 | Fallback |
-| 格式或局部品質問題 | Self-Refine |
-| 需要問題診斷 | Critic |
-| 需要 Pass / Fail | Verifier |
-| 可執行產物 | Generate-and-Test |
-| 初始計畫失效 | Replanning |
-| 未來應避免重犯 | Reflexion |
-| 高風險或不可逆 | Human Review |
-
-### 維度五：Agent Organisation
-
-回答：
-
-> 工作由誰完成？
-
-#### Single Agent
-
-預設選項。
-
-#### Role-based Single Agent
-
-需要責任分離，但不需要真正獨立執行。
-
-#### Supervisor–Worker
-
-適合子任務清楚、可平行、需要中央治理的情況。
-
-#### Planner–Executor–Critic
-
-適合規劃、執行與診斷責任分離。
-
-#### Debate / Voting
-
-適合多觀點、反方分析或固定候選聚合。
-
-#### Blackboard
-
-適合多 Agent 共享中間結果。
-
-#### Peer-to-Peer / Swarm
-
-只適合高度分散且已具成熟 Control Plane 的場景。
-
-### 維度六：State and Memory
-
-回答：
-
-> 應該保存什麼，以及保存多久？
-
-| 類型 | 用途 |
-|---|---|
-| Stateless | 單次任務 |
-| Working Memory | 當前任務中間資訊 |
-| Short-term State | Workflow 進度 |
-| Episodic Memory | 過去事件與結果 |
-| Semantic Memory | 穩定知識 |
-| Procedural Memory | SOP 與規則 |
-| User Memory | 使用者授權的偏好 |
-| Shared Memory | 多 Agent 共用資訊 |
-| External Knowledge Store | 外部 Source of Truth |
-
-![Figure 9-2 — Six-Dimensional Architecture Selection Workflow](/images/the-atlas-of-agent-design-patterns-part-9/figure-9-2-six-dimensional-architecture-selection-workflow.png)
-
-> **Figure 9-2｜Six-Dimensional Architecture Selection Workflow**
-> 從任務特性出發，依序選擇 Execution Path、Decision、Search、Verification、Organisation 與 Memory，最後套用 Policy、Budget、Observability 與 Human Approval。
-
----
-
-## 四、完整選型矩陣
-
-| 任務特性 | Execution Path | Decision / Planning | Search | Verification | Organisation | State / Memory |
-|---|---|---|---|---|---|---|
-| 單次文字任務 | Direct | Fixed | Single-path | Schema / Basic Check | Single Agent | Stateless |
-| 固定文件處理 | Pipeline | Fixed | Single-path | Schema / Rule | Single Agent | Short-term State |
-| 多類型問答 | Router | Fixed / Router | Single-path | Route Check | Single Agent | Query State |
-| 文件問答 | RAG Pipeline | Fixed / Query Rewrite | Retrieval + Rerank | Citation / Faithfulness | Single Agent | Query State + External Knowledge |
-| 動態 Browser 任務 | State Machine | ReAct | Single-path / Limited Search | Post-condition | Single Agent | Browser State + Action History |
-| Coding 修復 | State Machine | Plan-and-Execute | Generate-and-Test | Tests / Build / Diff | Single Agent 或 Role-based | Repo Snapshot + Attempt State |
-| Deep Research | State Machine + DAG | Adaptive Planning | Generate-and-Rank | Source Coverage / Citation | Supervisor–Worker | Evidence Store + Working Memory |
-| 多觀點評估 | Pipeline / State Machine | Fixed | Debate / Voting | Judge + External Verifier | Multi-Agent | Shared State |
-| 高風險企業操作 | State Machine | Fixed Policy Flow | 通常不需 Search | Rule + Human Approval | Single Agent / Role-based | Approval State + Audit Log |
-| 長期監控 | Event-driven | Fixed / Limited Agentic | Single-path | Change Verification | Single Agent | Baseline + Alert History |
-| 高度分散協作 | Event-driven / P2P | Local Planning | Distributed Search | Global Verifier | Peer-to-Peer / Swarm | Shared Memory + Control Plane |
-
----
-
-## 五、什麼時候選 ReAct、Planning 或 Adaptive Planning？
-
-### ReAct
-
-使用時機：
-
-- 每一步需要 Observation
-- 無法預先知道下一個 Tool
-- 任務路徑短至中等
-- 局部決策比全局計畫更重要
-
-不要用於：
-
-- 非常長的任務
-- 高風險固定流程
-- 有清楚依賴與完整交付物的專案
+- Budget
+- Completion Criteria
+- Escalation
+- Structured Observation
 
 ### Plan-and-Execute
 
-使用時機：
+適合：
 
-- 多個明確子目標
-- 需要避免漏項
-- 子任務順序重要
-- 需要先估算 Budget
+- Task 有數個明確 Deliverable
+- 遺漏成本高
+- Dependency 很重要
+- Progress 必須可見
+- Delegation 或 Budget 很重要
 
-### Adaptive Planning
+Plan 必須定義 Executable Step Contract，不是重述 Task。
 
-使用時機：
+### Adaptive Replanning
 
-- 外部資料可能不存在
-- Tool 可能失效
-- 原始假設可能錯
-- 需要修改剩餘計畫
+只有 Remaining Plan 可能失效時才加入。
 
----
+要求：
 
-## 六、什麼時候需要多路搜尋？
+- Replan Trigger
+- Plan Version
+- Plan Diff
+- Preserved Completed Work
+- Invalidated Steps
+- Replan Limit
+- Verifier Approval
 
-多路搜尋只有在以下條件成立時才值得：
+### HTN
 
-- 問題存在多個重要候選
-- 早期選擇會影響後續
-- 中間結果可評估
-- 有足夠 Budget
-- 有可靠 Evaluator
-- 搜尋行動可安全執行
+Domain 有可重用且受治理的 Decomposition Method 與 Primitive Action 時使用。
 
-| 情境 | 建議 |
+HTN 不只是很長的 Checklist，而是依賴 Domain Task、Method、Constraint 與 Operator。
+
+Planning 是 Architecture 內的 Capability，不是它一定能成功的 Evidence。
+
+## Evaluator 能引導時才加入 Multi-path Search
+
+Search 回答：
+
+> 系統是否應保存並比較 Alternative Candidate？
+
+### 保留 Single Path
+
+- 一個 Candidate 通常足夠
+- External Verification 強
+- Latency 很重要
+- First Choice 選錯成本低
+
+### 使用 Self-consistency
+
+- 有一個可正規化 Answer
+- Sample Variance 是重要 Error Source
+- Agreement 可以計算
+- Fact Verification 仍另外執行
+
+### 使用 Generate-and-Rank
+
+- 多個完整 Alternative 有價值
+- Reliable Evaluator 可以比較
+- Invalid Candidate 先被淘汰
+
+### 使用 Beam Search
+
+- Partial Candidate 逐 Layer 發展
+- 只能負擔 Bounded Frontier
+- Intermediate State 可以 Score
+
+### 使用 Tree of Thoughts 或其他 Tree Search
+
+- Early Choice 強烈影響後續
+- Intermediate State 有意義
+- Pruning 與 Backtracking 有用
+- Evaluator 可信
+
+### 使用 Graph of Thoughts
+
+- Intermediate Result 必須 Merge
+- Result 必須 Reuse
+- Dependency、Invalidation 與 Provenance 可治理
+
+### 使用 MCTS-style Search 或 LATS
+
+- Action 會與 Environment 互動
+- Repeated Visit 與 Value Update 有價值
+- Execution 在 Sandbox 或可 Reversible
+- Environment Feedback 真正反映 Goal
+
+不要先買 Search Tree，再去找 Evaluator。否則 System 只會長出 Branch，卻不知道哪裡有果實。
+
+## 增加自主性前先定義 Verification 與 Recovery
+
+Verification 回答：
+
+> 什麼 Evidence 可以接受或拒絕 Result？
+
+Recovery 回答：
+
+> Failure 發生後，最小合理回應是什麼？
+
+### Evidence 必須對應 Claim
+
+| Claim | Preferred Evidence |
 |---|---|
-| 多次生成且答案可投票 | Self-consistency |
-| 多個完整方案需比較 | Generate-and-Rank |
-| 每層保留少數候選 | Beam Search |
-| 需要剪枝與回溯 | Tree of Thoughts |
-| 需要合併路徑 | Graph of Thoughts |
-| 在環境中行動與回饋 | LATS |
+| Output Structurally Valid | Schema 或 Parser |
+| Code Behaves Correctly | Test、Execution、Build |
+| SQL Permitted and Valid | Parser、Read-only Policy、Execution |
+| RAG Answer Supported | Claim-to-source Verification |
+| Browser Task Succeeded | Functional Post-condition |
+| Transaction Completed Once | Transaction Record 與 Reconciliation |
+| Open-ended Output Acceptable | Rubric 與 Authorised Judgement |
 
----
+### Recovery 必須對應 Failure
 
-## 七、什麼時候需要 Multi-Agent？
-
-適合 Multi-Agent：
-
-- 子任務自然分離
-- 可平行執行
-- 不同 Agent 需要不同工具或權限
-- 需要獨立觀點
-- 一個 Context 太大
-- 需要中央治理或共享工作區
-
-不適合 Multi-Agent：
-
-- 任務高度依賴同一 Context
-- 一個 Agent 已能完成
-- 沒有 Aggregator
-- 沒有 Final Owner
-- 沒有共享狀態治理
-- 交接成本高於執行成本
-
-最小可行順序：
-
-```text
-Single Agent
- ↓
-Role-based Single Agent
- ↓
-Supervisor–Worker
- ↓
-Blackboard / Debate
- ↓
-Peer-to-Peer / Swarm
-```
-
-這不是成熟度階梯，而是協調成本的增加順序。
-
----
-
-## 八、驗證機制如何選？
-
-| 任務 | 優先驗證 |
+| Failure | Primary Response |
 |---|---|
-| JSON / Schema | Deterministic Validation |
-| SQL | Parser + Read-only Policy + Execution |
-| RAG | Citation + Faithfulness |
-| Coding | Tests + Lint + Build |
-| Browser | Post-condition |
-| Research | Source Coverage + Conflict Check |
-| 高風險操作 | Policy + Human Approval + Audit |
-| 開放式文字 | Rubric + Critic + Human Sampling |
+| Transient 且可安全重做 | Retry |
+| Input Parameter 錯誤 | Parameter Repair |
+| Current Implementation 不可用 | Fallback |
+| Current Artefact 錯誤 | Repair 或 Generate-and-Test |
+| Evidence 缺少 | Retrieve、Clarify 或 Abstain |
+| Remaining Plan 無效 | Replan |
+| Policy Deny Action | Deny 或 Request Approval |
+| Capability 或 Data 不存在 | Stop 或 Unsupported |
 
-原則：
+Verifier 必須可以 Fail、Abstain 與回傳 Inconclusive。Recovery Controller 必須可以 Stop。
 
-- 能用規則，不只用 LLM
-- 能執行，不只目視
-- 能查來源，不只投票
-- 高風險需要責任與授權
-- Verifier 必須能輸出 Fail
+## 只有真正的責任邊界才加入 Multiple Agents
 
----
+Organisation 回答：
 
-## 九、Memory 如何選？
+> 哪些可獨立定址的 Execution Entity 負責 Work？
+
+### Default：One Agent 或 One Workflow
+
+單一 Orchestration 仍可包含：
+
+- Planner Stage
+- Executor Stage
+- Critic Stage
+- Verifier Stage
+- Deterministic Tool
+
+Role Name 不會自動創造 Multiple Agents。
+
+### Supervisor 與 Workers
+
+適合：
+
+- Subtask 自然可分
+- Bounded Parallelism 有幫助
+- Worker 需要不同 Tool 或 Context
+- Supervisor 能分派與驗收
+- 一個 Final Owner 整合 Result
+
+### Debate 與 Voting
+
+它們是 Decision Protocol，不是通用 Multi-agent Upgrade。
+
+Agent 必須互相 Challenge 並更新立場時使用 Debate。
+
+Independent Choice 可以 Aggregate 時使用 Voting。
+
+兩者都不能取代 External Evidence。
+
+### Blackboard
+
+多個 Agent 透過 Typed Shared Problem State 協作時使用。
+
+Blackboard 需要：
+
+- Schema
+- Read 與 Write Permission
+- Versioning
+- Conflict Handling
+- Provenance
+- Scheduling
+- Final Owner
+
+### Peer-to-peer 或 Swarm-style Coordination
+
+只有 Central Coordination 確實不適合，且 System 能定義以下項目時才使用：
+
+- Local Rule
+- Task Claiming
+- Convergence
+- Duplicate Suppression
+- Global Budget
+- Stop Condition
+- Kill Switch
+- Final Accountability
+
+Multi-agent 應由 Responsibility 與 Communication Need 驗證，不是因為想在圖上放更多 Avatar。
+
+## 分開定義 State、Memory 與 External Knowledge
+
+### Workflow State
+
+Exact Control Information：
+
+- Current Step
+- Status
+- Attempts
+- Approvals
+- Plan Version
+- Terminal Outcome
 
 ### Working Memory
 
-使用於長任務、中間資訊與 Context 壓縮。
-
-### Short-term State
-
-使用於 State Transition、Retry、Approval、Pause / Resume。
+Current Reasoning 所需的 Task-local Intermediate Information。
 
 ### Episodic Memory
 
-使用於相似案例、過去事件與行動回放。
+可能支援 Future Task 的 Past Event 與 Outcome。
 
 ### Semantic Memory
 
-使用於可治理的穩定知識。
+Governed Stable Knowledge。
 
 ### Procedural Memory
 
-使用於 SOP、工具規則與驗收程序。
+Reusable Method、SOP、Tool Rule 與 Acceptance Procedure。
 
-### User Memory
+### User-scoped Memory
 
-只保存使用者明確授權、長期穩定且可查看與刪除的偏好。
+由 User Authorise 的 Preference 或 Fact，並支援 Access、Correction、Deletion 與 Expiry。
 
-### 不使用 Long-term Memory
+### Shared Memory
 
-當任務一次性、資料敏感、資訊容易過期，或可以從 Source of Truth 重新檢索時。
+Coordination Scope，不是 Cognitive Type。
 
----
+### External Knowledge
 
-## 十、自主度 vs 可控性
+需要時 Retrieval 的 Source of Truth。
 
-| 模式 | 自主度 | 可控性 |
-|---|---:|---:|
-| Direct | 很低 | 很高 |
-| Fixed Pipeline | 低 | 很高 |
-| Router | 低～中 | 高 |
-| Agentic Workflow | 中 | 中～高 |
-| Plan-and-Execute | 中～高 | 中 |
-| Adaptive Agent | 高 | 中～低 |
-| Long-running Autonomous Agent | 很高 | 低 |
+以下情況不要建立 Long-term Memory：
 
-Production Sweet Spot 通常是：
+- Task 是 One-off
+- Data Sensitive
+- Information 很快 Expire
+- Source of Truth 可以 Query
+- 沒有 Consent
+- Delete 無法 Propagate
 
-> 局部自主 + 明確 Workflow + Policy + Verifier + Human Approval。
+Memory Selection 必須定義 Source、Scope、Version、Status、Expiry 與 Write Authority。
 
-![Figure 9-3 — Agent Autonomy and System Control Matrix](/images/the-atlas-of-agent-design-patterns-part-9/figure-9-3-agent-autonomy-system-control-matrix.png)
+## Architecture Selection Gate 與 Capability Module
 
-> **Figure 9-3｜Agent Autonomy and System Control Matrix**
-> 自主度越高通常越靈活，但可預測性下降。Agentic Workflow 常位於實用平衡區，而 Multi-Agent 不是固定自主度等級。
-
----
-
-## 十一、成本、延遲、可靠度與可觀測性
-
-### 成本
-
-- Model Calls
-- Token
-- Tool Calls
-- Search API
-- Browser
-- Sandbox
-- Human Review
-
-### 延遲
-
-- 模型延遲
-- 工具延遲
-- Worker 等待
-- 人工審批
-- Retry
-
-### 可靠度
-
-- Success Rate
-- Partial Rate
-- Retry Rate
-- Verifier Pass Rate
-- Post-condition Success
-
-### 可觀測性
-
-- Trace
-- State Transition
-- Tool Call
-- Prompt / Model Version
-- Cost
-- Failure Reason
-- Audit
-
----
-
-## 十二、成本 vs 品質矩陣
-
-| 架構 | 潛在品質 | Runtime Cost | 延遲 | Operational Risk | 適合 |
-|---|---:|---:|---:|---:|---|
-| Direct | 低～中 | 低 | 低 | 低 | 單次任務 |
-| Pipeline | 中 | 低～中 | 低 | 低 | 固定流程 |
-| RAG | 中～高 | 中 | 低～中 | 中 | 有來源問答 |
-| Agentic Workflow | 高 | 中～高 | 中～高 | 中～高 | 動態多步驟 |
-| Multi-Agent | 視設計 | 高 | 高 | 高 | 自然分工 |
-| Long-running Autonomous | 不穩定 | 很高 | 很高 | 很高 | 少數特殊場景 |
-
-原則：
-
-> 在達到品質門檻的方案中，選擇成本、延遲與運營風險最低者。
-
-![Figure 9-4 — Cost vs Quality Matrix](/images/the-atlas-of-agent-design-patterns-part-9/figure-9-4-cost-vs-quality-matrix.png)
-
-> **Figure 9-4｜Cost vs Quality Matrix**
-> 架構越複雜不代表品質一定越高。Production 選型應先設定品質門檻，再選擇成本、延遲與運營風險最低的可行方案。
-
----
-
-## 十三、Production 實用性排序
-
-這裡的排序不是能力強弱，而是大多數 Production 專案應優先掌握與考慮的順序。
-
-| Tier | 模式 | Production 實用性 | 建議 |
-|---|---|---:|---|
-| A | Direct、Pipeline、Router、State Machine、Verifier | 很高 | 優先掌握 |
-| A | RAG、ACL、Citation、Budget、Trace | 很高 | 常見核心能力 |
-| B | DAG、Plan-and-Execute、Generate-and-Test | 高 | 依任務使用 |
-| B | Working Memory、Procedural Memory | 高 | 長任務與治理 |
-| C | Supervisor–Worker、Debate、Blackboard | 中 | 有自然分工再用 |
-| C | Self-consistency、Generate-and-Rank、Beam Search | 中 | 有 Evaluator 再用 |
-| D | Tree of Thoughts、Graph of Thoughts、LATS | 低～中 | 高價值特殊場景 |
-| D | Peer-to-Peer、Swarm | 低 | 成熟 Control Plane 才使用 |
-| D | Long-running Autonomous Agent | 低 | 高運營成本與風險 |
-
----
-
-## 十四、十大 Agent 反模式與修正方法
-
-| 反模式 | 問題 | 修正方法 | 驗收標準 |
-|---|---|---|---|
-| Framework-first | 先選工具再找需求 | 先完成 Architecture Canvas | Pattern 選擇有理由 |
-| Pattern Shopping | 新 Pattern 全部加入 | 每個 Pattern 必須對應需求 | 無無用途元件 |
-| Multi-Agent Inflation | 角色名稱冒充獨立 Agent | 先用 Role-based Single Agent | 有獨立責任才算 Agent |
-| Search Without Evaluator | 搜尋更多卻不知何者較好 | 先建立 Evaluator | 中間狀態可評分 |
-| Memory Without Governance | 所有內容進 Vector Store | 加 Source、Scope、Version、Expiry | 記憶可更新、刪除 |
-| Human-in-the-loop Theater | 只有 Approve 按鈕 | 顯示證據、風險、影響 | 審批者能實質判斷 |
-| Autonomy as KPI | 把自主度當成熟度 | 設定最低必要自主度 | 自主性有明確收益 |
-| Retry as Recovery | 所有錯誤都重試 | 先分類 Failure | Retry 只處理暫時性錯誤 |
-| Demo Success as Production Readiness | 一次成功就上線 | 測試 Failure Path | 正常、失敗、高風險皆驗證 |
-| No Final Owner | 多個 Agent 無人負責 | 指定 Final Owner | 只有一個正式完成者 |
-
----
-
-## 十五、Agent Architecture Canvas
-
-一張完整 Canvas 應包含十五個欄位。
-
-1. User Goal
-2. Success Criteria
-3. Inputs and Data
-4. Tools and Actions
-5. Execution Path
-6. Decision and Planning
-7. Search Strategy
-8. Verification and Recovery
-9. Agent Organisation
-10. State and Memory
-11. Policy and Safety
-12. Budget and Limits
-13. Observability
-14. Terminal States
-15. Final Owner
-
-每個欄位都必須回答：
-
-- 這個決策是什麼？
-- 為什麼需要？
-- 有哪些限制？
-- 怎樣驗收？
-
-![Figure 9-5 — Agent Architecture Canvas](/images/the-atlas-of-agent-design-patterns-part-9/figure-9-5-agent-architecture-canvas.png)
-
-> **Figure 9-5｜Agent Architecture Canvas**
-> 透過十五個欄位，把需求、工具、流程、Planning、Search、Verification、Organisation、Memory、Policy、Budget、Observability 與 Final Owner 放在同一張架構畫布上。
-
----
-
-## 十六、完整案例：從需求到架構
-
-需求：
-
-> 建立一個部落格 Ask AI，使用者可以問文章內容，系統根據站內文章回答並附來源。必要時可以改寫 Query，但不能自由瀏覽全網，也不能無限重試。
-
-### Step 1：是否需要 Agent？
-
-大部分流程是固定 RAG Pipeline。
-
-只有 Query Rewrite、Retrieval Retry 和 Clarification 需要有限 Agentic 能力。
-
-結論：
+實務選型順序：
 
 ```text
-不是 Full Agent
-而是 Agentic RAG Workflow
+1. Define Contract and Risk
+2. Select Simplest Execution Structure
+3. Add Adaptive Local Decision Only Where Observation Requires It
+4. Add Planning Only Where Global Decomposition Provides Value
+5. Add Search Only Where Evaluation Can Guide It
+6. Add Multiple Agents Only Where Responsibility Boundaries Justify Coordination
+7. Add Memory Only Where Future Value Exceeds Governance Cost
+8. Apply Identity, Policy, Budget, Evaluation, Observability, and Human Control
 ```
 
-### Step 2：Execution Path
+這不是要求每個 Category 都必須被填滿。
+
+合法 Output 可以是：
 
 ```text
-Router
- ↓
-RAG Pipeline
- ↓
-Citation Verifier
+Fixed RAG Pipeline
++ One Bounded Query-rewrite Node
++ Citation Verifier
++ No Multi-agent
++ No Long-term Memory
 ```
 
-### Step 3：Decision
+![Figure 9-2｜Architecture Selection Gate 與 Capability Module 順序](/images/the-atlas-of-agent-design-patterns-part-9/architecture-selection-sequence.png)
 
-- Fixed Flow
-- Bounded Query Rewrite
-- Maximum 1 Retry
+## 用 Autonomy Budget 取代 Autonomy Ladder
 
-### Step 4：Search
+Autonomy 不是單一 Scalar Property。
 
-- Hybrid Retrieval
-- Reranker
-- Source Diversity
-- 不需要 Tree Search
+System 可以在 Query Rewrite 上高度自主，卻在 Data Access 與 Side Effect 上完全受限。
 
-### Step 5：Verification
+沿六個維度定義 Autonomy。
 
-- Citation Coverage
-- Claim Support
-- Permission Check
-- Answerability
+### Action Scope
 
-失敗結果：
+- One Transformation
+- Several Approved Tools
+- Arbitrary Tool Sequence
+- Cross-system Operation
 
-- Retry
-- Clarify
-- Abstain
+### Authority
 
-### Step 6：Organisation
+- Propose
+- Draft
+- Execute Reversible Action
+- Execute Irreversible Action
+- Delegate Authority
 
-Single Agent 足夠。
+### Duration
 
-不需要 Multi-Agent。
+- One Call
+- One Bounded Session
+- Resumable Task
+- Continuous Monitor
 
-### Step 7：State and Memory
+### Reversibility
 
-需要：
+- No Side Effect
+- Reversible Side Effect
+- Compensatable Side Effect
+- Irreversible Action
 
-- Original Query
-- Rewritten Query
-- Retrieved IDs
-- Citation Map
-- Retry Count
+### Environment Uncertainty
 
-不需要：
+- Fixed Input
+- Stable API
+- Dynamic Document
+- Changing Interface
+- Open Environment
 
-- Episodic Memory
-- User Memory
-- Shared Memory
+### External Verifiability
 
-### Step 8：Policy
+- Deterministic
+- Executable
+- Evidence-based
+- Rubric-based
+- Weak or Delayed Feedback
 
-- 只可使用站內文章
-- 不可引用未授權內容
-- 不可自由 Web Search
-- 不生成無來源事實
+高 Impact 不一定要求更少 Reasoning Autonomy，而是要求對 Authority、Side Effect、Evidence 與 Approval 有更強限制。
 
-### Step 9：Budget
+Coding Agent 可以在 Disposable Branch 裡自由探索，但完全沒有 Merge Permission。
 
-- Max Retrieval Calls: 2
-- Max Rewrite: 1
-- Max Answer Tokens
-- Max Latency
-- No Infinite Retry
+Research Agent 可以在 Approved Source 內廣泛 Search，但沒有 Publish Permission。
 
-### Step 10：Terminal States
+![Figure 9-3｜六維 Autonomy Budget Matrix](/images/the-atlas-of-agent-design-patterns-part-9/autonomy-budget-matrix.png)
 
-- Completed
-- Clarification Required
-- Unsupported
-- Insufficient Evidence
-- Failed
+## 用實測 Evidence 比較 Architecture，不用通用分數
 
-### 最終架構描述
+不存在以下通用真理：
 
-```text
-User Goal:
-Answer questions from blog content with citations
+- Direct 的 Quality 永遠較低
+- Multi-Agent 永遠以相同倍數增加成本
+- Adaptive Planning 永遠降低 Controllability
+- RAG 永遠是 Medium Latency
 
-Execution Path:
-Router → RAG Pipeline → Citation Verifier
+這些 Property 取決於 Implementation 與 Task。
 
-Decision:
-Fixed flow with one bounded Query Rewrite
+### 先定義 Required Threshold
 
-Search:
-Hybrid Retrieval + Rerank
+例如：
 
-Verification:
-Citation Coverage
-Claim Support
-Permission Check
+- Claim Support 至少 98%
+- Task Success 至少 90%
+- Critical Policy Violation 等於 0
+- p95 Latency 低於 8 秒
+- Average Cost 低於指定上限
+- Duplicate Side Effect 等於 0
+- Human Escalation 低於可接受比例
 
-Organisation:
-Single Agent
+### 評估 Candidate Architecture
 
-State:
-Original Query
-Rewritten Query
-Retrieved IDs
-Citation Map
-Retry Count
+每個 Candidate 實測：
 
-Memory:
-No unrestricted long-term memory
+- Task Success
+- False Pass 與 False Fail
+- Evidence Coverage
+- Policy Violation
+- Latency Distribution
+- Cost Distribution
+- Retry 與 Replan Rate
+- Human-review Load
+- Failure Recovery
+- Operator Effort
 
-Policy:
-Blog corpus only
-No unsupported claims
-No open Web access
+### 淘汰 Non-viable Option
 
-Budget:
-2 retrieval calls
-1 rewrite
-bounded latency and tokens
+任何 Hard Safety 或 Quality Threshold 失敗的 Architecture，即使更便宜也必須淘汰。
 
-Terminal States:
-Completed
-Clarification Required
-Unsupported
-Insufficient Evidence
-Failed
+### 從 Viable Option 選擇
 
-Final Owner:
-RAG Orchestrator
-```
+使用 Pareto Reasoning：
 
----
+> 如果不存在另一個方案在所有必要維度都更便宜且更好，這個方案才可能保留。
 
-## 十七、架構評審 Checklist
+Architecture A 可能更快，B 更便宜，C 的 Recovery 更強。Final Choice 取決於 Contract 與 Risk Appetite。
 
-### Need Review
+### Change 後重新評估
 
-- [ ] 任務確實需要 Agentic 能力
-- [ ] 已確認 Direct、Pipeline 或 RAG 無法單獨完成
-- [ ] Agent 自主性有可衡量收益
-- [ ] 沒有為了流行而加入 Agent
+Model、Prompt、Tool、Data、Policy 與 Environment 都會 Drift。
 
-### Workflow Review
+Release Evaluation 應包含：
 
-- [ ] Execution Path 已明確定義
-- [ ] 所有 State 有入口與出口
-- [ ] 所有 Loop 有上限
-- [ ] Retry、Repair、Replan 已分開
-- [ ] Terminal States 已定義
-- [ ] Pause / Resume 行為已定義
-- [ ] Human Approval 後如何 Resume 已定義
+- Representative Task
+- Regression
+- Adversarial Case
+- Permission Test
+- Failure Path
+- Recovery Path
+- Cost 與 Latency
+- Canary 或 Shadow Deployment
 
-### Tool and Permission Review
+NIST AI RMF 與 GenAI Profile 將 Risk Management 放在 Design、Development、Deployment、Use 與 Evaluation 的完整 Lifecycle，而不是只做 Launch-day Scorecard。
 
-- [ ] 使用最小權限
-- [ ] Read / Write 工具已分開
-- [ ] 高風險工具有 Approval Gate
-- [ ] Secret 已隔離
-- [ ] Sandbox 已建立
-- [ ] Tool Allowlist 不只寫在 Prompt
-- [ ] 不可逆操作有 Idempotency 或 Compensation
+![Figure 9-4｜用 Measured Evidence 比較 Architecture](/images/the-atlas-of-agent-design-patterns-part-9/measured-evidence-comparison.png)
 
-### Verification Review
+## Agent Architecture Canvas
 
-- [ ] Completion Criteria 明確
-- [ ] Verifier 可以輸出 Fail
-- [ ] 優先使用 deterministic checks
-- [ ] 可執行產物有真實測試
-- [ ] RAG 有 Citation / Faithfulness Check
-- [ ] Browser 有 Post-condition
-- [ ] 高風險操作有執行後驗證
-- [ ] 測試與驗收條件不能被 Agent 任意修改
-- [ ] 支援 Partial / Unsupported / Pending
+完整 Design Review 應回答十六個欄位。
 
-### State and Memory Review
+### 1. Goal and User Value
 
-- [ ] State 與 Memory 已分開
-- [ ] Working Memory 有 TTL
-- [ ] Long-term Memory 有 Source
-- [ ] Memory 有 Scope、Version、Expiry
-- [ ] 未驗證內容不能直接寫入
-- [ ] User / Tenant Isolation 已完成
-- [ ] Shared Memory 有 Read / Write 權限
-- [ ] 支援 Supersede、Delete、Audit
-- [ ] 可從 Source of Truth 取得的資料不重複永久保存
+真正重要的 Outcome 是什麼？
 
-### Cost and Reliability Review
+### 2. Acceptance Evidence
 
-- [ ] Global Budget 已定義
-- [ ] Per-step Budget 已定義
-- [ ] Max Steps 已定義
-- [ ] Retry Limit 已定義
-- [ ] Replan Limit 已定義
-- [ ] Tool Call Limit 已定義
-- [ ] Timeout 已定義
-- [ ] No-progress Detection 已完成
-- [ ] Kill Switch 已建立
-- [ ] 有 Safe Mode 或降級路徑
+什麼可以證明完成？
 
-### Observability Review
+### 3. Users, Owners, and Authority
 
-- [ ] 每個任務有 Trace ID
-- [ ] State Transition 可觀察
-- [ ] Tool Call 可追蹤
-- [ ] Model Version 已保存
-- [ ] Prompt Version 已保存
-- [ ] Cost 與 Latency 可量測
-- [ ] Failure Reason 可查詢
-- [ ] 高風險操作有 Audit Log
-- [ ] 可以安全 Replay
+誰 Request、Operate、Approve 並擁有 Result？
 
-### Human Responsibility Review
+### 4. Inputs, Sources, and Trust Boundaries
 
-- [ ] 已指定 Final Owner
-- [ ] 已指定 Approver
-- [ ] 避免 Self-approval
-- [ ] Human Review 顯示證據與風險
-- [ ] Approval 有 Expiry
-- [ ] 執行前會重新驗證狀態
-- [ ] 拒絕、逾時、取消都有處理路徑
+Data 從哪裡來，哪些 Content 是 Untrusted？
 
-### Go-Live Decision
+### 5. Tools and Side Effects
 
-- [ ] Go
-- [ ] Pilot
-- [ ] No-Go
-- [ ] Required Remediation 已記錄
-- [ ] Review Owner 已指定
-- [ ] Review Date 已記錄
+什麼能力可以 Read、Write、Send、Publish、Pay、Delete 或 Delegate？
 
----
+### 6. Execution Structure
 
-## 十八、Go、Pilot、No-Go 判定
+Direct、Pipeline、Router、State Machine、DAG、Bounded Loop 或 Event-driven Workflow。
+
+### 7. Decision and Planning
+
+Fixed Logic、Bounded ReAct、Plan-and-Execute、Adaptive Replanning 或 HTN。
+
+### 8. Candidate Search
+
+Single Path、Sampling、Ranking、Tree、Graph 或 Environment Search。
+
+### 9. Verification
+
+Schema、Test、Evidence、Post-condition、Policy、Rubric 或 Human Judgement。
+
+### 10. Recovery
+
+Retry、Parameter Repair、Fallback、Repair、Replan、Escalation 與 Stop。
+
+### 11. Organisation and Final Owner
+
+One Workflow、Multiple Agents、Communication Protocol、Aggregator 與 Completer。
+
+### 12. State and Memory
+
+哪些資訊 Exact、Temporary、Persistent、Shared、Versioned 或 External？
+
+### 13. Identity, Policy, and Risk
+
+Permission、Data Scope、Sandbox、Approval 與 Irreversible-action Rule。
+
+### 14. Budget, Timeout, and Terminal States
+
+Limit、Cancellation、Expiry、Partial Outcome 與 Safe Stop。
+
+### 15. Observability and Evaluation
+
+Trace、Metric、Audit、Replay、Regression Suite 與 Release Gate。
+
+### 16. Incident and Rollback Plan
+
+如何 Suspend System、Revoke Credential、Correct Memory 與 Reconcile Side Effect？
+
+每個 Field 應記錄：
+
+- Decision
+- Rationale
+- Limit
+- Evidence
+- Owner
+- Unresolved Risk
+
+![Figure 9-5｜Agent Architecture Canvas 16 個欄位](/images/the-atlas-of-agent-design-patterns-part-9/agent-architecture-canvas.png)
+
+## Go、Pilot 或 No-Go
+
+Release State 必須以 Evidence 決定。
 
 ### Go
 
-- Completion Criteria 明確
-- 主要流程可驗證
-- 權限最小化
-- Failure Path 已測試
-- Trace 完整
-- 高風險操作有 Approval
+適合：
+
+- Acceptance Criteria 明確
+- Representative Evaluation 通過
+- Critical Policy Violation 為 0
+- Permission 為 Least Privilege
+- Failure 與 Recovery Path 已測試
+- State 可以安全 Resume
+- Observability 與 Incident Response 已準備
+- High-impact Action 有 Durable Approval 與 Reconciliation
+- Remaining Risk 已由 Owner 接受
 
 ### Pilot
 
-- 核心流程可運作
-- 仍需人工監控
-- 某些 Failure Mode 尚未充分驗證
-- 限定使用者、資料與範圍
+適合：
+
+- Core Path 可運作
+- Scope、User、Data 與 Tool 受限
+- Human Monitoring 持續
 - 有快速 Kill Switch
+- 部分 Non-critical Failure Mode 仍需 Evidence
+- Rollback 簡單
+- Pilot 有明確 Exit Decision 與 Date
 
 ### No-Go
 
-- 無可靠 Verifier
-- 高風險工具無 Approval
-- 無持久 State
-- 無成本上限
-- 無 Terminal State
-- 記憶治理不清
-- 無法 Audit
-- 失敗可能造成不可逆傷害
+以下情況必須 No-Go：
 
----
+- 沒有可信 Verifier
+- System 可以在無 Approval 下造成 Irreversible Harm
+- Unauthorised Data 可能進入 Model
+- Side Effect 沒有 Idempotency 或 Reconciliation
+- Task 無法 Persist 或 Recover 必要 State
+- 沒有 Budget 或 Stop Condition
+- Memory Governance 未定義
+- 缺少 Incident Owner 與 Kill Switch
+- Evaluation 未通過 Hard Threshold
 
-## 十九、最終選型原則
+No-Go 不是 Review 失敗，而是 Safety Mechanism 正常運作。
 
-1. 先選最簡單可行架構
-2. 把自主性放在真正需要的節點
-3. 先設計 Verifier，再設計 Agent
-4. 風險越高，自主度越低
-5. Memory 必須可治理
-6. Multi-Agent 必須有 Final Owner
-7. 成本與延遲是架構需求
-8. 正式失敗是一種能力
-9. 所有 Loop 都需要出口
-10. Production Readiness 來自可控性
+## 完整範例：Blog Ask AI
 
----
+Requirement：
 
-## 本篇結論
+> User 可以詢問 Blog Article。System 只根據網站文章回答並附 Citation。Retrieval 弱時可以 Rewrite Query，但不能自由 Browse Open Web，也不能無限 Retry。
 
-選擇 Agent 架構，不是挑一個最熱門的名詞。
+### Contract
 
-而是回答：
+- 只根據 Authorised Blog Corpus 回答
+- 每個 Material Claim 都有 Citation
+- Unsupported Question 回傳 Insufficient Evidence
+- 不使用 Open-web Search
+- 不跨 Tenant 讀取 Data
+- Latency 與 Retrieval Cost 有上限
 
-```text
-任務怎麼走？
-下一步怎麼決定？
-要探索幾條候選？
-錯誤怎麼驗證與恢復？
-工作由誰完成？
-State 與 Memory 怎麼保存？
-```
-
-再用四個 Production 約束收尾：
+### Execution Structure
 
 ```text
-Policy
-Budget
-Observability
-Human Responsibility
+Admission and Router
+  -> Fixed RAG Pipeline
+  -> Claim-to-Evidence Verifier
+  -> Answer / Clarify / Abstain
 ```
 
-整個系列可以收束成一句話：
+### Adaptive Capability
 
-> **最好的 Agent 架構，是用最低必要複雜度，可靠完成任務的架構。**
+只有一次 Bounded Rewrite Decision：
 
----
+```text
+Low Retrieval Coverage
+  -> Rewrite Once
+  -> Retrieve Again
+  -> Stop
+```
 
-## 《Agent 設計模式圖鑑》系列目錄
+不需要 General ReAct Loop。
+
+### Search
+
+- Hybrid Retrieval
+- Reranking
+- Source Diversity
+- No Tree Search
+- No Multi-agent Debate
+
+### Verification
+
+- ACL
+- Citation Coverage
+- Claim Support
+- Document Version
+- Answerability
+- Unsupported-claim Count
+
+### State
+
+- Original Query
+- Rewritten Query
+- Selected Document ID 與 Version
+- Citation Map
+- Verifier Result
+- Retry Count
+- Terminal Outcome
+
+### Memory
+
+不需要 Unrestricted Long-term User 或 Episodic Memory。
+
+### Policy
+
+- Blog Corpus Only
+- Retrieved Content 是 Untrusted Data
+- No External Web Access
+- No Unsupported Claim
+- Query 不得直接寫入 Permanent Memory
+
+### Budget and Stop
+
+- Maximum Retrieval Attempts：2
+- Maximum Rewrite：1
+- Bounded Context 與 Answer Token
+- Latency Ceiling
+- Terminal Insufficient-evidence State
+
+### Organisation
+
+One Workflow 已足夠。Multiple Agents 只會增加 Hand-off 與 Shared-state Cost，卻沒有解決新的 Requirement。
+
+### Release Evidence
+
+評估：
+
+- Answer Correctness
+- Citation Support
+- Answerability Classification
+- Permission Isolation
+- Latency
+- Cost
+- Adversarial Prompt-injection Content
+- Insufficient-evidence Behaviour
+
+Final Architecture 不是「完整自主 Agent」，而是：
+
+```text
+Controlled RAG Pipeline
++ One Bounded Adaptive Node
++ Independent Evidence Verification
+```
+
+這不是降級，而是 Architecture Restraint 正在發揮作用。
+
+## 常見 Anti-pattern
+
+### Framework-first Selection
+
+Task Contract 還沒出現，Framework Name 已經決定。
+
+### Pattern Shopping
+
+所有 Named Pattern 都因為存在而被加入。
+
+### 把 Agent 當成 Binary Label
+
+Team 爭論整個 Product 是否為 Agent，而不是把 Adaptive Capability 放在特定 Node。
+
+### Universal Autonomy Ranking
+
+Pattern 在無視 Tool、Permission 與 Side Effect 的情況下被賦予固定 Autonomy Score。
+
+### Universal Cost-quality Matrix
+
+沒有 Benchmark Data 的示意估算被當成 Fact。
+
+### Multi-agent Inflation
+
+Role Label 被誤認為 Independent Agent。
+
+### Search Without Evaluator
+
+沒有可信 Selection Signal，卻持續增加 Candidate。
+
+### Memory Without Governance
+
+所有資訊進入同一 Vector Store，沒有 Scope、Status、Expiry 或 Delete。
+
+### Human Approval Theatre
+
+Reviewer 只看到 Approve Button，看不到 Exact Action、Evidence、Impact 與 Expiry。
+
+### Demo Success Becomes Production Readiness
+
+一條 Happy Path 取代 Failure、Permission、Recovery 與 Incident Evaluation。
+
+### Observability Replaces Evaluation
+
+每個錯誤 Decision 都有漂亮 Trace。
+
+### Evaluation Replaces Ownership
+
+高 Benchmark Score 被當成 Operate Authority。
+
+### No Final Owner
+
+多個 Component 產生 Work，卻沒有人負責 Completion。
+
+## Architecture Review Checklist
+
+### Contract
+
+- [ ] Desired Outcome 可觀測
+- [ ] Acceptance Evidence 已定義
+- [ ] Prohibited Outcome 已定義
+- [ ] 支援 Partial 與 Unsupported Outcome
+- [ ] Latency 與 Cost Envelope 明確
+
+### Execution
+
+- [ ] 已考慮最簡單可行 Execution Structure
+- [ ] 每個 Adaptive Node 個別標出
+- [ ] 每個 Loop 有 Limit
+- [ ] Pause、Resume 與 Recovery 已定義
+- [ ] Terminal State 明確
+
+### Tools and Authority
+
+- [ ] Read 與 Write Capability 分離
+- [ ] Least Privilege 在 Prompt 外 Enforcement
+- [ ] Side Effect 定義 Idempotency 與 Reconciliation
+- [ ] Untrusted Content 無法改變 Policy
+- [ ] Irreversible Action 需要適當 Authority
+
+### Verification and Recovery
+
+- [ ] Verifier 可以 Fail 或 Abstain
+- [ ] 能使用 Objective Signal 時優先使用
+- [ ] Acceptance Artefact 受到保護
+- [ ] Retry、Repair、Fallback 與 Replan 分開
+- [ ] Duplicate 與 No-progress Condition 會停止 Loop
+
+### State and Memory
+
+- [ ] Workflow State 與 Memory 分離
+- [ ] 每個 Persistent Record 有 Source、Scope、Version、Status 與 Expiry
+- [ ] User 與 Tenant Isolation 經測試
+- [ ] Unverified Content 無法寫入 Durable Memory
+- [ ] 支援 Update、Supersede、Delete 與 Audit
+
+### Operations
+
+- [ ] Global 與 Per-component Budget 存在
+- [ ] Timeout 與 Cancellation 已定義
+- [ ] Trace、Metric 與 Audit 可用
+- [ ] 存在 Offline 與 Regression Evaluation
+- [ ] Incident Response、Kill Switch 與 Rollback 已準備
+
+### Responsibility
+
+- [ ] Final Owner 已命名
+- [ ] Approver Authority 已定義
+- [ ] 需要時使用 Separation of Duties
+- [ ] Approval 會 Expire，Execution 前重新驗證 State
+- [ ] Go、Pilot 或 No-Go Evidence 已記錄
+
+## 最終原則
+
+1. 從 Contract 開始，不從 Framework 開始。
+2. 使用能滿足 Task 的最簡單 Execution Structure。
+3. 只有 Observation 真的會改變下一個 Action 時才放入 Autonomy。
+4. 增加自主性前先定義 Verification。
+5. 只有 Reliable Evaluator 存在時才加入 Search。
+6. 只有真實 Responsibility 與 Communication Boundary 才加入 Multiple Agents。
+7. 只有 Future Value 高於 Governance Cost 時才保存 Memory。
+8. 將 Authority、Side Effect 與 Reversibility 和 Reasoning Capability 分開。
+9. 以實測 Evidence 與 Hard Threshold 比較 Architecture。
+10. 讓 Formal Failure、Abstention 與 No-Go 成為 First-class Outcome。
+
+## 結論
+
+選擇 Agent Architecture 不是一場 Taxonomy Quiz。
+
+它是一連串帶有 Evidence 的 Decision：
+
+```text
+Contract
+  -> Simplest Execution Structure
+  -> Necessary Adaptive Capability
+  -> Verification and Recovery
+  -> State and Memory
+  -> Policy and Authority
+  -> Budget and Stops
+  -> Evaluation and Ownership
+```
+
+最好的 Architecture 不是自主性最高的那一個。
+
+而是能以最少必要複雜度完成 Task、證明 Result、限制 Authority、安全 Recovery，並在有人負責的 Control 下停止的那一個。
+
+Part 10 會從 Architecture Selection 進入 Implementation：
+
+> 如何把這些 Pattern 對應到 Modern Framework，同時避免 Framework Abstraction 取代 System Design？
+
+## 參考資料
+
+- [Lewis et al., *Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks*](https://arxiv.org/abs/2005.11401)
+- [Yao et al., *ReAct: Synergizing Reasoning and Acting in Language Models*](https://arxiv.org/abs/2210.03629)
+- [Yao et al., *Tree of Thoughts: Deliberate Problem Solving with Large Language Models*](https://arxiv.org/abs/2305.10601)
+- [Zhou et al., *Language Agent Tree Search Unifies Reasoning, Acting, and Planning in Language Models*](https://arxiv.org/abs/2310.04406)
+- [Wu et al., *AutoGen: Enabling Next-Gen LLM Applications via Multi-Agent Conversation*](https://arxiv.org/abs/2308.08155)
+- [NIST, *Artificial Intelligence Risk Management Framework: Generative Artificial Intelligence Profile*](https://www.nist.gov/publications/artificial-intelligence-risk-management-framework-generative-artificial-intelligence)
+- [OWASP, *Agentic AI Threats and Mitigations*](https://genai.owasp.org/resource/agentic-ai-threats-and-mitigations/)
+- [LangGraph Documentation, *Persistence*](https://langchain-ai.github.io/langgraph/concepts/persistence/)
+- [LangGraph Documentation, *Interrupts*](https://langchain-ai.github.io/langgraph/concepts/breakpoints/)
+- [OpenTelemetry Documentation](https://opentelemetry.io/docs/)
+
+## 系列目錄
 
 | Part | 主題 |
 |---:|---|
 | 1 | LLM Agent 不只有 ReAct：用六個維度看懂 Agent 架構 |
 | 2 | Agent 執行路徑全解：Direct、Pipeline、Router、State Machine 與 DAG |
-| 3 | ReAct、Plan-and-Execute 與 Adaptive Planning |
-| 4 | 從一條思路到搜尋整片解法空間：CoT、ToT、GoT 與 LATS |
-| 5 | Agent 驗證與自我修正 |
+| 3 | ReAct、Plan-and-Execute、Adaptive Planning 與 HTN |
+| 4 | 從單一路徑到 Tree、Graph、MCTS 與 LATS |
+| 5 | 驗證、恢復與自我修正 |
 | 6 | Multi-Agent 架構全解 |
 | 7 | Agent Memory 全解 |
 | 8 | Production Agent 架構實戰 |
 | 9 | 如何選擇 Agent 架構 |
-| Bonus | 使用現代 Agent Framework 實作設計模式 |
-
----
-
-## 圖表對位表
-
-| 圖號 | 正式圖名 | 建議檔名 | 對應段落 |
-|---|---|---|---|
-| Figure 9-1 | Do You Need an Agent? | `figure-9-1-do-you-need-an-agent.png` | 是否需要 Agent |
-| Figure 9-2 | Six-Dimensional Architecture Selection Workflow | `figure-9-2-six-dimensional-architecture-selection-workflow.png` | 六維選型流程 |
-| Figure 9-3 | Agent Autonomy and System Control Matrix | `figure-9-3-agent-autonomy-system-control-matrix.png` | 自主度與可控性 |
-| Figure 9-4 | Cost vs Quality Matrix | `figure-9-4-cost-vs-quality-matrix.png` | 成本、品質與風險 |
-| Figure 9-5 | Agent Architecture Canvas | `figure-9-5-agent-architecture-canvas.png` | 最終架構設計畫布 |
+| 10 | 使用現代 Agent Framework 實作設計模式 |

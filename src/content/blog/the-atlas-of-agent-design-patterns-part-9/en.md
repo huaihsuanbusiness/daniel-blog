@@ -1,6 +1,6 @@
 ---
-title: "The Atlas of Agent Design Patterns Part 9 ｜ How to Choose an Agent Architecture: Decision Trees, Evaluation Matrices and Anti-Patterns"
-description: "Starting from whether an Agent is needed at all, walking through a six-dimension selection flow, evaluation matrices, Production practicality ranking, common anti-patterns and an architecture review Checklist, turning Agent vocabulary into actionable architecture decisions."
+title: "The Atlas of Agent Design Patterns Part 9 | How to Choose an Agent Architecture"
+description: "A rigorous decision process for choosing the smallest agent architecture that satisfies task dynamics, evidence, risk, authority, recovery, memory, cost, and operational requirements."
 date: 2026-07-01T13:58:00
 lang: en
 categories: ["AI"]
@@ -8,1048 +8,1175 @@ series: "The Atlas of Agent Design Patterns"
 seriesOrder: 9
 ---
 
-## How to Choose an Agent Architecture: Decision Trees, Evaluation Matrices, and Anti-Patterns
 
-The previous eight articles walked through Direct, Pipeline, Router, State Machine, DAG, ReAct, Planning, Tree Search, Verifier, Multi-Agent and Memory.
+The previous eight parts introduced the main building blocks:
 
-Knowing the vocabulary only means you own a box of building blocks.
+- Direct, Pipeline, Router, State Machine, DAG, and event-driven workflows
+- fixed decisions, bounded ReAct, Plan-and-Execute, adaptive replanning, and HTN
+- single-path reasoning, sampling, ranking, trees, graphs, MCTS, and LATS
+- retry, fallback, repair, verification, Generate-and-Test, and Reflexion
+- single-agent and multi-agent organisation
+- state, memory, external knowledge, and production controls
 
-The harder part:
+Knowing those names is not architecture.
 
-> Faced with a real requirement, which blocks do you pick up, which do you refuse, and how do you prove the resulting architecture is worth taking into Production?
+Architecture is the decision process that turns a requirement into:
 
-The main job of Part 9 is to take the reader from "knowing the vocabulary" to "being able to make the architecture decision".
+- an execution path
+- a permission boundary
+- an acceptance contract
+- a recovery policy
+- a state model
+- an operational envelope
+- a named owner
 
-Four things get done in this article:
+The goal is not to choose the most capable-looking pattern.
 
-1. Decide whether the task actually needs an Agent
-2. Walk through the six selection dimensions
-3. Evaluate options against cost, latency, reliability and observability
-4. Use the Architecture Canvas, anti-pattern table and review Checklist to finish the formal review
+It is:
 
----
+> Choose the smallest system that can satisfy the contract with sufficient evidence, control, and recoverability.
 
-## 1. First question: does this task actually need an Agent?
+## Architecture selection is a constrained decision
 
-Many teams start by asking:
+A pattern should be added only when it resolves a real requirement.
 
-- ReAct or Plan-and-Execute?
-- Do we need Multi-Agent?
-- Do we need Long-term Memory?
-- Do we need Tree of Thoughts?
+Bad selection logic sounds like:
 
-The earlier question should be:
+```text
+The task is difficult
+  -> add planning
+  -> add tree search
+  -> add multiple agents
+  -> add long-term memory
+```
 
-> Can this task be handled by Direct, Pipeline or Router alone?
+A production decision should instead ask:
 
-Agent is not the default answer.
+```text
+What must be true for the task to count as complete?
+What can change during execution?
+Which actions have side effects?
+Which evidence can verify success?
+Which state must persist?
+Which failures can be recovered?
+What limits and authorities apply?
+```
 
-Agent earns its place only when the fixed logic cannot reasonably handle:
+The architecture is the set of mechanisms required to answer those questions, not a collection of fashionable labels.
 
-- The next step depends on a mid-flight Observation
-- A Tool Result changes the route that follows
-- The task path cannot be fully enumerated up front
-- The task requires persistent State
-- The task needs dynamic Planning
-- The task needs bounded autonomy to handle unknown situations
+## Gate 0: define the contract before choosing a pattern
 
-### Direct
+Before asking whether an agent is needed, define the job.
 
-For:
+### Desired outcome
 
-- A single model call
-- No external tools
-- No persistent State needed
-- Low risk
-- The input already carries enough information
+State the result in observable terms.
 
-Examples: translation, rewriting, summarisation, classification, format conversion.
+Weak:
 
-### Pipeline
+```text
+Research the market and produce a useful answer
+```
 
-For:
+Stronger:
 
-- Fixed order
-- Each step predictable
-- Independently testable
-- No dynamic tool choice
+```text
+Compare three named products across eight required fields.
+Use approved sources.
+Mark missing information explicitly.
+Disclose conflicts.
+Produce a recommendation tied to the evaluation criteria.
+```
 
-Example:
+### Acceptance evidence
+
+Identify what can prove the result.
+
+Examples:
+
+- schema validation
+- executable test
+- source and citation support
+- post-condition
+- rule or solver
+- authorised human judgement
+- transaction record
+
+A task with no credible acceptance signal is a poor candidate for high autonomy.
+
+### Prohibited outcomes
+
+Examples:
+
+- unsupported claims
+- unauthorised data access
+- silent test modification
+- duplicate payment
+- external publication without approval
+- permanent memory write from unverified content
+
+### Terminal outcomes
+
+Define more than success and failure:
+
+- completed
+- partial
+- blocked
+- pending
+- unsupported
+- inconclusive
+- cancelled
+- expired
+- requires human action
+
+### Operating envelope
+
+Define:
+
+- latency
+- monetary cost
+- model and tool calls
+- retries and replans
+- concurrency
+- data residency
+- availability
+- retention
+- human-response time
+
+Selection begins with a contract, not a framework homepage.
+
+## Gate 1: does the task need agentic adaptation?
+
+An agent is not the default route.
+
+### Use Direct when
+
+- one bounded operation is enough
+- all necessary information is in the input
+- no dynamic tool selection is required
+- the output can be checked directly
+- risk is low or externally controlled
+
+Direct may still include input validation, output schema, policy, and logging.
+
+### Use a Pipeline when
+
+- the steps are known
+- order is stable
+- each stage has a contract
+- failures have predefined handling
+- no observation requires a new strategy
 
 ```text
 Upload
-  ↓
-Parse
-  ↓
-Validate
-  ↓
-Store
+  -> Parse
+  -> Validate
+  -> Transform
+  -> Store
 ```
+
+### Add a Router when
+
+- different requests require different paths
+- data sources differ
+- costs or risk classes differ
+- some tasks should go to a person
+- some requests are unsupported
+
+A router must support:
+
+- unknown
+- ambiguous
+- clarification required
+- unsupported
+- denied
+
+### Add bounded agentic adaptation when
+
+- the next useful action depends on a tool result
+- the route cannot be enumerated reasonably
+- the environment is partially observable
+- local exploration is necessary
+- the system may need to choose among approved tools
+
+### Add durable state when
+
+- the task may pause or resume
+- approval is asynchronous
+- execution is long-running
+- retries and replans span process boundaries
+- partial completion matters
+- recovery after interruption is required
+
+The key distinction is not "simple versus intelligent".
+
+It is:
+
+> Can the next useful action be determined safely before the current observation exists?
+
+![Figure 9-1｜Do You Need Agentic Adaptation? Decision Tree](/images/the-atlas-of-agent-design-patterns-part-9/agent-need-decision-tree.png)
+
+## Gate 2: map requirements into inspectable properties
+
+Do not jump from a user story to an architecture label.
+
+### Task dynamics
+
+- single-step or multi-step
+- fixed or observation-dependent
+- branching
+- loops
+- dependencies
+- parallelism
+- event or schedule trigger
+- pause and resume
+- long-running duration
+
+### Data and trust
+
+- source of truth
+- freshness
+- version
+- sensitivity
+- tenant and user scope
+- external or internal
+- structured or unstructured
+- untrusted-content boundary
+- retrieval or live access
+
+### Tools and side effects
+
+- read or write
+- reversible or irreversible
+- idempotent or non-idempotent
+- deterministic or probabilistic
+- permission level
+- sandbox availability
+- rate limit
+- failure taxonomy
+- reconciliation support
+
+### Verification
+
+- objective test available
+- source support available
+- post-condition available
+- human judgement required
+- false-positive cost
+- false-negative cost
+- partial completion allowed
+- abstention allowed
+
+### Operations
+
+- latency ceiling
+- cost ceiling
+- throughput
+- availability target
+- observability
+- reproducibility
+- audit
+- retention
+- incident response
+- kill switch
+
+### Responsibility
+
+- request owner
+- system owner
+- final completer
+- approver
+- data owner
+- incident owner
+- separation-of-duties requirement
+
+These properties become architecture inputs.
+
+## Select the execution structure first
+
+Execution structure answers:
+
+> How does work move through the system?
+
+The options are composable, not mutually exclusive badges.
+
+### Direct
+
+Use for one bounded operation.
+
+### Pipeline
+
+Use for a stable sequence.
 
 ### Router
 
-For:
+Use when different inputs need different paths.
 
-- Different requests need different paths
-- Different data sources
-- Different cost tiers
-- Different risks and tools
+### State Machine
 
-Example:
+Use when legal transitions, loops, waiting, recovery, or terminal states matter.
 
-```text
-User Request
-  ↓
-Router
-  ├→ Direct
-  ├→ RAG
-  ├→ SQL
-  ├→ Calculator
-  ├→ Agent Workflow
-  └→ Human Review
-```
+### DAG
 
-### Agentic Workflow
+Use when dependency-constrained tasks can run in parallel and later join.
 
-For:
+A DAG does not provide a recovery loop by itself. An outer workflow may launch a new DAG after replanning.
 
-- Next step depends on Observation
-- Multiple rounds of tool interaction
-- Bounded autonomy required
-- Retry, Fallback or Replanning required
+### Event-driven workflow
 
-### Stateful Agent
+Use when work begins from events, schedules, queues, or asynchronous changes.
 
-When the task carries these needs, a State Machine or persistent State usually becomes necessary:
-
-- Pause / Resume
-- Human Approval
-- Retry Limit
-- Replanning
-- Long-running execution
-- Checkpoint recovery
-- Terminal states like Pending / Partial / Blocked
-
-![Figure 9-1 — Do You Need an Agent?](/images/the-atlas-of-agent-design-patterns-part-9/figure-9-1-do-you-need-an-agent.png)
-
-> **Figure 9-1 ｜ Do You Need an Agent?**
-> Start with Direct, Pipeline and Router. Only when the next step depends on Observation, a tool response or persistent State should you upgrade to Agentic Workflow or Stateful Agent.
-
----
-
-## 2. Turn requirements into inspectable system properties
-
-Do not jump straight from requirement to Framework.
-
-Translate requirements into five categories of system properties first.
-
-### Task properties
-
-- Single-step or multi-step?
-- Fixed or dynamic?
-- Any branching?
-- Any loops needed?
-- Any parallelism needed?
-- Pause / Resume needed?
-- Human approval needed?
-
-### Data properties
-
-- Is the data already in the input?
-- RAG needed?
-- Live web needed?
-- SQL needed?
-- Sensitive data involved?
-- Versioned or time-sensitive?
-
-### Tool properties
-
-- How many tools?
-- Are tools reversible?
-- Do they write?
-- Any high-risk operations?
-- Sandbox needed?
-- Permission differences?
-
-### Quality properties
-
-- Is there a clear correct answer?
-- Can Completion Criteria be defined?
-- Can it be tested externally?
-- Does it need Citation?
-- Is Partial allowed?
-- Does it need Human Judgment?
-
-### Operations properties
-
-- Latency ceiling
-- Cost ceiling
-- Observability
-- Reproducibility
-- Compliance requirements
-- Audit
-- Availability
-- Error Budget
-
----
-
-## 3. The six-dimension architecture selection flow
-
-A single name does not describe an Agent architecture well.
-
-Pick across six dimensions.
-
-### Dimension 1: Execution Path
-
-Answers:
-
-> How does the task move from start to finish?
-
-| Pattern | Suitable scenario | Main strength | Main risk |
-|---|---|---|---|
-| Direct | Single step, low risk | Simplest, lowest cost | Limited capability |
-| Pipeline | Fixed flow | Controllable, testable | Poor fit for dynamic branching |
-| Router | Multiple request types | Cost and path split | Misrouting |
-| State Machine | Long tasks, recovery, approval | Clear states | Higher design cost |
-| DAG | Parallel sub-tasks | Higher throughput | Dependency management |
-| Event-driven | Monitoring, async | Suits events and schedules | Distributed state complexity |
-
-Selection questions:
+A long-running monitor may combine:
 
 ```text
-Is the flow fixed?
-Is there branching?
-Are loops needed?
-Is persistent State needed?
-Is parallelism needed?
-Is it triggered by an event?
+Event Trigger
+  -> State Machine
+  -> Fixed Pipeline
+  -> Notification Gate
 ```
 
-### Dimension 2: Decision and Planning
+The question is not which one name describes the whole product. The question is which structures control each part.
 
-Answers:
+## Add decision and planning only where needed
 
-> How is the next step decided?
+Decision strategy answers:
 
-#### Fixed Decision
+> How is the next action chosen inside the execution structure?
 
-For tasks whose path can be pre-defined, where cost and risk need to be tightly controlled.
+### Fixed decision logic
 
-#### ReAct
+Use when the route and fallback are known.
 
-For Browser, Debug, Search and API Exploration where the next step depends on a tool result.
+### Bounded ReAct
 
-Requires:
+Use when the next local action depends on the latest observation.
 
-- Max Steps
-- Tool Allowlist
-- Duplicate Detection
-- Stop Condition
+Required controls:
 
-#### Plan-and-Execute
-
-For:
-
-- Long tasks
-- Multiple sub-goals
-- Easy to miss items
-- Need to estimate Budget first
-
-#### Adaptive Planning
-
-For:
-
-- Initial plan may fail
-- External data unstable
-- Tools may become unavailable
-- Remaining steps need revising
-
-Requires:
-
-- Plan Version
-- Replan Trigger
-- Maximum Replans
-- Completed Step Registry
-
-#### HTN
-
-For tasks with existing SOPs, enterprise processes and controlled decomposition methods.
-
-### Dimension 3: Reasoning and Search
-
-Answers:
-
-> How many candidate paths should the system explore?
-
-| Pattern | When to use | Required precondition |
-|---|---|---|
-| Single-path | Simple questions, cost-sensitive | Strong Verifier |
-| Self-consistency | Clear answers, votable | Answers can be normalised |
-| Generate-and-Rank | Multiple complete solutions | Reliable Ranker |
-| Beam Search | A few candidates per layer | Intermediate states can be scored |
-| Tree of Thoughts | Pruning and backtracking needed | Evaluator is trusted |
-| Graph of Thoughts | Paths need merging | State management is mature |
-| MCTS / LATS | Action and feedback in an environment | Sandbox and external Observation |
-
-Do not use complex Search without a reliable Evaluator.
-
-### Dimension 4: Verification and Recovery
-
-Answers:
-
-> How does the system know it is wrong, and how does it fix it?
-
-| Failure type | Suggested pattern |
-|---|---|
-| Transient error | Retry |
-| Suboptimal parameter | Parameterized Retry |
-| Primary method unavailable | Fallback |
-| Format or local quality issue | Self-Refine |
-| Diagnosis needed | Critic |
-| Pass / Fail needed | Verifier |
-| Executable artefact | Generate-and-Test |
-| Initial plan failed | Replanning |
-| Want to avoid repeating the same mistake | Reflexion |
-| High risk or irreversible | Human Review |
-
-### Dimension 5: Agent Organisation
-
-Answers:
-
-> Who does the work?
-
-#### Single Agent
-
-The default option.
-
-#### Role-based Single Agent
-
-Responsibilities split, but no real independent execution.
-
-#### Supervisor–Worker
-
-Sub-tasks are clearly separable, parallel-friendly, and need central governance.
-
-#### Planner–Executor–Critic
-
-Planning, execution and diagnosis split across roles.
-
-#### Debate / Voting
-
-Multiple viewpoints, adversarial analysis, or fixed-candidate aggregation.
-
-#### Blackboard
-
-Multiple Agents share intermediate results.
-
-#### Peer-to-Peer / Swarm
-
-Only for highly decentralised setups with a mature Control Plane.
-
-### Dimension 6: State and Memory
-
-Answers:
-
-> What gets stored, and for how long?
-
-| Type | Use |
-|---|---|
-| Stateless | Single-shot task |
-| Working Memory | Current task intermediate information |
-| Short-term State | Workflow progress |
-| Episodic Memory | Past events and outcomes |
-| Semantic Memory | Stable knowledge |
-| Procedural Memory | SOPs and rules |
-| User Memory | User-authorised preferences |
-| Shared Memory | Multi-Agent shared information |
-| External Knowledge Store | External Source of Truth |
-
-![Figure 9-2 — Six-Dimensional Architecture Selection Workflow](/images/the-atlas-of-agent-design-patterns-part-9/figure-9-2-six-dimensional-architecture-selection-workflow.png)
-
-> **Figure 9-2 ｜ Six-Dimensional Architecture Selection Workflow**
-> Starting from task properties, choose Execution Path, Decision, Search, Verification, Organisation and Memory in order. Finish by applying Policy, Budget, Observability and Human Approval.
-
----
-
-## 4. The full selection matrix
-
-| Task property | Execution Path | Decision / Planning | Search | Verification | Organisation | State / Memory |
-|---|---|---|---|---|---|---|
-| One-off text task | Direct | Fixed | Single-path | Schema / Basic Check | Single Agent | Stateless |
-| Fixed document handling | Pipeline | Fixed | Single-path | Schema / Rule | Single Agent | Short-term State |
-| Multi-type question answering | Router | Fixed / Router | Single-path | Route Check | Single Agent | Query State |
-| Document QA | RAG Pipeline | Fixed / Query Rewrite | Retrieval + Rerank | Citation / Faithfulness | Single Agent | Query State + External Knowledge |
-| Dynamic Browser task | State Machine | ReAct | Single-path / Limited Search | Post-condition | Single Agent | Browser State + Action History |
-| Coding fix | State Machine | Plan-and-Execute | Generate-and-Test | Tests / Build / Diff | Single Agent or Role-based | Repo Snapshot + Attempt State |
-| Deep Research | State Machine + DAG | Adaptive Planning | Generate-and-Rank | Source Coverage / Citation | Supervisor–Worker | Evidence Store + Working Memory |
-| Multi-viewpoint evaluation | Pipeline / State Machine | Fixed | Debate / Voting | Judge + External Verifier | Multi-Agent | Shared State |
-| High-risk enterprise operation | State Machine | Fixed Policy Flow | Usually no Search | Rule + Human Approval | Single Agent / Role-based | Approval State + Audit Log |
-| Long-term monitoring | Event-driven | Fixed / Limited Agentic | Single-path | Change Verification | Single Agent | Baseline + Alert History |
-| Highly decentralised collaboration | Event-driven / P2P | Local Planning | Distributed Search | Global Verifier | Peer-to-Peer / Swarm | Shared Memory + Control Plane |
-
----
-
-## 5. When to pick ReAct, Planning or Adaptive Planning?
-
-### ReAct
-
-When:
-
-- Each step needs Observation
-- The next Tool cannot be predicted
-- The task path is short to medium
-- Local decisions matter more than global plans
-
-Avoid when:
-
-- The task is very long
-- High-risk fixed flow
-- Clear dependencies and a complete deliverable exist
+- step objective
+- allowed tools
+- maximum actions
+- duplicate detection
+- budget
+- completion criteria
+- escalation
+- structured observations
 
 ### Plan-and-Execute
 
-When:
+Use when:
 
-- Multiple explicit sub-goals
-- Easy to miss items
-- Sub-task order matters
-- Need to estimate Budget first
+- the task has several explicit deliverables
+- omissions are costly
+- dependencies matter
+- progress must be visible
+- delegation or budgeting matters
 
-### Adaptive Planning
+A plan must define executable step contracts, not restate the task.
 
-When:
+### Adaptive replanning
 
-- External data may not exist
-- Tools may fail
-- Original assumptions may be wrong
-- Remaining plan needs revising
+Add it only when the remaining plan can become invalid.
 
----
+Require:
 
-## 6. When is multi-path search worth it?
+- replan trigger
+- plan version
+- plan diff
+- preserved completed work
+- invalidated steps
+- replan limit
+- verifier approval
 
-Multi-path search is only worth it when all of these hold:
+### HTN
 
-- Multiple meaningful candidates exist
-- Early choice affects what follows
-- Intermediate results can be evaluated
-- Budget is sufficient
-- A reliable Evaluator exists
-- The search actions can be executed safely
+Use when the domain has reusable, governed decomposition methods and primitive actions.
 
-| Situation | Recommendation |
+HTN is not simply a long checklist. It relies on domain tasks, methods, constraints, and operators.
+
+Planning is a capability inside an architecture. It is not evidence that the architecture will work.
+
+## Add multi-path search only when evaluation can guide it
+
+Search answers:
+
+> Should the system preserve and compare alternative candidates?
+
+### Keep a single path when
+
+- one candidate is usually enough
+- external verification is strong
+- latency matters
+- the cost of the first choice is low
+
+### Use self-consistency when
+
+- there is one normalisable answer
+- sample variance is a meaningful error source
+- agreement can be computed
+- factual verification still occurs separately
+
+### Use Generate-and-Rank when
+
+- several complete alternatives are useful
+- a reliable evaluator can compare them
+- invalid candidates are removed before preference ranking
+
+### Use Beam Search when
+
+- partial candidates develop by layers
+- only a bounded frontier is affordable
+- intermediate states can be scored
+
+### Use Tree of Thoughts or another tree search when
+
+- early choices strongly affect later outcomes
+- intermediate states are meaningful
+- pruning and backtracking are useful
+- the evaluator is credible
+
+### Use Graph of Thoughts when
+
+- intermediate results must merge
+- results must be reused
+- dependency, invalidation, and provenance can be managed
+
+### Use MCTS-style search or LATS when
+
+- actions interact with an environment
+- repeated visits and value updates are useful
+- execution is sandboxed or reversible
+- environment feedback reflects the real goal
+
+Do not purchase a search tree before buying an evaluator. Otherwise the system grows branches without knowing where fruit lives.
+
+## Define verification and recovery before increasing autonomy
+
+Verification answers:
+
+> What evidence can accept or reject the result?
+
+Recovery answers:
+
+> What is the smallest justified response to failure?
+
+### Match evidence to the claim
+
+| Claim | Preferred evidence |
 |---|---|
-| Multiple generations, votable | Self-consistency |
-| Multiple complete solutions to compare | Generate-and-Rank |
-| Keep a few candidates per layer | Beam Search |
-| Need pruning and backtracking | Tree of Thoughts |
-| Need to merge paths | Graph of Thoughts |
-| Action and feedback in an environment | LATS |
+| Output is structurally valid | Schema or parser |
+| Code behaves correctly | Test, execution, build |
+| SQL is permitted and valid | Parser, read-only policy, execution |
+| RAG answer is supported | Claim-to-source verification |
+| Browser task succeeded | Functional post-condition |
+| Transaction completed once | Transaction record and reconciliation |
+| Open-ended output is acceptable | Rubric and authorised judgement |
 
----
+### Match recovery to the failure
 
-## 7. When does Multi-Agent earn its place?
-
-Multi-Agent fits when:
-
-- Sub-tasks naturally separate
-- Can run in parallel
-- Different Agents need different tools or permissions
-- Independent viewpoints are needed
-- A single Context is too large
-- Central governance or a shared workspace is needed
-
-Multi-Agent does not fit when:
-
-- The task heavily depends on one shared Context
-- A single Agent can finish it
-- There is no Aggregator
-- There is no Final Owner
-- Shared-state governance is missing
-- Handoff cost exceeds execution cost
-
-Minimum viable order:
-
-```text
-Single Agent
-  ↓
-Role-based Single Agent
-  ↓
-Supervisor–Worker
-  ↓
-Blackboard / Debate
-  ↓
-Peer-to-Peer / Swarm
-```
-
-This is not a maturity ladder. It is the rising order of coordination cost.
-
----
-
-## 8. How to pick the verification mechanism
-
-| Task | Priority verification |
+| Failure | Primary response |
 |---|---|
-| JSON / Schema | Deterministic Validation |
-| SQL | Parser + Read-only Policy + Execution |
-| RAG | Citation + Faithfulness |
-| Coding | Tests + Lint + Build |
-| Browser | Post-condition |
-| Research | Source Coverage + Conflict Check |
-| High-risk operation | Policy + Human Approval + Audit |
-| Open-ended text | Rubric + Critic + Human Sampling |
+| Transient and safe to repeat | Retry |
+| Input parameter is wrong | Parameter repair |
+| Current implementation is unavailable | Fallback |
+| Current artefact is wrong | Repair or Generate-and-Test |
+| Evidence is missing | Retrieve, clarify, or abstain |
+| Remaining plan is invalid | Replan |
+| Policy denies the action | Deny or request approval |
+| Capability or data does not exist | Stop or return unsupported |
 
-Principles:
+A verifier must be able to fail, abstain, and return inconclusive. A recovery controller must be able to stop.
 
-- Use rules where possible, not only the LLM
-- Execute, not only eyeball
-- Check sources, not only vote
-- High risk needs ownership and authorisation
-- A Verifier must be able to output Fail
+## Add multiple agents only for a real responsibility boundary
 
----
+Organisation answers:
 
-## 9. How to pick Memory
+> Which independently addressable execution entities own the work?
 
-### Working Memory
+### Default: one agent or one workflow
 
-For long tasks, intermediate information and Context compression.
+A single orchestration can still contain:
 
-### Short-term State
+- planner stage
+- executor stage
+- critic stage
+- verifier stage
+- deterministic tools
 
-For State Transition, Retry, Approval, Pause / Resume.
+Role names do not automatically create multiple agents.
 
-### Episodic Memory
+### Supervisor and workers
 
-For similar cases, past events and action replay.
+Useful when:
 
-### Semantic Memory
+- subtasks are naturally separable
+- bounded parallelism helps
+- workers need different tools or context
+- a supervisor can assign and verify work
+- one final owner integrates the result
 
-For governable stable knowledge.
+### Debate and voting
 
-### Procedural Memory
+These are decision protocols, not universal multi-agent upgrades.
 
-For SOPs, tool rules and acceptance procedures.
+Use debate when agents must challenge and update one another.
 
-### User Memory
+Use voting when independently produced choices can be aggregated.
 
-Only preferences that the user has explicitly authorised, that are long-term stable, and that the user can view and delete.
+Neither replaces external evidence.
 
-### Not using Long-term Memory
+### Blackboard
 
-When the task is one-off, the data is sensitive, the information expires easily, or it can be re-retrieved from the Source of Truth.
+Use when several agents coordinate through typed shared problem state.
 
----
+The blackboard needs:
 
-## 10. Autonomy versus controllability
+- schema
+- read and write permissions
+- versioning
+- conflict handling
+- provenance
+- scheduling
+- final owner
 
-| Pattern | Autonomy | Controllability |
-|---|---:|---:|
-| Direct | Very low | Very high |
-| Fixed Pipeline | Low | Very high |
-| Router | Low–Medium | High |
-| Agentic Workflow | Medium | Medium–High |
-| Plan-and-Execute | Medium–High | Medium |
-| Adaptive Agent | High | Medium–Low |
-| Long-running Autonomous Agent | Very high | Low |
+### Peer-to-peer or swarm-style coordination
 
-The Production sweet spot usually is:
+Use only when central coordination is genuinely inappropriate and the system defines:
 
-> Bounded autonomy plus a clear Workflow, Policy, Verifier and Human Approval.
+- local rules
+- task claiming
+- convergence
+- duplicate suppression
+- global budget
+- stop condition
+- kill switch
+- final accountability
 
-![Figure 9-3 — Agent Autonomy and System Control Matrix](/images/the-atlas-of-agent-design-patterns-part-9/figure-9-3-agent-autonomy-system-control-matrix.png)
+Multi-agent is justified by responsibility and communication needs, not by the desire to show more avatars.
 
-> **Figure 9-3 ｜ Agent Autonomy and System Control Matrix**
-> Higher autonomy usually means more flexibility, but predictability drops. Agentic Workflow often sits in the practical balance zone, while Multi-Agent is not a fixed autonomy level.
+## Define state, memory, and external knowledge separately
 
----
+### Workflow state
 
-## 11. Cost, latency, reliability and observability
+Exact control information:
 
-### Cost
+- current step
+- status
+- attempts
+- approvals
+- plan version
+- terminal outcome
 
-- Model Calls
-- Token
-- Tool Calls
-- Search API
-- Browser
-- Sandbox
-- Human Review
+### Working memory
 
-### Latency
+Task-local intermediate information assembled for current reasoning.
 
-- Model latency
-- Tool latency
-- Worker wait
-- Human approval
-- Retry
+### Episodic memory
 
-### Reliability
+Past events and outcomes that may help future tasks.
 
-- Success Rate
-- Partial Rate
-- Retry Rate
-- Verifier Pass Rate
-- Post-condition Success
-
-### Observability
-
-- Trace
-- State Transition
-- Tool Call
-- Prompt / Model Version
-- Cost
-- Failure Reason
-- Audit
+### Semantic memory
 
----
+Governed stable knowledge.
 
-## 12. Cost versus quality matrix
+### Procedural memory
 
-| Architecture | Potential quality | Runtime cost | Latency | Operational risk | Best fit |
-|---|---:|---:|---:|---:|---|
-| Direct | Low–Medium | Low | Low | Low | One-off tasks |
-| Pipeline | Medium | Low–Medium | Low | Low | Fixed flows |
-| RAG | Medium–High | Medium | Low–Medium | Medium | Source-backed QA |
-| Agentic Workflow | High | Medium–High | Medium–High | Medium–High | Dynamic multi-step |
-| Multi-Agent | Depends on design | High | High | High | Naturally separable work |
-| Long-running Autonomous | Unstable | Very high | Very high | Very high | A few special scenarios |
+Reusable methods, SOPs, tool rules, and acceptance procedures.
 
-Principles:
+### User-scoped memory
 
-> Among the options that meet the quality threshold, choose the one with the lowest cost, latency and operational risk.
+User-authorised preferences or facts, with access, correction, deletion, and expiry.
 
-![Figure 9-4 — Cost vs Quality Matrix](/images/the-atlas-of-agent-design-patterns-part-9/figure-9-4-cost-vs-quality-matrix.png)
+### Shared memory
 
-> **Figure 9-4 ｜ Cost vs Quality Matrix**
-> More complex architecture does not guarantee higher quality. Production selection should set the quality threshold first, then choose the option with the lowest cost, latency and operational risk.
+A coordination scope, not a cognitive type.
 
----
+### External knowledge
 
-## 13. Production practicality ranking
+A source of truth that may be retrieved when needed.
 
-The ranking here is not about capability strength. It is the order in which most Production projects should prioritise and consider.
+Do not create long-term memory when:
 
-| Tier | Pattern | Production practicality | Recommendation |
-|---|---|---:|---|
-| A | Direct, Pipeline, Router, State Machine, Verifier | Very high | Master first |
-| A | RAG, ACL, Citation, Budget, Trace | Very high | Common core capability |
-| B | DAG, Plan-and-Execute, Generate-and-Test | High | Use per task |
-| B | Working Memory, Procedural Memory | High | Long tasks and governance |
-| C | Supervisor–Worker, Debate, Blackboard | Medium | Only when naturally separable |
-| C | Self-consistency, Generate-and-Rank, Beam Search | Medium | Only with a real Evaluator |
-| D | Tree of Thoughts, Graph of Thoughts, LATS | Low–Medium | High-value special scenarios |
-| D | Peer-to-Peer, Swarm | Low | Only with mature Control Plane |
-| D | Long-running Autonomous Agent | Low | High operational cost and risk |
+- the task is one-off
+- the data is sensitive
+- information expires quickly
+- the source of truth can be queried
+- consent is absent
+- deletion cannot propagate
 
----
+Memory selection must define source, scope, version, status, expiry, and write authority.
 
-## 14. Ten Agent anti-patterns and fixes
+## Architecture selection gates and capability modules
 
-| Anti-pattern | Problem | Fix | Acceptance criterion |
-|---|---|---|---|
-| Framework-first | Pick the tool before the need is clear | Complete the Architecture Canvas first | Pattern choice has a reason |
-| Pattern Shopping | Add every new Pattern | Each Pattern must correspond to a real need | No unused components |
-| Multi-Agent Inflation | Role names pretending to be independent Agents | Start with Role-based Single Agent | Independent responsibility counts as Agent |
-| Search Without Evaluator | Searching more without knowing what is better | Build the Evaluator first | Intermediate states can be scored |
-| Memory Without Governance | Everything goes into a Vector Store | Add Source, Scope, Version, Expiry | Memory can be updated and deleted |
-| Human-in-the-loop Theater | Only an Approve button | Show evidence, risk, impact | Approver can make a real judgement |
-| Autonomy as KPI | Treating autonomy as maturity | Set the minimum necessary autonomy | Autonomy has explicit payoff |
-| Retry as Recovery | Retrying every error | Classify Failure first | Retry only handles transient errors |
-| Demo Success as Production Readiness | One success goes live | Test the Failure Path | Normal, failure, high-risk all verified |
-| No Final Owner | Multiple Agents, no one in charge | Name a Final Owner | Only one formal completer |
-
----
-
-## 15. Agent Architecture Canvas
-
-A complete Canvas should carry fifteen fields.
-
-1. User Goal
-2. Success Criteria
-3. Inputs and Data
-4. Tools and Actions
-5. Execution Path
-6. Decision and Planning
-7. Search Strategy
-8. Verification and Recovery
-9. Agent Organisation
-10. State and Memory
-11. Policy and Safety
-12. Budget and Limits
-13. Observability
-14. Terminal States
-15. Final Owner
-
-Each field must answer:
-
-- What is the decision?
-- Why is it needed?
-- What limits apply?
-- How is it accepted?
-
-![Figure 9-5 — Agent Architecture Canvas](/images/the-atlas-of-agent-design-patterns-part-9/figure-9-5-agent-architecture-canvas.png)
-
-> **Figure 9-5 ｜ Agent Architecture Canvas**
-> Through fifteen fields, requirement, tools, flow, Planning, Search, Verification, Organisation, Memory, Policy, Budget, Observability and Final Owner live on one architecture canvas.
-
----
-
-## 16. Full case: from requirement to architecture
-
-Requirement:
-
-> Build a Blog Ask AI. Users can ask about article content. The system answers from the site's own articles with sources. It can rewrite Queries when needed, but cannot freely browse the web and cannot retry indefinitely.
-
-### Step 1: Does it need an Agent?
-
-Most of the flow is a fixed RAG Pipeline.
-
-Only Query Rewrite, Retrieval Retry and Clarification need bounded Agentic capability.
-
-Conclusion:
+A practical selection sequence is:
 
 ```text
-Not a full Agent
-but an Agentic RAG Workflow
+1. Define contract and risk
+2. Select the simplest execution structure
+3. Add adaptive local decision only where observation requires it
+4. Add planning only where global decomposition provides value
+5. Add search only where evaluation can guide it
+6. Add multiple agents only where responsibility boundaries justify coordination
+7. Add memory only where future value exceeds governance cost
+8. Apply identity, policy, budget, evaluation, observability, and human control
 ```
 
-### Step 2: Execution Path
+This is not a requirement to fill every category.
+
+The output may legitimately be:
 
 ```text
-Router
-  ↓
-RAG Pipeline
-  ↓
-Citation Verifier
+Fixed RAG Pipeline
++ one bounded query-rewrite node
++ citation verifier
++ no multi-agent
++ no long-term memory
 ```
 
-### Step 3: Decision
+![Figure 9-2｜Architecture Selection Gates and Capability Module Sequence](/images/the-atlas-of-agent-design-patterns-part-9/architecture-selection-sequence.png)
 
-- Fixed Flow
-- Bounded Query Rewrite
-- Maximum 1 Retry
+## Replace the autonomy ladder with an autonomy budget
 
-### Step 4: Search
+"Autonomy" is not one scalar property.
 
-- Hybrid Retrieval
-- Reranker
-- Source Diversity
-- No Tree Search needed
+A system may be autonomous in query rewriting but completely restricted in data access and side effects.
 
-### Step 5: Verification
+Define autonomy across six dimensions.
 
-- Citation Coverage
-- Claim Support
-- Permission Check
-- Answerability
+### Action scope
 
-Failure outcomes:
+- one transformation
+- several approved tools
+- arbitrary tool sequence
+- cross-system operation
 
-- Retry
-- Clarify
-- Abstain
+### Authority
 
-### Step 6: Organisation
+- propose
+- draft
+- execute reversible action
+- execute irreversible action
+- delegate authority
 
-Single Agent is enough.
+### Duration
 
-No Multi-Agent needed.
+- one call
+- one bounded session
+- resumable task
+- continuous monitor
 
-### Step 7: State and Memory
+### Reversibility
 
-Needed:
+- no side effect
+- reversible side effect
+- compensatable side effect
+- irreversible action
 
-- Original Query
-- Rewritten Query
-- Retrieved IDs
-- Citation Map
-- Retry Count
+### Environment uncertainty
 
-Not needed:
+- fixed input
+- stable API
+- dynamic documents
+- changing interface
+- open environment
 
-- Episodic Memory
-- User Memory
-- Shared Memory
+### External verifiability
 
-### Step 8: Policy
+- deterministic
+- executable
+- evidence-based
+- rubric-based
+- weak or delayed feedback
 
-- Only site articles allowed
-- No unauthorised content quoting
-- No open Web Search
-- No unsourced fact generation
+Higher impact does not always require less reasoning autonomy. It requires stronger constraints on authority, side effects, evidence, and approval.
 
-### Step 9: Budget
+A coding agent may explore freely inside a disposable branch while having no permission to merge.
 
-- Max Retrieval Calls: 2
-- Max Rewrite: 1
-- Max Answer Tokens
-- Max Latency
-- No Infinite Retry
+A research agent may search widely within approved sources while having no permission to publish.
 
-### Step 10: Terminal States
+![Figure 9-3｜Six-Dimensional Autonomy Budget Matrix](/images/the-atlas-of-agent-design-patterns-part-9/autonomy-budget-matrix.png)
 
-- Completed
-- Clarification Required
-- Unsupported
-- Insufficient Evidence
-- Failed
+## Compare architectures with measured evidence, not universal scores
 
-### Final architecture description
+There is no universal table in which:
 
-```text
-User Goal:
-Answer questions from blog content with citations
+- Direct always has lower quality
+- Multi-Agent always costs more by the same amount
+- Adaptive Planning always reduces controllability
+- RAG always has medium latency
 
-Execution Path:
-Router → RAG Pipeline → Citation Verifier
+Those properties depend on the implementation and task.
 
-Decision:
-Fixed flow with one bounded Query Rewrite
+### Define required thresholds first
 
-Search:
-Hybrid Retrieval + Rerank
+Examples:
 
-Verification:
-Citation Coverage
-Claim Support
-Permission Check
+- claim support at least 98%
+- task success at least 90%
+- critical policy violations equal 0
+- p95 latency below 8 seconds
+- average cost below a defined ceiling
+- duplicate side effects equal 0
+- human escalation below an acceptable rate
 
-Organisation:
-Single Agent
+### Evaluate candidate architectures
 
-State:
-Original Query
-Rewritten Query
-Retrieved IDs
-Citation Map
-Retry Count
+For each candidate, measure:
 
-Memory:
-No unrestricted long-term memory
+- task success
+- false pass and false fail
+- evidence coverage
+- policy violations
+- latency distribution
+- cost distribution
+- retry and replan rate
+- human-review load
+- failure recovery
+- operator effort
 
-Policy:
-Blog corpus only
-No unsupported claims
-No open Web access
+### Eliminate non-viable options
 
-Budget:
-2 retrieval calls
-1 rewrite
-bounded latency and tokens
+Any architecture that fails a hard safety or quality threshold is removed, even if it is cheaper.
 
-Terminal States:
-Completed
-Clarification Required
-Unsupported
-Insufficient Evidence
-Failed
+### Choose among viable options
 
-Final Owner:
-RAG Orchestrator
-```
+Use Pareto reasoning:
 
----
+> Prefer an option when no alternative is both cheaper and better on all required dimensions.
 
-## 17. Architecture review Checklist
+Architecture A may be faster; Architecture B may be cheaper; Architecture C may recover better. The final choice depends on the contract and risk appetite.
 
-### Need review
+### Re-evaluate after changes
 
-- [ ] The task genuinely needs Agentic capability
-- [ ] Direct, Pipeline or RAG alone is confirmed insufficient
-- [ ] Agent autonomy has measurable payoff
-- [ ] No Agent was added just because it is fashionable
+Model, prompt, tools, data, policies, and environment drift.
 
-### Workflow review
+Release evaluation should include:
 
-- [ ] Execution Path is clearly defined
-- [ ] Every State has an entry and an exit
-- [ ] Every Loop has an upper bound
-- [ ] Retry, Repair and Replan are separated
-- [ ] Terminal States are defined
-- [ ] Pause / Resume behaviour is defined
-- [ ] How to resume after Human Approval is defined
+- representative tasks
+- regressions
+- adversarial cases
+- permission tests
+- failure paths
+- recovery paths
+- cost and latency
+- canary or shadow deployment
 
-### Tool and permission review
+NIST's AI RMF and GenAI profile frame risk management across design, development, deployment, use, and evaluation. That is a lifecycle, not one launch-day scorecard.
 
-- [ ] Minimum permissions used
-- [ ] Read / Write tools are separated
-- [ ] High-risk tools have an Approval Gate
-- [ ] Secrets are isolated
-- [ ] Sandbox is in place
-- [ ] Tool Allowlist is not written only in the Prompt
-- [ ] Irreversible operations have Idempotency or Compensation
+![Figure 9-4｜Comparing Architectures with Measured Evidence](/images/the-atlas-of-agent-design-patterns-part-9/measured-evidence-comparison.png)
 
-### Verification review
+## The Agent Architecture Canvas
 
-- [ ] Completion Criteria are explicit
-- [ ] Verifier can output Fail
-- [ ] Deterministic checks are preferred
-- [ ] Executable artefacts have real tests
-- [ ] RAG has Citation / Faithfulness check
-- [ ] Browser has Post-condition
-- [ ] High-risk operations have post-execution verification
-- [ ] Tests and acceptance conditions cannot be modified by the Agent at will
-- [ ] Partial / Unsupported / Pending are supported
+A complete design review should answer sixteen fields.
 
-### State and Memory review
+### 1. Goal and user value
 
-- [ ] State and Memory are separated
-- [ ] Working Memory has a TTL
-- [ ] Long-term Memory has a Source
-- [ ] Memory has Scope, Version, Expiry
-- [ ] Unverified content cannot be written directly
-- [ ] User / Tenant Isolation is complete
-- [ ] Shared Memory has Read / Write permissions
-- [ ] Supersede, Delete and Audit are supported
-- [ ] Data that can be retrieved from the Source of Truth is not duplicated for permanent storage
+What outcome matters?
 
-### Cost and reliability review
+### 2. Acceptance evidence
 
-- [ ] Global Budget is defined
-- [ ] Per-step Budget is defined
-- [ ] Max Steps is defined
-- [ ] Retry Limit is defined
-- [ ] Replan Limit is defined
-- [ ] Tool Call Limit is defined
-- [ ] Timeout is defined
-- [ ] No-progress Detection is in place
-- [ ] Kill Switch exists
-- [ ] Safe Mode or fallback path exists
+What proves completion?
 
-### Observability review
+### 3. Users, owners, and authority
 
-- [ ] Each task has a Trace ID
-- [ ] State Transitions are observable
-- [ ] Tool Calls are traceable
-- [ ] Model Version is saved
-- [ ] Prompt Version is saved
-- [ ] Cost and Latency are measurable
-- [ ] Failure Reason can be queried
-- [ ] High-risk operations have an Audit Log
-- [ ] Replay can be done safely
+Who requests, operates, approves, and owns the result?
 
-### Human responsibility review
+### 4. Inputs, sources, and trust boundaries
 
-- [ ] Final Owner is named
-- [ ] Approver is named
-- [ ] Self-approval is avoided
-- [ ] Human Review shows evidence and risk
-- [ ] Approval has an Expiry
-- [ ] State is reverified before execution
-- [ ] Rejection, timeout and cancellation all have handling paths
+Where does data come from, and which content is untrusted?
 
-### Go-Live decision
+### 5. Tools and side effects
 
-- [ ] Go
-- [ ] Pilot
-- [ ] No-Go
-- [ ] Required Remediation is recorded
-- [ ] Review Owner is named
-- [ ] Review Date is recorded
+What can read, write, send, publish, pay, delete, or delegate?
 
----
+### 6. Execution structure
 
-## 18. Go, Pilot, No-Go
+Direct, Pipeline, Router, State Machine, DAG, bounded loop, or event-driven workflow.
+
+### 7. Decision and planning
+
+Fixed logic, bounded ReAct, Plan-and-Execute, adaptive replanning, or HTN.
+
+### 8. Candidate search
+
+Single path, sampling, ranking, tree, graph, or environment search.
+
+### 9. Verification
+
+Schema, test, evidence, post-condition, policy, rubric, or human judgement.
+
+### 10. Recovery
+
+Retry, parameter repair, fallback, repair, replan, escalation, and stop.
+
+### 11. Organisation and final owner
+
+One workflow, multiple agents, communication protocol, aggregator, and completer.
+
+### 12. State and memory
+
+What is exact, temporary, persistent, shared, versioned, or external?
+
+### 13. Identity, policy, and risk
+
+Permissions, data scope, sandbox, approval, and irreversible-action rules.
+
+### 14. Budget, timeout, and terminal states
+
+Limits, cancellation, expiry, partial outcomes, and safe stops.
+
+### 15. Observability and evaluation
+
+Trace, metrics, audit, replay, regression suite, and release gate.
+
+### 16. Incident and rollback plan
+
+How can the system be suspended, credentials revoked, memory corrected, and side effects reconciled?
+
+Each field should record:
+
+- decision
+- rationale
+- limit
+- evidence
+- owner
+- unresolved risk
+
+![Figure 9-5｜Agent Architecture Canvas (16 Fields)](/images/the-atlas-of-agent-design-patterns-part-9/agent-architecture-canvas.png)
+
+## Go, Pilot, or No-Go
+
+Release state should be evidence-based.
 
 ### Go
 
-- Completion Criteria are explicit
-- Main flow is verifiable
-- Permissions minimised
-- Failure Path has been tested
-- Trace is complete
-- High-risk operations have Approval
+Appropriate when:
+
+- acceptance criteria are explicit
+- representative evaluations pass
+- critical policy violations are zero
+- permissions are least-privilege
+- failure and recovery paths were tested
+- state can resume safely
+- observability and incident response are ready
+- high-impact actions have durable approval and reconciliation
+- remaining risks are accepted by the owner
 
 ### Pilot
 
-- Core flow runs
-- Human monitoring still required
-- Some Failure Modes not fully tested
-- Limited users, data and scope
-- Fast Kill Switch available
+Appropriate when:
+
+- the core path works
+- scope, users, data, and tools are restricted
+- human monitoring remains active
+- a fast kill switch exists
+- some non-critical failure modes still need evidence
+- rollback is simple
+- the pilot has a defined exit decision and date
 
 ### No-Go
 
-- No reliable Verifier
-- High-risk tools without Approval
-- No persistent State
-- No cost ceiling
-- No Terminal State
-- Memory governance unclear
-- No Audit
-- Failure could cause irreversible damage
+Required when:
 
----
+- no credible verifier exists
+- the system can produce irreversible harm without approval
+- unauthorised data can reach the model
+- side effects lack idempotency or reconciliation
+- the task cannot persist or recover required state
+- no budget or stop condition exists
+- memory governance is undefined
+- incident owners and kill switches are absent
+- evaluation fails a hard threshold
 
-## 19. Final selection principles
+"No-Go" is not a failed review. It is a working safety mechanism.
 
-1. Pick the simplest viable architecture first
-2. Place autonomy only at the nodes that genuinely need it
-3. Design the Verifier before designing the Agent
-4. The higher the risk, the lower the autonomy
-5. Memory must be governable
-6. Multi-Agent must have a Final Owner
-7. Cost and Latency are architecture requirements
-8. Formal failure is a capability
-9. Every Loop needs an exit
-10. Production Readiness comes from controllability
+## Complete example: a blog Ask AI system
 
----
+Requirement:
 
-## Conclusion of this article
+> Users ask questions about blog articles. The system answers from the site's articles with citations. It may rewrite a query when retrieval is weak, but it may not browse the open web or retry indefinitely.
 
-Choosing an Agent architecture is not picking the most fashionable term.
+### Contract
 
-It is answering:
+- answer only from the authorised blog corpus
+- every material claim has a citation
+- unsupported questions return insufficient evidence
+- no open-web search
+- no cross-tenant data
+- bounded latency and retrieval cost
 
-```text
-How does the task move?
-How is the next step decided?
-How many candidates does the search explore?
-How are failures verified and recovered?
-Who does the work?
-How are State and Memory stored?
-```
-
-Then close with four Production constraints:
+### Execution structure
 
 ```text
-Policy
-Budget
-Observability
-Human Responsibility
+Admission and Router
+  -> Fixed RAG Pipeline
+  -> Claim-to-Evidence Verifier
+  -> Answer / Clarify / Abstain
 ```
 
-The whole series can be wrapped in one sentence:
+### Adaptive capability
 
-> **The best Agent architecture is the one that, with the lowest necessary complexity, reliably finishes the task.**
+One bounded rewrite decision:
 
----
+```text
+Low retrieval coverage
+  -> rewrite once
+  -> retrieve again
+  -> stop
+```
 
-## The Atlas of Agent Design Patterns — Series Index
+No general ReAct loop is needed.
+
+### Search
+
+- hybrid retrieval
+- reranking
+- source diversity
+- no tree search
+- no multi-agent debate
+
+### Verification
+
+- ACL
+- citation coverage
+- claim support
+- document version
+- answerability
+- unsupported-claim count
+
+### State
+
+- original query
+- rewritten query
+- selected document IDs and versions
+- citation map
+- verifier result
+- retry count
+- terminal outcome
+
+### Memory
+
+No unrestricted long-term user or episodic memory is required.
+
+### Policy
+
+- blog corpus only
+- retrieved content is untrusted data
+- no external web access
+- no unsupported claims
+- no permanent memory write from a query
+
+### Budget and stop
+
+- maximum retrieval attempts: 2
+- maximum rewrite: 1
+- bounded context and answer tokens
+- latency ceiling
+- terminal insufficient-evidence state
+
+### Organisation
+
+One workflow is enough. Multiple agents would add hand-off and shared-state cost without solving a requirement.
+
+### Release evidence
+
+Evaluate:
+
+- answer correctness
+- citation support
+- answerability classification
+- permission isolation
+- latency
+- cost
+- adversarial prompt-injection content
+- insufficient-evidence behaviour
+
+The resulting architecture is not "a full autonomous agent".
+
+It is:
+
+```text
+Controlled RAG Pipeline
++ one bounded adaptive node
++ independent evidence verification
+```
+
+That is not a downgrade. It is architectural restraint doing useful work.
+
+## Common anti-patterns
+
+### Framework-first selection
+
+A framework name appears before the task contract.
+
+### Pattern shopping
+
+Every named pattern is added because it exists.
+
+### Agent as a binary label
+
+The team argues whether the whole product is "an agent" instead of placing adaptive capability at specific nodes.
+
+### Universal autonomy ranking
+
+A pattern receives one fixed autonomy score independent of tools, permissions, and side effects.
+
+### Universal cost-quality matrix
+
+Illustrative estimates are treated as facts without benchmark data.
+
+### Multi-agent inflation
+
+Role labels are mistaken for independent agents.
+
+### Search without an evaluator
+
+More candidates are generated without a trustworthy selection signal.
+
+### Memory without governance
+
+Everything enters one vector store with no scope, status, expiry, or deletion.
+
+### Human approval theatre
+
+The reviewer sees an Approve button but not the exact action, evidence, impact, or expiry.
+
+### Demo success becomes production readiness
+
+One happy path replaces evaluation of failures, permissions, recovery, and incidents.
+
+### Observability replaces evaluation
+
+Every wrong decision has a beautiful trace.
+
+### Evaluation replaces ownership
+
+A high benchmark score is treated as authorisation to operate.
+
+### No final owner
+
+Several components produce work, but none owns completion.
+
+## Architecture review checklist
+
+### Contract
+
+- [ ] Desired outcome is observable
+- [ ] Acceptance evidence is defined
+- [ ] Prohibited outcomes are defined
+- [ ] Partial and unsupported outcomes are allowed
+- [ ] Latency and cost envelopes are explicit
+
+### Execution
+
+- [ ] The simplest viable execution structure was considered
+- [ ] Adaptive nodes are identified individually
+- [ ] Every loop has a limit
+- [ ] Pause, resume, and recovery are defined
+- [ ] Terminal states are explicit
+
+### Tools and authority
+
+- [ ] Read and write capabilities are separated
+- [ ] Least privilege is enforced outside the prompt
+- [ ] Side effects define idempotency and reconciliation
+- [ ] Untrusted content cannot change policy
+- [ ] Irreversible actions require appropriate authority
+
+### Verification and recovery
+
+- [ ] The verifier can fail or abstain
+- [ ] Objective signals are used where available
+- [ ] Acceptance artefacts are protected
+- [ ] Retry, repair, fallback, and replan are distinct
+- [ ] Duplicate and no-progress conditions stop the loop
+
+### State and memory
+
+- [ ] Workflow state and memory are separated
+- [ ] Every persistent record has source, scope, version, status, and expiry
+- [ ] User and tenant isolation is tested
+- [ ] Unverified content cannot write durable memory
+- [ ] Update, supersede, delete, and audit are supported
+
+### Operations
+
+- [ ] Global and per-component budgets exist
+- [ ] Timeouts and cancellation are defined
+- [ ] Trace, metrics, and audit are available
+- [ ] Offline and regression evaluation exists
+- [ ] Incident response, kill switch, and rollback are ready
+
+### Responsibility
+
+- [ ] Final owner is named
+- [ ] Approver authority is defined
+- [ ] Separation of duties is applied where required
+- [ ] Approval expires and state is revalidated
+- [ ] Go, Pilot, or No-Go evidence is recorded
+
+## Final principles
+
+1. Start from the contract, not the framework.
+2. Use the simplest execution structure that can satisfy the task.
+3. Place autonomy only where observations genuinely change the next action.
+4. Define verification before increasing autonomy.
+5. Add search only when a reliable evaluator exists.
+6. Add multiple agents only for real responsibility and communication boundaries.
+7. Store memory only when future value exceeds governance cost.
+8. Treat authority, side effects, and reversibility separately from reasoning capability.
+9. Compare architectures with measured evidence and hard thresholds.
+10. Make formal failure, abstention, and No-Go first-class outcomes.
+
+## Conclusion
+
+Choosing an agent architecture is not a taxonomy quiz.
+
+It is a sequence of evidence-bearing decisions:
+
+```text
+Contract
+  -> Simplest Execution Structure
+  -> Necessary Adaptive Capability
+  -> Verification and Recovery
+  -> State and Memory
+  -> Policy and Authority
+  -> Budget and Stops
+  -> Evaluation and Ownership
+```
+
+The best architecture is not the one with the most autonomy.
+
+It is the one that, with the least necessary complexity, can complete the task, prove the result, limit its authority, recover safely, and stop under accountable control.
+
+Part 10 moves from architecture selection to implementation:
+
+> How should these patterns map onto modern frameworks without letting framework abstractions replace system design?
+
+## References
+
+- [Lewis et al., *Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks*](https://arxiv.org/abs/2005.11401)
+- [Yao et al., *ReAct: Synergizing Reasoning and Acting in Language Models*](https://arxiv.org/abs/2210.03629)
+- [Yao et al., *Tree of Thoughts: Deliberate Problem Solving with Large Language Models*](https://arxiv.org/abs/2305.10601)
+- [Zhou et al., *Language Agent Tree Search Unifies Reasoning, Acting, and Planning in Language Models*](https://arxiv.org/abs/2310.04406)
+- [Wu et al., *AutoGen: Enabling Next-Gen LLM Applications via Multi-Agent Conversation*](https://arxiv.org/abs/2308.08155)
+- [NIST, *Artificial Intelligence Risk Management Framework: Generative Artificial Intelligence Profile*](https://www.nist.gov/publications/artificial-intelligence-risk-management-framework-generative-artificial-intelligence)
+- [OWASP, *Agentic AI Threats and Mitigations*](https://genai.owasp.org/resource/agentic-ai-threats-and-mitigations/)
+- [LangGraph Documentation, *Persistence*](https://langchain-ai.github.io/langgraph/concepts/persistence/)
+- [LangGraph Documentation, *Interrupts*](https://langchain-ai.github.io/langgraph/concepts/breakpoints/)
+- [OpenTelemetry Documentation](https://opentelemetry.io/docs/)
+
+## Series
 
 | Part | Topic |
 |---:|---|
-| 1 | LLM Agents are not only ReAct: six dimensions for reading Agent architecture |
-| 2 | Agent execution paths in full: Direct, Pipeline, Router, State Machine and DAG |
-| 3 | ReAct, Plan-and-Execute and Adaptive Planning |
-| 4 | From one line of thought to searching the whole solution space: CoT, ToT, GoT and LATS |
-| 5 | Agent verification and self-correction |
-| 6 | Multi-Agent architecture in full |
-| 7 | Agent Memory in full |
-| 8 | Production Agent architecture in practice |
-| 9 | How to choose an Agent architecture |
-| Bonus | Implementing design patterns with modern Agent Frameworks |
-
----
-
-## Figure-to-section mapping
-
-| Figure | Formal title | Suggested filename | Section |
-|---|---|---|---|
-| Figure 9-1 | Do You Need an Agent? | `figure-9-1-do-you-need-an-agent.png` | Does this task actually need an Agent |
-| Figure 9-2 | Six-Dimensional Architecture Selection Workflow | `figure-9-2-six-dimensional-architecture-selection-workflow.png` | Six-dimension selection flow |
-| Figure 9-3 | Agent Autonomy and System Control Matrix | `figure-9-3-agent-autonomy-system-control-matrix.png` | Autonomy and controllability |
-| Figure 9-4 | Cost vs Quality Matrix | `figure-9-4-cost-vs-quality-matrix.png` | Cost, quality and risk |
-| Figure 9-5 | Agent Architecture Canvas | `figure-9-5-agent-architecture-canvas.png` | Final architecture design canvas |
+| 1 | Beyond ReAct: A Six-Dimensional Map of LLM Agent Architectures |
+| 2 | Agent Execution Paths: Direct Calls, Pipelines, Routers, State Machines, and DAGs |
+| 3 | ReAct, Plan-and-Execute, Adaptive Planning, and HTN |
+| 4 | From Single-Path Reasoning to Trees, Graphs, MCTS, and LATS |
+| 5 | Verification, Recovery, and Self-Correction |
+| 6 | Multi-Agent Architectures |
+| 7 | Agent Memory |
+| 8 | Production Agent Architectures in Practice |
+| 9 | How to Choose an Agent Architecture |
+| 10 | Implementing Agent Patterns with Modern Frameworks |
