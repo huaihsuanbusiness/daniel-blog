@@ -1,7 +1,7 @@
 ---
 title: "The Atlas of Agent Design Patterns Part 10 | Implementing Agent Patterns Without Framework Lock-In"
 description: "A framework-aware but architecture-first guide to Native Code, LangChain and LangGraph, LlamaIndex Workflows, CrewAI, OpenAI Agents SDK, AutoGen, Semantic Kernel, and Microsoft Agent Framework."
-date: 2026-07-01T15:23:00
+date: 2026-07-02T09:00:00
 lang: en
 categories: ["AI"]
 series: "The Atlas of Agent Design Patterns"
@@ -1277,17 +1277,3 @@ It is the one whose semantics match the architecture, whose lifecycle risk fits 
 - [Microsoft, *Agent Framework migration guides*](https://learn.microsoft.com/en-us/agent-framework/migration-guide/)
 - [OpenTelemetry Documentation](https://opentelemetry.io/docs/)
 
-## Series
-
-| Part | Topic |
-|---:|---|
-| 1 | Beyond ReAct: A Six-Dimensional Map of LLM Agent Architectures |
-| 2 | Agent Execution Paths: Direct Calls, Pipelines, Routers, State Machines, and DAGs |
-| 3 | ReAct, Plan-and-Execute, Adaptive Planning, and HTN |
-| 4 | From Single-Path Reasoning to Trees, Graphs, MCTS, and LATS |
-| 5 | Verification, Recovery, and Self-Correction |
-| 6 | Multi-Agent Architectures |
-| 7 | Agent Memory |
-| 8 | Production Agent Architectures in Practice |
-| 9 | How to Choose an Agent Architecture |
-| 10 | Implementing Agent Patterns Without Framework Lock-In |

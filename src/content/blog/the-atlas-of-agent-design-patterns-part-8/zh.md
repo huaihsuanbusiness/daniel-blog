@@ -1,7 +1,7 @@
 ---
 title: "Agent 設計模式圖鑑 Part 8｜Production Agent 架構實戰"
 description: "以 Production 視角把 Routing、Durable Orchestration、Tools、Verification、State、Memory、Policy、Evaluation、Observability、Budget 與 Human Control 組合成 RAG、Deep Research、Coding、Browser、企業自動化與長期監控系統。"
-date: 2026-07-01T13:44:00
+date: 2026-06-29T01:00:00
 lang: zh
 categories: ["AI"]
 series: "Agent 設計模式圖鑑"
@@ -1315,17 +1315,3 @@ Part 9 會把整個系列變成 Decision Process：
 - [NIST, *Artificial Intelligence Risk Management Framework: Generative Artificial Intelligence Profile*](https://www.nist.gov/publications/artificial-intelligence-risk-management-framework-generative-artificial-intelligence)
 - [OWASP, *Top 10 for Large Language Model Applications*](https://owasp.org/www-project-top-10-for-large-language-model-applications/)
 
-## 系列目錄
-
-| Part | 主題 |
-|---:|---|
-| 1 | LLM Agent 不只有 ReAct：用六個維度看懂 Agent 架構 |
-| 2 | Agent 執行路徑全解：Direct、Pipeline、Router、State Machine 與 DAG |
-| 3 | ReAct、Plan-and-Execute、Adaptive Planning 與 HTN |
-| 4 | 從單一路徑到 Tree、Graph、MCTS 與 LATS |
-| 5 | 驗證、恢復與自我修正 |
-| 6 | Multi-Agent 架構全解 |
-| 7 | Agent Memory 全解 |
-| 8 | Production Agent 架構實戰 |
-| 9 | 如何選擇 Agent 架構 |
-| 10 | 使用現代 Agent Framework 實作設計模式 |

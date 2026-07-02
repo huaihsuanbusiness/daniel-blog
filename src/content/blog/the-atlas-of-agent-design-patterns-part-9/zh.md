@@ -1,7 +1,7 @@
 ---
 title: "Agent 設計模式圖鑑 Part 9｜如何選擇 Agent 架構"
 description: "以嚴格決策流程選擇能滿足任務動態、證據、風險、權限、恢復、記憶、成本與運營需求的最小 Agent 架構。"
-date: 2026-07-01T13:58:00
+date: 2026-06-30T17:00:00
 lang: zh
 categories: ["AI"]
 series: "Agent 設計模式圖鑑"
@@ -1160,17 +1160,3 @@ Part 10 會從 Architecture Selection 進入 Implementation：
 - [LangGraph Documentation, *Interrupts*](https://langchain-ai.github.io/langgraph/concepts/breakpoints/)
 - [OpenTelemetry Documentation](https://opentelemetry.io/docs/)
 
-## 系列目錄
-
-| Part | 主題 |
-|---:|---|
-| 1 | LLM Agent 不只有 ReAct：用六個維度看懂 Agent 架構 |
-| 2 | Agent 執行路徑全解：Direct、Pipeline、Router、State Machine 與 DAG |
-| 3 | ReAct、Plan-and-Execute、Adaptive Planning 與 HTN |
-| 4 | 從單一路徑到 Tree、Graph、MCTS 與 LATS |
-| 5 | 驗證、恢復與自我修正 |
-| 6 | Multi-Agent 架構全解 |
-| 7 | Agent Memory 全解 |
-| 8 | Production Agent 架構實戰 |
-| 9 | 如何選擇 Agent 架構 |
-| 10 | 使用現代 Agent Framework 實作設計模式 |

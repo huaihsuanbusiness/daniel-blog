@@ -1,7 +1,7 @@
 ---
 title: "The Atlas of Agent Design Patterns Part 6 | Multi-Agent Organisation, Coordination, and Control"
 description: "A production-focused guide to single agents, role-based workflows, supervisor-worker systems, planner-executor-critic splits, debate, voting, blackboards, peer-to-peer coordination, swarm-style systems, handoff contracts, shared state, final ownership, and control planes."
-date: 2026-07-01T00:04:00
+date: 2026-06-25T17:00:00
 lang: en
 categories: ["AI"]
 series: "The Atlas of Agent Design Patterns"
@@ -1288,17 +1288,3 @@ Part 7 moves to the final dimension in the map:
 - [Nii, *The Blackboard Model of Problem Solving and the Evolution of Blackboard Architectures*](https://doi.org/10.1609/aimag.v7i2.537)
 - [Guo et al., *Large Language Model based Multi-Agents: A Survey of Progress and Challenges*](https://arxiv.org/abs/2402.01680)
 
-## Series
-
-| Part | Topic |
-|---:|---|
-| 1 | Beyond ReAct: A Six-Dimensional Map of LLM Agent Architectures |
-| 2 | Agent Execution Paths: Direct Calls, Pipelines, Routers, State Machines, and DAGs |
-| 3 | ReAct, Plan-and-Execute, Adaptive Planning, and HTN |
-| 4 | From Single-Path Reasoning to Trees, Graphs, MCTS, and LATS |
-| 5 | Verification, Recovery, and Self-Correction |
-| 6 | Multi-Agent Organisation, Coordination, and Control |
-| 7 | Agent Memory |
-| 8 | Production Agent Architectures |
-| 9 | How to Choose an Agent Architecture |
-| 10 | Implementing Agent Patterns with Modern Frameworks |

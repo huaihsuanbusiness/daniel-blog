@@ -1,7 +1,7 @@
 ---
 title: "The Atlas of Agent Design Patterns Part 4 | From Single-Path Reasoning to Trees, Graphs, MCTS, and LATS"
 description: "A production-focused guide to single-path reasoning, Chain-of-Thought, self-consistency, Generate-and-Rank, beam search, Tree of Thoughts, Graph of Thoughts, MCTS, LATS, evaluator design, diversity, stopping rules, and search budgets."
-date: 2026-06-30T20:05:00
+date: 2026-06-22T09:00:00
 lang: en
 categories: ["AI"]
 series: "The Atlas of Agent Design Patterns"
@@ -1140,17 +1140,3 @@ Part 5 examines what happens after an output or action fails verification:
 - [Aamodt and Plaza, *Case-Based Reasoning: Foundational Issues, Methodological Variations, and System Approaches*](https://doi.org/10.3233/AIC-1994-7104)
 - [Susskind et al., *Neuro-Symbolic AI: An Emerging Class of AI Workloads and their Characterization*](https://arxiv.org/abs/2109.06133)
 
-## Series
-
-| Part | Topic |
-|---:|---|
-| 1 | Beyond ReAct: A Six-Dimensional Map of LLM Agent Architectures |
-| 2 | Agent Execution Paths: Direct Calls, Pipelines, Routers, State Machines, and DAGs |
-| 3 | ReAct, Plan-and-Execute, Adaptive Planning, and HTN |
-| 4 | From Single-Path Reasoning to Trees, Graphs, MCTS, and LATS |
-| 5 | Verification, Recovery, and Self-Correction |
-| 6 | Multi-Agent Architectures |
-| 7 | Agent Memory |
-| 8 | Production Agent Architectures |
-| 9 | How to Choose an Agent Architecture |
-| 10 | Implementing Agent Patterns with Modern Frameworks |

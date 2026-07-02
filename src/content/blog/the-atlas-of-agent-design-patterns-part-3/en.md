@@ -1,7 +1,7 @@
 ---
 title: "The Atlas of Agent Design Patterns Part 3 | ReAct, Plan-and-Execute, Adaptive Planning, and HTN"
 description: "A production-focused guide to fixed decision logic, bounded ReAct, explicit plans, adaptive replanning, hierarchical decomposition, HTN, plan verification, and the architecture that combines Planner, Executor, Verifier, State Machine, and policy controls."
-date: 2026-06-30T19:20:00
+date: 2026-06-20T17:00:00
 lang: en
 categories: ["AI"]
 series: "The Atlas of Agent Design Patterns"
@@ -1133,17 +1133,3 @@ Part 4 moves from planning to search:
 - [Au et al., *SHOP2: An HTN Planning System*](https://arxiv.org/abs/1106.4869)
 - [Höller et al., *On Hierarchical Task Networks*](https://arxiv.org/abs/1606.06900)
 
-## Series
-
-| Part | Topic |
-|---:|---|
-| 1 | Beyond ReAct: A Six-Dimensional Map of LLM Agent Architectures |
-| 2 | Agent Execution Paths: Direct Calls, Pipelines, Routers, State Machines, and DAGs |
-| 3 | ReAct, Plan-and-Execute, Adaptive Planning, and HTN |
-| 4 | From Single-Path Reasoning to Trees, Graphs, and LATS |
-| 5 | Verification, Recovery, and Self-Correction |
-| 6 | Multi-Agent Architectures |
-| 7 | Agent Memory |
-| 8 | Production Agent Architectures |
-| 9 | How to Choose an Agent Architecture |
-| 10 | Implementing Agent Patterns with Modern Frameworks |

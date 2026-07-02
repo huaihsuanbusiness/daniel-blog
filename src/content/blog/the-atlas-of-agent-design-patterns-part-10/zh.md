@@ -1,7 +1,7 @@
 ---
 title: "Agent 設計模式圖鑑 Part 10｜不被 Framework 綁架的 Agent 模式實作"
 description: "以 Architecture-first 方法比較 Native Code、LangChain 與 LangGraph、LlamaIndex Workflows、CrewAI、OpenAI Agents SDK、AutoGen、Semantic Kernel 與 Microsoft Agent Framework。"
-date: 2026-07-01T15:23:00
+date: 2026-07-02T09:00:00
 lang: zh
 categories: ["AI"]
 series: "Agent 設計模式圖鑑"
@@ -1277,17 +1277,3 @@ Persistence
 - [Microsoft, *Agent Framework migration guides*](https://learn.microsoft.com/en-us/agent-framework/migration-guide/)
 - [OpenTelemetry Documentation](https://opentelemetry.io/docs/)
 
-## 系列目錄
-
-| Part | 主題 |
-|---:|---|
-| 1 | LLM Agent 不只有 ReAct：用六個維度看懂 Agent 架構 |
-| 2 | Agent 執行路徑全解：Direct、Pipeline、Router、State Machine 與 DAG |
-| 3 | ReAct、Plan-and-Execute、Adaptive Planning 與 HTN |
-| 4 | 從單一路徑到 Tree、Graph、MCTS 與 LATS |
-| 5 | 驗證、恢復與自我修正 |
-| 6 | Multi-Agent 架構全解 |
-| 7 | Agent Memory 全解 |
-| 8 | Production Agent 架構實戰 |
-| 9 | 如何選擇 Agent 架構 |
-| 10 | 不被 Framework 綁架的 Agent 模式實作 |

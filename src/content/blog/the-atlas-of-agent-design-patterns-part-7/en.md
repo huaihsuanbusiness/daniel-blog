@@ -1,7 +1,7 @@
 ---
 title: "The Atlas of Agent Design Patterns Part 7 | Context, State, Memory, and RAG"
 description: "A production-focused guide to working, episodic, semantic, procedural, user, and shared memory; the boundary between memory and RAG; memory write and retrieval policies; conflict resolution; forgetting; and production memory architecture."
-date: 2026-07-01T00:24:00
+date: 2026-06-27T09:00:00
 lang: en
 categories: ["AI"]
 series: "The Atlas of Agent Design Patterns"
@@ -1657,17 +1657,3 @@ Part 8 moves from individual patterns to complete production architectures:
 - [Zhong et al., *MemoryBank: Enhancing Large Language Models with Long-Term Memory*](https://arxiv.org/abs/2305.10250)
 - [Wu et al., *LongMemEval: Benchmarking Chat Assistants on Long-Term Interactive Memory*](https://arxiv.org/abs/2410.10813)
 
-## Series
-
-| Part | Topic |
-|---:|---|
-| 1 | Beyond ReAct: A Six-Dimensional Map of LLM Agent Architectures |
-| 2 | Agent Execution Paths: Direct Calls, Pipelines, Routers, State Machines, and DAGs |
-| 3 | ReAct, Plan-and-Execute, Adaptive Planning, and HTN |
-| 4 | From Single-Path Reasoning to Trees, Graphs, MCTS, and LATS |
-| 5 | Verification, Recovery, and Self-Correction |
-| 6 | Multi-Agent Architectures |
-| 7 | Context, State, Memory, and RAG |
-| 8 | Production Agent Architectures |
-| 9 | How to Choose an Agent Architecture |
-| 10 | Implementing Agent Patterns with Modern Frameworks |

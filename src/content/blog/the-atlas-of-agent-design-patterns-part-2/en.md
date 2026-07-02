@@ -1,7 +1,7 @@
 ---
 title: "The Atlas of Agent Design Patterns Part 2 | Agent Execution Paths: Direct Calls, Pipelines, Routers, State Machines, and DAGs"
 description: "A practical guide to the execution structures behind production agent systems, including direct calls, fixed pipelines, routers, state machines, DAGs, event-driven triggers, human approval, and behavior trees."
-date: 2026-07-01T23:02:00
+date: 2026-06-19T01:00:00
 lang: en
 categories: ["AI"]
 series: "The Atlas of Agent Design Patterns"
@@ -757,17 +757,3 @@ It compares ReAct, Plan-and-Execute, adaptive planning, hierarchical planning, a
 - [Colledanchise and Ögren, *Behavior Trees in Robotics and AI: An Introduction*](https://arxiv.org/abs/1709.00084)
 - [LangGraph Documentation, *Interrupts and human-in-the-loop workflows*](https://langchain-ai.github.io/langgraph/concepts/breakpoints/)
 
-## Series
-
-| Part | Topic |
-|---:|---|
-| 1 | Beyond ReAct: A Six-Dimensional Map of LLM Agent Architectures |
-| 2 | Agent Execution Paths: Direct Calls, Pipelines, Routers, State Machines, and DAGs |
-| 3 | ReAct, Plan-and-Execute, and Adaptive Planning |
-| 4 | From Single-Path Reasoning to Trees, Graphs, and LATS |
-| 5 | Verification, Recovery, and Self-Correction |
-| 6 | Multi-Agent Architectures |
-| 7 | Agent Memory |
-| 8 | Production Agent Architectures |
-| 9 | How to Choose an Agent Architecture |
-| 10 | Implementing Agent Patterns with Modern Frameworks |

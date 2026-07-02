@@ -1,7 +1,7 @@
 ---
 title: "Agent 設計模式圖鑑 Part 5｜驗證、恢復與自我修正"
 description: "從 Retry、參數修復、Fallback、Self-Refine、Critic、Verifier、Generate-and-Test、Replanning、Reflexion、Human Review 到 Idempotency，完整拆解不會無限循環的 Production Agent 恢復架構。"
-date: 2026-06-30T20:18:00
+date: 2026-06-24T01:00:00
 lang: zh
 categories: ["AI"]
 series: "Agent 設計模式圖鑑"
@@ -1281,17 +1281,3 @@ Part 6 將從 Verification 進入 Organisation：
 - [AWS Builders' Library, *Making retries safe with idempotent APIs*](https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-apIs/)
 - [AWS Well-Architected Framework, *Make mutating operations idempotent*](https://docs.aws.amazon.com/wellarchitected/latest/framework/rel_prevent_interaction_failure_idempotent.html)
 
-## 系列目錄
-
-| Part | 主題 |
-|---:|---|
-| 1 | LLM Agent 不只有 ReAct：用六個維度看懂 Agent 架構 |
-| 2 | Agent 執行路徑全解：Direct、Pipeline、Router、State Machine 與 DAG |
-| 3 | ReAct、Plan-and-Execute、Adaptive Planning 與 HTN |
-| 4 | 從單一路徑到 Tree、Graph、MCTS 與 LATS |
-| 5 | 驗證、恢復與自我修正 |
-| 6 | Multi-Agent 架構全解 |
-| 7 | Agent Memory 全解 |
-| 8 | Production Agent 架構實戰 |
-| 9 | 如何選擇 Agent 架構 |
-| 10 | 使用現代 Agent Framework 實作設計模式 |

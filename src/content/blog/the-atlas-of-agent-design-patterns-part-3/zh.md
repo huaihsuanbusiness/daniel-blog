@@ -1,7 +1,7 @@
 ---
 title: "Agent 設計模式圖鑑 Part 3｜ReAct、Plan-and-Execute、Adaptive Planning 與 HTN"
 description: "從固定決策、有界 ReAct、顯式計畫、Adaptive Replanning、Hierarchical Planning 到正式 HTN，完整拆解 Production Agent 如何結合 Planner、Executor、Verifier、State Machine 與政策控制。"
-date: 2026-06-30T19:20:00
+date: 2026-06-20T17:00:00
 lang: zh
 categories: ["AI"]
 series: "Agent 設計模式圖鑑"
@@ -1131,17 +1131,3 @@ Part 4 將從 Planning 進入 Search：
 - [Au et al., *SHOP2: An HTN Planning System*](https://arxiv.org/abs/1106.4869)
 - [Höller et al., *On Hierarchical Task Networks*](https://arxiv.org/abs/1606.06900)
 
-## 系列目錄
-
-| Part | 主題 |
-|---:|---|
-| 1 | LLM Agent 不只有 ReAct：用六個維度看懂 Agent 架構 |
-| 2 | Agent 執行路徑全解：Direct、Pipeline、Router、State Machine 與 DAG |
-| 3 | ReAct、Plan-and-Execute、Adaptive Planning 與 HTN |
-| 4 | 從單一路徑到 Tree、Graph 與 LATS |
-| 5 | Agent 驗證、恢復與自我修正 |
-| 6 | Multi-Agent 架構全解 |
-| 7 | Agent Memory 全解 |
-| 8 | Production Agent 架構實戰 |
-| 9 | 如何選擇 Agent 架構 |
-| 10 | 使用現代 Agent Framework 實作設計模式 |

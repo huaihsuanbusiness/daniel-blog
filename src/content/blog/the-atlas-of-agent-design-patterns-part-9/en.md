@@ -1,7 +1,7 @@
 ---
 title: "The Atlas of Agent Design Patterns Part 9 | How to Choose an Agent Architecture"
 description: "A rigorous decision process for choosing the smallest agent architecture that satisfies task dynamics, evidence, risk, authority, recovery, memory, cost, and operational requirements."
-date: 2026-07-01T13:58:00
+date: 2026-06-30T17:00:00
 lang: en
 categories: ["AI"]
 series: "The Atlas of Agent Design Patterns"
@@ -1166,17 +1166,3 @@ Part 10 moves from architecture selection to implementation:
 - [LangGraph Documentation, *Interrupts*](https://langchain-ai.github.io/langgraph/concepts/breakpoints/)
 - [OpenTelemetry Documentation](https://opentelemetry.io/docs/)
 
-## Series
-
-| Part | Topic |
-|---:|---|
-| 1 | Beyond ReAct: A Six-Dimensional Map of LLM Agent Architectures |
-| 2 | Agent Execution Paths: Direct Calls, Pipelines, Routers, State Machines, and DAGs |
-| 3 | ReAct, Plan-and-Execute, Adaptive Planning, and HTN |
-| 4 | From Single-Path Reasoning to Trees, Graphs, MCTS, and LATS |
-| 5 | Verification, Recovery, and Self-Correction |
-| 6 | Multi-Agent Architectures |
-| 7 | Agent Memory |
-| 8 | Production Agent Architectures in Practice |
-| 9 | How to Choose an Agent Architecture |
-| 10 | Implementing Agent Patterns with Modern Frameworks |

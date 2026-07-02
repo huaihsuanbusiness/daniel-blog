@@ -1,7 +1,7 @@
 ---
 title: "The Atlas of Agent Design Patterns Part 1 | Beyond ReAct: A Six-Dimensional Map of LLM Agent Architectures"
 description: "A practical engineering map for analysing LLM agent architectures across execution path, decision and planning, reasoning and search, verification and recovery, agent organisation, and state and memory."
-date: 2026-07-01T22:36:00
+date: 2026-06-17T09:00:00
 lang: en
 categories: ["AI"]
 series: "The Atlas of Agent Design Patterns"

@@ -1,7 +1,7 @@
 ---
 title: "Agent 設計模式圖鑑 Part 1｜LLM Agent 不只有 ReAct：用六個維度看懂 Agent 架構"
 description: "用六個實務設計維度分析 LLM Agent：執行路徑、決策與規劃、推理與探索、驗證與修正、Agent 組織，以及狀態與記憶。"
-date: 2026-07-01T22:36:00
+date: 2026-06-17T09:00:00
 lang: zh
 categories: ["AI"]
 series: "Agent 設計模式圖鑑"

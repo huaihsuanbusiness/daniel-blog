@@ -1,7 +1,7 @@
 ---
 title: "Agent 設計模式圖鑑 Part 2｜Agent 執行路徑全解：Direct、Pipeline、Router、State Machine 與 DAG"
 description: "從 Direct、Pipeline、Router、State Machine、DAG，到事件驅動、人工審批與 Behavior Tree，完整拆解 Production Agent 的執行骨架、組合方式與失敗邊界。"
-date: 2026-07-01T23:02:00
+date: 2026-06-19T01:00:00
 lang: zh
 categories: ["AI"]
 series: "Agent 設計模式圖鑑"
@@ -757,17 +757,3 @@ Part 3 將進入下一個維度：
 - [Colledanchise and Ögren, *Behavior Trees in Robotics and AI: An Introduction*](https://arxiv.org/abs/1709.00084)
 - [LangGraph Documentation, *Interrupts and human-in-the-loop workflows*](https://langchain-ai.github.io/langgraph/concepts/breakpoints/)
 
-## 系列目錄
-
-| Part | 主題 |
-|---:|---|
-| 1 | LLM Agent 不只有 ReAct：用六個維度看懂 Agent 架構 |
-| 2 | Agent 執行路徑全解：Direct、Pipeline、Router、State Machine 與 DAG |
-| 3 | ReAct、Plan-and-Execute 與 Adaptive Planning |
-| 4 | 從單一路徑到 Tree、Graph 與 LATS |
-| 5 | Agent 驗證、恢復與自我修正 |
-| 6 | Multi-Agent 架構全解 |
-| 7 | Agent Memory 全解 |
-| 8 | Production Agent 架構實戰 |
-| 9 | 如何選擇 Agent 架構 |
-| 10 | 使用現代 Agent Framework 實作設計模式 |

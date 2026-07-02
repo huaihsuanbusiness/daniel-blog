@@ -1,7 +1,7 @@
 ---
 title: "The Atlas of Agent Design Patterns Part 5 | Verification, Recovery, and Self-Correction"
 description: "A production-focused guide to retry, parameter repair, fallback, Self-Refine, critics, verifiers, Generate-and-Test, replanning, Reflexion, human approval, idempotency, and bounded recovery."
-date: 2026-06-30T20:18:00
+date: 2026-06-24T01:00:00
 lang: en
 categories: ["AI"]
 series: "The Atlas of Agent Design Patterns"
@@ -1280,17 +1280,3 @@ Part 6 moves from verification to organisation:
 - [AWS Builders' Library, *Making retries safe with idempotent APIs*](https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-apis/)
 - [AWS Well-Architected Framework, *Make mutating operations idempotent*](https://docs.aws.amazon.com/wellarchitected/latest/framework/rel_prevent_interaction_failure_idempotent.html)
 
-## Series
-
-| Part | Topic |
-|---:|---|
-| 1 | Beyond ReAct: A Six-Dimensional Map of LLM Agent Architectures |
-| 2 | Agent Execution Paths: Direct Calls, Pipelines, Routers, State Machines, and DAGs |
-| 3 | ReAct, Plan-and-Execute, Adaptive Planning, and HTN |
-| 4 | From Single-Path Reasoning to Trees, Graphs, MCTS, and LATS |
-| 5 | Verification, Recovery, and Self-Correction |
-| 6 | Multi-Agent Architectures |
-| 7 | Agent Memory |
-| 8 | Production Agent Architectures |
-| 9 | How to Choose an Agent Architecture |
-| 10 | Implementing Agent Patterns with Modern Frameworks |

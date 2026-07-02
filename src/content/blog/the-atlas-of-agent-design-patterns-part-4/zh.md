@@ -1,7 +1,7 @@
 ---
 title: "Agent 設計模式圖鑑 Part 4｜從單一路徑到 Tree、Graph、MCTS 與 LATS"
 description: "從 Single-path、Chain-of-Thought、Self-consistency、Generate-and-Rank、Beam Search、Tree of Thoughts、Graph of Thoughts，到 MCTS、LATS、Evaluator、Diversity、Stopping Rule 與 Search Budget，完整拆解 Production Agent 如何探索候選解法。"
-date: 2026-06-30T20:05:00
+date: 2026-06-22T09:00:00
 lang: zh
 categories: ["AI"]
 series: "Agent 設計模式圖鑑"
@@ -1134,17 +1134,3 @@ Part 5 將處理 Output 或 Action 驗證失敗後的問題：
 - [Aamodt and Plaza, *Case-Based Reasoning: Foundational Issues, Methodological Variations, and System Approaches*](https://doi.org/10.3233/AIC-1994-7104)
 - [Susskind et al., *Neuro-Symbolic AI: An Emerging Class of AI Workloads and their Characterization*](https://arxiv.org/abs/2109.06133)
 
-## 系列目錄
-
-| Part | 主題 |
-|---:|---|
-| 1 | LLM Agent 不只有 ReAct：用六個維度看懂 Agent 架構 |
-| 2 | Agent 執行路徑全解：Direct、Pipeline、Router、State Machine 與 DAG |
-| 3 | ReAct、Plan-and-Execute、Adaptive Planning 與 HTN |
-| 4 | 從單一路徑到 Tree、Graph、MCTS 與 LATS |
-| 5 | Agent 驗證、恢復與自我修正 |
-| 6 | Multi-Agent 架構全解 |
-| 7 | Agent Memory 全解 |
-| 8 | Production Agent 架構實戰 |
-| 9 | 如何選擇 Agent 架構 |
-| 10 | 使用現代 Agent Framework 實作設計模式 |

@@ -1,7 +1,7 @@
 ---
 title: "Agent 設計模式圖鑑 Part 6｜Multi-Agent 的組織、協作與控制"
 description: "從 Single Agent、Role-based Workflow、Supervisor-Worker、Planner-Executor-Critic、Debate、Voting、Blackboard、Peer-to-Peer、Swarm-style Coordination，到 Handoff Contract、Shared State、Final Ownership 與 Control Plane，完整拆解 Production Multi-Agent 架構。"
-date: 2026-07-01T00:04:00
+date: 2026-06-25T17:00:00
 lang: zh
 categories: ["AI"]
 series: "Agent 設計模式圖鑑"
@@ -1288,17 +1288,3 @@ Part 7 將進入整張架構地圖的最後一個維度：
 - [Nii, *The Blackboard Model of Problem Solving and the Evolution of Blackboard Architectures*](https://doi.org/10.1609/aimag.v7i2.537)
 - [Guo et al., *Large Language Model based Multi-Agents: A Survey of Progress and Challenges*](https://arxiv.org/abs/2402.01680)
 
-## 系列目錄
-
-| Part | 主題 |
-|---:|---|
-| 1 | LLM Agent 不只有 ReAct：用六個維度看懂 Agent 架構 |
-| 2 | Agent 執行路徑全解：Direct、Pipeline、Router、State Machine 與 DAG |
-| 3 | ReAct、Plan-and-Execute、Adaptive Planning 與 HTN |
-| 4 | 從單一路徑到 Tree、Graph、MCTS 與 LATS |
-| 5 | 驗證、恢復與自我修正 |
-| 6 | Multi-Agent 的組織、協作與控制 |
-| 7 | Agent Memory 全解 |
-| 8 | Production Agent 架構實戰 |
-| 9 | 如何選擇 Agent 架構 |
-| 10 | 使用現代 Agent Framework 實作設計模式 |
